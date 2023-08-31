@@ -1,7 +1,8 @@
 body, html {
 	max-width: 100%;
 	background-color: white;
-	font-family: "Gemunu Libre";
+	font-family: 'Poppins';
+	color: #222222;
 }
 
 .grid-container {
