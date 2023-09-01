@@ -40,6 +40,25 @@
 	box-sizing: border-box;
 }
 
+.submit {
+	
+	display: inline-block;
+	color: #fff;
+    background-color: #0B53C3;
+    font-weight: 400;
+    line-height: 1.5;
+    font-size: 1rem;
+    width: 10%;
+    height: 50%;
+    margin: 5px;
+	border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    border-radius: .25rem;
+	text-align: center;
+	text-decoration: none;
+	transition: all .15s;
+
 .button{
 	border: solid;
 	font-size: 20px;

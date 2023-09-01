@@ -47,9 +47,6 @@
 		<div th:insert="header :: header" th:unless="${user == null}"></div>
 		<!-- END HEADER BAR -->
 	
-		<!-- SIDEBAR -->
-		<div th:insert="navBar :: navBar" th:unless="${user == null}"></div>
-		<!-- END SIDEBAR -->
 		
 		<nav class="navbar navbar-expand-sm" style="background-color: rgb(25,41,77);" th:if="${user == null}">
 		    <div class="container-fluid">
