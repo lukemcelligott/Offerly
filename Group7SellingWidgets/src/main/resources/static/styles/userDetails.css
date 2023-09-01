@@ -1,13 +1,17 @@
 body {
-	font-family: 'Poppins':
+	font-family: 'Poppins';
 	color: #222222;
 }
 
 .pageBody {
 	background-color:#89CFF0 ;
 	margin: auto;
-	font-family: 'Poppins':
+	font-family: 'Poppins';
 	color: #222222;
+}
+
+h1 {
+	font-family: 'Poppins';
 }
 
 h2 {
@@ -27,7 +31,8 @@ h2 {
 	text-align: center;
 	text-decoration: none;
 	font-family: 'Poppins';
-	background-color:#4dd2ff;
+	/*background-color:#4dd2ff;*/
+	background-color: white;
 	margin: 10px 10px 10px 10px;
 }
 
@@ -39,7 +44,8 @@ h2 {
 	text-align: center;
 	text-decoration: none;
 	font-family: 'Poppins';
-	background-color:#4dd2ff;
+	/*background-color:#4dd2ff;*/
+	background-color: white;
 	margin: 10px 10px 10px 10px;
 }
 
