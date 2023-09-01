@@ -211,6 +211,7 @@ public class AddWidgetController
 		model.addAttribute("categories", categories.getAllCategories());
 		model.addAttribute("subcategories", subcategories.getAllSubcategories());
 		model.addAttribute("user", userController.getCurrently_Logged_In());
+		model.addAttribute("page", "addWidget");
 		return "addWidget";
 	}
 	
