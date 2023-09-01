@@ -7,7 +7,7 @@
 	<header th:fragment="header">
 		
 		<!-- Nav Bar For Guest User -->
-		<nav class="navbar navbar-expand-sm" style="background-color: rgb(34,34,34)">
+		<nav class="navbar navbar-expand-sm" style="background-color: #222222">
 			<div class="container-fluid">
 				
 				<!-- Unbiased Left Justified Unordered List -->
@@ -120,10 +120,10 @@
 				<ul th:if="${user.role} == ROLE_USER" class="navbar-nav ms-md-auto" style="position: relative; z-index: 10; padding-right: 10px;">
 					<li class="nav-item pointer">
 						<div class="dropdown">
-							<a style="color:#0a58ca" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
+							<a style="color:white" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
 								<img th:if="${user.userImage == null}" th:src="@{/images/userImages/default_user_icon.png}" style="width:50px; height:50px;"></img>
 								<img th:if="${user.userImage != null}" th:src="@{/images/userImages/{icon}(icon = ${user.userImage})}" style="width:50px; height:50px;"></img>
-								<span style="color:#0a58ca" th:text="${user.username}"></span>
+								<span style="color:white" th:text="${user.username}"></span>
 							</a>
 							<ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
 								<li><h5 class="dropdown-header">My Account</h5></li>
