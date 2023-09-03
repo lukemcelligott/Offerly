@@ -2,6 +2,11 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http:www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 	<head>
 		<meta charset="ISO-8859-1">
+		
+		<!-- font import -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
 	</head>
 	
 	<header th:fragment="header">
@@ -161,7 +166,7 @@
 				<!-- Admin Right Justified Unordered List -->
 				<ul th:if="${user.role} == ROLE_ADMIN" class="navbar-nav ms-md-auto">
 					<li class="nav-item ms-md-auto">
-						<a class="nav-link text-white" style="font-family:'Gemunu Libre'; font-size: 1.5em" href="/do_the_logout"> Log Out </a>
+						<a class="nav-link text-white" style="font-family:'Poppins'; font-size: 1.5em" href="/do_the_logout"> Log Out </a>
 					</li>
 				</ul>
 				<!-- End Admin/Employee Right Justified Unordered List -->

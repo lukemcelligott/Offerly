@@ -72,10 +72,10 @@
               		<div class="card-body" style="padding-top: 24px;">
               			<div class="card" style="width: 80%; height: fit-content; margin-left: auto; margin-right: auto;">
 							<table class="friendTableForm" style="margin-left: auto; margin-right: auto; text-align:left">
-								<tr style="height:50px; border:solid; background-color:#89CFF0" class="col-1 border border-2 border-dark table-bordered">
-									<td id="bg-color" style="border:solid; text-align: center;"><a  style="text-align: center;text-decoration:none;color:black;" th:href="@{/friends}" >Friends List</a></td>
-									<td id="bg-color" style="border:solid; text-align: center;"><a  style="text-align: center;text-decoration:none;color:black;" th:href="@{/blockList}" >Block List</a></td>
-									<td id="bg-color" style="border:solid; text-align: center;"><a  style="text-align: left;text-decoration:none;color:black;" th:href="@{/suggested}" >Suggested List</a></td>
+								<tr id="table-head" style="height:50px; border:solid;" class="col-1 border border-2 border-dark table-bordered">
+									<td style="border:solid; text-align: center;"><a  style="text-align: center;text-decoration:none;color:#FFFFFF;" th:href="@{/friends}" >Friends List</a></td>
+									<td style="border:solid; text-align: center;"><a  style="text-align: center;text-decoration:none;color:#FFFFFF;" th:href="@{/blockList}" >Block List</a></td>
+									<td style="border:solid; text-align: center;"><a  style="text-align: left;text-decoration:none;color:#FFFFFF;" th:href="@{/suggested}" >Suggested List</a></td>
 								</tr>
 									<th:block th:switch="${page2}">
 										<div th:case="alreadyFriends">

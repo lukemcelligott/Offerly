@@ -19,6 +19,11 @@ li.pointer {
 
 #bg-color {
 	background-color: #0d6efd;
+	color: #FFFFFF;
+}
+
+#table-head {
+	background-color: #0d6efd;
 }
 
 .grid-container {
