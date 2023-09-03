@@ -45,8 +45,6 @@ table {
   padding: 0px;
 }
 
-
-
 .item4 {
   grid-column: 2 / span 3;
   grid-row: 2;
