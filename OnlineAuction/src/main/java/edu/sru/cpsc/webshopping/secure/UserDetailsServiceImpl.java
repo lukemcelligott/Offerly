@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import edu.sru.cpsc.webshopping.controller.StatisticsDomainController;
 import edu.sru.cpsc.webshopping.controller.UserController;
 import edu.sru.cpsc.webshopping.domain.user.Statistics;
-import edu.sru.cpsc.webshopping.domain.user.Statistics.Category;
+import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
 //import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
 @Service
@@ -35,7 +35,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         					.password(user1.getPassword())
         					.authorities(user1.getRole())
         					.build();
-        Statistics stats = new Statistics(Category.USERLOGIN,1);
+        Statistics stats = new Statistics(StatsCategory.USERLOGIN,1);
         stats.setDescription(user.getUsername() + " logged in");
 		statControl.addStatistics(stats);
         return user;

@@ -43,7 +43,6 @@ public class MarketListing {
 	@Min(value=0, message="Must have 0 or more items available.")
 	private long qtyAvailable;
 	
-	
 	@NonNull 
 	private boolean isDeleted;
 	

@@ -3,7 +3,7 @@ package edu.sru.cpsc.webshopping.controller;
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.market.Transaction;
 import edu.sru.cpsc.webshopping.domain.user.Statistics;
-import edu.sru.cpsc.webshopping.domain.user.Statistics.Category;
+import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 import edu.sru.cpsc.webshopping.domain.widgets.WidgetImage;
@@ -113,8 +113,8 @@ public class MarketListingDomainController {
 			throw new IllegalArgumentException("The number of items you wish to buy exceeds the stock.");
 		}
 		float value = currListing.getPricePerItem().floatValue() * numPurchased;
-		Statistics recordSaleValue = new Statistics(Category.SALEVALUE, value);
-		Statistics recordSale = new Statistics(Category.SALE, 1);
+		Statistics recordSaleValue = new Statistics(StatsCategory.SALEVALUE, value);
+		Statistics recordSale = new Statistics(StatsCategory.SALE, 1);
 		recordSaleValue.setDescription(
 				numPurchased
 				+ " "
@@ -199,8 +199,8 @@ public class MarketListingDomainController {
 				.filter(
 						marketListing ->
 						PreLoad.subCategoryConfiguration().stream()
-						.anyMatch(marketListing.getWidgetSold().getSubCategory()::equalsIgnoreCase))
-				.toArray(MarketListing[]::new);
+						.anyMatch(marketListing.getWidgetSold().getCategory().getName()::equalsIgnoreCase))
+						.toArray(MarketListing[]::new);
 	}
 
 	/**

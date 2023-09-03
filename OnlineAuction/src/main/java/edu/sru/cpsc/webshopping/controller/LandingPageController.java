@@ -537,6 +537,7 @@ public class LandingPageController {
     listingModel.addAttribute("headerUser", user);
     listingModel.addAttribute("user", user);
     widgetModel.addAttribute("headerUser", user);
+    
     // Add filter categories
     Iterable<Appliance_Dryers> dryer = widgetController.getAllDryers();
     for (Map.Entry<String, HashSet<String>> entry :
