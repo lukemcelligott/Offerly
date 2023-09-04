@@ -43,17 +43,17 @@
 	      <table class="ticketTableForm" style="margin-top: 20px; margin-left: auto; margin-right: auto; width: 90%;">
 	        <thead>
 	        <tr>
-	        	<td colspan="18" style="background-color:#89CFF0; text-align: center;"><h4> My Tickets </h4></td>
+	        	<td colspan="18" style="color: #FFFFFF; background-color:#0d6efd; text-align: center;"><h4> My Tickets </h4></td>
 	        </tr>
-	        <tr style="background-color:#89CFF0">
-	          <td colspan="2">Ticket ID</td>
-	          <td colspan="4">Subject</td>
-	          <td colspan="2">State</td>
-	          <td colspan="2">Created At</td>
-	          <td colspan="2">Assigned At</td>
-	          <td colspan="2">Updated At</td>
-	          <td colspan="2">Resolved At</td>
-	          <td colspan="2">Ticket Actions</td>
+	        <tr style="background-color:#0d6efd">
+	          <td colspan="2" style="color: #FFFFFF;">Ticket ID</td>
+	          <td colspan="4" style="color: #FFFFFF;">Subject</td>
+	          <td colspan="2" style="color: #FFFFFF;">State</td>
+	          <td colspan="2" style="color: #FFFFFF;">Created At</td>
+	          <td colspan="2" style="color: #FFFFFF;">Assigned At</td>
+	          <td colspan="2" style="color: #FFFFFF;">Updated At</td>
+	          <td colspan="2" style="color: #FFFFFF;">Resolved At</td>
+	          <td colspan="2" style="color: #FFFFFF;">Ticket Actions</td>
 	        </tr>
 	        </thead>
 	        <th:block th:each="ticket: ${tickets}">
@@ -84,7 +84,7 @@
 	        <table class="ticketTableForm" style="margin-top: 20px; margin-left: auto; margin-right: auto; width: 60%;">
 	          <thead>
 		          <tr>
-		            <td colspan="2" style="background-color:#89CFF0; text-align: center;"><h4> Create a Ticket </h4></td>
+		            <td colspan="2" style="color: #FFFFFF; background-color:#0d6efd; text-align: center;"><h4> Create a Ticket </h4></td>
 		          </tr>
 		          <tr>
 		            <td style="background-color:#d3d3d3"><label for="subject"> Ticket Subject: </label></td>
@@ -114,7 +114,7 @@
 	
 	    <div th:case="ticketdetails">
 	      <table class="table table-bordered d-flex justify-content-center" style="margin-top: 20px; margin-left: auto; margin-right: auto; width: 90%;">
-	        <tr class="table-primary" style="background-color: #89CFF0; border: 1px solid black">
+	        <tr class="table-primary" style="background-color: #0d6efd; border: 1px solid black">
 	          <th colspan="2">Ticket Details</th>
 	        </tr>
 	        <th:block th:object="${ticketdetail}">

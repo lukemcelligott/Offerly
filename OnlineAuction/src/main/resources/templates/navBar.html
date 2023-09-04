@@ -1,3 +1,5 @@
+<!-- now using header.html instead of this file -->
+
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http:www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 	<head>
@@ -16,26 +18,43 @@
 		<!-- User's Header -->
 		<div th:if="${user.role} == ROLE_USER">
 			<ul class="nav nav-pills">
+				<!-- Home Page -->
 				<li class="nav-item">
 					<a th:if="${page == 'home'}" th:href="@{/homePage}" class="submit4 nav-link active"><span>Home</span></a>
 					<a th:unless="${page == 'home'}" th:href="@{/homePage}" class="submit4"><span>Home</span></a>
 				</li>
+				
+				<!-- Browse Items -->
 				<li class="nav-item">
 					<a th:if="${page == 'searchWidgetSellerMarketListing'}" th:href="@{/BrowseWidgetsButton}" class="submit4 nav-link active"><span>Browse All Items</span></a>
 					<a th:unless="${page == 'searchWidgetSellerMarketListing'}" th:href="@{/BrowseWidgetsButton}" class="submit4"><span>Browse All Items</span></a>
 				</li>
+				
+				<!-- Sell an item -->
 				<li class="nav-item">
 					<a th:if="${page == 'widgets'}" th:href="@{/addWidget}" class="submit4 nav-link active"><span>Sell an Item</span></a>
 					<a th:unless="${page == 'widgets'}" th:href="@{/addWidget}" class="submit4"><span>Sell an Item</span></a>
 				</li>
+				
+				<!-- Watchlist - NEED TO IMPLEMENT -->
+				<li class="nav-item">
+					<a th:if="${page == 'searchWidgetSellerMarketListing'}" th:href="@{/BrowseWidgetsButton}" class="submit4 nav-link active"><span>My Watchlist</span></a>
+					<a th:unless="${page == 'searchWidgetSellerMarketListing'}" th:href="@{/BrowseWidgetsButton}" class="submit4"><span>My Watchlist</span></a>
+				</li>
+				
+				<!-- Social -->
 				<li class="nav-item">
 					<a th:if="${page == 'friends'}" th:href="@{/friends}" class="submit4 nav-link active">Social</a>
 					<a th:unless="${page == 'friends'}" th:href="@{/friends}" class="submit4">Social</a>
 				</li>
+				
+				<!-- Messages -->
 				<li class="nav-item">
 					<a th:if="${page == 'messages'}" th:href="@{/messages}" class="submit4 nav-link active"><span>My Messages</span></a>
 					<a th:unless="${page == 'messages'}" th:href="@{/messages}" class="submit4"><span>My Messages</span></a>
 				</li>
+				
+				<!-- Help -->
 				<li class="nav-item pointer" style="position: relative; z-index: 10;">
 					<a th:if="${page == 'tickets' || page == 'createTickets'}" class="submit4 nav-link dropdown-toggle active" data-bs-toggle="dropdown"><span>Need Help?</span></a>
 					<a th:unless="${page == 'tickets' || page == 'createTickets'}" class="submit4 nav-link dropdown-toggle" data-bs-toggle="dropdown"><span>Need Help?</span></a>
@@ -46,6 +65,8 @@
 						<a th:unless="${page == 'createTickets'}" class="submit4" th:href="@{/createTickets}"><span>Add Ticket</span></a>
 					</div>
 				</li>
+				
+				<!-- User info -->
 				<li th:if="${selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).PAYMENT_DETAILS or selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).DEPOSIT_DETAILS}" class="nav-item pointer" style="position: relative; z-index: 10;">
 					<a th:if="${selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).PAYMENT_DETAILS or selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).DEPOSIT_DETAILS}" class="submit4 nav-link dropdown-toggle active" data-bs-toggle="dropdown"><span>Payment Details</span></a>
 					<a th:unless="${selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).PAYMENT_DETAILS or selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).DEPOSIT_DETAILS}" class="submit4 nav-link dropdown-toggle" data-bs-toggle="dropdown"><span>Payment Details</span></a>
