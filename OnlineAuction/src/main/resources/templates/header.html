@@ -2,12 +2,17 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http:www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 	<head>
 		<meta charset="ISO-8859-1">
+		
+		<!-- font import -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
 	</head>
 	
 	<header th:fragment="header">
 		
 		<!-- Nav Bar For Guest User -->
-		<nav class="navbar navbar-expand-sm" style="background-color: rgb(34,34,34)">
+		<nav class="navbar navbar-expand-sm" style="background-color: #222222">
 			<div class="container-fluid">
 				
 				<!-- Unbiased Left Justified Unordered List -->
@@ -23,26 +28,43 @@
 		<!-- User's Header -->
 		<div th:if="${user.role} == ROLE_USER">
 			<ul class="nav nav-pills">
+			
+				<!-- Home -->
 				<li class="nav-item">
 					<a th:if="${page == 'home'}" th:href="@{/homePage}" class="submit4 nav-link active"><span>Home</span></a>
 					<a th:unless="${page == 'home'}" th:href="@{/homePage}" class="submit4"><span>Home</span></a>
 				</li>
+				
+				<!-- Browse Items -->
 				<li class="nav-item">
 					<a th:if="${page == 'searchWidgetSellerMarketListing'}" th:href="@{/BrowseWidgetsButton}" class="submit4 nav-link active"><span>Browse All Items</span></a>
 					<a th:unless="${page == 'searchWidgetSellerMarketListing'}" th:href="@{/BrowseWidgetsButton}" class="submit4"><span>Browse All Items</span></a>
 				</li>
+				
+				<!-- Sell an item -->
 				<li class="nav-item">
 					<a th:if="${page == 'addWidget'}" th:href="@{/addWidget}" class="submit4 nav-link active"><span>Sell an Item</span></a>
 					<a th:unless="${page == 'addWidget'}" th:href="@{/addWidget}" class="submit4"><span>Sell an Item</span></a>
 				</li>
+				
+				<!-- Watchlist - NEED TO IMPLEMENT -->
+				<li class="nav-item">
+					<a class="submit4 nav-link"><span>Watchlist</span></a>
+				</li>
+				
+				<!-- Social -->
 				<li class="nav-item">
 					<a th:if="${page == 'friends'}" th:href="@{/friends}" class="submit4 nav-link active">Social</a>
 					<a th:unless="${page == 'friends'}" th:href="@{/friends}" class="submit4">Social</a>
 				</li>
+				
+				<!-- Messages -->
 				<li class="nav-item">
 					<a th:if="${page == 'messages'}" th:href="@{/messages}" class="submit4 nav-link active"><span>My Messages</span></a>
 					<a th:unless="${page == 'messages'}" th:href="@{/messages}" class="submit4"><span>My Messages</span></a>
 				</li>
+				
+				<!-- Help -->
 				<li class="nav-item pointer" style="position: relative; z-index: 10;">
 					<a th:if="${page == 'tickets' || page == 'createTickets'}" class="submit4 nav-link dropdown-toggle active" data-bs-toggle="dropdown"><span>Need Help?</span></a>
 					<a th:unless="${page == 'tickets' || page == 'createTickets'}" class="submit4 nav-link dropdown-toggle" data-bs-toggle="dropdown"><span>Need Help?</span></a>
@@ -53,6 +75,8 @@
 						<a th:unless="${page == 'createTickets'}" class="submit4" th:href="@{/createTickets}"><span>Add Ticket</span></a>
 					</div>
 				</li>
+				
+				<!-- User info -->
 				<li th:if="${selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).PAYMENT_DETAILS or selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).DEPOSIT_DETAILS}" class="nav-item pointer" style="position: relative; z-index: 10;">
 					<a th:if="${selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).PAYMENT_DETAILS or selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).DEPOSIT_DETAILS}" class="submit4 nav-link dropdown-toggle active" data-bs-toggle="dropdown"><span>Payment Details</span></a>
 					<a th:unless="${selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).PAYMENT_DETAILS or selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).DEPOSIT_DETAILS}" class="submit4 nav-link dropdown-toggle" data-bs-toggle="dropdown"><span>Payment Details</span></a>
@@ -63,6 +87,7 @@
 						<a th:unless="${selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).DEPOSIT_DETAILS}" th:href="@{/userDetails/depositDetails}" class="submit4">Direct Deposit</a>
 					</div>
 				</li>
+				
 			</ul>
 		</div>
 		<!-- End User's Header -->
@@ -120,10 +145,10 @@
 				<ul th:if="${user.role} == ROLE_USER" class="navbar-nav ms-md-auto" style="position: relative; z-index: 10; padding-right: 10px;">
 					<li class="nav-item pointer">
 						<div class="dropdown">
-							<a style="color:#0a58ca" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
+							<a style="color:white" class="dropdown-toggle nav-link" data-bs-toggle="dropdown">
 								<img th:if="${user.userImage == null}" th:src="@{/images/userImages/default_user_icon.png}" style="width:50px; height:50px;"></img>
 								<img th:if="${user.userImage != null}" th:src="@{/images/userImages/{icon}(icon = ${user.userImage})}" style="width:50px; height:50px;"></img>
-								<span style="color:#0a58ca" th:text="${user.username}"></span>
+								<span style="color:white" th:text="${user.username}"></span>
 							</a>
 							<ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark">
 								<li><h5 class="dropdown-header">My Account</h5></li>
@@ -141,7 +166,7 @@
 				<!-- Admin Right Justified Unordered List -->
 				<ul th:if="${user.role} == ROLE_ADMIN" class="navbar-nav ms-md-auto">
 					<li class="nav-item ms-md-auto">
-						<a class="nav-link text-white" style="font-family:'Gemunu Libre'; font-size: 1.5em" href="/do_the_logout"> Log Out </a>
+						<a class="nav-link text-white" style="font-family:'Poppins'; font-size: 1.5em" href="/do_the_logout"> Log Out </a>
 					</li>
 				</ul>
 				<!-- End Admin/Employee Right Justified Unordered List -->

@@ -142,15 +142,15 @@
                 				</th:block>
               				</tr>
               				<tr>
-                				<td colspan="1" style="background-color: #89CFF0">Ticket ID:</td>
-                				<td colspan="2" style="background-color: #89CFF0">Reporter:</td>
-                				<td colspan="2" style="background-color: #89CFF0">Currently Assigned To:</td>
-                				<td colspan="2" style="background-color: #89CFF0">User Level:</td>
+                				<td colspan="1" id="bg-color">Ticket ID:</td>
+                				<td colspan="2" id="bg-color">Reporter:</td>
+                				<td colspan="2" id="bg-color">Currently Assigned To:</td>
+                				<td colspan="2" id="bg-color">User Level:</td>
                					<th:block th:if="${user.role == 'ROLE_ADMIN'}">
-                  					<td colspan="4" style="background-color: #89CFF0">Update Assignee:</td>
+                  					<td colspan="4" id="bg-color">Update Assignee:</td>
                 				</th:block>
-                				<td colspan="2" style="background-color: #89CFF0">State:</td>
-                				<td colspan="2" style="background-color: #89CFF0">Ticket Actions:</td>
+                				<td colspan="2" id="bg-color">State:</td>
+                				<td colspan="2"id="bg-color">Ticket Actions:</td>
               				</tr>
               				 <th:block th:each="ticket: ${tickets}">
                 				<tr>
@@ -438,19 +438,19 @@
               				</thead>
               				<tbody>
               					<tr>
-              						<td style="background-color: #89CFF0"><label for="userName">Username:</label></td>
+              						<td id="bg-color"><label for="userName">Username:</label></td>
               						<td><input type="text" th:field="*{username}" id="username"></td>
               					</tr>
               					<tr>
-              						 <td style="background-color: #89CFF0"><label for="password">Password:</label></td>
+              						 <td id="bg-color"><label for="password">Password:</label></td>
                   					 <td><input type="text" th:field="*{password}" id="password"></td>
               					</tr>
               					<tr>
-              						 <td style="background-color: #89CFF0"><label for="email">Email: </label></td>
+              						 <td id="bg-color"><label for="email">Email: </label></td>
                   					 <td><input type="text" th:field="*{email}" id="email"></td>
               					</tr>
               					<tr>
-              						<td style="background-color: #89CFF0">Select Role:</td>
+              						<td id="bg-color">Select Role:</td>
               						<td style="padding-right: 8px;">
               							<div>
               								<select th:field="*{role}">
@@ -547,10 +547,10 @@
             							<td colspan="4" style="background-color: #D3D3D3; text-align: center;"><h4>Widget</h4></td>
       								</tr>
       								<tr>
-            							<td style="background-color: #89CFF0">View Listing</td>
-            							<td style="background-color: #89CFF0">Widget Name</td>
-            							<td style="background-color: #89CFF0">Widget Description</td>
-            							<td style="background-color: #89CFF0">Widget Category</td>
+            							<td id="bg-color">View Listing</td>
+            							<td id="bg-color">Widget Name</td>
+            							<td id="bg-color">Widget Description</td>
+            							<td id="bg-color">Widget Category</td>
       								</tr>
 								</thead>
 								<tbody>
@@ -693,13 +693,13 @@
                 				<td colspan="7" style="background-color: #D3D3D3; text-align: center;"><h4>All User's Information</h4></td>
               				</tr>
               				<tr>
-                				<td style="background-color: #89CFF0"> Username</td>
-                				<td style="background-color: #89CFF0"> Email Address</td>
-                				<td style="background-color: #89CFF0"> View Inbox</td>
-                				<td style="background-color: #89CFF0"> View Outbox</td>
-                				<td style="background-color: #89CFF0"> View Trash</td>
-                				<td style="background-color: #89CFF0"> Edit User</td>
-                				<td style="background-color: #89CFF0"> View User Profile</td>
+                				<td id="bg-color"> Username</td>
+                				<td id="bg-color"> Email Address</td>
+                				<td id="bg-color"> View Inbox</td>
+                				<td id="bg-color"> View Outbox</td>
+                				<td id="bg-color"> View Trash</td>
+                				<td id="bg-color"> Edit User</td>
+                				<td id="bg-color"> View User Profile</td>
               				</tr>
               				<th:block th:each="user: ${users}">
                 				<tr>
