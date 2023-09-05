@@ -84,7 +84,7 @@
 }
 
 .columns{
-	margin: 5rem auto;
+	margin: 2rem auto;
 	display: grid;
   	grid-template-columns: 25% 25% 25% 25%;
   	/*grid template for browse utilized source within reference document*/

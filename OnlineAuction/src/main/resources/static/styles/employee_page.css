@@ -8,6 +8,12 @@ h1 {
 	color:#222222;
 }
 
+h2 {
+	font-family: 'Poppins';
+	color:#222222;
+	margin-top: 0.5rem;
+}
+
 text {
 	font-family: 'Poppins';
 	color:#222222;
@@ -20,6 +26,11 @@ li.pointer {
 #bg-color {
 	background-color: #0d6efd;
 	color: #FFFFFF;
+}
+
+#middle {
+	margin-top: 15px;
+	margin-bottom: 15px;
 }
 
 #table-head {
@@ -46,6 +57,13 @@ li.pointer {
   	width: 100%;
   	height: 100%;
   	position: relative;
+}
+
+/* used https://www.w3schools.com/howto/howto_css_next_prev.asp as a resource */
+.img-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
 .item1 {
