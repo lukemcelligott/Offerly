@@ -53,19 +53,19 @@
         	<form action="#" th:action="@{/createWidget}" method="post">
 	        	<div>
 		        	<label for="category" style="text-align: center;"> Choose a Category </label>
-		        	<select id="category" name="category" class="form-select form-select-lg mb-3" onchange="enableSubcatDropdown()">
+		        	<select id="category" name="category" class="form-select form-select-lg mb-3" onchange="enableNextButton()">
 		        		<option selected disabled hidden value="0"> -- Select One -- </option>
-		        		<option th:each="category : ${categories}" th:text="${category.display}" th:id="${category.name}" th:value="${category.name}"></option>
+		        		<option th:each="category : ${categories}" th:text="${category.name}" th:id="${category.name}" th:value="${category.id}"></option>
 		        	</select>
 		        	
-	        		<label for="subcategory" style="text-align: center;"> Choose a Sub-category </label>
+	        		<!--<label for="subcategory" style="text-align: center;"> Choose a Sub-category </label>
 		        	<select id="subcategory" name="subcategory" class="form-select form-select-lg mb-3" onchange="enableNextButton()" disabled>
 		        		<option selected disabled hidden value="0"> -- Select One -- </option>
 		        		<option th:each="subcategory : ${subcategories}" th:text="${subcategory.display}" th:id="${subcategory.parent}" th:value="${subcategory.name}"></option>
-		        	</select>
+		        	</select>-->
 		        	
 		        	<div class="card-footer" style="display: flex; justify-content: center; align-items: center;">
-		        		<input id="nextButton" class="btn btn-success v-25 mx-4" type="submit" th:href="@{/subcategory.contract}" value="Next" disabled>
+		        		<input id="nextButton" class="btn btn-success v-25 mx-4" type="submit" th:href="@{/createWidget}" value="Next" disabled>
 		        		<a class="btn btn-danger v-25 mx-4" href="/homePage"> Cancel </a>
 		        	</div>
 		        </div>
@@ -76,7 +76,7 @@
   	<!-- End Choose Categories Div -->
   	
   	<script>
-		function enableSubcatDropdown()
+		/*function enableSubcatDropdown()
 		{
 			var categoryValue = document.getElementById("category").value;
 			var subcatSelect = document.getElementById("subcategory");
@@ -101,15 +101,15 @@
 					subcatSelect[i].hidden = true;
 				}
 			}
-		}
+		}*/
 		
 		function enableNextButton()
 		{
 			var categorySelect = document.getElementById("category");
-			var subcatSelect = document.getElementById("subcategory");
+			//var subcatSelect = document.getElementById("subcategory");
 			var btnelem = document.getElementById("nextButton");
 			
-			if(categorySelect.value != 0 && subcatSelect.value != 0)
+			if(categorySelect.value != 0)
 			{
 				btnelem.disabled = false;
 			}

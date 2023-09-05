@@ -15,8 +15,8 @@ public class Statistics {
 		
 	}
 	
-	Category category;
-	public Statistics(Category cat, float value) {
+	StatsCategory category;
+	public Statistics(StatsCategory cat, float value) {
 		this.category = cat;
 		this.value = value;
 		this.setDate(LocalDateTime.now());
@@ -29,7 +29,7 @@ public class Statistics {
 	private float value;
 	private LocalDateTime date;
 	private int hour;
-	public enum Category{
+	public enum StatsCategory{
 		SALEVALUE,
 		SALE,
 		ACCOUNTCREATION,

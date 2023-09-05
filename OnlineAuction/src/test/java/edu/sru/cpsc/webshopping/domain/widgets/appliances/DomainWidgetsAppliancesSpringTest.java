@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import edu.sru.cpsc.webshopping.domain.user.DomainUserSpringTest;
+import edu.sru.cpsc.webshopping.domain.widgets.Category;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 
 @SpringBootTest(classes = {DomainWidgetsAppliancesSpringTest.class})
@@ -19,7 +20,7 @@ public class DomainWidgetsAppliancesSpringTest {
 	@Test
 	void appliance_BlenderTest() {
 		Widget_Appliance blender = new Widget_Appliance();
-		blender.setCategory("blender");
+		blender.setCategory(new Category("blender"));
 		blender.setColor("purple");
 		blender.setCondition("good");
 		blender.setDescription("loud");
@@ -28,10 +29,9 @@ public class DomainWidgetsAppliancesSpringTest {
 		blender.setItemCondition("good");
 		blender.setLength(1);
 		blender.setName("Bob");
-		blender.setSubCategory("subcategory");
 		blender.setWidth(1);
 		
-		assertEquals("blender", blender.getCategory());
+		assertEquals("blender", blender.getCategory().getName());
 		assertEquals("purple", blender.getColor());
 		assertEquals("good", blender.getCondition());
 		assertEquals("loud", blender.getDescription());
@@ -40,7 +40,6 @@ public class DomainWidgetsAppliancesSpringTest {
 		assertEquals("good", blender.getItemCondition());
 		assertEquals(1, blender.getLength());
 		assertEquals("Bob", blender.getName());
-		assertEquals("subcategory", blender.getSubCategory());
 		assertEquals(1, blender.getWidth());
 	}
 	

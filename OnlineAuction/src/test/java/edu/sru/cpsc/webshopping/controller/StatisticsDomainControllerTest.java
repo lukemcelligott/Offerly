@@ -27,12 +27,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import edu.sru.cpsc.webshopping.controller.StatisticsDomainController;
 import edu.sru.cpsc.webshopping.domain.user.Statistics;
-import edu.sru.cpsc.webshopping.domain.user.Statistics.Category;
+import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
 import edu.sru.cpsc.webshopping.repository.stats.StatsRepository;
 
 public class StatisticsDomainControllerTest {
 	private static final Statistics Statistics = null;
-	private static final Category Category = null;
+	private static final StatsCategory Category = null;
 	private Logger log= Logger.getLogger(null);
 	
 @BeforeAll
@@ -91,7 +91,7 @@ public void getStatisticsByHour() {
 		Statistics[] expectedValue= null;
 		LocalDateTime date1= null;
 		LocalDateTime date2= null;
-		Category category= null;
+		StatsCategory category= null;
 		
 		StatisticsDomainController statisticsdomaincontroller= new StatisticsDomainController(null);
 		Statistics[] actualValue=statisticsdomaincontroller.getStatisticsByHour(date1, date2, category);
