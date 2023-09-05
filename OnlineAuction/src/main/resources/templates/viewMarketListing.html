@@ -34,6 +34,18 @@
             .image-preview{
             vertical-align: middle;
             }
+            div.auction-price-container{
+            text-align: center;
+        	margin-top: 10px;
+        	font-weight: bold;
+        	border-radius: 12px; /* Rounded corners */
+        	padding: 10px; /* Padding around text */
+        	width: fit-content; /* Shrink to fit the content */
+       	    margin-left: auto; /* Centering */
+       	    margin-right: auto; /* Centering */
+        	font-family: 'Poppins', sans-serif; /* Using imported Poppins font */
+        	color: #333; /* Text color */
+            }
         </style>
     </head>
     <body>
@@ -128,6 +140,10 @@
                                     }
                                     /*]]>*/
                                 </script>
+                            <div class="auction-price-container">
+								 <span>Auction Price: </span>
+								 <span th:text="'$' + ${currListing.pricePerItem}"></span>
+							</div> 
                             </div>
                             <div class="card h-100" th:unless="${currListing.coverImage != null && !currListing.coverImage.isEmpty()}">
                                 <div class="d-flex justify-content-center card-header">
@@ -156,7 +172,7 @@
                             <ul class="list-group">
                                 <li class="list-group-item"> Number Available: <span
                                     th:text="${currListing.qtyAvailable}"></span></li>
-                                <li class="list-group-item"> Price: $ <span th:text="${currListing.pricePerItem}"></span>
+                                <li class="list-group-item"> Price: $ <span th:text=" '$' + ${currListing.pricePerItem}"></span>
                                 </li>
                             </ul>
                             
@@ -189,22 +205,35 @@
                     </div>
                     
                     <!-- Purchase Options -->
-                    <form th:if="${isBuyer}" id="buy-product" class="row g-3 d-flex justify-content-center my-2" action="#" th:action="@{/viewMarketListing/attemptPurchase}" th:object=${newTransaction} method="post">
-                        <div class="col-auto">
-                            <label for="qtyBought" class="col-form-label"> Number to Buy: </label>
-                        </div>
-                        <div class="col-auto">
-                            <input id="qtyBought" class="form-control" name="qtyBought" type="number" th:field="*{qtyBought}" placeholder="Number to Buy" min="1" th:max="${currListing.qtyAvailable}" value="0" required></input>
-                        </div>
-                        <div class="col-auto">
-                            <input class="btn btn-success" id="buyProduct" name="buyProduct" type="submit" value="Purchase Items"></input>
-                        </div>
-                        <div class="col-sm-1">
-                            <a class="btn btn-danger" href="/BrowseWidgetsButton">Back</a>
-                        </div>
-                    </form>
-                    
-                    <-- Seller options-->
+                    <div class="row">
+                    	<form th:if="${isBuyer}" id="buy-product" class="row g-3 d-flex justify-content-center my-2" action="#" th:action="@{/viewMarketListing/attemptPurchase}" th:object=${newTransaction} method="post">
+                       	 <div class="col-auto">
+                           	 <label for="qtyBought" class="col-form-label"> Number to Buy: </label>
+                       	 </div>
+                       	 <div class="col-auto">
+                           	 <input id="qtyBought" class="form-control" name="qtyBought" type="number" th:field="*{qtyBought}" placeholder="Number to Buy" min="1" th:max="${currListing.qtyAvailable}" value="0" required></input>
+                         </div>
+                         <div class="col-auto">
+                          	 <input class="btn btn-success" id="purchaseButton" name="buyProduct" type="submit" th:value="'Buy Now for $' + ${currListing.pricePerItem}" />
+                         </div>
+                         <div class="col-auto custom-align">	
+							 <div style="margin-top: -10px; border: 1px solid #ccc; padding: 10px;"> 
+								 <input type="number" class="form-control" id="bidAmount" placeholder="Enter your bid (NOT FUNCTIONAL)"> 
+							 </div>		 
+     					 </div>
+     					 <div class="col-auto">
+     					 	<input class="btn btn-success" id="bidButton" name="placeBid" type="submit" value="Bid Now" />
+     					 </div>
+     					 <div class="col-auto">
+							  <a class="btn btn-success">Add to Wishlist</a>
+						 </div>
+                         <div class="col-auto">
+                             <a class="btn btn-danger" href="/BrowseWidgetsButton">Back</a>
+                         </div>
+                    	</form>
+                    	
+                    </div>
+                    <!-- Seller options-->
                     <form th:if="${!isBuyer}" id="update-listing" class="row g-3 d-flex justify-content-center my-2" action="#" th:action="@{/viewMarketListing/editListing}" th:object=${currListing} method="post">
                         <input type="hidden" th:field="*{id}">
                         <!--  default price must be set to current listing price -->
@@ -236,5 +265,22 @@
                 </div>
             </div>
         </div>
+         <!-- Dynamically update the Price Amount-->
+		<script th:inline="javascript">
+   		 const basePrice = /*[[${currListing.pricePerItem}]]*/ 0.0; // Default value is 0.0
+
+   		 const qtyBoughtElement = document.getElementById('qtyBought');
+    	 const purchaseButtonElement = document.getElementById('purchaseButton');
+
+    	 function updatePrice() {
+          const qty = parseInt(qtyBoughtElement.value);
+          const totalPrice = (qty * basePrice).toFixed(2);
+          purchaseButtonElement.value = 'Buy Now for $' + totalPrice;
+    	}
+
+   	     qtyBoughtElement.addEventListener('change', updatePrice);
+         updatePrice(); // Initialize button text
+		</script>
+
     </body>
 </html>

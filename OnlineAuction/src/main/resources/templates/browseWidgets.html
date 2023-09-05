@@ -90,6 +90,10 @@
 						<td><p style="margin-bottom: 0;" th:text="'$' + ${searchedMarkets.pricePerItem}"></p></td>
 					</tr>
 					<tr>
+						<td id="bg-color"><p style="margin-bottom: 0;">Auction Price:</p></td>
+						<td><p style="margin-bottom: 0;" th:text="'$' + ${searchedMarkets.pricePerItem}"></p></td>
+					</tr>
+					<tr>
 						<th colspan="2"><a class="submitHybrid" th:href="@{/viewMarketListing/{id}(id = ${searchedMarkets.id})}"><span>View</span></a></th>
 					</tr>
 					<!-- Find a way to make the below fit on the line above without table outline -->
