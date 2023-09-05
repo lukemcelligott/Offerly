@@ -2,13 +2,7 @@ package edu.sru.cpsc.webshopping.domain.widgets;
 
 import com.opencsv.bean.CsvIgnore;
 import java.util.Set;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -16,13 +10,11 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
+import javax.persistence.CascadeType;
 
 import org.springframework.lang.NonNull;
 
-import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.user.User;
 /**
  * Widget class stores basic information such as name, description, and the category of the widget. Other widget classes inherit these from it.
@@ -52,11 +44,13 @@ public class Widget {
 	@CsvIgnore
 	private Set<User> wishlistingUsers;
 	
-	private String category;
+	@ManyToOne
+	private Category category;
 	
-	private String subCategory;
-	
+	@OneToMany(mappedBy = "widget")
+    private Set<WidgetAttribute> widgetAttributes;
 
+	
 	public long getId() {
 		return id;
 	}
@@ -81,21 +75,20 @@ public class Widget {
 		this.description = description;
 	}
 
-	public String getCategory() {
+	public Category getCategory() {
 		return category;
 	}
 
-	public void setCategory(String category) {
+	public void setCategory(Category category) {
 		this.category = category;
 	}
-
-	public String getSubCategory() {
-		System.out.println(name);
-		System.out.println(subCategory);
-		return subCategory;
-	}
-
-	public void setSubCategory(String subCategory) {
-		this.subCategory = subCategory;
-	}
+	
+	public Set<WidgetAttribute> getAttributes() {
+        return widgetAttributes;
+    }
+	
+	public void setAttributes(Set<WidgetAttribute> widgetAttributes) {
+        this.widgetAttributes = widgetAttributes;
+    }
+	
 }

@@ -34,6 +34,7 @@ import edu.sru.cpsc.webshopping.domain.widgets.vehicles.Vehicle_Car_Parts;
 import edu.sru.cpsc.webshopping.domain.widgets.vehicles.Widget_Vehicles;
 import edu.sru.cpsc.webshopping.repository.market.MarketListingRepository;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
+import edu.sru.cpsc.webshopping.repository.widgets.CategoryRepository;
 import edu.sru.cpsc.webshopping.repository.widgets.WidgetGeneralRepository;
 import edu.sru.cpsc.webshopping.repository.widgets.WidgetRepository;
 import edu.sru.cpsc.webshopping.repository.widgets.appliances.ApplianceBlenderRepository;
@@ -93,6 +94,7 @@ public class AddWidgetController
 {
 
 	WidgetRepository widgetRepository;
+	CategoryRepository categoryRepository;
 	WidgetImageRepository widgetImageRepository;
 	ApplianceDryersRepository dryerRepository;
 	ApplianceMicrowaveRepository microwaveRepository;
@@ -140,11 +142,12 @@ public class AddWidgetController
 	Widget_General generalWidget;
 	Set<WidgetImage> listingImages = new HashSet<>();
 	CategoryController categories;
+	AttributeController attributes;
 	SubcategoryController subcategories;
 	FieldsController fields;
 	MarketListing marketListing;
 	private Widget widgetStorage;
-	private String category;
+	private Category category;
 	private String subcategory;
 	private WidgetImage tempImage = new WidgetImage();
 	private String page;
@@ -161,7 +164,7 @@ public class AddWidgetController
 		this.page = page;
 	}
 
-	public AddWidgetController(WidgetRepository widgetRepository, CategoryController categories, SubcategoryController subcategories, FieldsController fields, ApplianceDryersRepository dryerRepository, WidgetImageRepository widgetImageRepository,
+	public AddWidgetController(WidgetRepository widgetRepository, CategoryRepository categoryRepository, CategoryController categories, SubcategoryController subcategories, AttributeController attributes, FieldsController fields, ApplianceDryersRepository dryerRepository, WidgetImageRepository widgetImageRepository,
 			ApplianceMicrowaveRepository microwaveRepository, ApplianceRefrigeratorRepository fridgeRepository, 
 			ApplianceWashersRepository washerRepository, ApplianceBlenderRepository blenderRepository, ElectronicsComputersRepository computerRepository, 
 			ElectronicsVideoGamesRepository videoGameRepository, VehicleCarRepository carRepository, 
@@ -171,9 +174,11 @@ public class AddWidgetController
 			MarketListingDomainController marketListingController, UserRepository userRepo, LawnCareLawnMowerRepository mowerRepository, WidgetGeneralRepository generalRepository)
 	{
 		this.categories = categories;
+		this.attributes = attributes;
 		this.subcategories = subcategories;
 		this.fields = fields;
 		this.widgetRepository = widgetRepository;
+		this.categoryRepository = categoryRepository;
 		this.applianceRepository = applianceRepository;
 		this.electronicsRepository = electronicsRepository;
 		this.vehicleRepository = vehicleRepository;
@@ -216,46 +221,31 @@ public class AddWidgetController
 	}
 	
 	@RequestMapping("/createWidget")
-	public String createWidget(@RequestParam("category") String category, @RequestParam("subcategory") String subcategory, Model model)
+	public String createWidget(@RequestParam("category") Long categoryId, Model model)
 	{
+		Category category = categoryRepository.findById(categoryId)
+		        .orElseThrow(() -> new IllegalArgumentException("Invalid category ID"));
+		
 		this.category = category;
-		this.subcategory = subcategory;
-		
-		String temp = WordUtils.capitalize(subcategory, '_');
-		temp = temp.replace("_", "");
-		
-		String url = "redirect:add" + temp;
-		
-		model.addAttribute("subcategories", subcategories.getAllSubcategories());
+		model.addAttribute("category", category);
+		model.addAttribute("attributes", attributes.getAllAttributes());
 		model.addAttribute("user", userController.getCurrently_Logged_In());
 		
-		return url;
+		return "createWidgetTemplate";
 	}
 	
-	@RequestMapping("createCarParts")
-	public String createCarParts(Model model, @ModelAttribute Vehicle_Car_Parts carPart, BindingResult result)
-	{
-		model.addAttribute("name", carPart);
-		model.addAttribute("description", carPart);
-		carPart.setCategory(category);
-		carPart.setSubCategory(subcategory);
-		model.addAttribute("length", carPart);
-		model.addAttribute("width", carPart);
-		model.addAttribute("height", carPart);
-		model.addAttribute("color", carPart);
-		model.addAttribute("itemCondition", carPart);
-		model.addAttribute("model", carPart);
-		model.addAttribute("brand", carPart);
-		model.addAttribute("material", carPart);
-		model.addAttribute("year", carPart);
-		widgetController.addCarParts(carPart, result);
-		this.carPart = carPart;
-		widget = carPart;
-		model.addAttribute("createCarPart", true);
-		model.addAttribute("user", userController.getCurrently_Logged_In());
-		return "redirect:createListing";
-	}
 	
+	@RequestMapping("/createWidgetListing") public String createCarParts(Model model, @ModelAttribute Widget widget, BindingResult result) {
+		widget.setCategory(category); 
+		widgetController.addWidget(widget, result);
+		this.widget = widget;
+		model.addAttribute("createWidget", true);
+		model.addAttribute("Widget", widget);
+		model.addAttribute("user", userController.getCurrently_Logged_In()); 
+		return "redirect:createListing"; 
+	}
+
+
 	@RequestMapping("addCarParts")
 	public String addCarParts(Model model)
 	{
@@ -273,7 +263,7 @@ public class AddWidgetController
 		model.addAttribute("pricePerItem", marketListing.getPricePerItem());
 		model.addAttribute("qtyAvailable", marketListing.getQtyAvailable());
 		model.addAttribute("listing", marketListing);
-		model.addAttribute("subcategory", subcategory);
+		model.addAttribute("Category", category);
 		model.addAttribute("user", userController.getCurrently_Logged_In());
 		return "createListing";
 	}
@@ -952,391 +942,254 @@ public class AddWidgetController
 		widgets.parallelStream().forEach(widgetRepository::save);
 	}
 
-	@RequestMapping("createDryer")
-	public String createDryer(Model model, @ModelAttribute Appliance_Dryers dryer, BindingResult result)
-	{
-		model.addAttribute("name", dryer);
-		model.addAttribute("description", dryer);
-		dryer.setCategory(category);
-		dryer.setSubCategory(subcategory);
-		model.addAttribute("length", dryer);
-		model.addAttribute("width", dryer);
-		model.addAttribute("height", dryer);
-		model.addAttribute("color", dryer);
-		model.addAttribute("itemCondition", dryer);
-		model.addAttribute("model", dryer);
-		model.addAttribute("brand", dryer);
-		model.addAttribute("material", dryer);
-		widgetController.addDryer(dryer, result);
-		this.dryer = dryer;
-		widget = dryer;
-		model.addAttribute("createDryer", true);
-		model.addAttribute("user", userController.getCurrently_Logged_In());
-		return "redirect:createListing";
-	}
-
-	@RequestMapping("createMicrowave")
-	public String createMicrowave(Model model, @ModelAttribute Appliance_Microwave microwave, BindingResult result)
-	{
-		model.addAttribute("name", microwave);
-		model.addAttribute("description", microwave);
-		microwave.setCategory(category);
-		microwave.setSubCategory(subcategory);
-		model.addAttribute("length", microwave);
-		model.addAttribute("width", microwave);
-		model.addAttribute("height", microwave);
-		model.addAttribute("color", microwave);
-		model.addAttribute("itemCondition", microwave);
-		model.addAttribute("model", microwave);
-		model.addAttribute("brand", microwave);
-		model.addAttribute("material", microwave);
-		widgetController.addMicrowave(microwave, result);
-		this.microwave = microwave;
-		widget = microwave;
-		model.addAttribute("createMicrowave", true);
-		model.addAttribute("user", userController.getCurrently_Logged_In());
-		return "redirect:createListing";
-	}
-
-	@RequestMapping("createFridge")
-	public String createFridge(Model model, @ModelAttribute Appliance_Refrigerator fridge, BindingResult result)
-	{
-		model.addAttribute("name", fridge);
-		model.addAttribute("description", fridge);
-		fridge.setCategory(category);
-		fridge.setSubCategory(subcategory);
-		model.addAttribute("length", fridge);
-		model.addAttribute("width", fridge);
-		model.addAttribute("height", fridge);
-		model.addAttribute("color", fridge);
-		model.addAttribute("itemCondition", fridge);
-		model.addAttribute("model", fridge);
-		model.addAttribute("brand", fridge);
-		model.addAttribute("material", fridge);
-		widgetController.addRefrigerator(fridge, result);
-		this.refridgerator = fridge;
-		widget = fridge;
-		model.addAttribute("createFridge", true);
-		model.addAttribute("user", userController.getCurrently_Logged_In());
-		return "redirect:createListing";
-	}
-
-	@RequestMapping("createWasher")
-	public String createWasher(Model model, @ModelAttribute Appliance_Washers washer, BindingResult result)
-	{
-		model.addAttribute("name", washer);
-		model.addAttribute("description", washer);
-		washer.setCategory(category);
-		washer.setSubCategory(subcategory);
-		model.addAttribute("length", washer);
-		model.addAttribute("width", washer);
-		model.addAttribute("height", washer);
-		model.addAttribute("color", washer);
-		model.addAttribute("itemCondition", washer);
-		model.addAttribute("model", washer);
-		model.addAttribute("brand", washer);
-		model.addAttribute("material", washer);
-		widgetController.addWasher(washer, result);
-		this.washer = washer;
-		widget = washer;
-		model.addAttribute("createWasher", true);
-		model.addAttribute("user", userController.getCurrently_Logged_In());
-		return "redirect:createListing";
-	}
-
-	@RequestMapping("createBlender")
-	public String createBlender(Model model, @ModelAttribute Appliance_Blender blender, BindingResult result)
-	{
-		model.addAttribute("name", blender);
-		model.addAttribute("description", blender);
-		blender.setCategory(category);
-		blender.setSubCategory(subcategory);
-		model.addAttribute("length", blender);
-		model.addAttribute("width", blender);
-		model.addAttribute("height", blender);
-		model.addAttribute("color", blender);
-		model.addAttribute("itemCondition", blender);
-		model.addAttribute("model", blender);
-		model.addAttribute("brand", blender);
-		model.addAttribute("material", blender);
-		widgetController.addBlender(blender, result);
-		this.blender = blender;
-		widget = blender;
-		model.addAttribute("createBlender", true);
-		model.addAttribute("user", userController.getCurrently_Logged_In());
-		return "redirect:createListing";
-	}
-
-	@RequestMapping("createBlenderParts")
-	public String createBlenderParts(Model model, @ModelAttribute Appliance_Blender_Parts blenderPart, BindingResult result)
-	{
-		model.addAttribute("name", blenderPart);
-		model.addAttribute("description", blenderPart);
-		blenderPart.setCategory(category);
-		blenderPart.setSubCategory(subcategory);
-		model.addAttribute("length", blenderPart);
-		model.addAttribute("width", blenderPart);
-		model.addAttribute("height", blenderPart);
-		model.addAttribute("color", blenderPart);
-		model.addAttribute("itemCondition", blenderPart);
-		model.addAttribute("model", blenderPart);
-		model.addAttribute("brand", blenderPart);
-		model.addAttribute("material", blenderPart);
-		widgetController.addBlenderParts(blenderPart, result);
-		this.blenderPart = blenderPart;
-		widget = blenderPart;
-		model.addAttribute("createBlenderPart", true);
-		model.addAttribute("user", userController.getCurrently_Logged_In());
-		return "redirect:createListing";
-	}
-
-	@RequestMapping("createDryerParts")
-	public String createDryerParts(Model model, @ModelAttribute Appliance_Dryer_Parts dryerPart, BindingResult result)
-	{
-		model.addAttribute("name", dryerPart);
-		model.addAttribute("description", dryerPart);
-		dryerPart.setCategory(category);
-		dryerPart.setSubCategory(subcategory);
-		model.addAttribute("length", dryerPart);
-		model.addAttribute("width", dryerPart);
-		model.addAttribute("height", dryerPart);
-		model.addAttribute("color", dryerPart);
-		model.addAttribute("itemCondition", dryerPart);
-		model.addAttribute("model", dryerPart);
-		model.addAttribute("brand", dryerPart);
-		model.addAttribute("material", dryerPart);
-		widgetController.addDryerParts(dryerPart, result);
-		this.dryerPart = dryerPart;
-		widget = dryerPart;
-		model.addAttribute("createDryerPart", true);
-		model.addAttribute("user", userController.getCurrently_Logged_In());
-		return "redirect:createListing";
-	}
-
-	@RequestMapping("createMicrowaveParts")
-	public String createMicrowaveParts(Model model, @ModelAttribute Appliance_Microwave_Parts microwavePart, BindingResult result)
-	{
-		model.addAttribute("name", microwavePart);
-		model.addAttribute("description", microwavePart);
-		microwavePart.setCategory(category);
-		microwavePart.setSubCategory(subcategory);
-		model.addAttribute("length", microwavePart);
-		model.addAttribute("width", microwavePart);
-		model.addAttribute("height", microwavePart);
-		model.addAttribute("color", microwavePart);
-		model.addAttribute("itemCondition", microwavePart);
-		model.addAttribute("model", microwavePart);
-		model.addAttribute("brand", microwavePart);
-		model.addAttribute("material", microwavePart);
-		widgetController.addMicrowaveParts(microwavePart, result);
-		this.microwavePart = microwavePart;
-		widget = microwavePart;
-		model.addAttribute("createMicrowavePart", true);
-		model.addAttribute("user", userController.getCurrently_Logged_In());
-		return "redirect:createListing";
-	}
-
-	@RequestMapping("createRefrigeratorParts")
-	public String createRefrigeratorParts(Model model, @ModelAttribute Appliance_Refrigerator_Parts refrigeratorPart, BindingResult result)
-	{
-		model.addAttribute("name", refrigeratorPart);
-		model.addAttribute("description", refrigeratorPart);
-		refrigeratorPart.setCategory(category);
-		refrigeratorPart.setSubCategory(subcategory);
-		model.addAttribute("length", refrigeratorPart);
-		model.addAttribute("width", refrigeratorPart);
-		model.addAttribute("height", refrigeratorPart);
-		model.addAttribute("color", refrigeratorPart);
-		model.addAttribute("itemCondition", refrigeratorPart);
-		model.addAttribute("model", refrigeratorPart);
-		model.addAttribute("brand", refrigeratorPart);
-		model.addAttribute("material", refrigeratorPart);
-		widgetController.addRefrigeratorParts(refrigeratorPart, result);
-		this.refrigeratorPart = refrigeratorPart;
-		widget = refrigeratorPart;
-		model.addAttribute("createRefrigeratorPart", true);
-		model.addAttribute("user", userController.getCurrently_Logged_In());
-		return "redirect:createListing";
-	}
-
-	@RequestMapping("createWasherParts")
-	public String createWasherParts(Model model, @ModelAttribute Appliance_Washers_Parts washersPart, BindingResult result)
-	{
-		model.addAttribute("name", washersPart);
-		model.addAttribute("description", washersPart);
-		washersPart.setCategory(category);
-		washersPart.setSubCategory(subcategory);
-		model.addAttribute("length", washersPart);
-		model.addAttribute("width", washersPart);
-		model.addAttribute("height", washersPart);
-		model.addAttribute("color", washersPart);
-		model.addAttribute("itemCondition", washersPart);
-		model.addAttribute("model", washersPart);
-		model.addAttribute("brand", washersPart);
-		model.addAttribute("material", washersPart);
-		widgetController.addWasherParts(washersPart, result);
-		this.washerPart = washersPart;
-		widget = washersPart;
-		model.addAttribute("createRefrigeratorPart", true);
-		model.addAttribute("user", userController.getCurrently_Logged_In());
-		return "redirect:createListing";
-	}
-
-	@RequestMapping("createComputer")
-	public String createComputer(Model model, @RequestParam("storageSize") String storageSize, @ModelAttribute Electronics_Computers computer, BindingResult result)
-	{
-		model.addAttribute("name", computer);
-		model.addAttribute("description", computer);
-		computer.setCategory(category);
-		computer.setSubCategory(subcategory);
-		model.addAttribute("officeUse", computer);
-		model.addAttribute("entertainmentUse", computer);
-		model.addAttribute("memory", computer);
-		model.addAttribute("storage", computer);
-		computer.setStorage(computer.getStorage() + storageSize);
-		model.addAttribute("processor", computer);
-		model.addAttribute("gpu", computer);
-		widgetController.addComputer(computer, result);
-		this.computer = computer;
-		widget = computer;
-		model.addAttribute("createComputer", true);
-		model.addAttribute("user", userController.getCurrently_Logged_In());
-		return "redirect:createListing";
-	}
-
-	@RequestMapping("createComputerParts")
-	public String createComputerParts(Model model, @ModelAttribute Electronics_Computers_Parts computerPart, BindingResult result)
-	{
-		model.addAttribute("name", computerPart);
-		model.addAttribute("description", computerPart);
-		computerPart.setCategory(category);
-		computerPart.setSubCategory(subcategory);
-		model.addAttribute("length", computerPart);
-		model.addAttribute("width", computerPart);
-		model.addAttribute("height", computerPart);
-		model.addAttribute("color", computerPart);
-		model.addAttribute("itemCondition", computerPart);
-		model.addAttribute("model", computerPart);
-		model.addAttribute("brand", computerPart);
-		model.addAttribute("material", computerPart);
-		widgetController.addComputerParts(computerPart, result);
-		this.computerPart = computerPart;
-		widget = computerPart;
-		model.addAttribute("createComputerPart", true);
-		model.addAttribute("user", userController.getCurrently_Logged_In());
-		return "redirect:createListing";
-	}
-
-	@RequestMapping("createVideoGame")
-	public String createVideoGame(Model model, @ModelAttribute Electronics_VideoGames videoGame, BindingResult result)
-	{
-		model.addAttribute("name", videoGame);
-		model.addAttribute("description", videoGame);
-		videoGame.setCategory(category);
-		videoGame.setSubCategory(subcategory);
-		model.addAttribute("officeUse", videoGame);
-		model.addAttribute("entertainmentUse", videoGame);
-		model.addAttribute("developer", videoGame);
-		model.addAttribute("title", videoGame);
-		model.addAttribute("console", videoGame);
-		model.addAttribute("itemCondition", videoGame);
-		widgetController.addVideoGame(videoGame, result);
-		this.videoGame = videoGame;
-		widget = videoGame;
-		model.addAttribute("createVideoGame", true);
-		model.addAttribute("user", userController.getCurrently_Logged_In());
-		return "redirect:createListing";
-	}
-
-	@RequestMapping("createVideoGameParts")
-	public String createVideoGameParts(Model model, @ModelAttribute Electronics_VideoGames_Parts videoGamePart, BindingResult result)
-	{
-		model.addAttribute("name", videoGamePart);
-		model.addAttribute("description", videoGamePart);
-		videoGamePart.setCategory(category);
-		videoGamePart.setSubCategory(subcategory);
-		model.addAttribute("length", videoGamePart);
-		model.addAttribute("width", videoGamePart);
-		model.addAttribute("height", videoGamePart);
-		model.addAttribute("color", videoGamePart);
-		model.addAttribute("itemCondition", videoGamePart);
-		model.addAttribute("model", videoGamePart);
-		model.addAttribute("brand", videoGamePart);
-		model.addAttribute("material", videoGamePart);
-		widgetController.addVideoGameParts(videoGamePart, result);
-		this.videoGamePart = videoGamePart;
-		widget = videoGamePart;
-		model.addAttribute("createVideoGamePart", true);
-		model.addAttribute("user", userController.getCurrently_Logged_In());
-		return "redirect:createListing";
-	}
-
-	@RequestMapping("createLawnMower")
-	public String createLawnMower(Model model, @ModelAttribute LawnCare_LawnMower mower, BindingResult result)
-	{
-		model.addAttribute("name", mower);
-		model.addAttribute("description", mower);
-		mower.setCategory(category);
-		mower.setSubCategory(subcategory);
-		model.addAttribute("yardSize", mower);
-		model.addAttribute("toolType", mower);
-		model.addAttribute("brand", mower);
-		model.addAttribute("powerSource", mower);
-		model.addAttribute("bladeWidth", mower);
-		widgetController.addLawnMower(mower, result);
-		this.mower = mower;
-		widget = mower;
-		model.addAttribute("createLawnMower", true);
-		model.addAttribute("user", userController.getCurrently_Logged_In());
-		return "redirect:createListing";
-	}
-
-	@RequestMapping("createLawnMowerParts")
-	public String createLawnMowerParts(Model model, @ModelAttribute LawnCare_LawnMower_Parts mowerPart, BindingResult result)
-	{
-		model.addAttribute("name", mowerPart);
-		model.addAttribute("description", mowerPart);
-		mowerPart.setCategory(category);
-		mowerPart.setSubCategory(subcategory);
-		model.addAttribute("length", mowerPart);
-		model.addAttribute("width", mowerPart);
-		model.addAttribute("height", mowerPart);
-		model.addAttribute("color", mowerPart);
-		model.addAttribute("itemCondition", mowerPart);
-		model.addAttribute("model", mowerPart);
-		model.addAttribute("brand", mowerPart);
-		model.addAttribute("material", mowerPart);
-		widgetController.addLawnMowerParts(mowerPart, result);
-		this.mowerPart = mowerPart;
-		widget = mowerPart;
-		model.addAttribute("createLawnMowerPart", true);
-		model.addAttribute("user", userController.getCurrently_Logged_In());
-		return "redirect:createListing";
-	}
-
-	@RequestMapping("createCar")
-	public String createCar(Model model, @ModelAttribute Vehicle_Car car, BindingResult result)
-	{
-		model.addAttribute("name", car);
-		model.addAttribute("description", car);
-		car.setCategory(category);
-		car.setSubCategory(subcategory);
-		model.addAttribute("terrain", car);
-		model.addAttribute("roadSafe", car);
-		model.addAttribute("itemCondition", car);
-		model.addAttribute("wheelDrive", car);
-		model.addAttribute("transmisionType", car);
-		model.addAttribute("model", car);
-		model.addAttribute("make", car);
-		model.addAttribute("year", car);
-		widgetController.addCar(car, result);
-		this.car = car;
-		widget = car;
-
-		model.addAttribute("createCar", true);
-		model.addAttribute("user", userController.getCurrently_Logged_In());
-		return "redirect:createListing";
-	}
+	/*
+	 * @RequestMapping("createDryer") public String createDryer(Model
+	 * model, @ModelAttribute Appliance_Dryers dryer, BindingResult result) {
+	 * model.addAttribute("name", dryer); model.addAttribute("description", dryer);
+	 * dryer.setCategory(category); dryer.setSubCategory(subcategory);
+	 * model.addAttribute("length", dryer); model.addAttribute("width", dryer);
+	 * model.addAttribute("height", dryer); model.addAttribute("color", dryer);
+	 * model.addAttribute("itemCondition", dryer); model.addAttribute("model",
+	 * dryer); model.addAttribute("brand", dryer); model.addAttribute("material",
+	 * dryer); widgetController.addDryer(dryer, result); this.dryer = dryer; widget
+	 * = dryer; model.addAttribute("createDryer", true); model.addAttribute("user",
+	 * userController.getCurrently_Logged_In()); return "redirect:createListing"; }
+	 * 
+	 * @RequestMapping("createMicrowave") public String createMicrowave(Model
+	 * model, @ModelAttribute Appliance_Microwave microwave, BindingResult result) {
+	 * model.addAttribute("name", microwave); model.addAttribute("description",
+	 * microwave); microwave.setCategory(category);
+	 * microwave.setSubCategory(subcategory); model.addAttribute("length",
+	 * microwave); model.addAttribute("width", microwave);
+	 * model.addAttribute("height", microwave); model.addAttribute("color",
+	 * microwave); model.addAttribute("itemCondition", microwave);
+	 * model.addAttribute("model", microwave); model.addAttribute("brand",
+	 * microwave); model.addAttribute("material", microwave);
+	 * widgetController.addMicrowave(microwave, result); this.microwave = microwave;
+	 * widget = microwave; model.addAttribute("createMicrowave", true);
+	 * model.addAttribute("user", userController.getCurrently_Logged_In()); return
+	 * "redirect:createListing"; }
+	 * 
+	 * @RequestMapping("createFridge") public String createFridge(Model
+	 * model, @ModelAttribute Appliance_Refrigerator fridge, BindingResult result) {
+	 * model.addAttribute("name", fridge); model.addAttribute("description",
+	 * fridge); fridge.setCategory(category); fridge.setSubCategory(subcategory);
+	 * model.addAttribute("length", fridge); model.addAttribute("width", fridge);
+	 * model.addAttribute("height", fridge); model.addAttribute("color", fridge);
+	 * model.addAttribute("itemCondition", fridge); model.addAttribute("model",
+	 * fridge); model.addAttribute("brand", fridge); model.addAttribute("material",
+	 * fridge); widgetController.addRefrigerator(fridge, result); this.refridgerator
+	 * = fridge; widget = fridge; model.addAttribute("createFridge", true);
+	 * model.addAttribute("user", userController.getCurrently_Logged_In()); return
+	 * "redirect:createListing"; }
+	 * 
+	 * @RequestMapping("createWasher") public String createWasher(Model
+	 * model, @ModelAttribute Appliance_Washers washer, BindingResult result) {
+	 * model.addAttribute("name", washer); model.addAttribute("description",
+	 * washer); washer.setCategory(category); washer.setSubCategory(subcategory);
+	 * model.addAttribute("length", washer); model.addAttribute("width", washer);
+	 * model.addAttribute("height", washer); model.addAttribute("color", washer);
+	 * model.addAttribute("itemCondition", washer); model.addAttribute("model",
+	 * washer); model.addAttribute("brand", washer); model.addAttribute("material",
+	 * washer); widgetController.addWasher(washer, result); this.washer = washer;
+	 * widget = washer; model.addAttribute("createWasher", true);
+	 * model.addAttribute("user", userController.getCurrently_Logged_In()); return
+	 * "redirect:createListing"; }
+	 * 
+	 * @RequestMapping("createBlender") public String createBlender(Model
+	 * model, @ModelAttribute Appliance_Blender blender, BindingResult result) {
+	 * model.addAttribute("name", blender); model.addAttribute("description",
+	 * blender); blender.setCategory(category); blender.setSubCategory(subcategory);
+	 * model.addAttribute("length", blender); model.addAttribute("width", blender);
+	 * model.addAttribute("height", blender); model.addAttribute("color", blender);
+	 * model.addAttribute("itemCondition", blender); model.addAttribute("model",
+	 * blender); model.addAttribute("brand", blender);
+	 * model.addAttribute("material", blender); widgetController.addBlender(blender,
+	 * result); this.blender = blender; widget = blender;
+	 * model.addAttribute("createBlender", true); model.addAttribute("user",
+	 * userController.getCurrently_Logged_In()); return "redirect:createListing"; }
+	 * 
+	 * @RequestMapping("createBlenderParts") public String createBlenderParts(Model
+	 * model, @ModelAttribute Appliance_Blender_Parts blenderPart, BindingResult
+	 * result) { model.addAttribute("name", blenderPart);
+	 * model.addAttribute("description", blenderPart);
+	 * blenderPart.setCategory(category); blenderPart.setSubCategory(subcategory);
+	 * model.addAttribute("length", blenderPart); model.addAttribute("width",
+	 * blenderPart); model.addAttribute("height", blenderPart);
+	 * model.addAttribute("color", blenderPart); model.addAttribute("itemCondition",
+	 * blenderPart); model.addAttribute("model", blenderPart);
+	 * model.addAttribute("brand", blenderPart); model.addAttribute("material",
+	 * blenderPart); widgetController.addBlenderParts(blenderPart, result);
+	 * this.blenderPart = blenderPart; widget = blenderPart;
+	 * model.addAttribute("createBlenderPart", true); model.addAttribute("user",
+	 * userController.getCurrently_Logged_In()); return "redirect:createListing"; }
+	 * 
+	 * @RequestMapping("createDryerParts") public String createDryerParts(Model
+	 * model, @ModelAttribute Appliance_Dryer_Parts dryerPart, BindingResult result)
+	 * { model.addAttribute("name", dryerPart); model.addAttribute("description",
+	 * dryerPart); dryerPart.setCategory(category);
+	 * dryerPart.setSubCategory(subcategory); model.addAttribute("length",
+	 * dryerPart); model.addAttribute("width", dryerPart);
+	 * model.addAttribute("height", dryerPart); model.addAttribute("color",
+	 * dryerPart); model.addAttribute("itemCondition", dryerPart);
+	 * model.addAttribute("model", dryerPart); model.addAttribute("brand",
+	 * dryerPart); model.addAttribute("material", dryerPart);
+	 * widgetController.addDryerParts(dryerPart, result); this.dryerPart =
+	 * dryerPart; widget = dryerPart; model.addAttribute("createDryerPart", true);
+	 * model.addAttribute("user", userController.getCurrently_Logged_In()); return
+	 * "redirect:createListing"; }
+	 * 
+	 * @RequestMapping("createMicrowaveParts") public String
+	 * createMicrowaveParts(Model model, @ModelAttribute Appliance_Microwave_Parts
+	 * microwavePart, BindingResult result) { model.addAttribute("name",
+	 * microwavePart); model.addAttribute("description", microwavePart);
+	 * microwavePart.setCategory(category);
+	 * microwavePart.setSubCategory(subcategory); model.addAttribute("length",
+	 * microwavePart); model.addAttribute("width", microwavePart);
+	 * model.addAttribute("height", microwavePart); model.addAttribute("color",
+	 * microwavePart); model.addAttribute("itemCondition", microwavePart);
+	 * model.addAttribute("model", microwavePart); model.addAttribute("brand",
+	 * microwavePart); model.addAttribute("material", microwavePart);
+	 * widgetController.addMicrowaveParts(microwavePart, result); this.microwavePart
+	 * = microwavePart; widget = microwavePart;
+	 * model.addAttribute("createMicrowavePart", true); model.addAttribute("user",
+	 * userController.getCurrently_Logged_In()); return "redirect:createListing"; }
+	 * 
+	 * @RequestMapping("createRefrigeratorParts") public String
+	 * createRefrigeratorParts(Model model, @ModelAttribute
+	 * Appliance_Refrigerator_Parts refrigeratorPart, BindingResult result) {
+	 * model.addAttribute("name", refrigeratorPart);
+	 * model.addAttribute("description", refrigeratorPart);
+	 * refrigeratorPart.setCategory(category);
+	 * refrigeratorPart.setSubCategory(subcategory); model.addAttribute("length",
+	 * refrigeratorPart); model.addAttribute("width", refrigeratorPart);
+	 * model.addAttribute("height", refrigeratorPart); model.addAttribute("color",
+	 * refrigeratorPart); model.addAttribute("itemCondition", refrigeratorPart);
+	 * model.addAttribute("model", refrigeratorPart); model.addAttribute("brand",
+	 * refrigeratorPart); model.addAttribute("material", refrigeratorPart);
+	 * widgetController.addRefrigeratorParts(refrigeratorPart, result);
+	 * this.refrigeratorPart = refrigeratorPart; widget = refrigeratorPart;
+	 * model.addAttribute("createRefrigeratorPart", true);
+	 * model.addAttribute("user", userController.getCurrently_Logged_In()); return
+	 * "redirect:createListing"; }
+	 * 
+	 * @RequestMapping("createWasherParts") public String createWasherParts(Model
+	 * model, @ModelAttribute Appliance_Washers_Parts washersPart, BindingResult
+	 * result) { model.addAttribute("name", washersPart);
+	 * model.addAttribute("description", washersPart);
+	 * washersPart.setCategory(category); washersPart.setSubCategory(subcategory);
+	 * model.addAttribute("length", washersPart); model.addAttribute("width",
+	 * washersPart); model.addAttribute("height", washersPart);
+	 * model.addAttribute("color", washersPart); model.addAttribute("itemCondition",
+	 * washersPart); model.addAttribute("model", washersPart);
+	 * model.addAttribute("brand", washersPart); model.addAttribute("material",
+	 * washersPart); widgetController.addWasherParts(washersPart, result);
+	 * this.washerPart = washersPart; widget = washersPart;
+	 * model.addAttribute("createRefrigeratorPart", true);
+	 * model.addAttribute("user", userController.getCurrently_Logged_In()); return
+	 * "redirect:createListing"; }
+	 * 
+	 * @RequestMapping("createComputer") public String createComputer(Model
+	 * model, @RequestParam("storageSize") String storageSize, @ModelAttribute
+	 * Electronics_Computers computer, BindingResult result) {
+	 * model.addAttribute("name", computer); model.addAttribute("description",
+	 * computer); computer.setCategory(category);
+	 * computer.setSubCategory(subcategory); model.addAttribute("officeUse",
+	 * computer); model.addAttribute("entertainmentUse", computer);
+	 * model.addAttribute("memory", computer); model.addAttribute("storage",
+	 * computer); computer.setStorage(computer.getStorage() + storageSize);
+	 * model.addAttribute("processor", computer); model.addAttribute("gpu",
+	 * computer); widgetController.addComputer(computer, result); this.computer =
+	 * computer; widget = computer; model.addAttribute("createComputer", true);
+	 * model.addAttribute("user", userController.getCurrently_Logged_In()); return
+	 * "redirect:createListing"; }
+	 * 
+	 * @RequestMapping("createComputerParts") public String
+	 * createComputerParts(Model model, @ModelAttribute Electronics_Computers_Parts
+	 * computerPart, BindingResult result) { model.addAttribute("name",
+	 * computerPart); model.addAttribute("description", computerPart);
+	 * computerPart.setCategory(category); computerPart.setSubCategory(subcategory);
+	 * model.addAttribute("length", computerPart); model.addAttribute("width",
+	 * computerPart); model.addAttribute("height", computerPart);
+	 * model.addAttribute("color", computerPart);
+	 * model.addAttribute("itemCondition", computerPart);
+	 * model.addAttribute("model", computerPart); model.addAttribute("brand",
+	 * computerPart); model.addAttribute("material", computerPart);
+	 * widgetController.addComputerParts(computerPart, result); this.computerPart =
+	 * computerPart; widget = computerPart; model.addAttribute("createComputerPart",
+	 * true); model.addAttribute("user", userController.getCurrently_Logged_In());
+	 * return "redirect:createListing"; }
+	 * 
+	 * @RequestMapping("createVideoGame") public String createVideoGame(Model
+	 * model, @ModelAttribute Electronics_VideoGames videoGame, BindingResult
+	 * result) { model.addAttribute("name", videoGame);
+	 * model.addAttribute("description", videoGame);
+	 * videoGame.setCategory(category); videoGame.setSubCategory(subcategory);
+	 * model.addAttribute("officeUse", videoGame);
+	 * model.addAttribute("entertainmentUse", videoGame);
+	 * model.addAttribute("developer", videoGame); model.addAttribute("title",
+	 * videoGame); model.addAttribute("console", videoGame);
+	 * model.addAttribute("itemCondition", videoGame);
+	 * widgetController.addVideoGame(videoGame, result); this.videoGame = videoGame;
+	 * widget = videoGame; model.addAttribute("createVideoGame", true);
+	 * model.addAttribute("user", userController.getCurrently_Logged_In()); return
+	 * "redirect:createListing"; }
+	 * 
+	 * @RequestMapping("createVideoGameParts") public String
+	 * createVideoGameParts(Model model, @ModelAttribute
+	 * Electronics_VideoGames_Parts videoGamePart, BindingResult result) {
+	 * model.addAttribute("name", videoGamePart); model.addAttribute("description",
+	 * videoGamePart); videoGamePart.setCategory(category);
+	 * videoGamePart.setSubCategory(subcategory); model.addAttribute("length",
+	 * videoGamePart); model.addAttribute("width", videoGamePart);
+	 * model.addAttribute("height", videoGamePart); model.addAttribute("color",
+	 * videoGamePart); model.addAttribute("itemCondition", videoGamePart);
+	 * model.addAttribute("model", videoGamePart); model.addAttribute("brand",
+	 * videoGamePart); model.addAttribute("material", videoGamePart);
+	 * widgetController.addVideoGameParts(videoGamePart, result); this.videoGamePart
+	 * = videoGamePart; widget = videoGamePart;
+	 * model.addAttribute("createVideoGamePart", true); model.addAttribute("user",
+	 * userController.getCurrently_Logged_In()); return "redirect:createListing"; }
+	 * 
+	 * @RequestMapping("createLawnMower") public String createLawnMower(Model
+	 * model, @ModelAttribute LawnCare_LawnMower mower, BindingResult result) {
+	 * model.addAttribute("name", mower); model.addAttribute("description", mower);
+	 * mower.setCategory(category); mower.setSubCategory(subcategory);
+	 * model.addAttribute("yardSize", mower); model.addAttribute("toolType", mower);
+	 * model.addAttribute("brand", mower); model.addAttribute("powerSource", mower);
+	 * model.addAttribute("bladeWidth", mower); widgetController.addLawnMower(mower,
+	 * result); this.mower = mower; widget = mower;
+	 * model.addAttribute("createLawnMower", true); model.addAttribute("user",
+	 * userController.getCurrently_Logged_In()); return "redirect:createListing"; }
+	 * 
+	 * @RequestMapping("createLawnMowerParts") public String
+	 * createLawnMowerParts(Model model, @ModelAttribute LawnCare_LawnMower_Parts
+	 * mowerPart, BindingResult result) { model.addAttribute("name", mowerPart);
+	 * model.addAttribute("description", mowerPart);
+	 * mowerPart.setCategory(category); mowerPart.setSubCategory(subcategory);
+	 * model.addAttribute("length", mowerPart); model.addAttribute("width",
+	 * mowerPart); model.addAttribute("height", mowerPart);
+	 * model.addAttribute("color", mowerPart); model.addAttribute("itemCondition",
+	 * mowerPart); model.addAttribute("model", mowerPart);
+	 * model.addAttribute("brand", mowerPart); model.addAttribute("material",
+	 * mowerPart); widgetController.addLawnMowerParts(mowerPart, result);
+	 * this.mowerPart = mowerPart; widget = mowerPart;
+	 * model.addAttribute("createLawnMowerPart", true); model.addAttribute("user",
+	 * userController.getCurrently_Logged_In()); return "redirect:createListing"; }
+	 * 
+	 * @RequestMapping("createCar") public String createCar(Model
+	 * model, @ModelAttribute Vehicle_Car car, BindingResult result) {
+	 * model.addAttribute("name", car); model.addAttribute("description", car);
+	 * car.setCategory(category); car.setSubCategory(subcategory);
+	 * model.addAttribute("terrain", car); model.addAttribute("roadSafe", car);
+	 * model.addAttribute("itemCondition", car); model.addAttribute("wheelDrive",
+	 * car); model.addAttribute("transmisionType", car); model.addAttribute("model",
+	 * car); model.addAttribute("make", car); model.addAttribute("year", car);
+	 * widgetController.addCar(car, result); this.car = car; widget = car;
+	 * 
+	 * model.addAttribute("createCar", true); model.addAttribute("user",
+	 * userController.getCurrently_Logged_In()); return "redirect:createListing"; }
+	 */
 	
 	public Widget getWidgetStorage()
 	{

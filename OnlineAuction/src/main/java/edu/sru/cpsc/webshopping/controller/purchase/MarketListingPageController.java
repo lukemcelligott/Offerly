@@ -114,126 +114,116 @@ public class MarketListingPageController {
   /** Reloads the page model data */
   public void reloadModel(Model model) {
     tempWidget = heldListing.getWidgetSold();
-    if (tempWidget.getCategory().contentEquals("appliance")) {
-      Widget_Appliance appliance = widgetController.getAppliance(tempWidget.getId());
-      model.addAttribute("appliance", appliance);
-      if (tempWidget.getSubCategory().contentEquals("washer")) {
-        Appliance_Washers washer = widgetController.getWasher(tempWidget.getId());
-        model.addAttribute("washer", washer);
-      }
-      if (tempWidget.getSubCategory().contentEquals("dryer")) {
-        Appliance_Dryers dryer = widgetController.getDryer(tempWidget.getId());
-        model.addAttribute("dryer", dryer);
-      }
-      if (tempWidget.getSubCategory().contentEquals("fridge")) {
-        Appliance_Refrigerator fridge = widgetController.getRefrigerator(tempWidget.getId());
-        model.addAttribute("fridge", fridge);
-      }
-      if (tempWidget.getSubCategory().contentEquals("microwave")) {
-        Appliance_Microwave microwave = widgetController.getMicrowave(tempWidget.getId());
-        model.addAttribute("microwave", microwave);
-      }
-      if (tempWidget.getSubCategory().contentEquals("blender")) {
-          Appliance_Blender blender = widgetController.getBlender(tempWidget.getId());
-          model.addAttribute("blender", blender);
-        }
-    }
-
-    if (tempWidget.getCategory().contentEquals("appliance_parts")) {
-      Widget_Appliance_Parts applianceParts =
-          widgetController.getApplianceParts(tempWidget.getId());
-      model.addAttribute("appliance_parts", applianceParts);
-      if (tempWidget.getSubCategory().contentEquals("washer_parts")) {
-        Appliance_Washers_Parts washerPart = widgetController.getWasherParts(tempWidget.getId());
-        model.addAttribute("washer_parts", washerPart);
-      }
-      if (tempWidget.getSubCategory().contentEquals("dryer_parts")) {
-        Appliance_Dryer_Parts dryerPart = widgetController.getDryerParts(tempWidget.getId());
-        model.addAttribute("dryer_parts", dryerPart);
-      }
-      if (tempWidget.getSubCategory().contentEquals("refrigerator_parts")) {
-        Appliance_Refrigerator_Parts refrigeratorPart = widgetController.getRefrigeratorParts(tempWidget.getId());
-        model.addAttribute("refrigerator_parts", refrigeratorPart);
-      }
-      if (tempWidget.getSubCategory().contentEquals("microwave_parts")) {
-        Appliance_Microwave_Parts microwavePart = widgetController.getMicrowaveParts(tempWidget.getId());
-        model.addAttribute("microwave_parts", microwavePart);
-      }
-      if (tempWidget.getSubCategory().contentEquals("blender_parts")) {
-        Appliance_Blender_Parts blenderPart = widgetController.getBlenderParts(tempWidget.getId());
-        model.addAttribute("blender_parts", blenderPart);
-      }
-    }
-
-    if (tempWidget.getCategory().contentEquals("electronic")) {
-      Widget_Electronics electronic = widgetController.getElectronic(tempWidget.getId());
-      System.out.println(electronic.getName());
-      model.addAttribute("electronic", electronic);
-      if (tempWidget.getSubCategory().contentEquals("videoGame")) {
-        Electronics_VideoGames videoGame = widgetController.getVideoGame(tempWidget.getId());
-        model.addAttribute("videoGame", videoGame);
-      }
-      if (tempWidget.getSubCategory().contentEquals("computer")) {
-        Electronics_Computers computer = widgetController.getComputer(tempWidget.getId());
-        System.out.println(computer.getName());
-        model.addAttribute("computer", computer);
-      }
-    }
-
-    if (tempWidget.getCategory().contentEquals("electronic_parts")) {
-      Widget_Electronics_Parts electronicPart = widgetController.getElectronicParts(tempWidget.getId());
-      System.out.println(electronicPart.getName());
-      model.addAttribute("electronic_parts", electronicPart);
-      if (tempWidget.getSubCategory().contentEquals("videoGame_parts")) {
-        Electronics_VideoGames_Parts videoGamePart = widgetController.getVideoGameParts(tempWidget.getId());
-        System.out.println(videoGamePart.getMaterial() + " I AM REAL");
-        model.addAttribute("videoGame_parts", videoGamePart);
-      }
-      if (tempWidget.getSubCategory().contentEquals("computer_parts")) {
-        Electronics_Computers_Parts computerPart = widgetController.getComputerParts(tempWidget.getId());
-        System.out.println(computerPart.getName());
-        model.addAttribute("computer_parts", computerPart);
-      }
-    }
-
-    if (tempWidget.getCategory().contentEquals("vehicle")) {
-      Widget_Vehicles vehicle = widgetController.getVehicle(tempWidget.getId());
-      model.addAttribute("vehicle", vehicle);
-      if (tempWidget.getSubCategory().contentEquals("car")) {
-        Vehicle_Car car = widgetController.getCar(tempWidget.getId());
-        model.addAttribute("car", car);
-      }
-    }
-
-    if (tempWidget.getCategory().contentEquals("vehicle_parts")) {
-      Widget_Vehicles_Parts vehiclePart = widgetController.getVehicleParts(tempWidget.getId());
-      model.addAttribute("vehicle_parts", vehiclePart);
-      if (tempWidget.getSubCategory().contentEquals("car_parts")) {
-        Vehicle_Car_Parts carPart = widgetController.getCarParts(tempWidget.getId());
-        model.addAttribute("car_parts", carPart);
-      }
-    }
-
-    if (tempWidget.getCategory().contentEquals("lawnCare")) {
-      Widget_LawnCare lawnCare = widgetController.getLawnCare(tempWidget.getId());
-      model.addAttribute("lawnCare", lawnCare);
-      if (tempWidget.getSubCategory().contentEquals("lawnMower")) {
-        LawnCare_LawnMower mower = widgetController.getMower(tempWidget.getId());
-        model.addAttribute("mower", mower);
-      }
-    }
-
-    if (tempWidget.getCategory().contentEquals("lawnCare_parts")) {
-      Widget_LawnCare_Parts lawnCarePart = widgetController.getLawnCareParts(tempWidget.getId());
-      model.addAttribute("lawnCare_parts", lawnCarePart);
-      if (tempWidget.getSubCategory().contentEquals("mower_parts")) {
-        LawnCare_LawnMower_Parts mowerPart = widgetController.getMowerParts(tempWidget.getId());
-        model.addAttribute("mower_parts", mowerPart);
-      }
-    }
-
+	/*
+	 * if (tempWidget.getCategory().contentEquals("appliance")) { Widget_Appliance
+	 * appliance = widgetController.getAppliance(tempWidget.getId());
+	 * model.addAttribute("appliance", appliance); if
+	 * (tempWidget.getSubCategory().contentEquals("washer")) { Appliance_Washers
+	 * washer = widgetController.getWasher(tempWidget.getId());
+	 * model.addAttribute("washer", washer); } if
+	 * (tempWidget.getSubCategory().contentEquals("dryer")) { Appliance_Dryers dryer
+	 * = widgetController.getDryer(tempWidget.getId()); model.addAttribute("dryer",
+	 * dryer); } if (tempWidget.getSubCategory().contentEquals("fridge")) {
+	 * Appliance_Refrigerator fridge =
+	 * widgetController.getRefrigerator(tempWidget.getId());
+	 * model.addAttribute("fridge", fridge); } if
+	 * (tempWidget.getSubCategory().contentEquals("microwave")) {
+	 * Appliance_Microwave microwave =
+	 * widgetController.getMicrowave(tempWidget.getId());
+	 * model.addAttribute("microwave", microwave); } if
+	 * (tempWidget.getSubCategory().contentEquals("blender")) { Appliance_Blender
+	 * blender = widgetController.getBlender(tempWidget.getId());
+	 * model.addAttribute("blender", blender); } }
+	 * 
+	 * if (tempWidget.getCategory().contentEquals("appliance_parts")) {
+	 * Widget_Appliance_Parts applianceParts =
+	 * widgetController.getApplianceParts(tempWidget.getId());
+	 * model.addAttribute("appliance_parts", applianceParts); if
+	 * (tempWidget.getSubCategory().contentEquals("washer_parts")) {
+	 * Appliance_Washers_Parts washerPart =
+	 * widgetController.getWasherParts(tempWidget.getId());
+	 * model.addAttribute("washer_parts", washerPart); } if
+	 * (tempWidget.getSubCategory().contentEquals("dryer_parts")) {
+	 * Appliance_Dryer_Parts dryerPart =
+	 * widgetController.getDryerParts(tempWidget.getId());
+	 * model.addAttribute("dryer_parts", dryerPart); } if
+	 * (tempWidget.getSubCategory().contentEquals("refrigerator_parts")) {
+	 * Appliance_Refrigerator_Parts refrigeratorPart =
+	 * widgetController.getRefrigeratorParts(tempWidget.getId());
+	 * model.addAttribute("refrigerator_parts", refrigeratorPart); } if
+	 * (tempWidget.getSubCategory().contentEquals("microwave_parts")) {
+	 * Appliance_Microwave_Parts microwavePart =
+	 * widgetController.getMicrowaveParts(tempWidget.getId());
+	 * model.addAttribute("microwave_parts", microwavePart); } if
+	 * (tempWidget.getSubCategory().contentEquals("blender_parts")) {
+	 * Appliance_Blender_Parts blenderPart =
+	 * widgetController.getBlenderParts(tempWidget.getId());
+	 * model.addAttribute("blender_parts", blenderPart); } }
+	 * 
+	 * if (tempWidget.getCategory().contentEquals("electronic")) {
+	 * Widget_Electronics electronic =
+	 * widgetController.getElectronic(tempWidget.getId());
+	 * System.out.println(electronic.getName()); model.addAttribute("electronic",
+	 * electronic); if (tempWidget.getSubCategory().contentEquals("videoGame")) {
+	 * Electronics_VideoGames videoGame =
+	 * widgetController.getVideoGame(tempWidget.getId());
+	 * model.addAttribute("videoGame", videoGame); } if
+	 * (tempWidget.getSubCategory().contentEquals("computer")) {
+	 * Electronics_Computers computer =
+	 * widgetController.getComputer(tempWidget.getId());
+	 * System.out.println(computer.getName()); model.addAttribute("computer",
+	 * computer); } }
+	 * 
+	 * if (tempWidget.getCategory().contentEquals("electronic_parts")) {
+	 * Widget_Electronics_Parts electronicPart =
+	 * widgetController.getElectronicParts(tempWidget.getId());
+	 * System.out.println(electronicPart.getName());
+	 * model.addAttribute("electronic_parts", electronicPart); if
+	 * (tempWidget.getSubCategory().contentEquals("videoGame_parts")) {
+	 * Electronics_VideoGames_Parts videoGamePart =
+	 * widgetController.getVideoGameParts(tempWidget.getId());
+	 * System.out.println(videoGamePart.getMaterial() + " I AM REAL");
+	 * model.addAttribute("videoGame_parts", videoGamePart); } if
+	 * (tempWidget.getSubCategory().contentEquals("computer_parts")) {
+	 * Electronics_Computers_Parts computerPart =
+	 * widgetController.getComputerParts(tempWidget.getId());
+	 * System.out.println(computerPart.getName());
+	 * model.addAttribute("computer_parts", computerPart); } }
+	 * 
+	 * if (tempWidget.getCategory().contentEquals("vehicle")) { Widget_Vehicles
+	 * vehicle = widgetController.getVehicle(tempWidget.getId());
+	 * model.addAttribute("vehicle", vehicle); if
+	 * (tempWidget.getSubCategory().contentEquals("car")) { Vehicle_Car car =
+	 * widgetController.getCar(tempWidget.getId()); model.addAttribute("car", car);
+	 * } }
+	 * 
+	 * if (tempWidget.getCategory().contentEquals("vehicle_parts")) {
+	 * Widget_Vehicles_Parts vehiclePart =
+	 * widgetController.getVehicleParts(tempWidget.getId());
+	 * model.addAttribute("vehicle_parts", vehiclePart); if
+	 * (tempWidget.getSubCategory().contentEquals("car_parts")) { Vehicle_Car_Parts
+	 * carPart = widgetController.getCarParts(tempWidget.getId());
+	 * model.addAttribute("car_parts", carPart); } }
+	 * 
+	 * if (tempWidget.getCategory().contentEquals("lawnCare")) { Widget_LawnCare
+	 * lawnCare = widgetController.getLawnCare(tempWidget.getId());
+	 * model.addAttribute("lawnCare", lawnCare); if
+	 * (tempWidget.getSubCategory().contentEquals("lawnMower")) { LawnCare_LawnMower
+	 * mower = widgetController.getMower(tempWidget.getId());
+	 * model.addAttribute("mower", mower); } }
+	 * 
+	 * if (tempWidget.getCategory().contentEquals("lawnCare_parts")) {
+	 * Widget_LawnCare_Parts lawnCarePart =
+	 * widgetController.getLawnCareParts(tempWidget.getId());
+	 * model.addAttribute("lawnCare_parts", lawnCarePart); if
+	 * (tempWidget.getSubCategory().contentEquals("mower_parts")) {
+	 * LawnCare_LawnMower_Parts mowerPart =
+	 * widgetController.getMowerParts(tempWidget.getId());
+	 * model.addAttribute("mower_parts", mowerPart); } }
+	 */
     model.addAttribute("currListing", heldListing);
     model.addAttribute("widget", heldListing.getWidgetSold());
+    model.addAttribute("category", heldListing.getWidgetSold().getCategory());
 
     // Check if User is the owner of the market listing
     User user = userController.getCurrently_Logged_In();

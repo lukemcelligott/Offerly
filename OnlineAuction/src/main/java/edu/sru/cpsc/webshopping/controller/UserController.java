@@ -33,7 +33,7 @@ import edu.sru.cpsc.webshopping.domain.billing.Paypal;
 import edu.sru.cpsc.webshopping.domain.user.Message;
 import edu.sru.cpsc.webshopping.domain.user.SellerRating;
 import edu.sru.cpsc.webshopping.domain.user.Statistics;
-import edu.sru.cpsc.webshopping.domain.user.Statistics.Category;
+import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
@@ -301,7 +301,7 @@ public class UserController {
 		}
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
 		user.setPasswordconf(util.randomStringGenerator());
-		Statistics stats = new Statistics(Category.ACCOUNTCREATION,1);
+		Statistics stats = new Statistics(StatsCategory.ACCOUNTCREATION,1);
 		stats.setDescription("Account with username: " + user.getUsername() + " was created");
 		statControl.addStatistics(stats);
 		return userRepository.save(user);
@@ -332,7 +332,7 @@ public class UserController {
 	@PostMapping("/delete-user/{id}")
 	public void deleteUser(@PathVariable("id") long id, Model model) {
 		User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid ID passed to delete a User"));
-		Statistics stats = new Statistics(Category.ACCOUNTDELETED,1);
+		Statistics stats = new Statistics(StatsCategory.ACCOUNTDELETED,1);
 		stats.setDescription("Account with username: " + user.getUsername() + " was deleted");
 		statControl.addStatistics(stats);
 		userRepository.delete(user);

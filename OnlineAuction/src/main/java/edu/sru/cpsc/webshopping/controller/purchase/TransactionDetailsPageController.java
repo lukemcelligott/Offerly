@@ -73,68 +73,7 @@ public class TransactionDetailsPageController {
 	
 	private void reloadModel(Model model) {
 		Widget tempWidget = trans.getMarketListing().getWidgetSold();
-		if(tempWidget.getCategory().contentEquals("appliance"))
-		{
-			Widget_Appliance appliance = widgetController.getAppliance(tempWidget.getId());
-			model.addAttribute("appliance", appliance);
-			if(tempWidget.getSubCategory().contentEquals("washer"))
-			{
-				Appliance_Washers washer = widgetController.getWasher(tempWidget.getId());
-				model.addAttribute("washer", washer);
-			}
-			if(tempWidget.getSubCategory().contentEquals("dryer"))
-			{
-				Appliance_Dryers dryer = widgetController.getDryer(tempWidget.getId());
-				model.addAttribute("dryer", dryer);
-			}
-			if(tempWidget.getSubCategory().contentEquals("fridge"))
-			{
-				Appliance_Refrigerator fridge = widgetController.getRefrigerator(tempWidget.getId());
-				model.addAttribute("fridge", fridge);
-			}
-			if(tempWidget.getSubCategory().contentEquals("microwave"))
-			{
-				Appliance_Microwave microwave = widgetController.getMicrowave(tempWidget.getId());
-				model.addAttribute("microwave", microwave);
-			}
-		}
-		if(tempWidget.getCategory().contentEquals("electronic"))
-		{
-			Widget_Electronics electronic = widgetController.getElectronic(tempWidget.getId());
-			System.out.println(electronic.getName());
-			model.addAttribute("electronic", electronic);
-			if(tempWidget.getSubCategory().contentEquals("videoGame"))
-			{
-				Electronics_VideoGames videoGame = widgetController.getVideoGame(tempWidget.getId());
-				model.addAttribute("videoGame", videoGame);
-			}
-			if(tempWidget.getSubCategory().contentEquals("computer"))
-			{
-				Electronics_Computers computer = widgetController.getComputer(tempWidget.getId());
-				System.out.println(computer.getName());
-				model.addAttribute("computer", computer);
-			}
-		}
-		if(tempWidget.getCategory().contentEquals("vehicle"))
-		{
-			Widget_Vehicles vehicle = widgetController.getVehicle(tempWidget.getId());
-			model.addAttribute("vehicle", vehicle);
-			if(tempWidget.getSubCategory().contentEquals("car"))
-			{
-				Vehicle_Car car = widgetController.getCar(tempWidget.getId());
-				model.addAttribute("car", car);
-			}
-		}
-		if(tempWidget.getCategory().contentEquals("lawnCare"))
-		{
-			Widget_LawnCare lawnCare = widgetController.getLawnCare(tempWidget.getId());
-			model.addAttribute("lawnCare", lawnCare);
-			if(tempWidget.getSubCategory().contentEquals("lawnMower"))
-			{
-				LawnCare_LawnMower mower = widgetController.getMower(tempWidget.getId());
-				model.addAttribute("mower", mower);
-			}
-		}
+		model.addAttribute("category", tempWidget.getCategory());
 		model.addAttribute("widget", tempWidget);
 		model.addAttribute("trans", trans);
 		model.addAttribute("user", userController.getCurrently_Logged_In());

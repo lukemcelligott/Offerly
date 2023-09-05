@@ -9,10 +9,11 @@ import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.user.Applicant;
 import edu.sru.cpsc.webshopping.domain.user.Message;
 import edu.sru.cpsc.webshopping.domain.user.Statistics;
-import edu.sru.cpsc.webshopping.domain.user.Statistics.Category;
+import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
 import edu.sru.cpsc.webshopping.domain.user.Ticket;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
+import edu.sru.cpsc.webshopping.domain.widgets.Category;
 import edu.sru.cpsc.webshopping.domain.widgets.WidgetsInfo;
 import edu.sru.cpsc.webshopping.domain.widgets.appliances.Appliance_Blender;
 import edu.sru.cpsc.webshopping.domain.widgets.appliances.Appliance_Dryers;
@@ -75,7 +76,7 @@ public class EmployeeController {
   private final TicketService ticketService;
   private final UserRepository userRepository;
   private final EmailController emailController;
-  private final WidgetRepository<Widget> widgetRepository;
+  private final WidgetRepository widgetRepository;
   private final CategoryController categories;
   private final SubcategoryController subcategories;
   private String page;
@@ -110,19 +111,19 @@ public class EmployeeController {
     roleList = Arrays.stream(Role.values()).map(Enum::name).collect(Collectors.toList());
   }
 
-  List<Category> CategoryList;
+  List<StatsCategory> CategoryList;
 
   @ModelAttribute
   public void preLoad2(Model model) {
     CategoryList = new ArrayList<>();
 
-    CategoryList.add(Category.ACCOUNTCREATION);
-    CategoryList.add(Category.ACCOUNTDELETED);
-    CategoryList.add(Category.SALE);
-    CategoryList.add(Category.SALEVALUE);
-    CategoryList.add(Category.USERLOGIN);
-    CategoryList.add(Category.MESSAGESENT);
-    CategoryList.add(Category.WIDGETCREATED);
+    CategoryList.add(StatsCategory.ACCOUNTCREATION);
+    CategoryList.add(StatsCategory.ACCOUNTDELETED);
+    CategoryList.add(StatsCategory.SALE);
+    CategoryList.add(StatsCategory.SALEVALUE);
+    CategoryList.add(StatsCategory.USERLOGIN);
+    CategoryList.add(StatsCategory.MESSAGESENT);
+    CategoryList.add(StatsCategory.WIDGETCREATED);
   }
 
   List<String> dateList;
@@ -170,7 +171,7 @@ public class EmployeeController {
 
   @RequestMapping({"/lookupStatistics"})
   public String StatisticsButton(
-      @RequestParam String date, @RequestParam Category category, Model model) {
+      @RequestParam String date, @RequestParam StatsCategory category, Model model) {
     User user = userController.getCurrently_Logged_In();
     if (user.getRole().equals("ROLE_SALES")) {
       setPage2("stats");
@@ -700,19 +701,19 @@ public class EmployeeController {
 
   // https://attacomsian.com/blog/export-download-data-csv-file-spring-boot
   @GetMapping({"/downloadDataFile"})
-  public void downloadDataFile(HttpServletResponse response, @RequestParam String subCategory)
+  public void downloadDataFile(HttpServletResponse response, @RequestParam Category Category)
       throws IOException, CsvRequiredFieldEmptyException, CsvDataTypeMismatchException {
 
-    List<Widget> widgets = widgetRepository.findBySubCategory(subCategory);
+    List<Widget> widgets = widgetRepository.findByCategory(Category);
 
-    switch (subCategory) {
+    /*switch (subCategory) {
       case "car_parts":
         widgets =
             widgets.stream().filter(Vehicle_Car.class::isInstance).collect(Collectors.toList());
         break;
-    }
+    }*/
 
-    String filename = String.format("%s.csv", subCategory);
+    String filename = String.format("%s.csv", Category.getName());
 
     response.setContentType("text/csv");
     response.setHeader(
@@ -1293,6 +1294,9 @@ public class EmployeeController {
     try {
 
       setPage3("editWidgetSuccess");
+      
+      // TODO
+      // - Make sure that category gets set up correctly  
 
       String[] widgetData = widgetId.split(",");
       Widget[] editWidgets = new Widget[widgetData.length];
@@ -1320,7 +1324,7 @@ public class EmployeeController {
         editWidgets[i] = widgetController.getWidget(Long.parseLong(widgetData[i], 10));
         editWidgets[i].setName(widgetNameData[i]);
         editWidgets[i].setDescription(widgetDescriptionData[i]);
-        editWidgets[i].setCategory(widgetCategoryData[i]);
+        editWidgets[i].getCategory().setName((widgetCategoryData[i]));
         widgetController.addWidgetnobinding(editWidgets[i]);
         getSearchedUserWidgets().add(editWidgets[i]);
       }
@@ -1761,7 +1765,7 @@ public class EmployeeController {
     
     String[] allWidgetCate = new String[getAllWidgets().size()];
     for (int i = 0; i < allWidgetCate.length; i++) {
-      allWidgetCate[i] = getAllWidgets().get(i).getCategory();
+      allWidgetCate[i] = getAllWidgets().get(i).getCategory().getName();
     }
 
     model.addAttribute("widgetNames", allWidgetNames);
@@ -1808,7 +1812,7 @@ public class EmployeeController {
   	    }
     }else if(filter.equals("category")) {
     	for (int i = 0; i < getAllWidgets().size(); i++) {
-  	      if (getAllWidgets().get(i).getCategory().contains(name)) {
+  	      if (getAllWidgets().get(i).getCategory().getName().contains(name)) {
   	        count++;
   	        System.out.println("count first" + count);
   	      }
@@ -1860,7 +1864,7 @@ public class EmployeeController {
     }else if(filter.equals("category")) {
     	int j = 0;
 	    for (int i = 0; i < searchedWidgets.length; i++) {
-	      if (searchedWidgets[i].getCategory().contains(name)) {
+	      if (searchedWidgets[i].getCategory().getName().contains(name)) {
 	        System.out.println("count" + count);
 	
 	        getSearchedUserListings().add(market.getListingByWidget(searchedWidgets[i]));

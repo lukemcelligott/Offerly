@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import edu.sru.cpsc.webshopping.domain.user.Message;
 import edu.sru.cpsc.webshopping.domain.user.Statistics;
 import edu.sru.cpsc.webshopping.domain.user.User;
-import edu.sru.cpsc.webshopping.domain.user.Statistics.Category;
+import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
 import edu.sru.cpsc.webshopping.repository.message.MessageRepository;
 
 
@@ -69,7 +69,7 @@ public class MessageDomainController {
 		User receiver = entityManager.find(User.class, Message.getReceiver().getId());
 		
 		Message.setOwner(owner);
-		Statistics stats = new Statistics(Category.MESSAGESENT,1);
+		Statistics stats = new Statistics(StatsCategory.MESSAGESENT,1);
 		System.out.println("HEEEEEEEEEYYYYYYY");
 		System.out.println(userListController.getBlockedCheck(owner, receiver));
 		if(!(userListController.getBlockedCheck(owner, receiver))) {
@@ -92,7 +92,7 @@ public class MessageDomainController {
 		User receiver = entityManager.find(User.class, Message.getReceiver().getId());
 		
 		Message.setOwner(owner);
-		Statistics stats = new Statistics(Category.MESSAGESENT,1);
+		Statistics stats = new Statistics(StatsCategory.MESSAGESENT,1);
 		System.out.println("HEEEEEEEEEYYYYYYY");
 		System.out.println(userListController.getBlockedCheck(owner, receiver));
 		if(!(userListController.getBlockedCheck(owner, receiver))) {

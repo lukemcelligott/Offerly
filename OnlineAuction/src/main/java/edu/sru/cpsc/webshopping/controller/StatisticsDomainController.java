@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 import edu.sru.cpsc.webshopping.domain.user.Statistics;
-import edu.sru.cpsc.webshopping.domain.user.Statistics.Category;
+import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
 import edu.sru.cpsc.webshopping.repository.stats.StatsRepository;
 
 
@@ -43,7 +43,7 @@ public class StatisticsDomainController {
 		Statistics Statistics = entityManager.find(Statistics.class, id);
 		return Statistics;
 	}
-	public Statistics[] getStatisticsByHour(LocalDateTime date1,LocalDateTime date2,Category category) {
+	public Statistics[] getStatisticsByHour(LocalDateTime date1,LocalDateTime date2,StatsCategory category) {
 		Statistics[] stats = null;
 		Statistics[] statTemp = null;
 
@@ -78,7 +78,7 @@ public class StatisticsDomainController {
 	}
 	@Transactional
 	@GetMapping("get-stats-category")
-	public Statistics[] getStatsByCategory(@Validated Category category) {
+	public Statistics[] getStatsByCategory(@Validated StatsCategory category) {
 		return Statisticsrepository.findByCategory(category);
 	}
 	@Transactional
