@@ -2,6 +2,7 @@ package edu.sru.cpsc.webshopping.controller;
 
 import edu.sru.cpsc.webshopping.domain.user.Statistics;
 import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
+import edu.sru.cpsc.webshopping.domain.widgets.Category;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 import edu.sru.cpsc.webshopping.domain.widgets.appliances.Appliance_Blender;
 import edu.sru.cpsc.webshopping.domain.widgets.appliances.Appliance_Blender_Parts;
@@ -79,7 +80,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/widgets")
 public class WidgetController {
   //private final WidgetRepository<Widget> widgetRepository;
-  private  StatisticsDomainController statControl;
+	private StatisticsDomainController statControl;
 	/*
 	 * private final ApplianceDryersRepository<Appliance_Dryers> dryerRepository;
 	 * private final ApplianceMicrowaveRepository<Appliance_Microwave>
@@ -125,20 +126,40 @@ public class WidgetController {
   
   
 
+	//TODO:
+	//ADD back stats on widget add
+	
   // Widget CRUD functions
   @Autowired
   private WidgetRepository widgetRepository;
+  
+  @Autowired
+  private CategoryRepository categoryRepository;
 
   // Create a new Widget
   @PostMapping("/add")
   public Widget addWidget(@Validated @RequestBody Widget widget, BindingResult result) {
 	  Statistics stats = new Statistics(StatsCategory.WIDGETCREATED, 1); 
 	  stats.setDescription("Widget: " + widget.getName() + " was created"); 
-	  statControl.addStatistics(stats);
+	  //statControl.addStatistics(stats);
       if (result.hasErrors()) {
           throw new IllegalArgumentException("Validation errors");
       }
+      
+      // Retrieve the existing Category from the database
+      Category existingCategory = categoryRepository.findById(widget.getCategory().getId())
+          .orElseThrow(() -> new IllegalArgumentException("Invalid category ID"));
+      
+      // Set the existing Category into the Widget
+      widget.setCategory(existingCategory);
+      System.out.println(widget.getName());
+      System.out.println(widget.getDescription());
+      
       return widgetRepository.save(widget);
+  }
+  
+  @RequestMapping("/add-simple") public Widget addWidgetnobinding(@Validated Widget widget) {
+	 return widgetRepository.save(widget);
   }
 
   // Read a single Widget by ID

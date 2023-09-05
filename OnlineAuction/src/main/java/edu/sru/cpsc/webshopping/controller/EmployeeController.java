@@ -1294,6 +1294,9 @@ public class EmployeeController {
     try {
 
       setPage3("editWidgetSuccess");
+      
+      // TODO
+      // - Make sure that category gets set up correctly  
 
       String[] widgetData = widgetId.split(",");
       Widget[] editWidgets = new Widget[widgetData.length];
@@ -1321,7 +1324,7 @@ public class EmployeeController {
         editWidgets[i] = widgetController.getWidget(Long.parseLong(widgetData[i], 10));
         editWidgets[i].setName(widgetNameData[i]);
         editWidgets[i].setDescription(widgetDescriptionData[i]);
-        editWidgets[i].setCategory(widgetCategoryData[i]);
+        editWidgets[i].getCategory().setName((widgetCategoryData[i]));
         widgetController.addWidgetnobinding(editWidgets[i]);
         getSearchedUserWidgets().add(editWidgets[i]);
       }
@@ -1762,7 +1765,7 @@ public class EmployeeController {
     
     String[] allWidgetCate = new String[getAllWidgets().size()];
     for (int i = 0; i < allWidgetCate.length; i++) {
-      allWidgetCate[i] = getAllWidgets().get(i).getCategory();
+      allWidgetCate[i] = getAllWidgets().get(i).getCategory().getName();
     }
 
     model.addAttribute("widgetNames", allWidgetNames);
@@ -1809,7 +1812,7 @@ public class EmployeeController {
   	    }
     }else if(filter.equals("category")) {
     	for (int i = 0; i < getAllWidgets().size(); i++) {
-  	      if (getAllWidgets().get(i).getCategory().contains(name)) {
+  	      if (getAllWidgets().get(i).getCategory().getName().contains(name)) {
   	        count++;
   	        System.out.println("count first" + count);
   	      }
@@ -1861,7 +1864,7 @@ public class EmployeeController {
     }else if(filter.equals("category")) {
     	int j = 0;
 	    for (int i = 0; i < searchedWidgets.length; i++) {
-	      if (searchedWidgets[i].getCategory().contains(name)) {
+	      if (searchedWidgets[i].getCategory().getName().contains(name)) {
 	        System.out.println("count" + count);
 	
 	        getSearchedUserListings().add(market.getListingByWidget(searchedWidgets[i]));

@@ -12,7 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import edu.sru.cpsc.webshopping.domain.billing.DomainBillingSpringTest;
 import edu.sru.cpsc.webshopping.domain.billing.PaymentDetails;
-import edu.sru.cpsc.webshopping.domain.user.Statistics.Category;
+import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
 import edu.sru.cpsc.webshopping.util.enums.MessageType;
 
 @SpringBootTest(classes = {DomainUserSpringTest.class})
@@ -61,7 +61,7 @@ public class DomainUserSpringTest {
 	 */
 	@Test
 	void createStatisticsTest() {
-		Statistics stats = new Statistics(Category.SALE, 100);
+		Statistics stats = new Statistics(StatsCategory.SALE, 100);
 		System.out.println(stats.getDate());
 
 		

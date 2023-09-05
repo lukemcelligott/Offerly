@@ -16,7 +16,7 @@ import edu.sru.cpsc.webshopping.domain.widgets.Category;
 import edu.sru.cpsc.webshopping.repository.widgets.CategoryRepository;
 
 @RestController
-@RequestMapping("/api/catagories")
+@RequestMapping("/api/categories")
 public class CategoryController {
 
     @Autowired

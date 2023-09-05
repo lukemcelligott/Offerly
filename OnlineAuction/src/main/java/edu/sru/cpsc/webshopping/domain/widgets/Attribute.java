@@ -6,6 +6,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
+import org.springframework.lang.NonNull;
+
 @Entity
 public class Attribute {
 	
@@ -14,12 +16,12 @@ public class Attribute {
     private long id;
 
     // attribute to be filled by user. Value is determined when WidgetAttribute is created.
-    private String key;
+    @NonNull
+    private String attributeKey;
 
     @ManyToOne
-    private Widget widget;
+    private Category category;
 
-    
     // Getters and setters
 	public long getId() {
 		return id;
@@ -29,19 +31,19 @@ public class Attribute {
 		this.id = id;
 	}
 
-	public String getKey() {
-		return key;
+	public String getAttributeKey() {
+		return attributeKey;
 	}
 
-	public void setKey(String key) {
-		this.key = key;
+	public void setAttributeKey(String attributeKey) {
+		this.attributeKey = attributeKey;
 	}
 
-	public Widget getWidget() {
-		return widget;
+	public Category getCategory() {
+		return category;
 	}
 
-	public void setWidget(Widget widget) {
-		this.widget = widget;
+	public void setCategory(Category category) {
+		this.category = category;
 	}
 }

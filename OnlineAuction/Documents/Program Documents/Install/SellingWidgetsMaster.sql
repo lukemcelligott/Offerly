@@ -210,9 +210,11 @@ DROP TABLE IF EXISTS `category`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `category` (
+  `id` bigint NOT NULL,
   `name` varchar(255) NOT NULL,
-  `display` varchar(255) NOT NULL,
-  PRIMARY KEY (`name`)
+  `parent_id` bigint,
+  `version` int,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -222,10 +224,61 @@ CREATE TABLE `category` (
 
 LOCK TABLES `category` WRITE;
 /*!40000 ALTER TABLE `category` DISABLE KEYS */;
-INSERT INTO `category` VALUES ('vehicle_parts', 'Vehicle Parts');
+INSERT INTO `category` VALUES (1, 'Vehicle Parts', null, 1);
 /*!40000 ALTER TABLE `category` ENABLE KEYS */;
 UNLOCK TABLES;
 
+--
+-- Table structure for table `attribute`
+--
+
+DROP TABLE IF EXISTS `attribute`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `attribute` (
+  `id` bigint NOT NULL,
+  `attribute_key` varchar(255) NOT NULL,
+  `category_id` bigint,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `attribute`
+--
+
+LOCK TABLES `attribute` WRITE;
+/*!40000 ALTER TABLE `attribute` DISABLE KEYS */;
+INSERT INTO `attribute` VALUES (1, 'Year', 1), (2, 'Model', 1), (3, 'Color', 1);
+/*!40000 ALTER TABLE `attribute` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `widget_attribute`
+--
+
+DROP TABLE IF EXISTS `widget_attribute`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `widget_attribute` (
+  `id` bigint NOT NULL,
+  `attribute_key` varchar(255) NOT NULL,
+  `value` varchar(255),
+  `attribute_id` bigint,
+  `widget_id` bigint,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `widget_attribute`
+--
+
+LOCK TABLES `widget_attribute` WRITE;
+/*!40000 ALTER TABLE `widget_attribute` DISABLE KEYS */;
+INSERT INTO `widget_attribute` VALUES (1, 'Year', '1995', 1, 1), (2, 'Model', 'BMW E36 M3', 2, 1), (3, 'Color', 'Yellow', 3, 1);
+/*!40000 ALTER TABLE `widget_attribute` ENABLE KEYS */;
+UNLOCK TABLES;
 --
 -- Table structure for table `condition`
 --
@@ -1064,9 +1117,8 @@ CREATE TABLE `widget` (
   `id` bigint NOT NULL,
   `description` varchar(255) DEFAULT NULL,
   `name` varchar(255) DEFAULT NULL,
-  `category` varchar(255) DEFAULT NULL,
+  `category_id` bigint,
   `image_name` varchar(255) DEFAULT NULL,
-  `sub_category` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1077,7 +1129,7 @@ CREATE TABLE `widget` (
 
 LOCK TABLES `widget` WRITE;
 /*!40000 ALTER TABLE `widget` DISABLE KEYS */;
-INSERT INTO `widget` VALUES (1,'A BMW E36 M3 Coupe Rear Bumper','BMW E36 M3 Coupe Convertible Sedan Rear Bumper Cover Assembly','vehicle_parts',NULL,'car_parts'),(2,'A strong motor','Good Motor','vehicle_parts',NULL,'car_parts'),(3,'A Radiator for a Ford Focus','A Radiator for a 2000-2004 Ford Focus','vehicle_parts',NULL,'car_parts'),(4,'New Exhaust Pipe System','New Exhaust Pipe System with California Emissions for Saturn 1.9L 2000-2002','vehicle_parts',NULL,'car_parts'),(5,'A Mitsubishi Lancer Steering Wheel','2007-2017 Mitsubishi Lancer steering wheel USED 4400A234XA','vehicle_parts',NULL,'car_parts'),(6,'The Driver side Passenger side door of a 2006 Honda Civic','Driver Rear Side Door Sedan Electric Fits 06-11 CIVIC 250908','vehicle_parts',NULL,'car_parts');
+INSERT INTO `widget` VALUES (1,'A BMW E36 M3 Coupe Rear Bumper','BMW E36 M3 Coupe Convertible Sedan Rear Bumper Cover Assembly', 1 ,NULL),(2,'A strong motor','Good Motor',1,NULL),(3,'A Radiator for a Ford Focus','A Radiator for a 2000-2004 Ford Focus',1, NULL),(4,'New Exhaust Pipe System','New Exhaust Pipe System with California Emissions for Saturn 1.9L 2000-2002',1,NULL),(5,'A Mitsubishi Lancer Steering Wheel','2007-2017 Mitsubishi Lancer steering wheel USED 4400A234XA',1,NULL),(6,'The Driver side Passenger side door of a 2006 Honda Civic','Driver Rear Side Door Sedan Electric Fits 06-11 CIVIC 250908',1,NULL);
 /*!40000 ALTER TABLE `widget` ENABLE KEYS */;
 UNLOCK TABLES;
 

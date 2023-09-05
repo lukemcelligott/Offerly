@@ -26,6 +26,15 @@ public class Category{
     // Version field for optimistic locking and tracking updates
     @Version
     private int version;
+    
+    public Category() {
+    	
+    }
+    
+    public Category(String name) {
+    	this.name = name;
+    	this.version = 1;
+    }
 
 	// Getters and Setters
     public long getId() {

@@ -34,6 +34,7 @@ import edu.sru.cpsc.webshopping.domain.widgets.vehicles.Vehicle_Car_Parts;
 import edu.sru.cpsc.webshopping.domain.widgets.vehicles.Widget_Vehicles;
 import edu.sru.cpsc.webshopping.repository.market.MarketListingRepository;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
+import edu.sru.cpsc.webshopping.repository.widgets.CategoryRepository;
 import edu.sru.cpsc.webshopping.repository.widgets.WidgetGeneralRepository;
 import edu.sru.cpsc.webshopping.repository.widgets.WidgetRepository;
 import edu.sru.cpsc.webshopping.repository.widgets.appliances.ApplianceBlenderRepository;
@@ -93,6 +94,7 @@ public class AddWidgetController
 {
 
 	WidgetRepository widgetRepository;
+	CategoryRepository categoryRepository;
 	WidgetImageRepository widgetImageRepository;
 	ApplianceDryersRepository dryerRepository;
 	ApplianceMicrowaveRepository microwaveRepository;
@@ -140,11 +142,12 @@ public class AddWidgetController
 	Widget_General generalWidget;
 	Set<WidgetImage> listingImages = new HashSet<>();
 	CategoryController categories;
+	AttributeController attributes;
 	SubcategoryController subcategories;
 	FieldsController fields;
 	MarketListing marketListing;
 	private Widget widgetStorage;
-	private String category;
+	private Category category;
 	private String subcategory;
 	private WidgetImage tempImage = new WidgetImage();
 	private String page;
@@ -161,7 +164,7 @@ public class AddWidgetController
 		this.page = page;
 	}
 
-	public AddWidgetController(WidgetRepository widgetRepository, CategoryController categories, SubcategoryController subcategories, FieldsController fields, ApplianceDryersRepository dryerRepository, WidgetImageRepository widgetImageRepository,
+	public AddWidgetController(WidgetRepository widgetRepository, CategoryRepository categoryRepository, CategoryController categories, SubcategoryController subcategories, AttributeController attributes, FieldsController fields, ApplianceDryersRepository dryerRepository, WidgetImageRepository widgetImageRepository,
 			ApplianceMicrowaveRepository microwaveRepository, ApplianceRefrigeratorRepository fridgeRepository, 
 			ApplianceWashersRepository washerRepository, ApplianceBlenderRepository blenderRepository, ElectronicsComputersRepository computerRepository, 
 			ElectronicsVideoGamesRepository videoGameRepository, VehicleCarRepository carRepository, 
@@ -171,9 +174,11 @@ public class AddWidgetController
 			MarketListingDomainController marketListingController, UserRepository userRepo, LawnCareLawnMowerRepository mowerRepository, WidgetGeneralRepository generalRepository)
 	{
 		this.categories = categories;
+		this.attributes = attributes;
 		this.subcategories = subcategories;
 		this.fields = fields;
 		this.widgetRepository = widgetRepository;
+		this.categoryRepository = categoryRepository;
 		this.applianceRepository = applianceRepository;
 		this.electronicsRepository = electronicsRepository;
 		this.vehicleRepository = vehicleRepository;
@@ -216,46 +221,31 @@ public class AddWidgetController
 	}
 	
 	@RequestMapping("/createWidget")
-	public String createWidget(@RequestParam("category") String category, @RequestParam("subcategory") String subcategory, Model model)
+	public String createWidget(@RequestParam("category") Long categoryId, Model model)
 	{
+		Category category = categoryRepository.findById(categoryId)
+		        .orElseThrow(() -> new IllegalArgumentException("Invalid category ID"));
+		
 		this.category = category;
-		this.subcategory = subcategory;
-		
-		String temp = WordUtils.capitalize(subcategory, '_');
-		temp = temp.replace("_", "");
-		
-		String url = "redirect:add" + temp;
-		
-		model.addAttribute("subcategories", subcategories.getAllSubcategories());
+		model.addAttribute("category", category);
+		model.addAttribute("attributes", attributes.getAllAttributes());
 		model.addAttribute("user", userController.getCurrently_Logged_In());
 		
-		return url;
+		return "createWidgetTemplate";
 	}
 	
-	@RequestMapping("createCarParts")
-	public String createCarParts(Model model, @ModelAttribute Vehicle_Car_Parts carPart, BindingResult result)
-	{
-		model.addAttribute("name", carPart);
-		model.addAttribute("description", carPart);
-		carPart.setCategory(category);
-		carPart.setSubCategory(subcategory);
-		model.addAttribute("length", carPart);
-		model.addAttribute("width", carPart);
-		model.addAttribute("height", carPart);
-		model.addAttribute("color", carPart);
-		model.addAttribute("itemCondition", carPart);
-		model.addAttribute("model", carPart);
-		model.addAttribute("brand", carPart);
-		model.addAttribute("material", carPart);
-		model.addAttribute("year", carPart);
-		widgetController.addCarParts(carPart, result);
-		this.carPart = carPart;
-		widget = carPart;
-		model.addAttribute("createCarPart", true);
-		model.addAttribute("user", userController.getCurrently_Logged_In());
-		return "redirect:createListing";
-	}
 	
+	@RequestMapping("/createWidgetListing") public String createCarParts(Model model, @ModelAttribute Widget widget, BindingResult result) {
+		widget.setCategory(category); 
+		widgetController.addWidget(widget, result);
+		this.widget = widget;
+		model.addAttribute("createWidget", true);
+		model.addAttribute("Widget", widget);
+		model.addAttribute("user", userController.getCurrently_Logged_In()); 
+		return "redirect:createListing"; 
+	}
+
+
 	@RequestMapping("addCarParts")
 	public String addCarParts(Model model)
 	{
@@ -273,7 +263,7 @@ public class AddWidgetController
 		model.addAttribute("pricePerItem", marketListing.getPricePerItem());
 		model.addAttribute("qtyAvailable", marketListing.getQtyAvailable());
 		model.addAttribute("listing", marketListing);
-		model.addAttribute("subcategory", subcategory);
+		model.addAttribute("Category", category);
 		model.addAttribute("user", userController.getCurrently_Logged_In());
 		return "createListing";
 	}
