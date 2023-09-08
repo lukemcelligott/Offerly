@@ -74,7 +74,7 @@ public class UserController {
 	 */
 	@PostMapping("/add-to-wishlist")
 	@Transactional
-	public void addToWishlist(@Validated Widget widget) {
+	public String addToWishlist(@Validated Widget widget) {
 		if (Currently_Logged_In == null) {
 			throw new IllegalStateException("User not logged in when attempting to add new Widget to wishlist.");
 		}
@@ -85,6 +85,7 @@ public class UserController {
 		}
 		user.getWishlistedWidgets().add(addedWidget);
 		userRepository.save(user);
+		return("wishlist/success");
 	}
 	
 	/**

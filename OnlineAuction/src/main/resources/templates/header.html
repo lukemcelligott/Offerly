@@ -49,7 +49,8 @@
 				
 				<!-- Watchlist - NEED TO IMPLEMENT -->
 				<li class="nav-item">
-					<a class="submit4 nav-link"><span>Watchlist</span></a>
+					<a th:if="${page == 'watchlistPage'}" th:href="@{/Watchlist}" class="submit4 nav-link active"><span>Watchlist</span></a>
+					<a th:unless="${page == 'watchlistPage'}" th:href="@{/Watchlist}" class="submit4"><span>Watchlist</span></a>
 				</li>
 				
 				<!-- Social -->

@@ -28,6 +28,11 @@ li.pointer {
 	color: #FFFFFF;
 }
 
+#addToWatchlistButton {
+	width: auto; /* Allow the button to adjust its width based on content */
+   	
+}
+
 #middle {
 	margin-top: 15px;
 	margin-bottom: 15px;

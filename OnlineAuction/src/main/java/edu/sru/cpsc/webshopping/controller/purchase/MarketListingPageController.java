@@ -98,17 +98,17 @@ public class MarketListingPageController {
       SellerRatingController ratingController,
       UserListDomainController userListController,
       ConfirmPurchasePageController purchaseController) {
-    this.marketListingController = marketListingController;
-    this.transController = transController;
-    this.userController = userController;
-    this.purchaseController = purchaseController;
-    this.shippingPage = shippingPage;
-    this.msgcontrol = msgcontrol;
-    this.widgetImageController = widgetImageController;
-    this.emailController = emailController;
-    this.widgetController = widgetController;
-    this.ratingController = ratingController;
-    this.userListController = userListController;
+	  this.marketListingController = marketListingController;
+	  this.transController = transController;
+	  this.userController = userController;
+	  this.purchaseController = purchaseController;
+	  this.shippingPage = shippingPage;
+	  this.msgcontrol = msgcontrol;
+	  this.widgetImageController = widgetImageController;
+	  this.emailController = emailController;
+	  this.widgetController = widgetController;
+	  this.ratingController = ratingController;
+	  this.userListController = userListController;
   }
 
   /** Reloads the page model data */
@@ -330,10 +330,14 @@ public class MarketListingPageController {
    *
    * @return the current viewMarketListing page
    */
-  @PostMapping({"/viewMarketListing/wishlistItem"})
-  public String wishlistItem() {
-    userController.addToWishlist(heldListing.getWidgetSold());
-    return "redirect:/viewMarketListing/" + heldListing.getId();
+  @PostMapping({"/viewMarketListing/wishlistItem/{marketListingId}"})
+  public String wishlistItem(@PathVariable("marketListingId") long marketListingId, Model model) {
+	  // define held listing as the targeted listing bby passing in the market listing ID
+	  heldListing = marketListingController.getMarketListing(marketListingId);
+	  // call addToWishlist in UserController.java and pass in the widget assigned to heldListing
+	  userController.addToWishlist(heldListing.getWidgetSold());
+	  // redirect the user to the listing for the widget (maybe change this to a 'widget added to watchlist page')
+	  return "redirect:/viewMarketListing/" + heldListing.getId();
   }
 
   /**
