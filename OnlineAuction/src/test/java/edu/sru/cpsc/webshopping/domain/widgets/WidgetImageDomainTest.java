@@ -3,9 +3,6 @@ package edu.sru.cpsc.webshopping.domain.widgets;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-
-import edu.sru.cpsc.webshopping.domain.widgets.WidgetImage;
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 
 public class WidgetImageDomainTest {
@@ -24,7 +21,9 @@ public class WidgetImageDomainTest {
 		WI.setMarketListing(ML);
 		
 		assertEquals("test.png", WI.getImageName());
-		assertEquals(new Long(11), WI.getId());
+		//fix this assertEquals:
+		Long expected_id = 11L;
+		assertEquals(expected_id, WI.getId());
 		assertEquals(ML, WI.getMarketListing());
 	}
 	

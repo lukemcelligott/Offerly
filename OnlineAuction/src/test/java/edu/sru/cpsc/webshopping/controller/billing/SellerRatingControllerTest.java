@@ -1,11 +1,6 @@
 package edu.sru.cpsc.webshopping.controller.billing;
 import static org.junit.Assert.assertEquals;
 
-import java.sql.Date;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
-
 import org.jboss.logging.Logger;
 import org.junit.Test;
 import org.junit.jupiter.api.AfterAll;
@@ -14,13 +9,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.springframework.stereotype.Controller;
 
-import edu.sru.cpsc.webshopping.controller.TransactionController;
-import edu.sru.cpsc.webshopping.domain.market.Transaction;
 import edu.sru.cpsc.webshopping.domain.user.SellerRating;
 import edu.sru.cpsc.webshopping.domain.user.User;
-import edu.sru.cpsc.webshopping.repository.user.SellerRatingRepository;
 
 public class SellerRatingControllerTest {
 	private Logger log= Logger.getLogger(getClass());

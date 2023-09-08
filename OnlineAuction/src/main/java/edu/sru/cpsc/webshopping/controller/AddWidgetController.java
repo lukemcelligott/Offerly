@@ -96,20 +96,6 @@ public class AddWidgetController
 	WidgetRepository widgetRepository;
 	CategoryRepository categoryRepository;
 	WidgetImageRepository widgetImageRepository;
-	ApplianceDryersRepository dryerRepository;
-	ApplianceMicrowaveRepository microwaveRepository;
-	ApplianceRefrigeratorRepository fridgeRepository;
-	ApplianceWashersRepository washerRepository;
-	ApplianceBlenderRepository blenderRepository;
-	ElectronicsComputersRepository computerRepository;
-	ElectronicsVideoGamesRepository videoGameRepository;
-	VehicleCarRepository carRepository;
-	LawnCareLawnMowerRepository mowerRepository;
-	WidgetLawnCareRepository lawnCareRepository;
-	WidgetApplianceRepository applianceRepository;
-	WidgetElectronicsRepository electronicsRepository;
-	WidgetVehiclesRepository vehicleRepository;
-	WidgetGeneralRepository generalRepository;
 	MarketListingRepository marketListingRepos;
 	WidgetController widgetController;
 	UserController userController;
@@ -152,8 +138,6 @@ public class AddWidgetController
 	private WidgetImage tempImage = new WidgetImage();
 	private String page;
 	
-	private final String UPLOAD_DIR = "src/main/resources/static/images/userImages/";
-	
 	public String getPage()
 	{
 		return page;
@@ -164,14 +148,9 @@ public class AddWidgetController
 		this.page = page;
 	}
 
-	public AddWidgetController(WidgetRepository widgetRepository, CategoryRepository categoryRepository, CategoryController categories, SubcategoryController subcategories, AttributeController attributes, FieldsController fields, ApplianceDryersRepository dryerRepository, WidgetImageRepository widgetImageRepository,
-			ApplianceMicrowaveRepository microwaveRepository, ApplianceRefrigeratorRepository fridgeRepository, 
-			ApplianceWashersRepository washerRepository, ApplianceBlenderRepository blenderRepository, ElectronicsComputersRepository computerRepository, 
-			ElectronicsVideoGamesRepository videoGameRepository, VehicleCarRepository carRepository, 
-			WidgetApplianceRepository applianceRepository, WidgetLawnCareRepository lawnCareRepository, WidgetImageController widgetImageController,
-			WidgetElectronicsRepository electronicsRepository, WidgetVehiclesRepository vehicleRepository, 
-			MarketListingRepository marketListingRepos, WidgetController widgetController, UserController userController, 
-			MarketListingDomainController marketListingController, UserRepository userRepo, LawnCareLawnMowerRepository mowerRepository, WidgetGeneralRepository generalRepository)
+	public AddWidgetController(WidgetRepository widgetRepository, CategoryRepository categoryRepository, CategoryController categories,
+	 		SubcategoryController subcategories, AttributeController attributes, FieldsController fields, WidgetImageRepository widgetImageRepository, WidgetImageController widgetImageController,
+			MarketListingRepository marketListingRepos, WidgetController widgetController, UserController userController, MarketListingDomainController marketListingController, UserRepository userRepo)
 	{
 		this.categories = categories;
 		this.attributes = attributes;
@@ -179,26 +158,11 @@ public class AddWidgetController
 		this.fields = fields;
 		this.widgetRepository = widgetRepository;
 		this.categoryRepository = categoryRepository;
-		this.applianceRepository = applianceRepository;
-		this.electronicsRepository = electronicsRepository;
-		this.vehicleRepository = vehicleRepository;
-		this.dryerRepository = dryerRepository;
-		this.microwaveRepository = microwaveRepository;
-		this.fridgeRepository = fridgeRepository;
-		this.washerRepository = washerRepository;
-		this.blenderRepository = blenderRepository;
-		this.computerRepository = computerRepository;
-		this.videoGameRepository = videoGameRepository;
-		this.carRepository = carRepository;
-		this.mowerRepository = mowerRepository;
 		this.marketListingRepos = marketListingRepos;
 		this.widgetController = widgetController;
 		this.userController = userController;
 		this.marketListingController = marketListingController;
 		this.userRepo = userRepo;
-		this.mowerRepository = mowerRepository;
-		this.lawnCareRepository = lawnCareRepository;
-		this.generalRepository = generalRepository;
 		this.widgetImageRepository = widgetImageRepository;
 		this.widgetImageController = widgetImageController;
 	}

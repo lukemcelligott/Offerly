@@ -4,9 +4,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import edu.sru.cpsc.webshopping.domain.widgets.appliances.DomainWidgetsAppliancesSpringTest;
+import edu.sru.cpsc.webshopping.domain.user.Ticket;
 import edu.sru.cpsc.webshopping.repository.ticket.TicketRepository;
-import edu.sru.cpsc.webshopping.repository.user.UserRepository;
+
 
 /*
  * Tests that the overall ticketing service is functioning
@@ -28,7 +28,8 @@ public class TicketServiceSpringTest {
 		ticket.findById(null);
 		ticket.save(null);
 		ticket.getAllTickets();
-		ticket.getTicketById(null);
+		//ticket.getTicketById(null);
+
 	}
 
 }

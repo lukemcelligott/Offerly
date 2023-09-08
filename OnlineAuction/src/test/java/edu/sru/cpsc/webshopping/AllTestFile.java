@@ -6,7 +6,6 @@ import org.junit.runner.RunWith;
 import org.junit.runner.notification.Failure;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 
 import edu.sru.cpsc.webshopping.controller.AddWidgetControllerTest;
 import edu.sru.cpsc.webshopping.controller.ApplicantDomainControllerTest;
@@ -37,10 +36,6 @@ import edu.sru.cpsc.webshopping.domain.billing.DomainBillingSpringTest;
 import edu.sru.cpsc.webshopping.domain.market.DomainMarketSpringTest;
 import edu.sru.cpsc.webshopping.domain.user.DomainUserSpringTest;
 import edu.sru.cpsc.webshopping.domain.widgets.WidgetSpringTest;
-import edu.sru.cpsc.webshopping.domain.widgets.appliances.DomainWidgetsAppliancesSpringTest;
-import edu.sru.cpsc.webshopping.domain.widgets.electronics.DomainWidgetsElectronicsSpringTest;
-import edu.sru.cpsc.webshopping.domain.widgets.lawncare.DomainWidgetsLawncareSpringTest;
-import edu.sru.cpsc.webshopping.domain.widgets.vehicles.DomainWidgetsVehiclesSpringTest;
 import edu.sru.cpsc.webshopping.secure.WebshoppingSecureSpringTest;
 import edu.sru.cpsc.webshopping.service.TicketServiceSpringTest;
 import edu.sru.cpsc.webshopping.util.constants.TimeConstantsSpringTest;
@@ -59,8 +54,7 @@ import edu.sru.cpsc.webshopping.util.enums.WebshoppingUtilEnumsSpringTest;
 	MessageControllerTest.class, ShippingDomainControllerTest.class, StatisticsDomainControllerTest.class, TestPageControllerTest.class, TicketPageControllerTest.class, TransactionControllerSpringTest.class, 
 	TransactionControllerTest.class, UserDetailsControllerTest.class, UserListDomainControllerTest.class, UtilityControllerTest.class, WebshoppingControllerSpringTest.class, 
 	ControllerBillingSpringTest.class, CustomErrorControllerSpringTest.class, ConfirmPurchasePageControllerTest.class, MarketListingPageControllerTest.class, TransactionDetailsPageControllerTest.class,
-	DomainBillingSpringTest.class, DomainMarketSpringTest.class, DomainUserSpringTest.class, WidgetSpringTest.class, DomainWidgetsAppliancesSpringTest.class, DomainWidgetsElectronicsSpringTest.class, 
-	DomainWidgetsLawncareSpringTest.class, DomainWidgetsVehiclesSpringTest.class, WebshoppingSecureSpringTest.class, TicketServiceSpringTest.class, TimeConstantsSpringTest.class, WebshoppingUtilEnumsSpringTest.class
+	DomainBillingSpringTest.class, DomainMarketSpringTest.class, DomainUserSpringTest.class, WidgetSpringTest.class, WebshoppingSecureSpringTest.class, TicketServiceSpringTest.class, TimeConstantsSpringTest.class, WebshoppingUtilEnumsSpringTest.class
 })
 
 
@@ -73,8 +67,6 @@ public class AllTestFile {
 		}
 			System.out.println(result.wasSuccessful());
 	}
-
-
 }
 	
 	

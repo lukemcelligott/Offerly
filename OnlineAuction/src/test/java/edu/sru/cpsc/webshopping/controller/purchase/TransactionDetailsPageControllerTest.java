@@ -34,7 +34,7 @@ import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.market.Shipping;
 import edu.sru.cpsc.webshopping.domain.market.Transaction;
 import edu.sru.cpsc.webshopping.domain.user.User;
-import edu.sru.cpsc.webshopping.domain.widgets.Widget;
+import edu.sru.cpsc.webshopping.domain.widgets.Category;
 import edu.sru.cpsc.webshopping.domain.widgets.appliances.Appliance_Dryers;
 import edu.sru.cpsc.webshopping.repository.billing.StateDetailsRepository;
 
@@ -84,9 +84,9 @@ public class TransactionDetailsPageControllerTest {
 		newListing.setQtyAvailable(50);
 		newListing.setSeller(seller);
 		Appliance_Dryers dryer = new Appliance_Dryers();
-		dryer.setCategory("appliance");
-		dryer.setSubCategory("appliance");
-		widgetController.addDryer(dryer, result);
+		Category category = new Category("appliance");
+		dryer.setCategory(category);
+		widgetController.addWidget(dryer, result);
 		newListing.setWidgetSold(widgetController.addWidget(dryer, null));
 		newListing = mlDomainController.addMarketListing(newListing);
 		// Initializes Shipping/State Information
