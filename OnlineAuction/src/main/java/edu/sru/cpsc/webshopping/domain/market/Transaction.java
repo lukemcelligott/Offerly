@@ -1,7 +1,7 @@
 package edu.sru.cpsc.webshopping.domain.market;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.sql.Date;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -58,7 +58,6 @@ public class Transaction {
 	
 	@NonNull
 	@CreationTimestamp
-	@Temporal(TemporalType.DATE)
 	private Date purchaseDate;
 	
 	@NonNull

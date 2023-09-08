@@ -1,11 +1,6 @@
 package edu.sru.cpsc.webshopping.controller;
-import java.util.Optional;
 import org.junit.Test;
 import java.util.function.BooleanSupplier;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
 
 import org.jboss.logging.Logger;
 import org.junit.jupiter.api.AfterAll;
@@ -14,18 +9,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.springframework.util.Assert;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-import edu.sru.cpsc.webshopping.controller.ApplicantDomainController;
-import edu.sru.cpsc.webshopping.domain.market.Transaction;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.PathVariable;
+
 import edu.sru.cpsc.webshopping.domain.user.Applicant;
-import edu.sru.cpsc.webshopping.repository.applicant.ApplicantRepository;
 public class ApplicantDomainControllerTest {
 	private static final BooleanSupplier True = null;
 	private Logger log = Logger.getLogger(this.getClass());
@@ -138,7 +126,6 @@ public void editApplicant() {
 	try {
 		log.info("Starting Execution of editApplicant");
 
-ApplicantDomainController applicationdomaincontroller= new ApplicantDomainController(null);
 ((ApplicantDomainController) applicantdomaincontroller).editApplicant(Applicant);
 Assertions.assertTrue(true);
 

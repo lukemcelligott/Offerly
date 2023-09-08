@@ -7,7 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.Test;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import edu.sru.cpsc.webshopping.domain.user.Message;
 import edu.sru.cpsc.webshopping.domain.user.Ticket;

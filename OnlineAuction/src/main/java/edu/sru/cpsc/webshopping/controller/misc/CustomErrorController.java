@@ -38,18 +38,4 @@ public class CustomErrorController implements ErrorController {
 		}
 		return "error";
 	}
-	
-	@RequestMapping("/errorPage")
-	public String openErrorPage(Exception err, Model model) {
-		model.addAttribute("errorMessage", err.getMessage());
-		model.addAttribute("errorClass", err.getClass().toString());
-		return "errorPage";
-	}
-	
-	@RequestMapping("/errorPageTest")
-	public String openErrorPageTest(Model model) {
-		throw new IllegalArgumentException("Illegal Argument Exception Test");
-		//model.addAttribute("errorMessage", "Error found!");
-		//return "errorPage";
-	}
 }

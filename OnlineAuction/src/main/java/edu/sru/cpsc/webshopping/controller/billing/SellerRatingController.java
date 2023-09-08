@@ -1,7 +1,6 @@
 package edu.sru.cpsc.webshopping.controller.billing;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 
 import org.springframework.stereotype.Controller;
@@ -60,23 +59,26 @@ public class SellerRatingController {
 		long numberLate = 0;
 		long totalItems = soldTransactions.spliterator().getExactSizeIfKnown();
 		for (Transaction trans : soldTransactions) {
-			LocalDate transDate = Date.valueOf(trans.getPurchaseDate().toString()).toLocalDate();
-			// Case for an item that has not been shipped yet
-			if (trans.getShippingEntry().getShippingDate() == null) {
-				if (ChronoUnit.DAYS.between(transDate, LocalDate.now()) >= LATE_SHIPPING_NUMBER_DAYS) {
-					numberLate++;
-					//System.out.println("incr");
+			Date purchaseDate = trans.getPurchaseDate();
+			if (purchaseDate != null) {
+				LocalDate transDate = Date.valueOf(purchaseDate.toString()).toLocalDate();
+				// Case for an item that has not been shipped yet
+				if (trans.getShippingEntry().getShippingDate() == null) {
+					if (ChronoUnit.DAYS.between(transDate, LocalDate.now()) >= LATE_SHIPPING_NUMBER_DAYS) {
+						numberLate++;
+						//System.out.println("incr");
+					}
+					//System.out.println("days between not shipped item: " + ChronoUnit.DAYS.between(transDate, LocalDate.now()));
 				}
-				//System.out.println("days between not shipped item: " + ChronoUnit.DAYS.between(transDate, LocalDate.now()));
-			}
-			// Case for an item that has shipped, and possibly arrived
-			else {
-				LocalDate shippedDate = Date.valueOf(trans.getShippingEntry().getShippingDate().toString()).toLocalDate();
-				if (ChronoUnit.DAYS.between(transDate, shippedDate) >= LATE_SHIPPING_NUMBER_DAYS) {
-					numberLate++;
-					//System.out.println("incr");
+				// Case for an item that has shipped, and possibly arrived
+				else {
+					LocalDate shippedDate = Date.valueOf(trans.getShippingEntry().getShippingDate().toString()).toLocalDate();
+					if (ChronoUnit.DAYS.between(transDate, shippedDate) >= LATE_SHIPPING_NUMBER_DAYS) {
+						numberLate++;
+						//System.out.println("incr");
+					}
+					//System.out.println("days between shipped item: " + ChronoUnit.DAYS.between(transDate, shippedDate));
 				}
-				//System.out.println("days between shipped item: " + ChronoUnit.DAYS.between(transDate, shippedDate));
 			}
 		}
 		//System.out.println(numberLate);

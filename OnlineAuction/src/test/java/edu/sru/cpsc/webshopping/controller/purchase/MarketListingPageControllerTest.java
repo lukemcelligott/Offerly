@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.event.annotation.BeforeTestClass;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -31,7 +30,7 @@ import edu.sru.cpsc.webshopping.controller.WidgetController;
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.market.Transaction;
 import edu.sru.cpsc.webshopping.domain.user.User;
-import edu.sru.cpsc.webshopping.domain.widgets.Widget;
+import edu.sru.cpsc.webshopping.domain.widgets.Category;
 import edu.sru.cpsc.webshopping.domain.widgets.appliances.Appliance_Dryers;
 
 /**
@@ -77,9 +76,9 @@ public class MarketListingPageControllerTest {
 		newListing.setQtyAvailable(50);
 		newListing.setSeller(userController.addUser(user, mock(BindingResult.class)));
 		Appliance_Dryers dryer = new Appliance_Dryers();
-		dryer.setCategory("appliance");
-		dryer.setSubCategory("appliance");
-		widgetController.addDryer(dryer, result);
+		Category category = new Category("appliance");
+		dryer.setCategory(category);
+		widgetController.addWidget(dryer, result);
 		newListing.setWidgetSold(widgetController.addWidget(dryer, null));
 		newListing = mlDomainController.addMarketListing(newListing);
 	}

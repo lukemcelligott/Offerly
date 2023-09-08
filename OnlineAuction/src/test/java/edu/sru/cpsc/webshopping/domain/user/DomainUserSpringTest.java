@@ -2,15 +2,12 @@ package edu.sru.cpsc.webshopping.domain.user;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import edu.sru.cpsc.webshopping.domain.billing.DomainBillingSpringTest;
 import edu.sru.cpsc.webshopping.domain.billing.PaymentDetails;
 import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
 import edu.sru.cpsc.webshopping.util.enums.MessageType;
@@ -106,7 +103,6 @@ public class DomainUserSpringTest {
 		Message message = new Message();
 		User mySpam = new User();
 		User myTrash = new User();
-		User offender = new User();
 		User oldOwner = new User();
 		User oldReceiver = new User();
 		User owner = new User();
