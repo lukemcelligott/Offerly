@@ -40,8 +40,7 @@ public class ControllerBillingSpringTest {
 	/*
 	 * Tests to see if the cardTypes repository is empty 
 	 */
-	 
-	void cardTypeTest() throws Exception {
+	public void cardTypeTest() throws Exception {
 		
 		if(cardRepository.findAll() == null) {
 			System.out.println("true");
@@ -53,7 +52,7 @@ public class ControllerBillingSpringTest {
 	/*
 	 * Tests to see if the directDeposit repository is empty 
 	 */
-	void directDepositTest() {
+	public void directDepositTest() {
 		if(directDepositDetailsRepository == null) {
 			System.out.println("true");
 			
@@ -64,7 +63,7 @@ public class ControllerBillingSpringTest {
 	/*
 	 * Tests to see if the paymentDetails repository is empty 
 	 */
-	void paymentDetailsTest() {
+	public void paymentDetailsTest() {
 		if(paymentDetailsRepository == null) {
 			System.out.println("true");
 		}
@@ -75,7 +74,7 @@ public class ControllerBillingSpringTest {
 	/*
 	 * Tests to see if the paypal repository deletes/is empty
 	 */
-	void paypalTest() {
+	public void paypalTest() {
 		if(paypalRepository == null) {
 			System.out.println("true");
 		}
@@ -85,7 +84,7 @@ public class ControllerBillingSpringTest {
 	/*
 	 * Tests to see if the paypal repository has matching information
 	 */
-	void sellerRatingTest() {
+	public void sellerRatingTest() {
 		SellerRating rating = new SellerRating();
 		rating.setMaxPercent(100);
 		rating.setMinPercent(5);
@@ -100,7 +99,7 @@ public class ControllerBillingSpringTest {
 	/*
 	 * Tests to see if the paypal repository has information stored in DB
 	 */
-	void stateDetailsTest() {
+	public void stateDetailsTest() {
 		
 		if(stateDetailsRepository != null) {
 			System.out.print(true);

@@ -5,6 +5,8 @@ import javax.persistence.EntityManagerFactory;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -60,7 +62,7 @@ public void getPaymentDetails() throws Exception
 	testDetails.setCardholderName("tyler");
 	testDetails.setId(0L);
 	System.out.println(testDetails.getId());
-	when(paymentDetailsRepository.findById(testDetails.getId()).orElseThrow(() -> new IllegalArgumentException("Invalid ID passed to find a user"))).thenReturn(testDetails);
+	when(paymentDetailsRepository.findById(testDetails.getId())).thenReturn(Optional.of(testDetails));
 	assertThat(controller.getPaymentDetail(0L, null)).isEqualTo(testDetails);
 }
 
