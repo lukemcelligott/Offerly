@@ -328,6 +328,7 @@ public class MarketListingPageController {
   /**
    * Adds the current item to the User's wishlist
    *
+   * @param the market listing id of the current product
    * @return the current viewMarketListing page
    */
   @PostMapping({"/viewMarketListing/wishlistItem/{marketListingId}"})
@@ -338,6 +339,28 @@ public class MarketListingPageController {
 	  userController.addToWishlist(heldListing.getWidgetSold());
 	  // redirect the user to the listing for the widget (maybe change this to a 'widget added to watchlist page')
 	  return "redirect:/viewMarketListing/" + heldListing.getId();
+  }
+  
+  /**
+   * Gets all of the User's wishlisted items
+   *
+   * @param the market listing id of the current product
+   * @return the current viewMarketListing page
+   */
+  @RequestMapping({"/viewWishlist"})
+  public String getWishlist() {
+	  // define held listing as the targeted listing bby passing in the market listing ID
+	  //heldListing = marketListingController.getMarketListing(marketListingId);
+	  
+	  // get the currently logged in user
+	  User user = userController.getCurrently_Logged_In();
+	  
+	  user.getWishlistedWidgets();
+
+	  // call addToWishlist in UserController.java and pass in the widget assigned to heldListing
+	  
+	  // redirect the user to the watchlist.html page
+	  return "watchlist";
   }
 
   /**

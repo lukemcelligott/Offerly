@@ -51,7 +51,7 @@ public class UserController {
 	private UtilityController util;
 	@PersistenceContext
 	private EntityManager entityManager;
-	
+		
 	UserController(UserRepository userRepository,StatisticsDomainController statControl,
 			PaymentDetailsController paymentDetailsController, DirectDepositController directDepositDetailsController,
 			SellerRatingController sellerRatingController,UtilityController util, PaypalController paypalController) {

@@ -146,7 +146,7 @@ public class User implements UserDetails {
 	@OneToMany(mappedBy="buyer")
 	private Set<Transaction> transactions;
 	
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER) // added eager fetch type to eliminate the lazy initalization error. now gives a too many sql tables error
 	@JoinTable(
 		name = "WidgetWishlistEntry",
 		joinColumns = @JoinColumn(name="UserId"),

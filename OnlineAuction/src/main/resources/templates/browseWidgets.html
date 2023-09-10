@@ -100,13 +100,13 @@
 					<!-- need to come back and make this route to the watchlist page once implemented -->
 					
 					
-						<tr>
-							<form th:action="@{/viewMarketListing/wishlistItem/{id}(id = ${searchedMarkets.id})}" method="post">
-								<th colspan="2">
-									<button class="submitHybrid" id="addToWatchlistButton">Add to Watchlist</button>
-								</th>
-							</form>
-						</tr>
+					<tr>
+						<form th:action="@{/viewMarketListing/wishlistItem/{id}(id = ${searchedMarkets.id})}" method="post">
+							<th colspan="2">
+								<button class="submitHybrid" id="addToWatchlistButton"><span>Add to Watchlist</span></button>
+							</th>
+						</form>
+					</tr>
 					
 					
 				</table>

@@ -71,42 +71,42 @@
 		  </nav>
 	  
 		<div class="grid-item columns">
-			<th:block th:each="searchedMarkets: ${allMarketListings}" th:unless="${searchedMarkets.qtyAvailable == 0 || searchedMarkets.isDeleted == true}">
+			<th:block th:each="wishlistedWidgets: ${allWatchlistItems}" th:unless="${wishlistedWidgets.qtyAvailable == 0 || wishlistedWidgets.isDeleted == true}">
 				<table style="width: 80%; margin-bottom: 50px; margin-left: auto; margin-right: auto;">
 					<tr>
-						<th colspan="2"><p class="header-browse" th:text="${searchedMarkets.widgetSold.name}" style="margin-bottom:0;"></p></th>
+						<th colspan="2"><p class="header-browse" th:text="${wishlistedWidgets.widgetSold.name}" style="margin-bottom:0;"></p></th>
 					</tr>
 					<tr>
-						<td colspan="2"><img th:if="${searchedMarkets.coverImage == null}" style="width: 200px; height: 200px;" src="https://previews.123rf.com/images/kritchanut/kritchanut1406/kritchanut140600093/29213195-.jpg?fj=1" alt="Blank Listing Avatar">
-							<img th:unless="${searchedMarkets.coverImage == null}" style="width: 200px; height: 200px;" th:src="@{/listingImages/{image}(image = ${searchedMarkets.coverImage})}" alt="Listing Avatar" src="">
+						<td colspan="2"><img th:if="${wishlistedWidgets.coverImage == null}" style="width: 200px; height: 200px;" src="https://previews.123rf.com/images/kritchanut/kritchanut1406/kritchanut140600093/29213195-.jpg?fj=1" alt="Blank Listing Avatar">
+							<img th:unless="${wishlistedWidgets.coverImage == null}" style="width: 200px; height: 200px;" th:src="@{/listingImages/{image}(image = ${wishlistedWidgets.coverImage})}" alt="Listing Avatar" src="">
 						</td>
 					</tr>
 					<tr>
 						<td id="bg-color"><p style="margin-bottom: 0;">Quantity Available:</p></td>
-						<td><p style="margin-bottom: 0;" th:text="${searchedMarkets.qtyAvailable}"></p></td>
+						<td><p style="margin-bottom: 0;" th:text="${wishlistedWidgets.qtyAvailable}"></p></td>
 					</tr>
 					<tr>
 						<td id="bg-color"><p style="margin-bottom: 0;">Price:</p></td>
-						<td><p style="margin-bottom: 0;" th:text="'$' + ${searchedMarkets.pricePerItem}"></p></td>
+						<td><p style="margin-bottom: 0;" th:text="'$' + ${wishlistedWidgets.pricePerItem}"></p></td>
 					</tr>
 					<tr>
 						<td id="bg-color"><p style="margin-bottom: 0;">Auction Price:</p></td>
-						<td><p style="margin-bottom: 0;" th:text="'$' + ${searchedMarkets.pricePerItem}"></p></td>
+						<td><p style="margin-bottom: 0;" th:text="'$' + ${wishlistedWidgets.pricePerItem}"></p></td>
 					</tr>
 					<tr>
-						<th colspan="2"><a class="submitHybrid" th:href="@{/viewMarketListing/{id}(id = ${searchedMarkets.id})}"><span>View</span></a></th>
+						<th colspan="2"><a class="submitHybrid" th:href="@{/viewMarketListing/{id}(id = ${wishlistedWidgets.id})}"><span>View</span></a></th>
 					</tr>
 					<!-- Find a way to make the below fit on the line above without table outline -->
 					<!-- need to come back and make this route to the watchlist page once implemented -->
 					<tr>
-						<th colspan="2"><a class="submitHybrid" th:action="@{/{id}/add-to-watchlist(id = ${searchedMarkets.id})}" th:href="@{/viewMarketListing/{id}(id = ${searchedMarkets.id})}"><span>Remove from Watchlist</span></a></th>
+						<th colspan="2"><a class="submitHybrid" th:action="@{/{id}/add-to-watchlist(id = ${wishlistedWidgets.id})}" th:href="@{/viewMarketListing/{id}(id = ${wishlistedWidgets.id})}"><span>Remove from Watchlist</span></a></th>
 					</tr> 
 				</table>
 			</th:block>
 		</div>
 		
-		<div th:if="${#lists.isEmpty(allMarketListings)}">
-			<h2>There are no listings currently on the market.</h2>
+		<div th:if="${#lists.isEmpty(allWishlistItems)}">
+			<h2>You do not currently have anything added to your watchlist.</h2>
 		</div>
 	</body>
 </html>

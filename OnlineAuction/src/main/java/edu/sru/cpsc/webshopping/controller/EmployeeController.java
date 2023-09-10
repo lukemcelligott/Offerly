@@ -761,6 +761,7 @@ public class EmployeeController {
     model.addAttribute("allSellers", getAllSellers());
     model.addAttribute("page", getPage());
     model.addAttribute("user", user);
+    
     return "browseWidgets";
   }
   
@@ -774,6 +775,7 @@ public class EmployeeController {
     setPage("watchlistPage");
     setMasterPage("query");
     model.addAttribute("masterPage", getMasterPage());
+    
     getAllMarketListings().clear();
     getAllWidgets().clear();
     getAllSellers().clear();
@@ -782,23 +784,29 @@ public class EmployeeController {
     Iterable<User> allUsersIterator = userController.getAllUsers();
     allUsersIterator.iterator().forEachRemaining(u -> getAllUsers().add(u));
 
-    Iterable<MarketListing> allMarketListingsIterator = market.getAllListings();
-
-    allMarketListingsIterator.iterator().forEachRemaining(u -> getAllMarketListings().add(u));
-    allMarketListingsIterator
+    Iterable<MarketListing> allWatchlistItemsIterator = getWatchlistItems();
+    
+    allWatchlistItemsIterator.iterator().forEachRemaining(u -> getWatchlistItems().add(u));
+    allWatchlistItemsIterator
         .iterator()
         .forEachRemaining(u -> getAllWidgets().add(u.getWidgetSold()));
-    allMarketListingsIterator.iterator().forEachRemaining(u -> getAllSellers().add(u.getSeller()));
+    allWatchlistItemsIterator.iterator().forEachRemaining(u -> getAllSellers().add(u.getSeller()));
+
+    allWatchlistItemsIterator.iterator().forEachRemaining(u -> getWatchlistItems());
+    allWatchlistItemsIterator
+        .iterator()
+        .forEachRemaining(u -> getAllWidgets());
+    allWatchlistItemsIterator.iterator().forEachRemaining(u -> getAllSellers());
 
     model.addAttribute("users", getAllUsers());
-    model.addAttribute("allMarketListings", getAllMarketListings());
+    //model.addAttribute("allMarketListings", getAllMarketListings());
+    model.addAttribute("allWatchlistItems", getWatchlistItems());
     model.addAttribute("allWidgets", getAllWidgets());
     model.addAttribute("allSellers", getAllSellers());
     model.addAttribute("page", getPage());
     model.addAttribute("user", user);
-    
-    System.out.println(user);
-    
+    System.out.println(user.getWishlistedWidgets());
+    System.out.println(getWatchlistItems());
     return "watchlist";
   }
 
