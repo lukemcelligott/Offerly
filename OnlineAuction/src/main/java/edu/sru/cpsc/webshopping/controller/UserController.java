@@ -30,6 +30,7 @@ import edu.sru.cpsc.webshopping.controller.billing.SellerRatingController;
 import edu.sru.cpsc.webshopping.domain.billing.DirectDepositDetails;
 import edu.sru.cpsc.webshopping.domain.billing.PaymentDetails;
 import edu.sru.cpsc.webshopping.domain.billing.Paypal;
+import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.user.Message;
 import edu.sru.cpsc.webshopping.domain.user.SellerRating;
 import edu.sru.cpsc.webshopping.domain.user.Statistics;
@@ -74,16 +75,17 @@ public class UserController {
 	 */
 	@PostMapping("/add-to-wishlist")
 	@Transactional
-	public String addToWishlist(@Validated Widget widget) {
+	public String addToWishlist(@Validated MarketListing marketListing) {
 		if (Currently_Logged_In == null) {
 			throw new IllegalStateException("User not logged in when attempting to add new Widget to wishlist.");
 		}
 		User user = entityManager.find(User.class, Currently_Logged_In.getId());
-		Widget addedWidget = entityManager.find(Widget.class, widget.getId());
+		MarketListing addedWidget = entityManager.find(MarketListing.class, marketListing.getId());
 		if (addedWidget == null) {
 			throw new IllegalArgumentException("Widget pass to addToWishlist not found in database.");
 		}
 		user.getWishlistedWidgets().add(addedWidget);
+		this.Currently_Logged_In = user;
 		userRepository.save(user);
 		return("wishlist/success");
 	}

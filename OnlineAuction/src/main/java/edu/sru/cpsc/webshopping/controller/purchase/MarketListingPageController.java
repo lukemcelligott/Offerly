@@ -336,7 +336,7 @@ public class MarketListingPageController {
 	  // define held listing as the targeted listing bby passing in the market listing ID
 	  heldListing = marketListingController.getMarketListing(marketListingId);
 	  // call addToWishlist in UserController.java and pass in the widget assigned to heldListing
-	  userController.addToWishlist(heldListing.getWidgetSold());
+	  userController.addToWishlist(heldListing);
 	  // redirect the user to the listing for the widget (maybe change this to a 'widget added to watchlist page')
 	  return "redirect:/viewMarketListing/" + heldListing.getId();
   }

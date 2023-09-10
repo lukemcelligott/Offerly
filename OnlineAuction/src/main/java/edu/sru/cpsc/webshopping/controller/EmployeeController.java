@@ -799,14 +799,12 @@ public class EmployeeController {
     allWatchlistItemsIterator.iterator().forEachRemaining(u -> getAllSellers());
 
     model.addAttribute("users", getAllUsers());
-    //model.addAttribute("allMarketListings", getAllMarketListings());
-    model.addAttribute("allWatchlistItems", getWatchlistItems());
+    model.addAttribute("allWatchlistItems", user.getWishlistedWidgets());
     model.addAttribute("allWidgets", getAllWidgets());
     model.addAttribute("allSellers", getAllSellers());
     model.addAttribute("page", getPage());
     model.addAttribute("user", user);
-    System.out.println(user.getWishlistedWidgets());
-    System.out.println(getWatchlistItems());
+    System.out.println(user.getWishlistedWidgets()); // print the list of saved products in wishlist
     return "watchlist";
   }
 
