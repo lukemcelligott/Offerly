@@ -44,7 +44,7 @@
 		<script>
 			function addWatchlist() { // alert the user when they add an item to their watchlist
 			    var message = 'The item has been added to your watchlist.';
-			    // Display the alert
+			    // display the alert
 			    alert(message);
 			}
 		</script>
@@ -81,33 +81,36 @@
 		<div class="grid-item columns">
 			<th:block th:each="searchedMarkets: ${allMarketListings}" th:unless="${searchedMarkets.qtyAvailable == 0 || searchedMarkets.isDeleted == true}">
 				<table style="width: 80%; margin-bottom: 50px; margin-left: auto; margin-right: auto;">
+					<!-- Product Name -->
 					<tr>
 						<th colspan="2"><p class="header-browse" th:text="${searchedMarkets.widgetSold.name}" style="margin-bottom:0;"></p></th>
 					</tr>
+					<!-- Product Cover Image -->
 					<tr>
 						<td colspan="2"><img th:if="${searchedMarkets.coverImage == null}" style="width: 200px; height: 200px;" src="https://previews.123rf.com/images/kritchanut/kritchanut1406/kritchanut140600093/29213195-.jpg?fj=1" alt="Blank Listing Avatar">
 							<img th:unless="${searchedMarkets.coverImage == null}" style="width: 200px; height: 200px;" th:src="@{/listingImages/{image}(image = ${searchedMarkets.coverImage})}" alt="Listing Avatar" src="">
 						</td>
 					</tr>
+					<!-- Quantity Available -->
 					<tr>
 						<td id="bg-color"><p style="margin-bottom: 0;">Quantity Available:</p></td>
 						<td><p style="margin-bottom: 0;" th:text="${searchedMarkets.qtyAvailable}"></p></td>
 					</tr>
+					<!-- Price -->
 					<tr>
 						<td id="bg-color"><p style="margin-bottom: 0;">Price:</p></td>
 						<td><p style="margin-bottom: 0;" th:text="'$' + ${searchedMarkets.pricePerItem}"></p></td>
 					</tr>
+					<!-- Auction Price -->
 					<tr>
 						<td id="bg-color"><p style="margin-bottom: 0;">Auction Price:</p></td>
 						<td><p style="margin-bottom: 0;" th:text="'$' + ${searchedMarkets.pricePerItem}"></p></td>
 					</tr>
+					<!-- View -->
 					<tr>
 						<th colspan="2"><a class="submitHybrid" th:href="@{/viewMarketListing/{id}(id = ${searchedMarkets.id})}"><span>View</span></a></th>
 					</tr>
-					<!-- Find a way to make the below fit on the line above without table outline -->
-					<!-- need to come back and make this route to the watchlist page once implemented -->
-					
-					
+					<!-- Add to Watchlist -->
 					<tr>
 						<form th:action="@{/viewMarketListing/wishlistItem/{id}(id = ${searchedMarkets.id})}" method="post">
 							<th colspan="2">
@@ -121,6 +124,7 @@
 			</th:block>
 		</div>
 		
+		<!-- display when there are no listings -->
 		<div th:if="${#lists.isEmpty(allMarketListings)}">
 			<h2>There are no listings currently on the market.</h2>
 		</div>

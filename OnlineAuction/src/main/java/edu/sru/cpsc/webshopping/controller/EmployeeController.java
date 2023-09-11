@@ -804,8 +804,8 @@ public class EmployeeController {
     model.addAttribute("allSellers", getAllSellers());
     model.addAttribute("page", getPage());
     model.addAttribute("user", user);
-    System.out.println(user.getWishlistedWidgets()); // print the list of saved products in wishlist
-    return "watchlist";
+    
+    return "watchlist"; // return watchlist.html
   }
 
   @RequestMapping({"/searchMessageButton"})

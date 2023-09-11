@@ -81,13 +81,15 @@ public class UserController {
 		}
 		User user = entityManager.find(User.class, Currently_Logged_In.getId());
 		MarketListing addedWidget = entityManager.find(MarketListing.class, marketListing.getId());
+		// check if the widget is null
 		if (addedWidget == null) {
 			throw new IllegalArgumentException("Widget pass to addToWishlist not found in database.");
 		}
+		
 		user.getWishlistedWidgets().add(addedWidget);
+		//update the user
 		this.Currently_Logged_In = user;
 		userRepository.save(user);
-		//return("wishlist/success");
 	}
 	
 	/**
@@ -110,11 +112,9 @@ public class UserController {
 		}
 		
 		user.getWishlistedWidgets().remove(delWidget);
-		
+		// update the user
 		this.Currently_Logged_In = user;
 		userRepository.save(user);
-		
-		//return("watchlist");
 	}
 	
 	/**

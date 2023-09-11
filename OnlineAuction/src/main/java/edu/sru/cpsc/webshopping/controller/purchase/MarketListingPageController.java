@@ -337,7 +337,7 @@ public class MarketListingPageController {
 	  heldListing = marketListingController.getMarketListing(marketListingId);
 	  // call addToWishlist in UserController.java and pass in the widget assigned to heldListing
 	  userController.addToWishlist(heldListing);
-	  // redirect the user to the listing for the widget (maybe change this to a 'widget added to watchlist page')
+	  // redirect the user to the listing for the widget
 	  return "redirect:/viewMarketListing/" + heldListing.getId();
   }
   
@@ -351,11 +351,10 @@ public class MarketListingPageController {
   public String delWishlistItem(@PathVariable("marketListingId") long marketListingId, Model model) {
 	  // define held listing as the targeted listing bby passing in the market listing ID
 	  heldListing = marketListingController.getMarketListing(marketListingId);
-	  // call addToWishlist in UserController.java and pass in the widget assigned to heldListing
+	  // call removeFromWishlist in UserController.java and pass in the widget assigned to heldListing
 	  userController.removeFromWishlist(heldListing);
-	  // redirect the user to the listing for the widget (maybe change this to a 'widget added to watchlist page')
-	  //return "redirect:/viewMarketListing/" + heldListing.getId();
-	  return "redirect:/Watchlist";
+	  // redirect the user to the watchlist page
+ 	  return "redirect:/Watchlist";
   }
   
   /**

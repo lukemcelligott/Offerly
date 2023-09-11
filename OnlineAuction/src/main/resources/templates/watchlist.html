@@ -81,32 +81,36 @@
 		<div class="grid-item columns">
 			<th:block th:each="wishlistedWidgets: ${allWatchlistItems}" th:unless="${wishlistedWidgets.qtyAvailable == 0 || wishlistedWidgets.isDeleted == true}">
 				<table style="width: 80%; margin-bottom: 50px; margin-left: auto; margin-right: auto;">
+					<!-- Product Name -->
 					<tr>
 						<th colspan="2"><p class="header-browse" th:text="${wishlistedWidgets.widgetSold.name}" style="margin-bottom:0;"></p></th>
 					</tr>
+					<!-- Cover Image -->
 					<tr>
 						<td colspan="2"><img th:if="${wishlistedWidgets.coverImage == null}" style="width: 200px; height: 200px;" src="https://previews.123rf.com/images/kritchanut/kritchanut1406/kritchanut140600093/29213195-.jpg?fj=1" alt="Blank Listing Avatar">
 							<img th:unless="${wishlistedWidgets.coverImage == null}" style="width: 200px; height: 200px;" th:src="@{/listingImages/{image}(image = ${wishlistedWidgets.coverImage})}" alt="Listing Avatar" src="">
 						</td>
 					</tr>
+					<!-- Quantity Available -->
 					<tr>
 						<td id="bg-color"><p style="margin-bottom: 0;">Quantity Available:</p></td>
 						<td><p style="margin-bottom: 0;" th:text="${wishlistedWidgets.qtyAvailable}"></p></td>
 					</tr>
+					<!-- Price -->
 					<tr>
 						<td id="bg-color"><p style="margin-bottom: 0;">Price:</p></td>
 						<td><p style="margin-bottom: 0;" th:text="'$' + ${wishlistedWidgets.pricePerItem}"></p></td>
 					</tr>
+					<!-- Auction Price -->
 					<tr>
 						<td id="bg-color"><p style="margin-bottom: 0;">Auction Price:</p></td>
 						<td><p style="margin-bottom: 0;" th:text="'$' + ${wishlistedWidgets.pricePerItem}"></p></td>
 					</tr>
+					<!-- View -->
 					<tr>
 						<th colspan="2"><a class="submitHybrid" th:href="@{/viewMarketListing/{id}(id = ${wishlistedWidgets.id})}"><span>View</span></a></th>
 					</tr>
-					<!-- Find a way to make the below fit on the line above without table outline -->
-					<!-- need to come back and make this route to the watchlist page once implemented --> 
-					
+					<!-- Remove from Watchlist -->
 					<tr>
 						<form th:action="@{/viewMarketListing/delWishlistItem/{id}(id = ${wishlistedWidgets.id})}" method="post">
 							<th colspan="2">
@@ -119,6 +123,7 @@
 			</th:block>
 		</div>
 		
+		<!-- display when the user has nothing in their watchlist -->
 		<div th:if="${#lists.isEmpty(allWatchlistItems)}">
 			<h2>You do not currently have anything added to your watchlist.</h2>
 		</div>
