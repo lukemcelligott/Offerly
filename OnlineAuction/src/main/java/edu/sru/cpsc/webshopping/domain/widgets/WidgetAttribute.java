@@ -28,6 +28,10 @@ public class WidgetAttribute {
     @ManyToOne
     private Attribute attribute;
     
+	public WidgetAttribute() {
+
+	}
+
     public WidgetAttribute(Widget widget, Attribute attribute) {
     	this.attribute = attribute;
     	this.widget = widget;

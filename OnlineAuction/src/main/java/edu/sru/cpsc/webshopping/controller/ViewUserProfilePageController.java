@@ -75,7 +75,7 @@ public class ViewUserProfilePageController {
 		this.selectedUser = userController.getUser(userId, null);
 		this.soldItems = listingController.getListingbyUser(selectedUser);
 		this.soldItems = Arrays.stream(this.soldItems).filter(item -> !item.isDeleted()).toArray(MarketListing[]::new);
-		this.rating = ratingController.determineRating(selectedUser);
+		this.rating = selectedUser.getSellerRating();
 		this.messagePaneOpen = false;
 		model.addAttribute("selectedUser", selectedUser);
 		itemsEachPage = new Vector<Vector<MarketListing>>();

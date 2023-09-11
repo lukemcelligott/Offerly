@@ -16,6 +16,11 @@ body {
 	border-top: 1px solid black;
 }
 
+.breadcrumb {
+	margin: 20px; 
+    padding: 10px; 
+}
+
 #listing-info-header {
 	text-align: center;
 }
@@ -54,6 +59,21 @@ body {
 	display: flex;
 	align-items: center;
 	justify-content: center;
+}
+
+.seller-display {
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 5px;
+    width: fit-content;
+}
+
+.seller-display a:hover {
+    text-decoration: underline;
+}
+
+.rating {
+    font-size: 0.9rem;
 }
 
 .styled-button {

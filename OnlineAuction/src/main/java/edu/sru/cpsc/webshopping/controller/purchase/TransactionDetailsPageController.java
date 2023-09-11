@@ -17,18 +17,6 @@ import edu.sru.cpsc.webshopping.controller.WidgetController;
 import edu.sru.cpsc.webshopping.domain.market.Shipping;
 import edu.sru.cpsc.webshopping.domain.market.Transaction;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
-import edu.sru.cpsc.webshopping.domain.widgets.appliances.Appliance_Dryers;
-import edu.sru.cpsc.webshopping.domain.widgets.appliances.Appliance_Microwave;
-import edu.sru.cpsc.webshopping.domain.widgets.appliances.Appliance_Refrigerator;
-import edu.sru.cpsc.webshopping.domain.widgets.appliances.Appliance_Washers;
-import edu.sru.cpsc.webshopping.domain.widgets.appliances.Widget_Appliance;
-import edu.sru.cpsc.webshopping.domain.widgets.electronics.Electronics_Computers;
-import edu.sru.cpsc.webshopping.domain.widgets.electronics.Electronics_VideoGames;
-import edu.sru.cpsc.webshopping.domain.widgets.electronics.Widget_Electronics;
-import edu.sru.cpsc.webshopping.domain.widgets.lawncare.LawnCare_LawnMower;
-import edu.sru.cpsc.webshopping.domain.widgets.lawncare.Widget_LawnCare;
-import edu.sru.cpsc.webshopping.domain.widgets.vehicles.Vehicle_Car;
-import edu.sru.cpsc.webshopping.domain.widgets.vehicles.Widget_Vehicles;
 
 /**
  * Manages the transactionDetails page

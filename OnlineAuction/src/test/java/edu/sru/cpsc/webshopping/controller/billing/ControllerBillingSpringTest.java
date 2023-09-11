@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 
 import edu.sru.cpsc.webshopping.domain.user.SellerRating;
+import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.repository.billing.CardTypeRepository;
 import edu.sru.cpsc.webshopping.repository.billing.DirectDepositDetailsRepository;
 import edu.sru.cpsc.webshopping.repository.billing.PaymentDetailsRepository;
@@ -85,14 +86,13 @@ public class ControllerBillingSpringTest {
 	 * Tests to see if the paypal repository has matching information
 	 */
 	public void sellerRatingTest() {
-		SellerRating rating = new SellerRating();
-		rating.setMaxPercent(100);
-		rating.setMinPercent(5);
-		rating.setRatingName("Rate");
+		User user = new User();
+		SellerRating rating = new SellerRating(user);
+		rating.setRating(5);
 		
-		assertEquals(100, rating.getMaxPercent());
-		assertEquals(5, rating.getMinPercent());
-		assertEquals("Rate", rating.getRatingName());	
+		assertEquals(5, rating.getRating());
+		assertEquals(1, rating.getNumRatings());
+		assertEquals("Excellent", rating.getRatingName());	
 	}
 	
 	@Test
