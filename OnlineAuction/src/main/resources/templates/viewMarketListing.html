@@ -14,6 +14,7 @@
         
         <link th:href="@{/styles/button.css}" rel="stylesheet"/>
         <link th:href="@{/styles/landing.css}" rel="stylesheet"/>
+        <link th:href="@{/styles/browse.css}" rel="stylesheet"/>
         <link th:href="@{/styles/employee_page.css}" rel="stylesheet"/>
         
         <style>
@@ -263,8 +264,8 @@
                     </div>
                     
                     <!-- Purchase Options -->
-                    <span class="row">
-						<!-- add t0 watchlist button -->
+                    <span class="row align-items-center" style="flex-wrap: nowrap;">
+						<!-- add to watchlist button -->
                     	<div class="col-auto">
 	                    	<tr>
 							 	<form th:action="@{/viewMarketListing/wishlistItem/{id}(id = ${currListing.getId()})}" method="post">
@@ -302,8 +303,8 @@
 	                             <a class="btn btn-danger" href="/BrowseWidgetsButton">Back</a>
 	                        </div>
                     	</form>
-                    	
-                    </div>
+                    </span>
+                    
                     <!-- Seller options-->
                     <form th:if="${!isBuyer}" id="update-listing" class="row g-3 d-flex justify-content-center my-2" action="#" th:action="@{/viewMarketListing/editListing}" th:object=${currListing} method="post">
                         <input type="hidden" th:field="*{id}">
