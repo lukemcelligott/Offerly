@@ -15,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
@@ -61,6 +62,9 @@ public class MarketListing {
 	
 	@OneToMany(mappedBy="marketListing", cascade = CascadeType.MERGE)
 	private Set<Transaction> transactions;
+	
+	@OneToOne(mappedBy = "marketListing", cascade = CascadeType.ALL)
+	private Auction auction;
 	
 
 	public long getId() {
@@ -135,6 +139,14 @@ public class MarketListing {
 	public void setCoverImage(String coverImage) {
 		this.coverImage = coverImage;
 	}
+	
+	public Auction getAuction() {
+	    return auction;
+    }
+
+	public void setAuction(Auction auction) {
+	    this.auction = auction;
+    }
 
 
 }

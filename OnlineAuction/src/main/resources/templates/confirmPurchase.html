@@ -6,7 +6,11 @@
 		<meta charset="ISO-8859-1">
 		<link th:href="@{/styles/employee_page.css}" rel="stylesheet"/>
 		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-	  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Gemunu%20Libre">
+	    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+	    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 	  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
 	  <!-- https://developer.paypal.com/sdk/js/configuration/ information on configuring the url correctly with the option you want -->
@@ -74,6 +78,26 @@
 			display: inline-block;
 			}
 			
+			/* Use Poppins for entire accordion */
+			#shippingAccordion, #purchaseDetailsAccordion {
+    		font-family: 'Poppins', sans-serif;
+			}
+
+			#shippingHeading .btn-link, #purchaseDetailsAccordion .btn-link  {
+    		color: #0d6efd !important; /* Using !important to ensure our color is applied */
+   			text-decoration: none;  /* To remove the underline */
+			}
+
+			/* Change color of accordion header on hover for better UX */
+			#shippingHeading .btn-link:hover, #purchaseDetailsAccordion .btn-link:hover {
+    		color: #0b5cda !important;  /* Slightly darker shade for hover, using !important for override */
+			}
+
+			.custom-font-style{
+    		font-family: 'Poppins', sans-serif;
+    		font-size: 1.5em;
+			}
+			
 		</style>
 	</head>
 	
@@ -86,58 +110,88 @@
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
 		
 		<div id="page">
-		
+			<!-- Confirm Purchase Accordion -->
 			<div style="width:33%;" class="card mx-auto mh-auto mw-30 overflow-auto">
 				<div class="card-header d-flex justify-content-center">
 					<h1>Confirm Purchase</h1>
 				</div>
 				<div class="card-body">
-				<div class="my-2">
-						<div class="d-flex justify-content-center">
-							<h2>Purchase Details</h2>
-						</div>
-						<div class="row">
-							<ul class="col-sm-4 list-group mb-3">
-								<li class="list-group-item">Total Ordered: <span th:text="${purchase.qtyBought}"></span></li>
-								<li class="list-group-item">Price per Item: $<span th:text="${marketListing.pricePerItem}"></span></li>
-							</ul>
-							<ul class="col-sm-4 list-group mb-3">
-								<li class="list-group-item">Total Price Before Taxes: $<span th:text="${purchase.totalPriceBeforeTaxes}"></span></li>
-								<li class="list-group-item">Total Price After Taxes: $<span th:text="${purchase.totalPriceAfterTaxes}"></span></li>
-							</ul>
-							<ul class="col-sm-4 list-group mb-3">
-								<li class="list-group-item">Product Name: <span th:text="${widget.name}"></span></li>
-								<li class="list-group-item">Product Description: <span th:text="${widget.description}"></span></li>
-							</ul>
-						</div>
-					</div>
+				<div class="accordion" id="purchaseDetailsAccordion">
+					<div class="card">
+						<div class="card-header bg-white text-center" id="headingOne">
+							 <h2 class="mb-0">
+								<button class="btn btn-link text-dark font-weight-bold text-uppercase" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" style="text-decoration: none;">
+									Purchase Details
+								 </button>
+						  	</h2>
+					   	</div>	
+					   	
+					   	 <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#purchaseDetailsAccordion">
+							<div class="card-body">	
+						 		<div class="row">
+									<ul class="col-sm-4 list-group mb-3">	 
+								 		 <liclass="list-group-item">Total Ordered: <span th:text="${purchase.qtyBought}"></span></li>
+                        				 <li class="list-group-item">Price per Item: $<span th:text="${marketListing.pricePerItem}"></span></li>
+                        			 </ul> 
+                        			 <ul class="col-sm-4 list-group mb-3">
+										 <li class="list-group-item">Total Price Before Taxes: $<span th:text="${purchase.totalPriceBeforeTaxes}"></span></li>
+                       					 <li class="list-group-item">Total Price After Taxes: $<span th:text="${purchase.totalPriceAfterTaxes}"></span></li>
+                       				 </ul>
+                       				 <ul class="col-sm-4 list-group mb-3">
+										<li class="list-group-item">Product Name: <span th:text="${widget.name}"></span></li>
+                        				<li class="list-group-item">Product Description: <span th:text="${widget.description}"></span></li>
+                    				</ul>
+                    			</div>
+                    		 </div>
+                    	 </div>
+                    	</div>
+                    </div>
+                    					
 					<hr>
-				<div class="d-flex justify-content-center">
-					<h2>Shipping Address</h2>
-				</div>
-				<div style="margin-bottom: 4px" th:if="${selectedAddress != null and toShipping == false}" class="d-flex justify-content-center">
-					<h3 th:inline="text">Address:&nbsp[[${selectedAddress.streetAddress}]],&nbsp[[${selectedAddress.city}]],&nbsp[[${selectedAddress.state.stateName}]],&nbsp[[${selectedAddress.postalCode}]]</h3>
-				</div>
-				<div th:if="${selectedAddress == null and toShipping == false}" class="d-flex justify-content-center">
-					<h3 style="color:red;">A Shipping Address Must Be Added</h3>
-				</div>
-				<th:block th:if="${toShipping == false}">
-				<th:block th:if="${selectedAddress == null}">
-					<h2 class="d-flex justify-content-center"><a class="btn btn-lg btn-success" th:href="@{/toShipping}">Add</a></h2>
-				</th:block>
-				<th:block th:unless="${selectedAddress == null}">
-					<h2 class="d-flex justify-content-center"><a class="btn btn-lg btn-success" th:href="@{/toShipping}">Change</a></h2>
-				</th:block>
-				</th:block>
-				
-				<th:block th:if="${toShipping}">
-					<div th:insert="confirmShippingAddressPage :: confirmShippingAddressPage"></div>
-				</th:block>
-				<hr>
-				<div th:if="${errMessage != null}" th:text="${errMessage}" class="alert alert-danger d-flex justify-content-center my-3">
-				</div> 
-				
-				
+					
+				<!-- Shipping Address Accordion -->
+	<div class="accordion" id="shippingAccordion">
+    		<div class="card">
+        		<div class="card-header bg-white text-center" id="shippingHeading">
+           			<div class="d-flex justify-content-center">
+                		<h2 class="mb-0">
+                    		<button class="btn btn-link text-dark font-weight-bold text-uppercase" data-toggle="collapse" data-target="#shippingCollapse" aria-expanded="false" aria-controls="shippingCollapse" style="text-decoration: none;">
+                        	Shipping Address
+                    		</button>
+                		</h2>
+            		</div>
+       			</div>
+        	<div id="shippingCollapse" class="collapse show" aria-labelledby="shippingHeading" data-parent="#shippingAccordion">
+            <div class="card-body">
+                <!-- Content Begins -->
+            <div style="margin-bottom: 4px" th:if="${selectedAddress != null and toShipping == false}" class="d-flex justify-content-center">
+            	<p class="custom-font-style" th:inline="text">Address:&nbsp[[${selectedAddress.streetAddress}]],&nbsp[[${selectedAddress.city}]],&nbsp[[${selectedAddress.state.stateName}]],&nbsp[[${selectedAddress.postalCode}]]</p>
+            </div>
+            <div th:if="${selectedAddress == null and toShipping == false}" class="d-flex justify-content-center">
+            	<h3 style="color:red;">A Shipping Address Must Be Added</h3>
+            </div>
+                <th:block th:if="${toShipping == false}">
+                    <th:block th:if="${selectedAddress == null}">
+                        <h2 class="d-flex justify-content-center"><a class="btn btn-lg btn-success" th:href="@{/toShipping}">Add</a></h2>
+                    </th:block>
+                    <th:block th:unless="${selectedAddress == null}">
+                        <h2 class="d-flex justify-content-center"><a class="btn btn-lg btn-success" th:href="@{/toShipping}">Change</a></h2>
+                    </th:block>
+                	</th:block>
+                	<th:block th:if="${toShipping}">
+                    <div th:insert="confirmShippingAddressPage :: confirmShippingAddressPage"></div>
+                	</th:block>
+                	
+                	<div th:if="${errMessage != null}" th:text="${errMessage}" class="alert alert-danger d-flex justify-content-center my-3">
+                	</div>
+                	<!-- Content Ends -->
+            		</div>
+        			</div>
+    			</div>
+			</div>
+			
+			<hr>
+	
 				<div class="d-flex justify-content-center">
 					<h2>Payment Details</h2>
 				</div>

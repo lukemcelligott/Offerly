@@ -2,6 +2,8 @@ package edu.sru.cpsc.webshopping.controller;
 
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
+
+import edu.sru.cpsc.webshopping.domain.market.Auction;
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.widgets.WidgetImage;
 import edu.sru.cpsc.webshopping.domain.market.MarketListingCSVModel;
@@ -229,6 +231,7 @@ public class AddWidgetController
 		model.addAttribute("listing", marketListing);
 		model.addAttribute("Category", category);
 		model.addAttribute("user", userController.getCurrently_Logged_In());
+		marketListing.setAuction(new Auction());
 		return "createListing";
 	}
 	
