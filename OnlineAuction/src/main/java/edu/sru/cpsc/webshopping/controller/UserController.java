@@ -68,14 +68,14 @@ public class UserController {
 	
 
 	/**
-	 * User of Currently_Logged_In_User in database has Widget added to their list of wishlisted items
-	 * @param widget Widget to wishlist
+	 * User of Currently_Logged_In_User in database has MarketListing added to their list of wishlisted items
+	 * @param marketListing MarketListing to add to wishlist
 	 * @exception IllegalStateException if no user is logged in
 	 * @exception IllegalArgumentException if the wishlisted Widget is not found in the database
 	 */
 	@PostMapping("/add-to-wishlist")
 	@Transactional
-	public String addToWishlist(@Validated MarketListing marketListing) {
+	public void addToWishlist(@Validated MarketListing marketListing) {
 		if (Currently_Logged_In == null) {
 			throw new IllegalStateException("User not logged in when attempting to add new Widget to wishlist.");
 		}
@@ -87,7 +87,34 @@ public class UserController {
 		user.getWishlistedWidgets().add(addedWidget);
 		this.Currently_Logged_In = user;
 		userRepository.save(user);
-		return("wishlist/success");
+		//return("wishlist/success");
+	}
+	
+	/**
+	 * User of Currently_Logged_In_User in database has MarketListing removed from their list of wishlisted items
+	 * @param marketListing MarketListing to remove from wishlist
+	 * @exception IllegalStateException if no user is logged in
+	 * @exception IllegalArgumentException if the wishlisted Widget is not found in the database
+	 */
+	@PostMapping("/remove-from-wishlist")
+	@Transactional
+	public void removeFromWishlist(@Validated MarketListing marketListing) {
+		if (Currently_Logged_In == null) {
+			throw new IllegalStateException("User not logged in when attempting to remove Widget from wishlist.");
+		}
+		User user = entityManager.find(User.class, Currently_Logged_In.getId());
+		MarketListing delWidget = entityManager.find(MarketListing.class, marketListing.getId());
+		// check if the widget is null
+		if (delWidget == null) {
+			throw new IllegalArgumentException("Widget pass to removeFromWishlist not found in database.");
+		}
+		
+		user.getWishlistedWidgets().remove(delWidget);
+		
+		this.Currently_Logged_In = user;
+		userRepository.save(user);
+		
+		//return("watchlist");
 	}
 	
 	/**

@@ -29,7 +29,9 @@ li.pointer {
 }
 
 #addToWatchlistButton {
-	width: auto; /* Allow the button to adjust its width based on content */
+	/* Allow the button to resize based on content */
+	width: auto; 
+	height: auto;
    	
 }
 

@@ -342,6 +342,23 @@ public class MarketListingPageController {
   }
   
   /**
+   * Removes the current item from the User's wishlist
+   *
+   * @param the market listing id of the current product
+   * @return the current viewMarketListing page
+   */
+  @PostMapping({"/viewMarketListing/delWishlistItem/{marketListingId}"})
+  public String delWishlistItem(@PathVariable("marketListingId") long marketListingId, Model model) {
+	  // define held listing as the targeted listing bby passing in the market listing ID
+	  heldListing = marketListingController.getMarketListing(marketListingId);
+	  // call addToWishlist in UserController.java and pass in the widget assigned to heldListing
+	  userController.removeFromWishlist(heldListing);
+	  // redirect the user to the listing for the widget (maybe change this to a 'widget added to watchlist page')
+	  //return "redirect:/viewMarketListing/" + heldListing.getId();
+	  return "redirect:/Watchlist";
+  }
+  
+  /**
    * Gets all of the User's wishlisted items
    *
    * @param the market listing id of the current product

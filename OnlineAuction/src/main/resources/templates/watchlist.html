@@ -40,6 +40,14 @@
 				margin: 20px;
 			}
 		</style>
+		
+		<script>
+			function removeWatchlist() { // alert the user when they add an item to their watchlist
+			    var message = 'The item has been removed from your watchlist.';
+			    // Display the alert
+			    alert(message);
+			}
+		</script>
 	</head>
 
 	<body>
@@ -97,10 +105,16 @@
 						<th colspan="2"><a class="submitHybrid" th:href="@{/viewMarketListing/{id}(id = ${wishlistedWidgets.id})}"><span>View</span></a></th>
 					</tr>
 					<!-- Find a way to make the below fit on the line above without table outline -->
-					<!-- need to come back and make this route to the watchlist page once implemented -->
+					<!-- need to come back and make this route to the watchlist page once implemented --> 
+					
 					<tr>
-						<th colspan="2"><a class="submitHybrid" th:action="@{/{id}/add-to-watchlist(id = ${wishlistedWidgets.id})}" th:href="@{/viewMarketListing/{id}(id = ${wishlistedWidgets.id})}"><span>Remove from Watchlist</span></a></th>
-					</tr> 
+						<form th:action="@{/viewMarketListing/delWishlistItem/{id}(id = ${wishlistedWidgets.id})}" method="post">
+							<th colspan="2">
+								<button class="submitHybrid" id="addToWatchlistButton" onclick="removeWatchlist()"><span>Remove from Watchlist</span></button>
+							</th>
+						</form>
+					</tr>
+					
 				</table>
 			</th:block>
 		</div>

@@ -47,6 +47,14 @@
         	color: #333; /* Text color */
             }
         </style>
+        
+        <script>
+			function addWatchlist() { // alert the user when they add an item to their watchlist
+			    var message = 'The item has been added to your watchlist.';
+			    // Display the alert
+			    alert(message);
+			}
+		</script>
     </head>
     <body>
         <!-- HEADER BAR -->
@@ -256,34 +264,43 @@
                     
                     <!-- Purchase Options -->
                     <span class="row">
+						<!-- add t0 watchlist button -->
+                    	<div class="col-auto">
+	                    	<tr>
+							 	<form th:action="@{/viewMarketListing/wishlistItem/{id}(id = ${currListing.getId()})}" method="post">
+									<th colspan="2">
+										<button class="submitHybrid" id="addToWatchlistButton" onclick="addWatchlist()"><span>Add to Watchlist</span></button>
+									</th>
+								</form>
+							</tr>
+                    	</div>
+						
                     	<form th:if="${isBuyer}" id="buy-product" class="row g-3 d-flex justify-content-center my-2" action="#" th:action="@{/viewMarketListing/attemptPurchase}" th:object=${newTransaction} method="post">
-                       	 <div class="col-auto">
-                           	 <label for="qtyBought" class="col-form-label"> Number to Buy: </label>
-                       	 </div>
-                       	 <div class="col-auto">
-                           	 <input id="qtyBought" class="form-control" name="qtyBought" type="number" th:field="*{qtyBought}" placeholder="Number to Buy" min="1" th:max="${currListing.qtyAvailable}" value="0" required></input>
-                         </div>
-                         <div class="col-auto">
-                          	 <input class="btn btn-success" id="purchaseButton" name="buyProduct" type="submit" th:value="'Buy Now for $' + ${currListing.pricePerItem}" />
-                         </div>
-                         <div class="col-auto custom-align">	
-                         <div style="margin-top: -10px; border: 1px solid #ccc; padding: 10px;"> 
-                           <input type="number" class="form-control" id="bidAmount" placeholder="Enter your bid (NOT FUNCTIONAL)"> 
-                         </div>		 
-                         </div>
-                         <div class="col-auto">
-                          <input class="btn btn-success" id="bidButton" name="placeBid" type="submit" value="Bid Now" />
-                         </div>
-                         <div class="col-auto">
-						     <tr>
-								<th colspan="2">
-									<button class="submitHybrid" id="addToWatchlistButton">Add to Watchlist</button>
-								</th>
-						     </tr>
-                       	 </div>
-                         <div class="col-auto">
-                             <a class="btn btn-danger" href="/BrowseWidgetsButton">Back</a>
-                         </div>
+                       		<div class="col-auto">
+                           	 	<label for="qtyBought" class="col-form-label"> Number to Buy: </label>
+                       	 	</div>
+                       	 	<!-- quantity selector -->
+                       	 	<div class="col-auto">
+                           	 	<input id="qtyBought" class="form-control" name="qtyBought" type="number" th:field="*{qtyBought}" placeholder="Number to Buy" min="1" th:max="${currListing.qtyAvailable}" value="0" required></input>
+                         	</div>
+                         	<!-- buy now button -->
+                         	<div class="col-auto">
+                          	 	<input class="btn btn-success" id="purchaseButton" name="buyProduct" type="submit" th:value="'Buy Now for $' + ${currListing.pricePerItem}" />
+                         	</div>
+                         	<!-- bid input -->
+                         	<div class="col-auto custom-align">	
+		                         <div style="margin-top: -10px; border: 1px solid #ccc; padding: 10px;"> 
+		                           <input type="number" class="form-control" id="bidAmount" placeholder="Enter your bid (NOT FUNCTIONAL)"> 
+		                         </div>		 
+                         	</div>
+                         	<!-- place bid button -->
+                         	<div class="col-auto">
+                          		<input class="btn btn-success" id="bidButton" name="placeBid" type="submit" value="Bid Now" />
+                         	</div>
+                         	<!-- back button -->
+	                        <div class="col-auto">
+	                             <a class="btn btn-danger" href="/BrowseWidgetsButton">Back</a>
+	                        </div>
                     	</form>
                     	
                     </div>

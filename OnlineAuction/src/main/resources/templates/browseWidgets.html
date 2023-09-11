@@ -40,6 +40,14 @@
 				margin: 20px;
 			}
 		</style>
+		
+		<script>
+			function addWatchlist() { // alert the user when they add an item to their watchlist
+			    var message = 'The item has been added to your watchlist.';
+			    // Display the alert
+			    alert(message);
+			}
+		</script>
 	</head>
 
 	<body>
@@ -103,7 +111,7 @@
 					<tr>
 						<form th:action="@{/viewMarketListing/wishlistItem/{id}(id = ${searchedMarkets.id})}" method="post">
 							<th colspan="2">
-								<button class="submitHybrid" id="addToWatchlistButton"><span>Add to Watchlist</span></button>
+								<button class="submitHybrid" id="addToWatchlistButton" onclick="addWatchlist()"><span>Add to Watchlist</span></button>
 							</th>
 						</form>
 					</tr>
