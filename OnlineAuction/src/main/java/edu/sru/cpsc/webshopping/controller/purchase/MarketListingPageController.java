@@ -92,7 +92,7 @@ public class MarketListingPageController {
 
   /** Reloads the page model data */
   public void reloadModel(Model model) {
-    tempWidget = heldListing.getWidgetSold();
+
     model.addAttribute("currListing", heldListing);
     model.addAttribute("widget", heldListing.getWidgetSold());
     model.addAttribute("category", heldListing.getWidgetSold().getCategory());
@@ -234,11 +234,8 @@ public class MarketListingPageController {
    */
   @PostMapping({"/viewMarketListing/editListing"})
   public String editListing(@Validated MarketListing marketListing, Model model) {
-    marketListing.setSeller(heldListing.getSeller());
-    marketListing.setTransactions(heldListing.getTransactions());
-    marketListing.setWidgetSold(heldListing.getWidgetSold());
     marketListingController.editMarketListing(marketListing);
-    return "redirect:/viewMarketListing/" + heldListing.getId();
+    return "redirect:/viewMarketListing/" + marketListing.getId();
   }
 
   /**

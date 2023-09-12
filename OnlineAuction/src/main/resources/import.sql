@@ -15,6 +15,7 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+SET foreign_key_checks = 0;
 --
 -- Dumping data for table `applicant`
 --
@@ -40,18 +41,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `category` WRITE;
 /*!40000 ALTER TABLE `category` DISABLE KEYS */;
-INSERT INTO `category` VALUES (1, 'Vehicle Parts', 1, null);
+INSERT INTO `category` VALUES (1,'Vehicle Parts',1,NULL);
 /*!40000 ALTER TABLE `category` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Dumping data for table `attribute`
---
-
-LOCK TABLES `attribute` WRITE;
-/*!40000 ALTER TABLE `attribute` DISABLE KEYS */;
-INSERT INTO `attribute` VALUES (1, 'Year', 1), (2, 'Model', 1), (3, 'Color', 1);
-/*!40000 ALTER TABLE `attribute` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -61,6 +52,16 @@ UNLOCK TABLES;
 LOCK TABLES `direct_deposit_details` WRITE;
 /*!40000 ALTER TABLE `direct_deposit_details` DISABLE KEYS */;
 /*!40000 ALTER TABLE `direct_deposit_details` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `attribute`
+--
+
+LOCK TABLES `attribute` WRITE;
+/*!40000 ALTER TABLE `attribute` DISABLE KEYS */;
+INSERT INTO `attribute` VALUES (1,'Year',1),(2,'Model',1),(3,'Color',1);
+/*!40000 ALTER TABLE `attribute` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -87,7 +88,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `hibernate_sequence` WRITE;
 /*!40000 ALTER TABLE `hibernate_sequence` DISABLE KEYS */;
-INSERT INTO `hibernate_sequence` VALUES (5);
+INSERT INTO `hibernate_sequence` VALUES (12),(12);
 /*!40000 ALTER TABLE `hibernate_sequence` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -124,6 +125,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `market_listing` WRITE;
 /*!40000 ALTER TABLE `market_listing` DISABLE KEYS */;
+INSERT INTO `market_listing` VALUES (7,'2planet_space_outer_space_144566_3840x2160.jpg',_binary '\0',12.00,1,2,3);
 /*!40000 ALTER TABLE `market_listing` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -206,7 +208,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `statistics` WRITE;
 /*!40000 ALTER TABLE `statistics` DISABLE KEYS */;
-INSERT INTO `statistics` VALUES (1,2,'2023-09-10 15:59:54.556632','Account with username: userName was created',15,1),(4,3,'2023-09-10 16:00:33.477313','userName logged in',16,1);
+INSERT INTO `statistics` VALUES (1,2,'2023-09-10 15:59:54.556632','Account with username: userName was created',15,1),(2,3,'2023-09-11 18:56:18.274476','userName logged in',18,1),(4,3,'2023-09-10 16:00:33.477313','userName logged in',16,1),(10,3,'2023-09-11 19:07:54.350258','userName logged in',19,1),(11,3,'2023-09-11 20:28:52.485102','userName logged in',20,1);
 /*!40000 ALTER TABLE `statistics` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -271,6 +273,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `widget` WRITE;
 /*!40000 ALTER TABLE `widget` DISABLE KEYS */;
+INSERT INTO `widget` VALUES (3,'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.','Super Cool Part',1);
 /*!40000 ALTER TABLE `widget` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -280,6 +283,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `widget_attribute` WRITE;
 /*!40000 ALTER TABLE `widget_attribute` DISABLE KEYS */;
+INSERT INTO `widget_attribute` VALUES (4,'Model','asdf',NULL,3),(5,'Color','yeller',NULL,3),(6,'Year','2012',NULL,3);
 /*!40000 ALTER TABLE `widget_attribute` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -289,6 +293,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `widget_image` WRITE;
 /*!40000 ALTER TABLE `widget_image` DISABLE KEYS */;
+INSERT INTO `widget_image` VALUES (8,'2planet_space_outer_space_144566_3840x2160.jpg',7),(9,'2planet_space_outer_space_144566_3840x2160.jpg',7);
 /*!40000 ALTER TABLE `widget_image` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -319,4 +324,6 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-09-10 16:02:26
+-- Dump completed on 2023-09-11 20:45:59
+
+SET foreign_key_checks = 1;

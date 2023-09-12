@@ -45,8 +45,9 @@ public class SellerRating {
 	}
 
 	public float getRating() {
-		if (noRatings())
+		if (noRatings()) {
 			return -1;
+		}
 		return rating;
 	}
 
