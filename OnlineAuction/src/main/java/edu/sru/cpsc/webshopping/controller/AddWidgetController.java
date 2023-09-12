@@ -213,7 +213,7 @@ public class AddWidgetController
 		model.addAttribute("listing", marketListing);
 		model.addAttribute("Category", category);
 		model.addAttribute("user", userController.getCurrently_Logged_In());
-		marketListing.setAuction(new Auction());
+		
 		return "createListing";
 	}
 	
@@ -233,8 +233,9 @@ public class AddWidgetController
 	@RequestMapping("/addListing")
 	public String addListing(Model model, @RequestParam("listingCoverImage") MultipartFile coverImage, @RequestParam("imageUpload") MultipartFile[] files, @RequestParam("qtyAvailable") Long qty, RedirectAttributes attributes, @Valid @ModelAttribute MarketListing marketListing, BindingResult result)
 	{
-		
-		
+		marketListing.getAuction().setCurrentBid(marketListing.getAuction().getStartingBid());
+
+		marketListing.setAuctionPrice(marketListing.getAuction().getStartingBid());
 		marketListing.setQtyAvailable(qty);
 		model.addAttribute("pricePerItem", marketListing);
 		model.addAttribute("auctionPrice", marketListing);
@@ -291,6 +292,8 @@ public class AddWidgetController
 		
 		if (result.hasErrors())
 		{
+			//print error
+			System.out.println(result.getAllErrors());
 			System.out.println(marketListing.getQtyAvailable());
 			setWidgetStorage(widget);
 

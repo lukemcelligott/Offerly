@@ -14,6 +14,7 @@ import edu.sru.cpsc.webshopping.util.PreLoad;
 
 import java.math.BigDecimal;
 import java.net.URI;
+import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
@@ -234,7 +235,7 @@ public class MarketListingDomainController {
 	public MarketListing updateMarketListingAuction(
 	        @RequestParam("marketListingId") Long marketListingId, 
 	        @RequestParam("startingBid") BigDecimal startingBid, 
-	        @RequestParam("endAuctionDate") LocalDateTime endAuctionDate) {   // assuming java.util.Date, adjust as necessary
+	        @RequestParam("endAuctionDate") Date endAuctionDate) {   // assuming java.util.Date, adjust as necessary
 	
 	    // Find the MarketListing entity
 	    MarketListing marketListing = entityManager.find(MarketListing.class, marketListingId);
