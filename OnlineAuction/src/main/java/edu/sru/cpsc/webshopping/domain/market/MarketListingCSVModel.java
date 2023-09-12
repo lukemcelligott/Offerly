@@ -8,6 +8,7 @@ public class MarketListingCSVModel {
 
   private long widgetId;
   private BigDecimal pricePerItem;
+  private BigDecimal auctionPrice;
   private long qtyAvailable;
 
 }

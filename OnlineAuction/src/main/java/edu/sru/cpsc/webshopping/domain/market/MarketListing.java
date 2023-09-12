@@ -15,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
@@ -40,6 +41,10 @@ public class MarketListing {
 	private BigDecimal pricePerItem;
 	
 	@NonNull
+	@Column(precision = 10, scale = 2, columnDefinition="DECIMAL(10, 2)")
+	private BigDecimal auctionPrice;
+	
+	@NonNull
 	@Min(value=0, message="Must have 0 or more items available.")
 	private long qtyAvailable;
 	
@@ -62,6 +67,8 @@ public class MarketListing {
 	@OneToMany(mappedBy="marketListing", cascade = CascadeType.MERGE)
 	private Set<Transaction> transactions;
 	
+	@OneToOne(mappedBy = "marketListing", cascade = CascadeType.ALL)
+	private Auction auction;
 
 	public long getId() {
 		return id;
@@ -77,6 +84,14 @@ public class MarketListing {
 
 	public void setPricePerItem(BigDecimal pricePerItem) {
 		this.pricePerItem = pricePerItem;
+	}
+	
+	public BigDecimal getAuctionPrice() {
+		return auctionPrice;
+	}
+
+	public void setAuctionPrice(BigDecimal auctionPrice) {
+		this.auctionPrice = auctionPrice;
 	}
 
 	public long getQtyAvailable() {
@@ -135,6 +150,14 @@ public class MarketListing {
 	public void setCoverImage(String coverImage) {
 		this.coverImage = coverImage;
 	}
+	
+	public Auction getAuction() {
+	    return auction;
+    }
+
+	public void setAuction(Auction auction) {
+	    this.auction = auction;
+    }
 
 
 }

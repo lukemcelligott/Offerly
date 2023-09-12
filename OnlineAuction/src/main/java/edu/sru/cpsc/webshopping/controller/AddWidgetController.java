@@ -2,6 +2,8 @@ package edu.sru.cpsc.webshopping.controller;
 
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
+
+import edu.sru.cpsc.webshopping.domain.market.Auction;
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.widgets.WidgetImage;
 import edu.sru.cpsc.webshopping.domain.market.MarketListingCSVModel;
@@ -84,6 +86,7 @@ public class AddWidgetController
 	private String subcategory;
 	private WidgetImage tempImage = new WidgetImage();
 	private String page;
+	private MarketListingRepository marketListingRepository;
 	
 	public String getPage()
 	{
@@ -205,12 +208,15 @@ public class AddWidgetController
 	{
 		marketListing = new MarketListing();
 		model.addAttribute("pricePerItem", marketListing.getPricePerItem());
+		model.addAttribute("auctionPrice", marketListing.getAuctionPrice());
 		model.addAttribute("qtyAvailable", marketListing.getQtyAvailable());
 		model.addAttribute("listing", marketListing);
 		model.addAttribute("Category", category);
 		model.addAttribute("user", userController.getCurrently_Logged_In());
+		marketListing.setAuction(new Auction());
 		return "createListing";
 	}
+	
 	
 	/**
 	 * 
@@ -230,6 +236,12 @@ public class AddWidgetController
 		
 		
 		marketListing.setQtyAvailable(qty);
+		model.addAttribute("pricePerItem", marketListing);
+		model.addAttribute("auctionPrice", marketListing);
+		model.addAttribute("qtyAvailable", marketListing.getQtyAvailable());
+		model.addAttribute("listing", marketListing);
+		model.addAttribute("subcategory", subcategory);
+    
 		marketListing.setSeller(userController.getCurrently_Logged_In());
 		marketListing.setWidgetSold(widget);
 		marketListing.setDeleted(false);
@@ -256,7 +268,19 @@ public class AddWidgetController
 			setPage("error2");
 			result.addError(new FieldError("pricePerItem", "pricePerItem", "Price per item must be greater than 0.01"));
 		}
-
+		
+		if(marketListing.getAuctionPrice() == null)
+		{
+			setPage("error2");
+			result.addError(new FieldError("auctionPrice", "auctionPrice", "Auction Price can't be null"));	    	
+		}
+		
+		else if(marketListing.getAuctionPrice().compareTo(oneCent) < 0)
+		{
+			setPage("error2");
+			result.addError(new FieldError("auctionPrice", "auctionPrice", "Auction Price must be greater than 0.01"));
+		}
+		
 		if(Long.valueOf(marketListing.getQtyAvailable()).compareTo((long) 0) <= 0)
 		{
 			System.out.println(marketListing.getQtyAvailable());
@@ -273,6 +297,7 @@ public class AddWidgetController
 			widgetController.deleteWidget(getWidgetStorage().getId());
 			model.addAttribute("page", getPage());
 			model.addAttribute("pricePerItem", marketListing);
+			model.addAttribute("auctionPrice", marketListing);
 			model.addAttribute("qtyAvailable", marketListing.getQtyAvailable());
 			model.addAttribute("listing", marketListing);
 			model.addAttribute("subcategory", subcategory);

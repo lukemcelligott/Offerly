@@ -1,5 +1,6 @@
 package edu.sru.cpsc.webshopping.controller;
 
+import edu.sru.cpsc.webshopping.domain.market.Auction;
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.market.Transaction;
 import edu.sru.cpsc.webshopping.domain.user.Statistics;
@@ -10,17 +11,27 @@ import edu.sru.cpsc.webshopping.domain.widgets.WidgetImage;
 import edu.sru.cpsc.webshopping.repository.market.MarketListingRepository;
 import edu.sru.cpsc.webshopping.repository.widgets.WidgetRepository;
 import edu.sru.cpsc.webshopping.util.PreLoad;
+
+import java.math.BigDecimal;
+import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /** A class for interacting with MarketListing items from the database */
 @RestController
@@ -68,6 +79,7 @@ public class MarketListingDomainController {
 		MarketListing listing = marketRepository.findByWidgetSold(widget);
 		return listing;
 	}
+	
 
 	/**
 	 * Gets all MarketListings from the database
@@ -216,4 +228,45 @@ public class MarketListingDomainController {
 		entityManager.detach(getMarketListing(id));
 		marketRepository.deleteById(id);
 	}
+
+	@Transactional
+	@PostMapping("/update-market-listing-auction")
+	public MarketListing updateMarketListingAuction(
+	        @RequestParam("marketListingId") Long marketListingId, 
+	        @RequestParam("startingBid") BigDecimal startingBid, 
+	        @RequestParam("endAuctionDate") LocalDateTime endAuctionDate) {   // assuming java.util.Date, adjust as necessary
+	
+	    // Find the MarketListing entity
+	    MarketListing marketListing = entityManager.find(MarketListing.class, marketListingId);
+	    if (marketListing == null) {
+	        throw new IllegalStateException("No MarketListing found for the provided ID");
+	    }
+	
+	    // Update the auction details
+	    Auction auction = marketListing.getAuction();
+	    if (auction == null) {
+	        auction = new Auction();  // assuming you have a default constructor for Auction
+	    }
+	    auction.setStartingBid(startingBid);
+	    auction.setEndAuctionDate(endAuctionDate);   // Adjust the method names as per your Auction class
+	
+	    marketListing.setAuction(auction);
+	
+	    // Save the updated MarketListing
+	    return marketRepository.save(marketListing);
+		}
+
+	@PostMapping("/updateBid")
+	public ResponseEntity<Object> updateBid(@RequestParam BigDecimal bidAmount, @RequestParam Long listingId, Model model, RedirectAttributes redirectAttributes) {
+	    MarketListing listing = marketRepository.findById(listingId).orElse(null);
+	
+	    // Ensure that listing.getAuctionPrice() also returns a BigDecimal
+	    if (listing != null && bidAmount.compareTo(listing.getAuctionPrice()) > 0) {
+	        listing.setAuctionPrice(bidAmount);
+	        marketRepository.save(listing);
+	    } 
+	    URI redirectUri = URI.create("/viewMarketListing/" + listingId);
+	    return ResponseEntity.status(HttpStatus.SEE_OTHER).location(redirectUri).build();
+		}
+
 }
