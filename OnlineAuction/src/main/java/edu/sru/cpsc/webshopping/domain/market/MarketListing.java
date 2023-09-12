@@ -55,7 +55,7 @@ public class MarketListing {
 	@NonNull
 	private User seller;
 	
-	@ManyToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.MERGE)
 	@NonNull
 	private Widget widgetSold;
 	
@@ -67,7 +67,7 @@ public class MarketListing {
 	@OneToMany(mappedBy="marketListing", cascade = CascadeType.MERGE)
 	private Set<Transaction> transactions;
 	
-	@OneToOne(mappedBy = "marketListing", cascade = CascadeType.ALL)
+	@OneToOne(mappedBy = "marketListing", cascade = CascadeType.MERGE)
 	private Auction auction;
 
 	public long getId() {

@@ -16,6 +16,7 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 SET foreign_key_checks = 0;
+
 --
 -- Dumping data for table `applicant`
 --
@@ -25,6 +26,24 @@ LOCK TABLES `applicant` WRITE;
 /*!40000 ALTER TABLE `applicant` ENABLE KEYS */;
 UNLOCK TABLES;
 
+--
+-- Dumping data for table `attribute`
+--
+
+LOCK TABLES `attribute` WRITE;
+/*!40000 ALTER TABLE `attribute` DISABLE KEYS */;
+INSERT INTO `attribute` VALUES (1,'Year',1),(2,'Model',1),(3,'Color',1);
+/*!40000 ALTER TABLE `attribute` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `auction`
+--
+
+LOCK TABLES `auction` WRITE;
+/*!40000 ALTER TABLE `auction` DISABLE KEYS */;
+/*!40000 ALTER TABLE `auction` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Dumping data for table `card_type`
@@ -55,16 +74,6 @@ LOCK TABLES `direct_deposit_details` WRITE;
 UNLOCK TABLES;
 
 --
--- Dumping data for table `attribute`
---
-
-LOCK TABLES `attribute` WRITE;
-/*!40000 ALTER TABLE `attribute` DISABLE KEYS */;
-INSERT INTO `attribute` VALUES (1,'Year',1),(2,'Model',1),(3,'Color',1);
-/*!40000 ALTER TABLE `attribute` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Dumping data for table `fields`
 --
 
@@ -88,7 +97,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `hibernate_sequence` WRITE;
 /*!40000 ALTER TABLE `hibernate_sequence` DISABLE KEYS */;
-INSERT INTO `hibernate_sequence` VALUES (12),(12);
+INSERT INTO `hibernate_sequence` VALUES (6);
 /*!40000 ALTER TABLE `hibernate_sequence` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -125,7 +134,6 @@ UNLOCK TABLES;
 
 LOCK TABLES `market_listing` WRITE;
 /*!40000 ALTER TABLE `market_listing` DISABLE KEYS */;
-INSERT INTO `market_listing` VALUES (7,'2planet_space_outer_space_144566_3840x2160.jpg',_binary '\0',12.00,1,2,3);
 /*!40000 ALTER TABLE `market_listing` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -162,7 +170,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `seller_rating` WRITE;
 /*!40000 ALTER TABLE `seller_rating` DISABLE KEYS */;
-INSERT INTO `seller_rating` VALUES (3,1,4);
+INSERT INTO `seller_rating` VALUES (3,23,4.2);
 /*!40000 ALTER TABLE `seller_rating` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -208,7 +216,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `statistics` WRITE;
 /*!40000 ALTER TABLE `statistics` DISABLE KEYS */;
-INSERT INTO `statistics` VALUES (1,2,'2023-09-10 15:59:54.556632','Account with username: userName was created',15,1),(2,3,'2023-09-11 18:56:18.274476','userName logged in',18,1),(4,3,'2023-09-10 16:00:33.477313','userName logged in',16,1),(10,3,'2023-09-11 19:07:54.350258','userName logged in',19,1),(11,3,'2023-09-11 20:28:52.485102','userName logged in',20,1);
+INSERT INTO `statistics` VALUES (1,2,'2023-09-12 15:34:27.347283','Account with username: userName was created',15,1);
 /*!40000 ALTER TABLE `statistics` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -245,7 +253,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (2,200,_binary '\0',_binary '\0','US','2023-09-10',_binary '\0',_binary '\0',NULL,'dsm1015@sru.edu','lmbzixholc',_binary '','Douglas','Maxwell','$2a$10$krt0V5cSpzVfkmu4eDXt3.DeQqnvDlqtGytnLesyel/Bh5Ca8xVsm','gxlzdvvzis','7244754080','ROLE_USER','What is your mother\'s maiden name?','What is your favorite band?','What is your favorite beverage?','','2hack_frog.jpg','joe','rock','coffee','userName',NULL,NULL,NULL,NULL,3,NULL);
+INSERT INTO `user` VALUES (2,200,_binary '\0',_binary '\0','US','2023-09-12',_binary '\0',_binary '\0',NULL,'dsm1015@sru.edu','zdtgdqdmyg',_binary '','Douglas','Maxwell','$2a$10$2q7Xu9R0xJ4KhEjpyrn2POWtmqeoZWNpcv80DeTSOW8aiCtXcx6vO','bpbeszzejr','7244754080','ROLE_USER','What is your mother\'s maiden name?','What is your favorite band?','What is your favorite beverage?','blah','22hack_frog.jpg','joe','rock','beer','userName',NULL,NULL,NULL,NULL,3,NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -273,7 +281,6 @@ UNLOCK TABLES;
 
 LOCK TABLES `widget` WRITE;
 /*!40000 ALTER TABLE `widget` DISABLE KEYS */;
-INSERT INTO `widget` VALUES (3,'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.','Super Cool Part',1);
 /*!40000 ALTER TABLE `widget` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -283,7 +290,6 @@ UNLOCK TABLES;
 
 LOCK TABLES `widget_attribute` WRITE;
 /*!40000 ALTER TABLE `widget_attribute` DISABLE KEYS */;
-INSERT INTO `widget_attribute` VALUES (4,'Model','asdf',NULL,3),(5,'Color','yeller',NULL,3),(6,'Year','2012',NULL,3);
 /*!40000 ALTER TABLE `widget_attribute` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -293,7 +299,6 @@ UNLOCK TABLES;
 
 LOCK TABLES `widget_image` WRITE;
 /*!40000 ALTER TABLE `widget_image` DISABLE KEYS */;
-INSERT INTO `widget_image` VALUES (8,'2planet_space_outer_space_144566_3840x2160.jpg',7),(9,'2planet_space_outer_space_144566_3840x2160.jpg',7);
 /*!40000 ALTER TABLE `widget_image` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -324,6 +329,6 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-09-11 20:45:59
+-- Dump completed on 2023-09-12 15:38:28
 
 SET foreign_key_checks = 1;
