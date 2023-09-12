@@ -13,6 +13,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapsId;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
@@ -67,7 +68,9 @@ public class User implements UserDetails {
         this.emailVerification = user.emailVerification;
     }
 	
-	public User() {}
+	public User() {
+		this.sellerRating = new SellerRating(this);
+	}
 	final int MAX = 200;
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -172,7 +175,8 @@ public class User implements UserDetails {
 	@ManyToOne
 	private UserRole userRole;
 	
-	@ManyToOne
+	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "seller_rating_id")
 	private SellerRating sellerRating;
 	
 	// Friend functionality
@@ -517,5 +521,13 @@ public class User implements UserDetails {
 
 	public void setUserImage(String userImage) {
 		this.userImage = userImage;
+	}
+
+	public SellerRating getSellerRating() {
+		return sellerRating;
+	}
+
+	public void setSellerRating(SellerRating sellerRating) {
+		this.sellerRating = sellerRating;
 	}
 }

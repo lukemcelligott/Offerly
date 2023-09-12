@@ -3,6 +3,36 @@ body {
 	color: #222222;
 }
 
+#page {
+	display: flex;
+	height: 100vh;
+	}
+#website-title {
+	margin-left: 8px;
+	margin-right: 8px;
+	font-size: 12px;
+}
+.center{
+	margin-left: auto;
+	margin-right: auto;
+	object-fit: contain;
+}
+.image-preview{
+	vertical-align: middle;
+}
+div.auction-price-container{
+	text-align: center;
+	margin-top: 10px;
+	font-weight: bold;
+	border-radius: 12px; /* Rounded corners */
+	padding: 10px; /* Padding around text */
+	width: fit-content; /* Shrink to fit the content */
+	margin-left: auto; /* Centering */
+	margin-right: auto; /* Centering */
+	font-family: 'Poppins', sans-serif; /* Using imported Poppins font */
+	color: #333; /* Text color */
+}
+
 #listing-info {
 	margin: auto;
 	width: 60%;
@@ -14,6 +44,11 @@ body {
 
 .listing-info-subsection {
 	border-top: 1px solid black;
+}
+
+.custom-breadcrumb {
+	margin: 20px; 
+    padding: 10px; 
 }
 
 #listing-info-header {
@@ -56,6 +91,21 @@ body {
 	justify-content: center;
 }
 
+.seller-display {
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 5px;
+    width: fit-content;
+}
+
+.seller-display a:hover {
+    text-decoration: underline;
+}
+
+.rating {
+    font-size: 0.9rem;
+}
+
 .styled-button {
 	background-color: #00ffbf;
 	color: black;
@@ -70,7 +120,22 @@ body {
 	border-radius: 4px;
 }
 
-img {
-	width: 200px;
-	height: 200px;
+.img-container {
+    position: relative;
+	width: 100%; 
+    height: 400px; 
+    overflow: hidden; 
+}
+
+.img-container img {
+    width: 100%;  
+    height: 100%; 
+    object-fit: cover; 
+    object-position: center center; 
+}
+
+.img-container button {
+    background-color: rgba(0, 0, 0, 0.6); 
+    border: none; 
+    cursor: pointer; 
 }

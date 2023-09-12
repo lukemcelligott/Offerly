@@ -15,15 +15,6 @@ import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 import edu.sru.cpsc.webshopping.domain.widgets.Category;
 import edu.sru.cpsc.webshopping.domain.widgets.WidgetsInfo;
-import edu.sru.cpsc.webshopping.domain.widgets.appliances.Appliance_Blender;
-import edu.sru.cpsc.webshopping.domain.widgets.appliances.Appliance_Dryers;
-import edu.sru.cpsc.webshopping.domain.widgets.appliances.Appliance_Microwave;
-import edu.sru.cpsc.webshopping.domain.widgets.appliances.Appliance_Refrigerator;
-import edu.sru.cpsc.webshopping.domain.widgets.appliances.Appliance_Washers;
-import edu.sru.cpsc.webshopping.domain.widgets.electronics.Electronics_Computers;
-import edu.sru.cpsc.webshopping.domain.widgets.electronics.Electronics_VideoGames;
-import edu.sru.cpsc.webshopping.domain.widgets.lawncare.LawnCare_LawnMower;
-import edu.sru.cpsc.webshopping.domain.widgets.vehicles.Vehicle_Car;
 import edu.sru.cpsc.webshopping.repository.applicant.ApplicantRepository;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
 import edu.sru.cpsc.webshopping.repository.widgets.WidgetRepository;
@@ -78,7 +69,6 @@ public class EmployeeController {
   private final EmailController emailController;
   private final WidgetRepository widgetRepository;
   private final CategoryController categories;
-  private final SubcategoryController subcategories;
   private String page;
   private String mailboxPage;
   private String page2;
@@ -623,7 +613,6 @@ public class EmployeeController {
     }
     
     model.addAttribute("categories", categories.getAllCategories());
-    model.addAttribute("subcategories", subcategories.getAllSubcategories());
     setPage("widgetsInfoCategory");
     setPage2(category);
     model.addAttribute("page", getPage());
@@ -652,7 +641,6 @@ public class EmployeeController {
       return "employee";
     }
     
-    model.addAttribute("subcategories", subcategories.getAllSubcategories());
     setPage("widgetsInfoSubCategory");
     setPage2(subCategory);
     model.addAttribute("page", getPage());
