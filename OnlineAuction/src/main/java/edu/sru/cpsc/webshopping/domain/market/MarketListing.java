@@ -41,6 +41,10 @@ public class MarketListing {
 	private BigDecimal pricePerItem;
 	
 	@NonNull
+	@Column(precision = 10, scale = 2, columnDefinition="DECIMAL(10, 2)")
+	private BigDecimal auctionPrice;
+	
+	@NonNull
 	@Min(value=0, message="Must have 0 or more items available.")
 	private long qtyAvailable;
 	
@@ -65,7 +69,6 @@ public class MarketListing {
 	
 	@OneToOne(mappedBy = "marketListing", cascade = CascadeType.ALL)
 	private Auction auction;
-	
 
 	public long getId() {
 		return id;
@@ -81,6 +84,14 @@ public class MarketListing {
 
 	public void setPricePerItem(BigDecimal pricePerItem) {
 		this.pricePerItem = pricePerItem;
+	}
+	
+	public BigDecimal getAuctionPrice() {
+		return auctionPrice;
+	}
+
+	public void setAuctionPrice(BigDecimal auctionPrice) {
+		this.auctionPrice = auctionPrice;
 	}
 
 	public long getQtyAvailable() {
