@@ -175,16 +175,14 @@ public class DomainUserSpringTest {
 	 */
 	@Test
 	void sellerRatingTest() {
-		SellerRating sellerRating = new SellerRating();
+		User user = new User();
+		SellerRating sellerRating = new SellerRating(user);
 		sellerRating.setId(69);
-		sellerRating.setRatingName("Luke");
-		sellerRating.setMinPercent(0);
-		sellerRating.setMaxPercent(100);
+		sellerRating.setRating(1);
 		
 		assertEquals(69, sellerRating.getId());
-		assertEquals("Luke", sellerRating.getRatingName());
-		assertEquals(0, sellerRating.getMinPercent());
-		assertEquals(100, sellerRating.getMaxPercent());
+		assertEquals("Bad", sellerRating.getRatingName());
+		assertEquals(1, sellerRating.getRating());
 	}
 	
 	/*

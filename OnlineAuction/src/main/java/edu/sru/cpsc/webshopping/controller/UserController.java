@@ -30,6 +30,7 @@ import edu.sru.cpsc.webshopping.controller.billing.SellerRatingController;
 import edu.sru.cpsc.webshopping.domain.billing.DirectDepositDetails;
 import edu.sru.cpsc.webshopping.domain.billing.PaymentDetails;
 import edu.sru.cpsc.webshopping.domain.billing.Paypal;
+import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.user.Message;
 import edu.sru.cpsc.webshopping.domain.user.SellerRating;
 import edu.sru.cpsc.webshopping.domain.user.Statistics;
@@ -51,7 +52,7 @@ public class UserController {
 	private UtilityController util;
 	@PersistenceContext
 	private EntityManager entityManager;
-	
+		
 	UserController(UserRepository userRepository,StatisticsDomainController statControl,
 			PaymentDetailsController paymentDetailsController, DirectDepositController directDepositDetailsController,
 			SellerRatingController sellerRatingController,UtilityController util, PaypalController paypalController) {
@@ -67,23 +68,52 @@ public class UserController {
 	
 
 	/**
-	 * User of Currently_Logged_In_User in database has Widget added to their list of wishlisted items
-	 * @param widget Widget to wishlist
+	 * User of Currently_Logged_In_User in database has MarketListing added to their list of wishlisted items
+	 * @param marketListing MarketListing to add to wishlist
 	 * @exception IllegalStateException if no user is logged in
 	 * @exception IllegalArgumentException if the wishlisted Widget is not found in the database
 	 */
 	@PostMapping("/add-to-wishlist")
 	@Transactional
-	public void addToWishlist(@Validated Widget widget) {
+	public void addToWishlist(@Validated MarketListing marketListing) {
 		if (Currently_Logged_In == null) {
 			throw new IllegalStateException("User not logged in when attempting to add new Widget to wishlist.");
 		}
 		User user = entityManager.find(User.class, Currently_Logged_In.getId());
-		Widget addedWidget = entityManager.find(Widget.class, widget.getId());
+		MarketListing addedWidget = entityManager.find(MarketListing.class, marketListing.getId());
+		// check if the widget is null
 		if (addedWidget == null) {
 			throw new IllegalArgumentException("Widget pass to addToWishlist not found in database.");
 		}
+		
 		user.getWishlistedWidgets().add(addedWidget);
+		//update the user
+		this.Currently_Logged_In = user;
+		userRepository.save(user);
+	}
+	
+	/**
+	 * User of Currently_Logged_In_User in database has MarketListing removed from their list of wishlisted items
+	 * @param marketListing MarketListing to remove from wishlist
+	 * @exception IllegalStateException if no user is logged in
+	 * @exception IllegalArgumentException if the wishlisted Widget is not found in the database
+	 */
+	@PostMapping("/remove-from-wishlist")
+	@Transactional
+	public void removeFromWishlist(@Validated MarketListing marketListing) {
+		if (Currently_Logged_In == null) {
+			throw new IllegalStateException("User not logged in when attempting to remove Widget from wishlist.");
+		}
+		User user = entityManager.find(User.class, Currently_Logged_In.getId());
+		MarketListing delWidget = entityManager.find(MarketListing.class, marketListing.getId());
+		// check if the widget is null
+		if (delWidget == null) {
+			throw new IllegalArgumentException("Widget pass to removeFromWishlist not found in database.");
+		}
+		
+		user.getWishlistedWidgets().remove(delWidget);
+		// update the user
+		this.Currently_Logged_In = user;
 		userRepository.save(user);
 	}
 	
@@ -358,7 +388,7 @@ public class UserController {
 			return null;
 		}
 		else {
-			return sellerRatingController.determineRating(Currently_Logged_In);
+			return Currently_Logged_In.getSellerRating();
 		}
 	}
 	

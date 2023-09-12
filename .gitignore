@@ -3,9 +3,7 @@
 
 ### STS ###
 .apt_generated
-.classpath
 .factorypath
-.project
 .settings
 .springBeans
 .sts4-cache
@@ -70,13 +68,6 @@ local.properties
 .cache-main
 .scala_dependencies
 .worksheet
-
-### Eclipse Patch ###
-# Eclipse Core
-.project
-
-# JDT-specific (Eclipse Java Development Tools)
-.classpath
 
 # Annotation Processing
 .apt_generated
@@ -185,8 +176,6 @@ build/
 .#*
 *#
 *~
-.classpath
-.project
 .settings
 bin
 build

@@ -18,19 +18,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
-import edu.sru.cpsc.webshopping.domain.widgets.appliances.Appliance_Blender;
-import edu.sru.cpsc.webshopping.domain.widgets.appliances.Appliance_Dryers;
-import edu.sru.cpsc.webshopping.domain.widgets.appliances.Appliance_Microwave;
-import edu.sru.cpsc.webshopping.domain.widgets.appliances.Appliance_Refrigerator;
-import edu.sru.cpsc.webshopping.domain.widgets.appliances.Appliance_Washers;
-import edu.sru.cpsc.webshopping.domain.widgets.appliances.Widget_Appliance;
-import edu.sru.cpsc.webshopping.domain.widgets.electronics.Electronics_Computers;
-import edu.sru.cpsc.webshopping.domain.widgets.electronics.Electronics_VideoGames;
-import edu.sru.cpsc.webshopping.domain.widgets.electronics.Widget_Electronics;
-import edu.sru.cpsc.webshopping.domain.widgets.lawncare.LawnCare_LawnMower;
-import edu.sru.cpsc.webshopping.domain.widgets.lawncare.Widget_LawnCare;
-import edu.sru.cpsc.webshopping.domain.widgets.vehicles.Vehicle_Car;
-import edu.sru.cpsc.webshopping.domain.widgets.vehicles.Widget_Vehicles;
 import edu.sru.cpsc.webshopping.repository.market.MarketListingRepository;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
 import edu.sru.cpsc.webshopping.repository.widgets.WidgetRepository;
@@ -65,33 +52,6 @@ public class WebshoppingControllerSpringTest {
 	UserRepository userRepo;
 	@Autowired
 	Widget widget;
-	@Autowired
-	Widget_Appliance appliances;
-	@Autowired
-	Widget_Electronics electronics;
-	@Autowired
-	Widget_Vehicles vehicle;
-	@Autowired
-	Widget_LawnCare lawnCare;
-	@Autowired
-	Appliance_Dryers dryer;
-	@Autowired
-	Appliance_Washers washer;
-	@Autowired
-	Appliance_Blender blender;
-	@Autowired
-	Appliance_Microwave microwave;
-	@Autowired
-	Appliance_Refrigerator refridgerator;
-	@Autowired
-	Electronics_Computers computer;
-	@Autowired
-	Electronics_VideoGames videoGame;
-	@Autowired
-	Vehicle_Car car;
-	@Autowired
-	LawnCare_LawnMower mower;
-	@Autowired
 	MarketListing marketListing;
 	
 	/*

@@ -19,7 +19,7 @@ public class AddWidgetControllerTest {
 	private static Model mockModel = mock(Model.class);
 	private static UserController userController = mock(UserController.class);
 	private static User mockUser = mock(User.class);
-	private static AddWidgetController widgetController = new AddWidgetController(null, null, null, null, null, null, null, null, null, null, userController, null, null);
+	private static AddWidgetController widgetController = new AddWidgetController(null, null, null, null, null, null, null, null, null, userController, null, null);
 	
 	@BeforeAll
 	public static void newWidgetController() {

@@ -174,19 +174,17 @@ public class MarketListingDomainController {
 	@Transactional
 	@PostMapping("/edit-market-listing")
 	public MarketListing editMarketListing(@Validated MarketListing updatedMarketListing) {
-		Optional<MarketListing> dbListing = marketRepository.findById(updatedMarketListing.getId());
-		dbListing.get().setPricePerItem(updatedMarketListing.getPricePerItem());
-		dbListing.get().setQtyAvailable(updatedMarketListing.getQtyAvailable());
-		dbListing.get().setDeleted(updatedMarketListing.isDeleted());
-		// Ensure that we are referring to persistent entities
-		dbListing
-		.get()
-		.setSeller(entityManager.find(User.class, updatedMarketListing.getSeller().getId()));
-		dbListing
-		.get()
-		.setWidgetSold(
-				entityManager.find(Widget.class, updatedMarketListing.getWidgetSold().getId()));
-		return marketRepository.save(dbListing.get());
+		Optional<MarketListing> dbListingOpt = marketRepository.findById(updatedMarketListing.getId());
+		
+		if (!dbListingOpt.isPresent()) {
+	        throw new IllegalArgumentException("MarketListing with ID " + updatedMarketListing.getId() + " not found.");
+	    }
+		
+		MarketListing dbListing = dbListingOpt.get();
+		dbListing.setPricePerItem(updatedMarketListing.getPricePerItem());
+		dbListing.setQtyAvailable(updatedMarketListing.getQtyAvailable());
+		dbListing.setDeleted(updatedMarketListing.isDeleted());
+		return marketRepository.save(dbListing);
 	}
 
 	/**

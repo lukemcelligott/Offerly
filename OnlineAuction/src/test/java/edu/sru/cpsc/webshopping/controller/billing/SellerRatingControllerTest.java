@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -19,49 +21,44 @@ import edu.sru.cpsc.webshopping.controller.TransactionController;
 import edu.sru.cpsc.webshopping.domain.market.Transaction;
 import edu.sru.cpsc.webshopping.domain.user.SellerRating;
 import edu.sru.cpsc.webshopping.domain.user.User;
-import edu.sru.cpsc.webshopping.repository.user.SellerRatingRepository;
+import edu.sru.cpsc.webshopping.repository.user.UserRepository;
+import edu.sru.cpsc.webshopping.service.UserService;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
 public class SellerRatingControllerTest {
 
     @Mock
-    private SellerRatingRepository ratingRepository;
+    private UserRepository userRepository;
 
     @Mock
     private TransactionController transactionController;
 
+	@Mock
+	private UserService userService;
+
     @InjectMocks
-    private SellerRatingController sellerRatingController;
-	
-	@BeforeEach
-	public void init() {
-		
-	}
-	@Test
-	public void testDetermineRating() {
-		// Given
-		User seller = new User(); // Assuming User has a default constructor
-		SellerRating rating1 = new SellerRating();
-		rating1.setMinPercent(0);
-		rating1.setMaxPercent(0.5f);
-		rating1.setRatingName("Low");
+    private SellerRatingController sellerRatingController; // Use @InjectMocks to inject the mocked dependencies
 
-		SellerRating rating2 = new SellerRating();
-		rating2.setMinPercent(0.5f);
-		rating2.setMaxPercent(1.0f);
-		rating2.setRatingName("High");
+    @BeforeEach
+    public void init() {
+        MockitoAnnotations.openMocks(this); // Initialize the mocks
 
-		when(ratingRepository.findAll()).thenReturn(Arrays.asList(rating1, rating2));
-		when(transactionController.getUserSoldItems(any())).thenReturn(Arrays.asList(new Transaction())); // Mocking one transaction for simplicity
+        User user = new User();
+        user.setId(1L);
+		user.setSellerRating(new SellerRating(user));
 
-		// When
-		SellerRating result = sellerRatingController.determineRating(seller);
+        Mockito.when(userRepository.findById(1L)).thenReturn(Optional.of(user)); // Mock the behavior of the repository
+		Mockito.when(userService.getUserById(1L)).thenReturn(user); 
+    }
 
-		// Then
-		assertNotNull(result);
-		// Add more assertions based on expected behavior
-	}
+    @Test
+    public void rateUser() {
+        sellerRatingController.rateUser(1L, 5);
+
+        assertEquals(5, userService.getUserById(1L).getSellerRating().getRating());
+    }
 }

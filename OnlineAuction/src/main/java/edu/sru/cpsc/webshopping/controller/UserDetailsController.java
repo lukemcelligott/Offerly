@@ -533,7 +533,7 @@ public class UserDetailsController {
 		model.addAttribute("creationDate", creationDate);
 		model.addAttribute("displayName", displayName);
 		model.addAttribute("currUser", userController.getCurrently_Logged_In());
-		model.addAttribute("sellerRating", userController.getSellerRating());
+		model.addAttribute("sellerRating", user.getSellerRating());
 		model.addAttribute("email", email);
 		model.addAttribute("displayUserID", user.getId());
 		return true;
