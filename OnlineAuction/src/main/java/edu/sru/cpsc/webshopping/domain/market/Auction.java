@@ -8,8 +8,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.Future;
 
-import java.time.LocalDateTime;
 import java.math.BigDecimal;
+import java.sql.Date;
 
 /**
  * Auction attributes that will be dynamically changed when users bid
@@ -26,10 +26,10 @@ public class Auction {
 
     private BigDecimal startingBid;
     private BigDecimal currentBid;
-    private LocalDateTime startAuctionDate;
+    private Date startAuctionDate;
     
     @Future(message = "End date should be in the future.")
-    private LocalDateTime endAuctionDate;
+    private Date endAuctionDate;
     
     // id
     public long getId() {
@@ -68,20 +68,20 @@ public class Auction {
     }
 
     // startAuctionDate
-    public LocalDateTime getStartAuctionDate() {
+    public Date getStartAuctionDate() {
         return startAuctionDate;
     }
 
-    public void setStartAuctionDate(LocalDateTime startAuctionDate) {
+    public void setStartAuctionDate(Date startAuctionDate) {
         this.startAuctionDate = startAuctionDate;
     }
 
     // endAuctionDate
-    public LocalDateTime getEndAuctionDate() {
+    public Date getEndAuctionDate() {
         return endAuctionDate;
     }
 
-    public void setEndAuctionDate(LocalDateTime endAuctionDate) {
+    public void setEndAuctionDate(Date endAuctionDate) {
         this.endAuctionDate = endAuctionDate;
     }
 }

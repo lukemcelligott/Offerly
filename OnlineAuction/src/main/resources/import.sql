@@ -16,7 +16,6 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 SET foreign_key_checks = 0;
-
 --
 -- Dumping data for table `applicant`
 --
@@ -42,6 +41,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `auction` WRITE;
 /*!40000 ALTER TABLE `auction` DISABLE KEYS */;
+INSERT INTO `auction` VALUES (8,12.00,NULL,NULL,12.00,NULL),(20,49.00,NULL,NULL,49.00,NULL);
 /*!40000 ALTER TABLE `auction` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -97,7 +97,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `hibernate_sequence` WRITE;
 /*!40000 ALTER TABLE `hibernate_sequence` DISABLE KEYS */;
-INSERT INTO `hibernate_sequence` VALUES (6);
+INSERT INTO `hibernate_sequence` VALUES (23),(23);
 /*!40000 ALTER TABLE `hibernate_sequence` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -134,6 +134,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `market_listing` WRITE;
 /*!40000 ALTER TABLE `market_listing` DISABLE KEYS */;
+INSERT INTO `market_listing` VALUES (7,12.00,'2hack_frog.jpg',_binary '\0',123.05,2,2,3),(19,49.00,'12jett-muffler-1.jpg',_binary '\0',123.23,1,12,15);
 /*!40000 ALTER TABLE `market_listing` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -170,7 +171,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `seller_rating` WRITE;
 /*!40000 ALTER TABLE `seller_rating` DISABLE KEYS */;
-INSERT INTO `seller_rating` VALUES (3,23,4.2);
+INSERT INTO `seller_rating` VALUES (3,23,4.2),(13,12,3.1);
 /*!40000 ALTER TABLE `seller_rating` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -216,7 +217,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `statistics` WRITE;
 /*!40000 ALTER TABLE `statistics` DISABLE KEYS */;
-INSERT INTO `statistics` VALUES (1,2,'2023-09-12 15:34:27.347283','Account with username: userName was created',15,1);
+INSERT INTO `statistics` VALUES (1,2,'2023-09-12 15:34:27.347283','Account with username: userName was created',15,1),(2,3,'2023-09-12 17:32:21.003150','userName logged in',17,1),(11,2,'2023-09-12 17:36:05.198570','Account with username: sellerName was created',17,1),(14,3,'2023-09-12 17:36:44.043714','sellerName logged in',17,1);
 /*!40000 ALTER TABLE `statistics` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -253,7 +254,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (2,200,_binary '\0',_binary '\0','US','2023-09-12',_binary '\0',_binary '\0',NULL,'dsm1015@sru.edu','zdtgdqdmyg',_binary '','Douglas','Maxwell','$2a$10$2q7Xu9R0xJ4KhEjpyrn2POWtmqeoZWNpcv80DeTSOW8aiCtXcx6vO','bpbeszzejr','7244754080','ROLE_USER','What is your mother\'s maiden name?','What is your favorite band?','What is your favorite beverage?','blah','22hack_frog.jpg','joe','rock','beer','userName',NULL,NULL,NULL,NULL,3,NULL);
+INSERT INTO `user` VALUES (2,200,_binary '\0',_binary '\0','US','2023-09-12',_binary '\0',_binary '\0',NULL,'dsm1015@sru.edu','zdtgdqdmyg',_binary '','Douglas','Maxwell','$2a$10$2q7Xu9R0xJ4KhEjpyrn2POWtmqeoZWNpcv80DeTSOW8aiCtXcx6vO','bpbeszzejr','7244754080','ROLE_USER','What is your mother\'s maiden name?','What is your favorite band?','What is your favorite beverage?','blah','22hack_frog.jpg','joe','rock','beer','userName',NULL,NULL,NULL,NULL,3,NULL),(12,200,_binary '\0',_binary '\0','US','2023-09-12',_binary '\0',_binary '\0',NULL,'dmaxwell484@gmail.com','nfqxqinosm',_binary '','Joe','Mama','$2a$10$kW7AoKXVjUKH0sAlJwPkNOZr926oAkA5uNN9P.Za3xwombjydXAMG','dbmnnelmpm','7244754080','ROLE_USER','What is your mother\'s maiden name?','What is your favorite band?','What is your favorite beverage?','seller','12planet_space_outer_space_144566_3840x2160.jpg','joe','rock','coffee','sellerName',NULL,NULL,NULL,NULL,13,NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -281,6 +282,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `widget` WRITE;
 /*!40000 ALTER TABLE `widget` DISABLE KEYS */;
+INSERT INTO `widget` VALUES (3,'dafad','1.4l Rear Exhaust Muffler 5qm253611 OE Fits VOLKSWAGEN JETTA 2019-2021',1),(15,'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don\'t look even slightly believable.','1.4l Rear Exhaust Muffler 5qm253611 OE Fits VOLKSWAGEN JETTA 2019-2021',1);
 /*!40000 ALTER TABLE `widget` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -290,6 +292,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `widget_attribute` WRITE;
 /*!40000 ALTER TABLE `widget_attribute` DISABLE KEYS */;
+INSERT INTO `widget_attribute` VALUES (4,'Color','asdf',NULL,3),(5,'Year','sdf',NULL,3),(6,'Model','asdf',NULL,3),(16,'Year','2012',NULL,15),(17,'Color','yeller',NULL,15),(18,'Model','VW',NULL,15);
 /*!40000 ALTER TABLE `widget_attribute` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -299,6 +302,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `widget_image` WRITE;
 /*!40000 ALTER TABLE `widget_image` DISABLE KEYS */;
+INSERT INTO `widget_image` VALUES (9,'2hack_frog.jpg',7),(10,'2hack_frog.jpg',7),(21,'12jett-muffler-1.jpg',19),(22,'12jetta-muffler-2.jpg',19);
 /*!40000 ALTER TABLE `widget_image` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -329,6 +333,6 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-09-12 15:38:28
+-- Dump completed on 2023-09-12 17:40:05
 
 SET foreign_key_checks = 1;
