@@ -122,6 +122,8 @@ div.auction-price-container{
 
 .img-container {
     position: relative;
+	width: 100%; 
+    height: 400px; 
     overflow: hidden; 
 }
 
@@ -129,5 +131,11 @@ div.auction-price-container{
     width: 100%;  
     height: 100%; 
     object-fit: cover; 
-    object-position: center; 
+    object-position: center center; 
+}
+
+.img-container button {
+    background-color: rgba(0, 0, 0, 0.6); 
+    border: none; 
+    cursor: pointer; 
 }
