@@ -77,17 +77,17 @@ public class MarketListingPageController {
       SellerRatingController ratingController,
       UserListDomainController userListController,
       ConfirmPurchasePageController purchaseController) {
-    this.marketListingController = marketListingController;
-    this.transController = transController;
-    this.userController = userController;
-    this.purchaseController = purchaseController;
-    this.shippingPage = shippingPage;
-    this.msgcontrol = msgcontrol;
-    this.widgetImageController = widgetImageController;
-    this.emailController = emailController;
-    this.widgetController = widgetController;
-    this.ratingController = ratingController;
-    this.userListController = userListController;
+	  this.marketListingController = marketListingController;
+	  this.transController = transController;
+	  this.userController = userController;
+	  this.purchaseController = purchaseController;
+	  this.shippingPage = shippingPage;
+	  this.msgcontrol = msgcontrol;
+	  this.widgetImageController = widgetImageController;
+	  this.emailController = emailController;
+	  this.widgetController = widgetController;
+	  this.ratingController = ratingController;
+	  this.userListController = userListController;
   }
 
   /** Reloads the page model data */
@@ -208,12 +208,55 @@ public class MarketListingPageController {
   /**
    * Adds the current item to the User's wishlist
    *
+   * @param the market listing id of the current product
    * @return the current viewMarketListing page
    */
-  @PostMapping({"/viewMarketListing/wishlistItem"})
-  public String wishlistItem() {
-    userController.addToWishlist(heldListing.getWidgetSold());
-    return "redirect:/viewMarketListing/" + heldListing.getId();
+  @PostMapping({"/viewMarketListing/wishlistItem/{marketListingId}"})
+  public String wishlistItem(@PathVariable("marketListingId") long marketListingId, Model model) {
+	  // define held listing as the targeted listing bby passing in the market listing ID
+	  heldListing = marketListingController.getMarketListing(marketListingId);
+	  // call addToWishlist in UserController.java and pass in the widget assigned to heldListing
+	  userController.addToWishlist(heldListing);
+	  // redirect the user to the listing for the widget
+	  return "redirect:/viewMarketListing/" + heldListing.getId();
+  }
+  
+  /**
+   * Removes the current item from the User's wishlist
+   *
+   * @param the market listing id of the current product
+   * @return the current viewMarketListing page
+   */
+  @PostMapping({"/viewMarketListing/delWishlistItem/{marketListingId}"})
+  public String delWishlistItem(@PathVariable("marketListingId") long marketListingId, Model model) {
+	  // define held listing as the targeted listing bby passing in the market listing ID
+	  heldListing = marketListingController.getMarketListing(marketListingId);
+	  // call removeFromWishlist in UserController.java and pass in the widget assigned to heldListing
+	  userController.removeFromWishlist(heldListing);
+	  // redirect the user to the watchlist page
+ 	  return "redirect:/Watchlist";
+  }
+  
+  /**
+   * Gets all of the User's wishlisted items
+   *
+   * @param the market listing id of the current product
+   * @return the current viewMarketListing page
+   */
+  @RequestMapping({"/viewWishlist"})
+  public String getWishlist() {
+	  // define held listing as the targeted listing bby passing in the market listing ID
+	  //heldListing = marketListingController.getMarketListing(marketListingId);
+	  
+	  // get the currently logged in user
+	  User user = userController.getCurrently_Logged_In();
+	  
+	  user.getWishlistedWidgets();
+
+	  // call addToWishlist in UserController.java and pass in the widget assigned to heldListing
+	  
+	  // redirect the user to the watchlist.html page
+	  return "watchlist";
   }
 
   /**

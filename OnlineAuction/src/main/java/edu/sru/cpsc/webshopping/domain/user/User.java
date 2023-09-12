@@ -149,12 +149,12 @@ public class User implements UserDetails {
 	@OneToMany(mappedBy="buyer")
 	private Set<Transaction> transactions;
 	
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.EAGER) // added eager fetch type to eliminate the lazy initalization error. now gives a too many sql tables error
 	@JoinTable(
 		name = "WidgetWishlistEntry",
 		joinColumns = @JoinColumn(name="UserId"),
-		inverseJoinColumns = @JoinColumn(name = "WidgetId"))
-	private Set<Widget> wishlistedWidgets;
+		inverseJoinColumns = @JoinColumn(name = "MarketListingId"))
+	private Set<MarketListing> wishlistedWidgets;
 	
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
 	private Set<PaymentDetails> paymentDetails;
@@ -458,11 +458,11 @@ public class User implements UserDetails {
 		return enabled;
 	}
 
-	public Set<Widget> getWishlistedWidgets() {
+	public Set<MarketListing> getWishlistedWidgets() {
 		return wishlistedWidgets;
 	}
 
-	public void setWishlistedWidgets(Set<Widget> wishlistedWidgets) {
+	public void setWishlistedWidgets(Set<MarketListing> wishlistedWidgets) {
 		this.wishlistedWidgets = wishlistedWidgets;
 	}
 

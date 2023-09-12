@@ -83,6 +83,7 @@ public class EmployeeController {
   private List<Widget> allWidgets = new ArrayList<>();
   private List<User> allSellers = new ArrayList<>();
   private List<MarketListing> allMarketListings = new ArrayList<>();
+  private List<MarketListing> watchlistItems = new ArrayList<>();
   private List<Applicant> allApplicants = new ArrayList<>();
   private List<Applicant> reviewedApplicants = new ArrayList<>();
   private List<Applicant> newApplicants = new ArrayList<>();
@@ -748,7 +749,51 @@ public class EmployeeController {
     model.addAttribute("allSellers", getAllSellers());
     model.addAttribute("page", getPage());
     model.addAttribute("user", user);
+    
     return "browseWidgets";
+  }
+  
+  // Controller for the watchlist
+  @RequestMapping({"/Watchlist"})
+  public String watchlist(Model model) {
+
+    User user = userController.getCurrently_Logged_In();
+    model.addAttribute("user", user);
+
+    setPage("watchlistPage");
+    setMasterPage("query");
+    model.addAttribute("masterPage", getMasterPage());
+    
+    getAllMarketListings().clear();
+    getAllWidgets().clear();
+    getAllSellers().clear();
+    getAllUsers().clear();
+
+    Iterable<User> allUsersIterator = userController.getAllUsers();
+    allUsersIterator.iterator().forEachRemaining(u -> getAllUsers().add(u));
+
+    Iterable<MarketListing> allWatchlistItemsIterator = getWatchlistItems();
+    
+    allWatchlistItemsIterator.iterator().forEachRemaining(u -> getWatchlistItems().add(u));
+    allWatchlistItemsIterator
+        .iterator()
+        .forEachRemaining(u -> getAllWidgets().add(u.getWidgetSold()));
+    allWatchlistItemsIterator.iterator().forEachRemaining(u -> getAllSellers().add(u.getSeller()));
+
+    allWatchlistItemsIterator.iterator().forEachRemaining(u -> getWatchlistItems());
+    allWatchlistItemsIterator
+        .iterator()
+        .forEachRemaining(u -> getAllWidgets());
+    allWatchlistItemsIterator.iterator().forEachRemaining(u -> getAllSellers());
+
+    model.addAttribute("users", getAllUsers());
+    model.addAttribute("allWatchlistItems", user.getWishlistedWidgets());
+    model.addAttribute("allWidgets", getAllWidgets());
+    model.addAttribute("allSellers", getAllSellers());
+    model.addAttribute("page", getPage());
+    model.addAttribute("user", user);
+    
+    return "watchlist"; // return watchlist.html
   }
 
   @RequestMapping({"/searchMessageButton"})
@@ -1971,6 +2016,10 @@ public class EmployeeController {
     return searchedUserListings;
   }
 
+  public List<MarketListing> getWatchlistItems() {
+	  return  watchlistItems;
+  }
+  
   public List<Widget> getSearchedUserWidgets() {
     return searchedUserWidgets;
   }
