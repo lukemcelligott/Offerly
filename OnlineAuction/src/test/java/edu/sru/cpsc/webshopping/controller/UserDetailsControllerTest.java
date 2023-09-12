@@ -2,8 +2,6 @@ package edu.sru.cpsc.webshopping.controller;
 
 import static org.mockito.Mockito.mock;
 
-import java.math.BigDecimal;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.Test;
@@ -19,15 +17,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.context.WebApplicationContext;
 
-import edu.sru.cpsc.webshopping.controller.UserController;
 import edu.sru.cpsc.webshopping.domain.billing.DirectDepositDetails_Form;
 import edu.sru.cpsc.webshopping.domain.billing.PaymentDetails_Form;
-import edu.sru.cpsc.webshopping.domain.billing.ShippingAddress;
-import edu.sru.cpsc.webshopping.domain.billing.StateDetails;
-import edu.sru.cpsc.webshopping.domain.market.MarketListing;
-import edu.sru.cpsc.webshopping.domain.market.Transaction;
 import edu.sru.cpsc.webshopping.domain.user.User;
-import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 
 @SpringBootTest
 @AutoConfigureMockMvc

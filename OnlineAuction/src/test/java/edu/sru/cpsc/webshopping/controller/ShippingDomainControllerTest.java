@@ -1,9 +1,6 @@
 package edu.sru.cpsc.webshopping.controller;
 import java.util.logging.Logger;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -11,15 +8,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.Test;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-import edu.sru.cpsc.webshopping.controller.ShippingDomainController;
 import edu.sru.cpsc.webshopping.domain.market.Shipping;
-import edu.sru.cpsc.webshopping.repository.market.ShippingRepository;
 
 public class ShippingDomainControllerTest {
 	private static final Shipping Shipping = null;

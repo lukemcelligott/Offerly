@@ -7,20 +7,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import edu.sru.cpsc.webshopping.controller.TestPageController;
-import edu.sru.cpsc.webshopping.controller.UserController;
-import edu.sru.cpsc.webshopping.controller.WidgetController;
-import edu.sru.cpsc.webshopping.domain.user.User;
-import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 
 public class TestPageControllerTest {
 	private Logger log= Logger.getLogger(this.getClass());

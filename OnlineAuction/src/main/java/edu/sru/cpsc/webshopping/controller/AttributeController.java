@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.sru.cpsc.webshopping.domain.widgets.Attribute;
+import edu.sru.cpsc.webshopping.domain.widgets.Category;
 import edu.sru.cpsc.webshopping.repository.widgets.AttributeRepository;
 
 @RestController
@@ -44,6 +45,12 @@ public class AttributeController {
     @GetMapping("/all")
     public Iterable<Attribute> getAllAttributes() {
         return attributeRepository.findAll();
+    }
+
+    // Read all Attributes by Category
+    @GetMapping("/category/{category}")
+    public Iterable<Attribute> getAllAttributesByCategory(@PathVariable Category category) {
+        return attributeRepository.findByCategory(category);
     }
 
     // Update a Attribute by ID

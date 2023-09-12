@@ -3,11 +3,8 @@ package edu.sru.cpsc.webshopping.controller;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 
-import javax.transaction.Transaction;
 import org.junit.Test;
 import org.h2.engine.Database;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mock;
@@ -15,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -23,19 +19,11 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.WebApplicationContext;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import edu.sru.cpsc.webshopping.controller.MarketListingDomainController;
-import edu.sru.cpsc.webshopping.controller.MessageDomainController;
-import edu.sru.cpsc.webshopping.controller.UserController;
-import edu.sru.cpsc.webshopping.controller.WidgetController;
-import edu.sru.cpsc.webshopping.controller.purchase.MarketListingPageController;
-import edu.sru.cpsc.webshopping.domain.market.MarketListing;
-import edu.sru.cpsc.webshopping.domain.user.Applicant;
 import edu.sru.cpsc.webshopping.domain.user.Message;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.repository.message.MessageRepository;

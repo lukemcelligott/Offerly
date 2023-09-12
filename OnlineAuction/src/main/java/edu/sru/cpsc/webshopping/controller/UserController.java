@@ -388,7 +388,7 @@ public class UserController {
 			return null;
 		}
 		else {
-			return sellerRatingController.determineRating(Currently_Logged_In);
+			return Currently_Logged_In.getSellerRating();
 		}
 	}
 	
