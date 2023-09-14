@@ -53,17 +53,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 		
 			.authorizeRequests()
+				/* begin - users visiting these URLs do not need authenticated because of .permitAll() */
 				.antMatchers("/", "/index", "/newUser", "/adduser", "/add-user-signup","/emailverification", 
 						"/verify", "/userSecrets", "/forgotUser/*","/findUser","/answerQuestion",
 						"/resetPassword","/missionStatement","/FAQ","/application","/apply","browseWidgets","/BrowseWidgetsButton").permitAll()
 				.antMatchers("/resources/**", "/static/**", "/styles/**", "/js/**", "/images/**","/listingImages/**","data:realCaptcha/**").permitAll()
-				.anyRequest().authenticated()
+				/* end - users visiting these URLs do not need authenticated because of .permitAll() */
+				.anyRequest().authenticated() /* outside of permitAll() matches, authenticate any request */
 				.and()
 			.formLogin()
-				.loginPage("/login")
+				.loginPage("/login") /* link to login page */
 				.permitAll()
 				.and()
-				.logout().logoutRequestMatcher(new AntPathRequestMatcher("/do_the_logout")).logoutSuccessUrl("/index");
+				.logout().logoutRequestMatcher(new AntPathRequestMatcher("/do_the_logout")).logoutSuccessUrl("/index"); /* redirect to index after logging out */
 	}
     /*
 	@Bean
