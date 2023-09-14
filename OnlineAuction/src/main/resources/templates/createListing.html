@@ -55,12 +55,11 @@
 									</div>
 									<p th:if="${#fields.hasErrors('pricePerItem')}" th:errors="*{pricePerItem}"></p>
 
-									<!-- New Auction Price Field - Still needs connected to the back end (REFACTOR database) -->
 									<div class="form-group" style="padding-bottom: 15px;">
-										<label for="startingBid">Starting Auction Price:</label>
-										<input class="form-control" type="number" step="0.01" placeholder="-- Enter the Starting Bid --" th:field="*{auction.startingBid}" id="startingBid">
-										<p th:if="${#fields.hasErrors('auction.startingBid')}" th:errors="*{auction.startingBid}"></p>
-									</div>
+  										<label for="startingBid">Starting Auction Price:</label>
+  										<input class="form-control" type="number" step="0.01" placeholder="-- Enter the Starting Bid --" th:field="*{auctionPrice}" id="auction">
+  										<p th:if="${#fields.hasErrors('auctionPrice')}" th:errors="*{auctionPrice}"></p>
+									</div> 
 									
 									<div class="form-group" style="padding-bottom: 15px;">
 										<label for="endDate">End Auction Date and Time:</label>

@@ -267,3 +267,7 @@
   	background-color: #100095;
   	color: #fff;
 }
+
+.submitHybrid:hover {
+   color: #100095;
+}
