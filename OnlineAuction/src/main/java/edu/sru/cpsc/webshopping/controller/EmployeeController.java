@@ -719,7 +719,7 @@ public class EmployeeController {
 
     writer.write(widgets);
   }
-
+  
   @RequestMapping({"/BrowseWidgetsButton"})
   public String browseWidgetsButton(Model model) {
 
@@ -754,8 +754,8 @@ public class EmployeeController {
     
     return "browseWidgets";
   }
-  
-  // Controller for the watchlist
+
+// Controller for the watchlist
   @RequestMapping({"/Watchlist"})
   public String watchlist(Model model) {
 

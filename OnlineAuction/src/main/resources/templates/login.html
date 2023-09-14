@@ -28,19 +28,27 @@
         		<div class="card-header" id="welcome"><b>Welcome Back</b></div>
        			<div class="card-body d-flex flex-column align-items-center">
 			        <div class="form-floating shadow-sm mb-1 mt-3 w-75">
+						<!-- username input for login -->
 			  			<input type="text" class="form-control" placeholder="Username" name="username">
 			  			<label for="username">username</label>
 					</div>
+					
 					<a class="mb-3" th:href="@{/forgotUser/{id}(id = 0)}">forgot username?</a>
+					
 					<div class="form-floating shadow-sm mt-1 mb-1 w-75">
+						<!-- password input for login -->
 			  			<input type="password" class="form-control" placeholder="Password" name="password">
 			  			<label for="password">password</label>
 					</div>
+					
 					<a class="mb-3" th:href="@{/forgotUser/{id}(id = 1)}">forgot password?</a>
+					
 				</div>
 				<div class="card-footer d-flex justify-content-center">
+					<!-- back button (return to index) -->
 					<a class="btn btn-outline-danger ms-1" style="margin-right: 10px" th:href="@{/index}"><span>Back</span></a>
-					<input type="submit" class="btn btn-outline-success me-1" value="Sign In">
+					<!-- sign in button -->
+					<input type="submit" class="btn btn-outline-success me-1" value="Sign In"> 
 				</div>
 			</div>      
     	</div>
