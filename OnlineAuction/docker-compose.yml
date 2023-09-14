@@ -34,6 +34,7 @@ services:
       - 3307:3306
     volumes:
       - online-auction-db:/var/lib/mysql
+      - ./src/main/resources/import.sql:/docker-entrypoint-initdb.d/import.sql
 
 volumes:
   online-auction-db:
