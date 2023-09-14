@@ -1,14 +1,12 @@
-# Fetching latest version of Java
-FROM openjdk:17
-  
-# Setting up work directory
+# Use the official maven/Java 8
+FROM maven:3.8.4-openjdk-17
+
 WORKDIR /OnlineAuction
+# Copy the pom.xml and src directory
+COPY pom.xml .
+COPY src ./src
 
-# Copy the jar file into our app
-COPY ./target/spring-0.0.1-SNAPSHOT.jar /OnlineAuction
+RUN mvn clean install -DskipTests
 
-# Exposing port 8080
 EXPOSE 8080
-
-# Starting the application
-CMD ["java", "-jar", "spring-0.0.1-SNAPSHOT.jar"]
+CMD mvn spring-boot:run
