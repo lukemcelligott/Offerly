@@ -51,6 +51,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `card_type` WRITE;
 /*!40000 ALTER TABLE `card_type` DISABLE KEYS */;
+INSERT INTO `card_type` VALUES ('American Express'),('Discover'),('Mastercard'),('Visa');
 /*!40000 ALTER TABLE `card_type` ENABLE KEYS */;
 UNLOCK TABLES;
 
