@@ -7,11 +7,9 @@
 		<title>Confirm Purchase</title>
 		
 		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-
 	  	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 	  	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
 	  	<!-- https://developer.paypal.com/sdk/js/configuration/ information on configuring the url correctly with the option you want -->
 	  	<script src="https://www.paypal.com/sdk/js?client-id=AZOZjx8hradMWSN5ahMJQgGJEcRi5oXSIz9vSaduY2dr5fVVwshgyjlrnTMr48ytuQ45QJB9lnM1mnNn&components=buttons&disable-funding=card"></script>
@@ -22,12 +20,9 @@
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
-	  	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-		
-    	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-
+		<spt src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 	  	
 	  	<link th:href="@{/styles/employee_page.css}" rel="stylesheet"/>
@@ -41,7 +36,6 @@
 	  	
 	  	<!-- used a solution from https://stackoverflow.com/questions/9894339/disallow-twitter-bootstrap-modal-window-from-closing by AymKdn and edited by Peter Mortensen which stops users from clicking out of the modal after having entered their login information -->
 		<!-- https://teamtreehouse.com/community/keep-a-modal-window-open-after-form-submission helped me figure out that I should load the modal when the page reloads to keep it open after submissions / to show errors -->
-	  	
 	  	<script th:inline="javascript"> 
        	/*<![CDATA[*/
        		var relogin = /*[[${relogin}]]*/'';
