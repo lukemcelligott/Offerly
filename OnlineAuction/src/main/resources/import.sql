@@ -97,7 +97,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `hibernate_sequence` WRITE;
 /*!40000 ALTER TABLE `hibernate_sequence` DISABLE KEYS */;
-INSERT INTO `hibernate_sequence` VALUES (30);
+INSERT INTO `hibernate_sequence` VALUES (1000);
 /*!40000 ALTER TABLE `hibernate_sequence` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -218,7 +218,6 @@ UNLOCK TABLES;
 
 LOCK TABLES `statistics` WRITE;
 /*!40000 ALTER TABLE `statistics` DISABLE KEYS */;
-INSERT INTO `statistics` VALUES (1,2,'2023-09-14 20:13:05.547032','Account with username: userName was created',20,1),(4,2,'2023-09-14 20:14:06.778640','Account with username: sellerName was created',20,1),(7,3,'2023-09-14 20:14:41.092622','userName logged in',20,1),(8,3,'2023-09-14 20:15:53.558778','userName logged in',20,1),(9,3,'2023-09-14 20:17:06.452265','userName logged in',20,1),(18,2,'2023-09-14 20:20:18.073385','Account with username: sellerName1 was created',20,1),(21,3,'2023-09-14 20:22:44.404336','sellerName1 logged in',20,1);
 /*!40000 ALTER TABLE `statistics` ENABLE KEYS */;
 UNLOCK TABLES;
 
