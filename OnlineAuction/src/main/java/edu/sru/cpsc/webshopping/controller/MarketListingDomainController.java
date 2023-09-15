@@ -57,7 +57,7 @@ public class MarketListingDomainController {
 	/**
 	 * Gets the MarketListing with an id matching the passed id
 	 *
-	 * @param id the ID to search for
+	 * @param id the ID to search for product
 	 * @return the MarketListing found, or null if no MarketListing with the passed id is found
 	 */
 	@RequestMapping("/get-market-listing/{id}")
