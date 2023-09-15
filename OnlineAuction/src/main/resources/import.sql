@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.34, for Win64 (x86_64)
 --
--- Host: localhost    Database: sellingwidgets
+-- Host: localhost    Database: online-auction
 -- ------------------------------------------------------
 -- Server version	8.0.34
 
@@ -41,7 +41,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `auction` WRITE;
 /*!40000 ALTER TABLE `auction` DISABLE KEYS */;
-INSERT INTO `auction` VALUES (8,12.00,NULL,NULL,12.00,NULL),(20,49.00,NULL,NULL,49.00,NULL);
+INSERT INTO `auction` VALUES (15,122.00,NULL,NULL,122.00,NULL),(27,23.00,NULL,NULL,23.00,NULL);
 /*!40000 ALTER TABLE `auction` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -97,7 +97,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `hibernate_sequence` WRITE;
 /*!40000 ALTER TABLE `hibernate_sequence` DISABLE KEYS */;
-INSERT INTO `hibernate_sequence` VALUES (23),(23);
+INSERT INTO `hibernate_sequence` VALUES (30);
 /*!40000 ALTER TABLE `hibernate_sequence` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -134,7 +134,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `market_listing` WRITE;
 /*!40000 ALTER TABLE `market_listing` DISABLE KEYS */;
-INSERT INTO `market_listing` VALUES (7,12.00,'2hack_frog.jpg',_binary '\0',123.05,2,2,3),(19,49.00,'12jett-muffler-1.jpg',_binary '\0',123.23,1,12,15);
+INSERT INTO `market_listing` VALUES (14,122.00,'2jett-muffler-1.jpg',_binary '\0',134.00,1,2,10),(26,23.00,'191backofWheel.jpg',_binary '\0',53.00,1,19,22);
 /*!40000 ALTER TABLE `market_listing` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -171,7 +171,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `seller_rating` WRITE;
 /*!40000 ALTER TABLE `seller_rating` DISABLE KEYS */;
-INSERT INTO `seller_rating` VALUES (3,23,4.2),(13,12,3.1);
+INSERT INTO `seller_rating` VALUES (3,23,4.5),(6,12,2.3),(20,11,3.2);
 /*!40000 ALTER TABLE `seller_rating` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -208,6 +208,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `state_details` WRITE;
 /*!40000 ALTER TABLE `state_details` DISABLE KEYS */;
+INSERT INTO `state_details` VALUES ('Alabama',4.00),('Alaska',0.00),('Arizona',5.60),('Arkansas',6.50),('California',7.25),('Colorado',2.90),('Connecticut',6.35),('Delaware',0.00),('Florida',6.00),('Georgia',4.00),('Hawaii',4.00),('Idaho',6.00),('Illinois',6.25),('Indiana',7.00),('Iowa',6.00),('Kansas',6.50),('Kentucky',6.00),('Louisiana',4.45),('Maine',5.50),('Maryland',6.00),('Massachusetts',6.25),('Michigan',6.00),('Minnesota',6.88),('Mississippi',7.00),('Missouri',4.23),('Montana',0.00),('Nebraska',5.50),('Nevada',6.85),('New Hampshire',0.00),('New Jersey',6.63),('New Mexico',5.13),('New York',4.00),('North Carolina',4.75),('North Dakota',5.00),('Ohio',5.75),('Oklahoma',4.50),('Oregon',0.00),('Pennsylvania',6.00),('Rhode Island',7.00),('South Carolina',6.00),('South Dakota',4.50),('Tennessee',7.00),('Texas',6.25),('Utah',5.95),('Vermont',6.00),('Virginia',5.30),('Washington',6.50),('West Virginia',6.00),('Wisconsin',5.00),('Wyoming',4.00);
 /*!40000 ALTER TABLE `state_details` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -217,7 +218,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `statistics` WRITE;
 /*!40000 ALTER TABLE `statistics` DISABLE KEYS */;
-INSERT INTO `statistics` VALUES (1,2,'2023-09-12 15:34:27.347283','Account with username: userName was created',15,1),(2,3,'2023-09-12 17:32:21.003150','userName logged in',17,1),(11,2,'2023-09-12 17:36:05.198570','Account with username: sellerName was created',17,1),(14,3,'2023-09-12 17:36:44.043714','sellerName logged in',17,1);
+INSERT INTO `statistics` VALUES (1,2,'2023-09-14 20:13:05.547032','Account with username: userName was created',20,1),(4,2,'2023-09-14 20:14:06.778640','Account with username: sellerName was created',20,1),(7,3,'2023-09-14 20:14:41.092622','userName logged in',20,1),(8,3,'2023-09-14 20:15:53.558778','userName logged in',20,1),(9,3,'2023-09-14 20:17:06.452265','userName logged in',20,1),(18,2,'2023-09-14 20:20:18.073385','Account with username: sellerName1 was created',20,1),(21,3,'2023-09-14 20:22:44.404336','sellerName1 logged in',20,1);
 /*!40000 ALTER TABLE `statistics` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -254,7 +255,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (2,200,_binary '\0',_binary '\0','US','2023-09-12',_binary '\0',_binary '\0',NULL,'dsm1015@sru.edu','zdtgdqdmyg',_binary '','Douglas','Maxwell','$2a$10$2q7Xu9R0xJ4KhEjpyrn2POWtmqeoZWNpcv80DeTSOW8aiCtXcx6vO','bpbeszzejr','7244754080','ROLE_USER','What is your mother\'s maiden name?','What is your favorite band?','What is your favorite beverage?','blah','22hack_frog.jpg','joe','rock','beer','userName',NULL,NULL,NULL,NULL,3,NULL),(12,200,_binary '\0',_binary '\0','US','2023-09-12',_binary '\0',_binary '\0',NULL,'dmaxwell484@gmail.com','nfqxqinosm',_binary '','Joe','Mama','$2a$10$kW7AoKXVjUKH0sAlJwPkNOZr926oAkA5uNN9P.Za3xwombjydXAMG','dbmnnelmpm','7244754080','ROLE_USER','What is your mother\'s maiden name?','What is your favorite band?','What is your favorite beverage?','seller','12planet_space_outer_space_144566_3840x2160.jpg','joe','rock','coffee','sellerName',NULL,NULL,NULL,NULL,13,NULL);
+INSERT INTO `user` VALUES (2,200,_binary '\0',_binary '\0','US','2023-09-14',_binary '\0',_binary '\0',NULL,'dsm1015@sru.edu','rnetagzcxh',_binary '','Douglas','Maxwell','$2a$10$S7hGuNYPhsbduUL9brRjMuQ2XCFo0Mt3ZC/d1wmmCjTZ6pmvVabea','utsimjqigw','7244754080','ROLE_USER','What is your mother\'s maiden name?','What is your favorite band?','What is your favorite beverage?','yo','2hack_frog.jpg','joe','rock','coffee','userName',NULL,NULL,NULL,NULL,3,NULL),(5,200,_binary '\0',_binary '\0','US','2023-09-14',_binary '\0',_binary '\0',NULL,'dmaxwell484@gmail.com','obvvxzmscc',_binary '\0','Tim','Baggins','$2a$10$Gvs7Jsie4aQljqmaewcwWeZlJxq4.GyFsCV1KscJ6StUlcB8u8xSa','hjwcislqpm','7244754080','ROLE_USER','What is your mother\'s maiden name?','What is your favorite band?','What is your favorite beverage?','',NULL,'joe','rock','coffee','sellerName',NULL,NULL,NULL,NULL,6,NULL),(19,200,_binary '\0',_binary '\0','US','2023-09-14',_binary '\0',_binary '\0',NULL,'lpm1006@sru.edu','xovxysbesc',_binary '','Douglas','Maxwell','$2a$10$k/nyrp4bhWdk5u8rj8VHOuaAg3H04kXI9Bog2ISzonRuIgyZ1.MH2','gbepmbkplx','7244754080','ROLE_USER','What is your mother\'s maiden name?','What is your favorite band?','What is your favorite beverage?','','191dollvatar.png','joe','rock','coffee','sellerName1',NULL,NULL,NULL,NULL,20,NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -282,7 +283,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `widget` WRITE;
 /*!40000 ALTER TABLE `widget` DISABLE KEYS */;
-INSERT INTO `widget` VALUES (3,'dafad','1.4l Rear Exhaust Muffler 5qm253611 OE Fits VOLKSWAGEN JETTA 2019-2021',1),(15,'There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don\'t look even slightly believable.','1.4l Rear Exhaust Muffler 5qm253611 OE Fits VOLKSWAGEN JETTA 2019-2021',1);
+INSERT INTO `widget` VALUES (10,'A little beat up but in pretty good shape.','1.4l Rear Exhaust Muffler Fits VOLKSWAGEN JETTA 2019-2021',1),(22,'black leather steering wheel. Slightly used.','14\" Billet Black Muscle Chevy 69-94 GM Steering Wheel',1);
 /*!40000 ALTER TABLE `widget` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -292,7 +293,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `widget_attribute` WRITE;
 /*!40000 ALTER TABLE `widget_attribute` DISABLE KEYS */;
-INSERT INTO `widget_attribute` VALUES (4,'Color','asdf',NULL,3),(5,'Year','sdf',NULL,3),(6,'Model','asdf',NULL,3),(16,'Year','2012',NULL,15),(17,'Color','yeller',NULL,15),(18,'Model','VW',NULL,15);
+INSERT INTO `widget_attribute` VALUES (11,'Year','2012',NULL,10),(12,'Model','VW',NULL,10),(13,'Color','sliver',NULL,10),(23,'Color','black',NULL,22),(24,'Model','Chevy',NULL,22),(25,'Year','2012',NULL,22);
 /*!40000 ALTER TABLE `widget_attribute` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -302,7 +303,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `widget_image` WRITE;
 /*!40000 ALTER TABLE `widget_image` DISABLE KEYS */;
-INSERT INTO `widget_image` VALUES (9,'2hack_frog.jpg',7),(10,'2hack_frog.jpg',7),(21,'12jett-muffler-1.jpg',19),(22,'12jetta-muffler-2.jpg',19);
+INSERT INTO `widget_image` VALUES (16,'2jett-muffler-1.jpg',14),(17,'2jetta-muffler-2.jpg',14),(28,'191backofWheel.jpg',26),(29,'191frontofWheel.jpg',26);
 /*!40000 ALTER TABLE `widget_image` ENABLE KEYS */;
 UNLOCK TABLES;
 

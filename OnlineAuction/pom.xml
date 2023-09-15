@@ -11,14 +11,12 @@
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
   <groupId>edu.sru.cpsc</groupId>
-  <artifactId>SellingWidgets</artifactId>
+  <artifactId>OnlineAuction</artifactId>
   <version>0.0.1-SNAPSHOT</version>
-  <name>SellingWidgets</name>
-  <description>Demo project for Spring Boot</description>
+  <name>OnlineAuction</name>
+  <description>Online Auction for selling, buying, and bidding on used items</description>
   <properties>
     <java.version>17</java.version>
-
-
   </properties>
 
   <dependencies>
@@ -173,6 +171,14 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+              <source>17</source>
+              <target>17</target>
+          </configuration>
       </plugin>
     </plugins>
   </build>

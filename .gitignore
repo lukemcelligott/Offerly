@@ -1,6 +1,9 @@
 /target/
 !.mvn/wrapper/maven-wrapper.jar
 
+#Docker
+.m2
+
 ### STS ###
 .apt_generated
 .factorypath
