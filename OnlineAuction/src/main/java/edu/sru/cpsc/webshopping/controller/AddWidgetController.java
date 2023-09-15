@@ -181,7 +181,6 @@ public class AddWidgetController
 		widget.setDescription(widgetForm.getDescription());
 
 		widget.setAttributes(widgetForm.getAttributes().entrySet().stream().map(entry -> {
-
 			WidgetAttribute widgetAttribute = new WidgetAttribute();
 			widgetAttribute.setAttributeKey(entry.getKey());
 			widgetAttribute.setWidget(widget);
