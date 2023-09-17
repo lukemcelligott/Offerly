@@ -5,6 +5,13 @@ body, html {
 	color: #222222;
 }
 
+#center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
 .grid-container {
 	display: grid;
 	background-color: white;
