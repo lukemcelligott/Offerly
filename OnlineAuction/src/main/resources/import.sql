@@ -31,7 +31,6 @@ UNLOCK TABLES;
 
 LOCK TABLES `attribute` WRITE;
 /*!40000 ALTER TABLE `attribute` DISABLE KEYS */;
-INSERT INTO `attribute` VALUES (1,'Year',1),(2,'Model',1),(3,'Color',1);
 /*!40000 ALTER TABLE `attribute` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -61,7 +60,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `category` WRITE;
 /*!40000 ALTER TABLE `category` DISABLE KEYS */;
-INSERT INTO `category` VALUES (1,'Vehicle Parts',1,NULL);
+
+/*INSERT INTO `category` VALUES (1,'Vehicle Parts',1,NULL);*/
 /*!40000 ALTER TABLE `category` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -283,7 +283,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `widget` WRITE;
 /*!40000 ALTER TABLE `widget` DISABLE KEYS */;
-INSERT INTO `widget` VALUES (10,'A little beat up but in pretty good shape.','1.4l Rear Exhaust Muffler Fits VOLKSWAGEN JETTA 2019-2021',1),(22,'black leather steering wheel. Slightly used.','14\" Billet Black Muscle Chevy 69-94 GM Steering Wheel',1);
+INSERT INTO `widget` VALUES (10,'A little beat up but in pretty good shape.','1.4l Rear Exhaust Muffler Fits VOLKSWAGEN JETTA 2019-2021',5367),(22,'black leather steering wheel. Slightly used.','14\" Billet Black Muscle Chevy 69-94 GM Steering Wheel',5367);
 /*!40000 ALTER TABLE `widget` ENABLE KEYS */;
 UNLOCK TABLES;
 

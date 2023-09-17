@@ -18,6 +18,8 @@ import edu.sru.cpsc.webshopping.domain.user.UserList;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 import edu.sru.cpsc.webshopping.domain.widgets.WidgetAttribute;
 import edu.sru.cpsc.webshopping.domain.widgets.WidgetImage;
+import edu.sru.cpsc.webshopping.service.CategoryService;
+import edu.sru.cpsc.webshopping.service.WidgetService;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
@@ -30,6 +32,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -64,6 +67,9 @@ public class MarketListingPageController {
   private Widget tempWidget;
   @PersistenceContext
   EntityManager entityManager;
+
+  @Autowired
+  private CategoryService categoryService;
 
   public MarketListingPageController(
       MarketListingDomainController marketListingController,
@@ -155,8 +161,8 @@ public class MarketListingPageController {
     for(int x = 0; x < widgetImages.length; x++)
     	widgetNames[x] = widgetImages[x].getImageName();
 
-    //TODO: add the category stack to the model
-    List<String> categoryStack = Arrays.asList("Automobiles", "Cars", widget.getCategory().getName());
+    // Generate the category stack for the widget
+    List<String> categoryStack = categoryService.generateCategoryStack(widget.getCategory());
 
     model.addAttribute("categories", categoryStack);
     model.addAttribute("images", widgetNames);

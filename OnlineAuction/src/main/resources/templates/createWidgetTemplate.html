@@ -36,20 +36,49 @@
 									<th:block>
 							            <div class="form-group col-sm-12">
 							                <p style="margin-bottom: 0rem;">Product Name</p>
-							                <input type="text" class="form-control" th:id="name" th:name="name" placeholder="-- Enter Product Name --" required>
+							                <input type="text" maxlength="100" class="form-control" th:id="name" th:name="name" placeholder="-- Enter Product Name --" required data-char-counter="charNumTitle">
 							            </div>
 							        </th:block>
 							        <th:block>
 							            <div class="form-group col-sm-12">
 							                <p style="margin-bottom: 0rem;">Product Description</p>
-											<textarea class="form-control" th:id="description" th:name="description" placeholder="-- Enter a Description of Product and any other Necessary Information --" maxlength="500" onkeyup="countCharacters(this)"></textarea>
+											<textarea class="form-control" th:id="description" th:name="description" placeholder="-- Enter a Description of Product and any other Necessary Information --" maxlength="500" onkeyup="countCharacters(this)" data-char-counter="charNumDesc" ></textarea>
 											<div id="charNumDesc" style="padding-bottom: 15px;"> 0 / 500 </div>
 							            </div>
 							        </th:block>
 									<th:block th:each="attribute : ${attributes}">
 							            <div class="form-group col-sm-12">
 							                <p th:text="${attribute.attributeKey}" style="margin-bottom: 0rem;"></p>
-							                <input type="text" class="form-control" th:id="${attribute.id}" th:name="'attributes[' + ${attribute.attributeKey} + ']'" placeholder="-- Enter Value --" required>
+											<!--From https://www.w3schools.com/html/html_form_input_types.asp-->
+
+							                <input th:if="${attribute.dataType.name() == 'STRING'}" maxlength="100"  type="text" class="form-control" th:id="${attribute.id}" th:name="'attributes[' + ${attribute.attributeKey} + ']'" placeholder="-- Enter Value --" required>
+
+											<textarea th:if="${attribute.dataType.name() == 'TEXTAREA'}" class="form-control" th:id="${attribute.id}" th:name="'attributes[' + ${attribute.attributeKey} + ']'" placeholder="-- Enter information --" maxlength="500" onkeyup="countCharacters(this)" data-char-counter="charNumDesc"></textarea>
+
+											<input th:if="${attribute.dataType.name() == 'YEAR'}" type="number" min="1900" step="1" class="form-control" th:id="${attribute.id}" th:name="'attributes[' + ${attribute.attributeKey} + ']'" placeholder="-- Enter Year --" required>
+
+											<input th:if="${attribute.dataType.name() == 'DATE'}" type="date" class="form-control" th:id="${attribute.id}" th:name="'attributes[' + ${attribute.attributeKey} + ']'" placeholder="-- Enter Date --" required>
+
+											<input th:if="${attribute.dataType.name() == 'INTEGER'}" type="number" min="0" class="form-control" th:id="${attribute.id}" th:name="'attributes[' + ${attribute.attributeKey} + ']'" placeholder="-- Enter Value --" required>
+
+											<input th:if="${attribute.dataType.name() == 'DECIMAL'}" type="number" step="0.01" min="0" class="form-control" th:id="${attribute.id}" th:name="'attributes[' + ${attribute.attributeKey} + ']'" placeholder="-- Enter Value --" required>
+
+											<input th:if="${attribute.dataType.name() == 'WEIGHT'}" type="number" step="0.01" min="0" class="form-control" th:id="${attribute.id}" th:name="'attributes[' + ${attribute.attributeKey} + ']'" placeholder="-- Enter Weight (lbs) --" required>
+
+											<input th:if="${attribute.dataType.name() == 'NUMBER'}" type="number" step="any" min="0" class="form-control" th:id="${attribute.id}" th:name="'attributes[' + ${attribute.attributeKey} + ']'" placeholder="-- Enter Value --" required>
+
+											<select th:if="${attribute.dataType.name() == 'BOOLEAN'}"  class="form-control" th:id="${attribute.id}" th:name="'attributes[' + ${attribute.attributeKey} + ']'" required>
+												<option value="true">True</option>
+												<option value="false">False</option>
+											</select>
+
+											<select th:if="${attribute.dataType.name() == 'CONDITION'}"  class="form-control" th:id="${attribute.id}" th:name="'attributes[' + ${attribute.attributeKey} + ']'" required>
+												<option value="New">New</option>
+												<option value="New - opened box">New - opened box</option>
+												<option value="Used">Used</option>
+												<option value="Used - broken parts or not working">Used - broken parts or not working</option>
+											</select>
+
 							            </div>
 							        </th:block>
 								</div>
@@ -107,26 +136,23 @@
 			    });
 			});
 			
-			function countCharacters(ele1)
-			{
-				ele1.addEventListener("input", function()
-				{
-					var len = ele1.value.length;
-					var maxLength = ele1.getAttribute("maxlength");
+			function countCharacters(ele) {
+				ele.addEventListener("input", function() {
+					var len = ele.value.length;
+					var maxLength = ele.getAttribute("maxlength");
 					
-					if (len <= maxLength && ele1.name == "name")
-					{
-						charNumTitle.innerHTML = (len + " / " + maxLength);
-					}
-					
-					if (len <= maxLength && ele1.name == "model")
-					{
-						charNumModel.innerHTML = (len + " / " + maxLength);
-					}
-					
-					if (len <= maxLength && ele1.name == "description")
-					{
-						charNumDesc.innerHTML = (len + " / " + maxLength);
+					// Check if the length is valid
+					if (len <= maxLength) {
+						// Get the ID of the element where we want to display the count
+						var counterElementId = ele.getAttribute("data-char-counter");
+						
+						// Update the innerHTML of that element
+						if (counterElementId) {
+							var counterElement = document.getElementById(counterElementId);
+							if (counterElement) {
+								counterElement.innerHTML = len + " / " + maxLength;
+							}
+						}
 					}
 				});
 			}
