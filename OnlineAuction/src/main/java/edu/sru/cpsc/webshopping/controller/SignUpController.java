@@ -468,6 +468,7 @@ public class SignUpController {
 	 */
 	@PostMapping(value = "/submitShippingAddressSignUp", params="submit")
 	public String createShippingDetails(@Validated @ModelAttribute("shippingDetails") ShippingAddress_Form details, BindingResult result, @RequestParam("stateId") String stateId, Model model) {
+		/* https://www.geeksforgeeks.org/how-to-call-private-method-from-another-class-in-java-with-help-of-reflection-api/ */
 		/* trying to get loadUser from UserDetailsController */
 		Method m = null;
 		try {
@@ -484,7 +485,7 @@ public class SignUpController {
 		//selectedMenu = SUB_MENU.SHIPPING_DETAILS;
 		details.setState(stateDetailsController.getState(stateId));
 		//model.addAttribute("selectedMenu", selectedMenu);
-		if (result.hasErrors()) { // !!! SMARTYSTREETS API EXPIRED !!! || userDetController.shippingAddressConstraintsFailed(details)) {
+		if (result.hasErrors()) { // || userDetController.shippingAddressConstraintsFailed(details)) {
 			// Add error messages
 			User user = userController.getCurrently_Logged_In();
 			if(!result.hasErrors() && userDetController.shippingAddressConstraintsFailed(details))
@@ -509,6 +510,7 @@ public class SignUpController {
 			model.addAttribute("relogin", reloginSA);
 			model.addAttribute("delete", delSA);
 			
+			// https://www.geeksforgeeks.org/how-to-call-private-method-from-another-class-in-java-with-help-of-reflection-api/
 			/* trying to invoke loadUser from UserDetailsController */
 			try {
 				m.invoke(userDetController, model);
@@ -521,8 +523,7 @@ public class SignUpController {
 			} catch (InvocationTargetException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
-			
+			}			
 			return "/newUserShipping";
 		}
 		ShippingAddress shipping = new ShippingAddress();
@@ -538,7 +539,7 @@ public class SignUpController {
 		shippingController.addShippingAddress(shipping);
 		userRepository.save(user);
 		addNewSA = false;
-		return "redirect:/index";
+		return "redirect:/newUser";
 	}
 
   @GetMapping({"/forgotUser/{id}"})

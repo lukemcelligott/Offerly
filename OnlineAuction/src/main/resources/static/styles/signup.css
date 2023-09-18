@@ -3,6 +3,11 @@ body {
 	color: #222222;
 }
 
+.grid-header {
+	background-color: #222222;
+	color: #FFFFFF;
+}
+
 .grid-container {
 	display: grid;
 	background-color: white;

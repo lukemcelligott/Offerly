@@ -30,18 +30,18 @@
         
         <style>
             th {
-            border: 1px solid rgb(173, 210, 252);
-            background-color: #e9ecef;
+	            border: 1px solid rgb(173, 210, 252);
+	            background-color: #e9ecef;
             }
             tr {
-            border: 1px solid rgb(173, 210, 252);
-            padding: 15px;
+	            border: 1px solid rgb(173, 210, 252);
+	            padding: 15px;
             }
             table {
-            padding: 15px;
-            margin: 50px;
-            border-spacing: 0 15px;
-            border-collapse: seperate;
+	            padding: 15px;
+	            margin: 50px;
+	            border-spacing: 0 15px;
+	            border-collapse: seperate;
             }
         </style>
     </head>
@@ -63,7 +63,7 @@
 	            </thead>
 	            <tbody>
 	                <tr>
-	                    <td colspan="3" style="background-color: #89CFF0"><label for="recipient" class="form-label">Recipient</label></td>
+	                    <td colspan="3" class="grid-header"><label for="recipient" class="form-label">Recipient</label></td>
 	                </tr>
 	                <tr>
 	                    <td colspan="3">
@@ -74,7 +74,7 @@
 	                </tr>
 	                <tr>
 						<!-- address -->
-	                    <td colspan="3" style="background-color: #89CFF0"><label for="streetAddress" class="form-label">Street Address</label></td> 
+	                    <td colspan="3" class="grid-header"><label for="streetAddress" class="form-label">Street Address</label></td> 
 	                </tr>
 	                <tr>
 	                    <td colspan="3">
@@ -84,16 +84,16 @@
 	                </tr>
 	                <tr>
 						<!-- apt, building, etc -->
-	                    <td colspan="3" style="background-color: #89CFF0"><label for="extraLocationInfo" class="form-label">Apt, suite, unit, building, floor, etc.</label></td>
+	                    <td colspan="3" class="grid-header"><label for="extraLocationInfo" class="form-label">Apt, suite, unit, building, floor, etc.</label></td>
 	                </tr>
 	                <tr>
 	                    <td colspan="3"><input type="text" field="*{extraLocationInfo}" name="extraLocationInfo" class="form-control"></input></td>
 	                </tr>
 	                <tr>
 						<!-- city, state, postal code -->
-	                    <td style="background-color: #89CFF0"><label for="city" class="form-label">City</label></td>
-	                    <td style="background-color: #89CFF0"><label for="state" class="form-label">State</label></td>
-	                    <td style="background-color: #89CFF0"><label for="postalCode" class="form-label">Postal Code</label></td>
+	                    <td class="grid-header"><label for="city" class="form-label">City</label></td>
+	                    <td class="grid-header"><label for="state" class="form-label">State</label></td>
+	                    <td class="grid-header"><label for="postalCode" class="form-label">Postal Code</label></td>
 	                </tr>
 	                <tr>
 	                    <td>
@@ -117,20 +117,13 @@
 	            </tbody>
 	        </table>
 	        <div style="margin-top:5px;" class="d-flex justify-content-center mb-3">
+				<!-- back button -->
+	            <a style="margin-right:50px;" class="btn btn-lg btn-danger" th:href="@{/goBackToMainSD}">Back</a>
 				<!-- add button -->
-	            <button style="margin-right:50px;" type="submit" name="submit" class="btn btn-lg btn-success">Add</button>
-	            <!--<button type="button" class="btn btn-lg btn-danger" disabled
-	                th:if="${currUser.shippingDetails == null}">No Shipping Details Added</button>-->
-	            <!-- back button -->
-	            <a style="margin-left:50px;" class="btn btn-lg btn-danger" th:href="@{/goBackToMainSD}">Back</a>
+	            <button style="margin-left:50px;" type="submit" name="submit" class="btn btn-lg btn-success" id="mysignupbutton">Add</button>	            
 	        </div>
 		</form>      
         
-        <!-- submit and back button -->
-        <div class="d-flex mb-3 mt-3" style="float:right; padding-right: 45px"> 
-            <a class="btn btn-outline-danger ms-1" style="margin-right: 10px" th:href="@{/index}"><span>Back</span></a>
-            <input id="mysignupbutton" class="btn btn-outline-success me-1" type="submit" value="Submit">
-        </div>
         </form>
         <script>
             function myFunction() {           

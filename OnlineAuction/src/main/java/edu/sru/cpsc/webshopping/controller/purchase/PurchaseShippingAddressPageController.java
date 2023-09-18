@@ -1,6 +1,10 @@
 package edu.sru.cpsc.webshopping.controller.purchase;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -443,7 +447,7 @@ public class PurchaseShippingAddressPageController {
 	 * use the smartystreets api to verify if the passed address exists
 	 * @param shipping
 	 * @return
-	 */
+	 
 	public boolean addressExists(ShippingAddress_Form shipping)
 	{
 		Client client = new ClientBuilder("15c052fe-6a81-8841-3359-59658192ff8e", "9d48LSyfCFhlZolc0gi6").build();
@@ -472,5 +476,44 @@ public class PurchaseShippingAddressPageController {
 		}
 		
 		return false;
+	}*/
+	
+	/* Google Maps Address Verification API */
+	public boolean addressExists(ShippingAddress_Form shipping){
+		try {
+            String apiKey = "AIzaSyCRm7IoRW0gGqjIgh_I5OrpzLWYKxxTr5s";
+            //String address = "1600 Amphitheatre Parkway, Mountain View, CA";
+
+            String url = "https://maps.googleapis.com/maps/api/geocode/json?address=" +
+                         shipping + "&key=" + apiKey;
+
+            HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+            conn.setRequestMethod("GET");
+
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                String inputLine;
+                StringBuilder response = new StringBuilder();
+
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+
+                // Parse the JSON response here
+                String jsonResponse = response.toString();
+                System.out.println(jsonResponse);
+                return true;
+            } else {
+                System.out.println("Error: HTTP response code " + responseCode);
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }	
+	
 	}
+	
 }

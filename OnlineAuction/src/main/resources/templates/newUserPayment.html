@@ -24,25 +24,37 @@
         <link href='https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css'>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src='https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js'></script>
+        
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
         
         <style>
             th {
-            border: 1px solid rgb(173, 210, 252);
-            background-color: #e9ecef;
+	            border: 1px solid rgb(173, 210, 252);
+	            background-color: #e9ecef;
             }
             tr {
-            border: 1px solid rgb(173, 210, 252);
-            padding: 15px;
+	            border: 1px solid rgb(173, 210, 252);
+	            padding: 15px;
             }
             table {
-            padding: 15px;
-            margin: 50px;
-            border-spacing: 0 15px;
-            border-collapse: seperate;
+	            padding: 15px;
+	            margin: 50px;
+	            border-spacing: 0 15px;
+	            border-collapse: seperate;
             }
+            /* used to hide arrows from number inputs - https://www.w3schools.com/howto/howto_css_hide_arrow_number.asp */
+            /* Chrome, Safari, Edge, Opera */
+			input::-webkit-outer-spin-button,
+			input::-webkit-inner-spin-button {
+				-webkit-appearance: none;
+			  	margin: 0;
+			}
+			/* Firefox */
+			input[type=number] {
+			  	-moz-appearance: textfield;
+			}
         </style>
     </head>
     <body style="background-color: white">
@@ -65,7 +77,7 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td style="background-color: #89CFF0" colspan="3"><label for="cardType" class="form-label">Card Type</label></td>
+                            <td class="grid-header" colspan="3"><label for="cardType" class="form-label">Card Type</label></td>
                         </tr>
                         <tr>
                             <td colspan="3">
@@ -79,54 +91,55 @@
 							</td>
                         </tr>
                         <tr>
-                            <td colspan="3" style="background-color: #89CFF0"><label for="cardholderName" class="form-label">Cardholder Name</label></td>
+                            <td colspan="3" class="grid-header"><label for="cardholderName" class="form-label">Cardholder Name</label></td>
                         </tr>
                         <tr>
                             <td colspan="3"><input type="text" class="form-control" field="*{cardholderName}" name="cardholderName"></input>
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="3" style="background-color: #89CFF0"><label for="cardNumber" class="form-label">Card Number</label></td>
+                            <td colspan="3" class="grid-header"><label for="cardNumber" class="form-label">Card Number</label></td>
                         </tr>
                         <tr>
                             <td colspan="3">
-                                <input type="number" class="form-control" field="*{cardNumber}" name="cardNumber"></input>
+                                <input type="tel" class="form-control" field="*{cardNumber}" name="cardNumber" maxlength="16"></input>
                                 <p th:text="${cardNumberErr}" th:if="${cardNumberErr != null}"></p>
                             </td>
                         </tr>
                         <tr>
-                            <td style="background-color: #89CFF0"><label for="expirationDate" class="form-label">Expiration Date</label></td>
-                            <td style="background-color: #89CFF0"><label for="securityCode" class="form-label">Security Code</label></td>
-                            <td style="background-color: #89CFF0"><label for="postalCode" class="form-label">Postal Code</label></td>
+                            <td class="grid-header"><label for="expirationDate" class="form-label">Expiration Date</label></td>
+                            <td class="grid-header"><label for="securityCode" class="form-label">Security Code</label></td>
+                            <td class="grid-header"><label for="postalCode" class="form-label">Postal Code</label></td>
                         </tr>
                         <tr>
                             <td>
                                 <input style="display:none" type="month" name="pleaseWork">
-                                <input field="*{expirationDate}" name="expirationDate" class="form-control date-picker" autocomplete="do-not-autofill"/> 
+                                <input field="*{expirationDate}" name="expirationDate" class="form-control month-picker" autocomplete="do-not-autofill"/>
+                                
+                                <!--used for learning how to use jQuery to get month and year since input type="month" doesn't work on firefox https://stackoverflow.com/questions/2208480/jquery-ui-datepicker-to-show-month-year-only --> 
                                 <script type="text/javascript"> 
-                                    <!--used for learning how to use jQuery to get month and year since input type="month" doesn't work on firefox https://stackoverflow.com/questions/2208480/jquery-ui-datepicker-to-show-month-year-only -->
-                                          $(function() {
-                                              $('.date-picker').datepicker( {
+                                      $(function() {
+                                          $('.month-picker').datepicker( {
                                               changeMonth: true,
                                               changeYear: true,
                                               showButtonPanel: true,
-                                              dateFormat: 'M yy',
+                                              dateFormat: 'MM yy',
                                               onClose: function(dateText, inst) { 
                                                   $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
                                               }
-                                              });
                                           });
-                                      
+                                     });                                                                         
                                 </script>
+                                
                                 <!--<p th:if="${#fields.hasErrors('expirationDate')}" th:errors="*{expirationDate}"></p>-->
                                 <p th:if="${cardError}" th:text="${cardError}"></p>
                             </td>
                             <td>
-                                <input type="text" class="form-control" id="securityCode" field="*{securityCode}" name="securityCode"></input>
+                                <input type="number" class="form-control" id="securityCode" field="*{securityCode}" name="securityCode" maxlength="4"></input>
                                 <p th:text="${securityCodeErr}" th:if="${securityCodeErr != null}"></p>
                             </td>
                             <td>
-                                <input type="number" class="form-control" id="postalCode" field="*{postalCode}" name="postalCode"></input>
+                                <input type="number" class="form-control" id="postalCode" field="*{postalCode}" name="postalCode" maxlength="5"></input>
                                 <p th:text="${postalCodeErr}" th:if="${postalCodeErr != null}"></p>
                             </td>
                         </tr>
@@ -137,17 +150,10 @@
                 <!-- Purchase decisions -->
                 <div class="d-flex justify-content-center mb-3">
                     <button style="margin-right:50px;" class="btn btn-danger btn-lg" type="submit" name="cancel">Cancel</button>
-                    <button style="margin-left:50px;" class="btn btn-primary btn-lg"
-                        type="submit" name="submit">Confirm</button>
+                    <button style="margin-left:50px;" class="btn btn-primary btn-lg" type="submit" name="submit" id="mysignupbutton">Confirm</button>
                 </div>
             </div>
             </div>
-        </form>
-        <!-- submit and back button -->
-        <div class="d-flex mb-3 mt-3" style="float:right; padding-right: 45px"> 
-            <a class="btn btn-outline-danger ms-1" style="margin-right: 10px" th:href="@{/index}"><span>Back</span></a>
-            <input id="mysignupbutton" class="btn btn-outline-success me-1" type="submit" value="Submit">
-        </div>
         </form>
         <script>
             function myFunction() {           

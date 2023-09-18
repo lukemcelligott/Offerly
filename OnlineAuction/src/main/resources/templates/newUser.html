@@ -17,18 +17,18 @@
         <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
         <style>
             th {
-            border: 1px solid rgb(173, 210, 252);
-            background-color: #e9ecef;
+	            border: 1px solid rgb(173, 210, 252);
+	            background-color: #e9ecef;
             }
             tr {
-            border: 1px solid rgb(173, 210, 252);
-            padding: 15px;
+	            border: 1px solid rgb(173, 210, 252);
+	            padding: 15px;
             }
             table {
-            padding: 15px;
-            margin: 50px;
-            border-spacing: 0 15px;
-            border-collapse: seperate;
+	            padding: 15px;
+	            margin: 50px;
+	            border-spacing: 0 15px;
+	            border-collapse: seperate;
             }
         </style>
     </head>
@@ -37,7 +37,7 @@
             <h1 style="font-family: 'Poppins'">Sign Up</h1>
         </div>
         <th:block th:switch="${page}">
-            <div th:case="success">
+            <div th:case="success" class="centered-div">
                 <h2 style="margin-left: 24px; margin-top: 15px;"> User Creation Successful</h2>
                 <br>
                 <h3 style="margin-left: 24px;"> An email has been sent with a link and code to verify your account</h3>
