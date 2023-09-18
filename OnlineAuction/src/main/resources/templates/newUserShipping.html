@@ -52,7 +52,7 @@
         </div>
         
         <form method="post" action="#"
-		    th:action="@{/submitShippingAddressSignUp}" th:object="${shippingDetails}">
+		    th:action="@{/submitShippingAddressSignUp}" object="${shippingDetails}">
 	        <table style="width:20vw; justify-content:center; margin-left:auto; margin-right:auto;" class="uniTableForm">
 	            <thead>
 	                <tr>
@@ -68,7 +68,7 @@
 	                <tr>
 	                    <td colspan="3">
 							<!-- shipping recipient -->
-	                        <input type="text" th:field="*{recipient}" class="form-control"></input> 
+	                        <input type="text" field="*{recipient}" name="recipient" class="form-control"></input> 
 	                        <p th:if="${recipientErr != null}" th:text="${recipientErr}"></p>
 	                    </td>
 	                </tr>
@@ -78,7 +78,7 @@
 	                </tr>
 	                <tr>
 	                    <td colspan="3">
-	                        <input type="text" th:field="*{streetAddress}" class="form-control"></input>
+	                        <input type="text" field="*{streetAddress}" name="streetAddress" class="form-control"></input>
 	                        <p th:if="${streetAddressErr != null}" th:text="${streetAddressErr}"></p>
 	                    </td>
 	                </tr>
@@ -87,7 +87,7 @@
 	                    <td colspan="3" style="background-color: #89CFF0"><label for="extraLocationInfo" class="form-label">Apt, suite, unit, building, floor, etc.</label></td>
 	                </tr>
 	                <tr>
-	                    <td colspan="3"><input type="text" th:field="*{extraLocationInfo}" class="form-control"></input></td>
+	                    <td colspan="3"><input type="text" field="*{extraLocationInfo}" name="extraLocationInfo" class="form-control"></input></td>
 	                </tr>
 	                <tr>
 						<!-- city, state, postal code -->
@@ -98,7 +98,7 @@
 	                <tr>
 	                    <td>
 							<!-- city error handling -->
-	                        <input type="text" th:field="*{city}" class="form-control"></input>
+	                        <input type="text" field="*{city}" name="city" class="form-control"></input>
 	                        <p th:if="${cityErr != null}" th:text="${cityErr}"></p>
 	                    </td>
 	                    <td>
@@ -110,7 +110,7 @@
 	                    </td>
 	                    <td>
 							<!-- postal code error handling -->
-	                        <input type="number" th:field="*{postalCode}" class="form-control"></input>
+	                        <input type="number" field="*{postalCode}" name="postalCode" class="form-control"></input>
 	                        <p th:if="${postalCodeErr != null}" th:text="${postalCodeErr}"></p>
 	                    </td>
 	                </tr>
@@ -119,8 +119,8 @@
 	        <div style="margin-top:5px;" class="d-flex justify-content-center mb-3">
 				<!-- add button -->
 	            <button style="margin-right:50px;" type="submit" name="submit" class="btn btn-lg btn-success">Add</button>
-	            <button type="button" class="btn btn-lg btn-danger" disabled
-	                th:if="${currUser.shippingDetails == null}">No Shipping Details Added</button>
+	            <!--<button type="button" class="btn btn-lg btn-danger" disabled
+	                th:if="${currUser.shippingDetails == null}">No Shipping Details Added</button>-->
 	            <!-- back button -->
 	            <a style="margin-left:50px;" class="btn btn-lg btn-danger" th:href="@{/goBackToMainSD}">Back</a>
 	        </div>

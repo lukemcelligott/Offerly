@@ -410,7 +410,8 @@ public class SignUpController {
 			modifyPayment = false;
 			relogin = true;
 			validatedDetails = currDetails;
-			return "newUserPayment";
+			model.addAttribute("states", stateDetailsController.getAllStates());
+			return "newUserShipping";
 		}
 		// Transaction failed - post error
 		else {
@@ -448,9 +449,9 @@ public class SignUpController {
 			model.addAttribute("loginEr", loginEr);
 			model.addAttribute("allSelected", allSelected);
 			model.addAttribute("cardTypes", cardController.getAllCardTypes());
-			System.out.println(cardController.getAllCardTypes());
 			model.addAttribute("user", user);
 			model.addAttribute("existingSecurityCode", new String());
+			model.addAttribute("states", stateDetailsController.getAllStates());
 			
 			return "newUserShipping";
 		}
@@ -470,7 +471,8 @@ public class SignUpController {
 		/* trying to get loadUser from UserDetailsController */
 		Method m = null;
 		try {
-			m = UserDetailsController.class.getDeclaredMethod("loadUserData");
+			m = UserDetailsController.class.getDeclaredMethod("loadUserData", Model.class);
+			m.setAccessible(true);
 		} catch (NoSuchMethodException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -478,12 +480,11 @@ public class SignUpController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		m.setAccessible(true);
 		
 		//selectedMenu = SUB_MENU.SHIPPING_DETAILS;
 		details.setState(stateDetailsController.getState(stateId));
 		//model.addAttribute("selectedMenu", selectedMenu);
-		if (result.hasErrors() || userDetController.shippingAddressConstraintsFailed(details)) {
+		if (result.hasErrors()) { // !!! SMARTYSTREETS API EXPIRED !!! || userDetController.shippingAddressConstraintsFailed(details)) {
 			// Add error messages
 			User user = userController.getCurrently_Logged_In();
 			if(!result.hasErrors() && userDetController.shippingAddressConstraintsFailed(details))

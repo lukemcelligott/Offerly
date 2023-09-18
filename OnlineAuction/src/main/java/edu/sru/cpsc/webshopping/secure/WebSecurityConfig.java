@@ -54,7 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		
 			.authorizeRequests()
 				/* begin - users visiting these URLs do not need authenticated because of .permitAll() */
-				.antMatchers("/", "/index", "/newUser", "/adduser", "/add-user-signup","/emailverification", "/get-all-card-types",
+				.antMatchers("/", "/index", "/newUser", "/adduser", "/add-user-signup","/emailverification", "/get-all-card-types", "/submitShippingAddressSignUp",
 						"/verify", "/userSecrets", "/forgotUser/*","/findUser","/answerQuestion", "/newUserPayment", "/submitPurchaseSignup",
 						"/resetPassword","/missionStatement","/FAQ","/application","/apply", "browseWidgets","/BrowseWidgetsButton").permitAll()
 				.antMatchers("/resources/**", "/static/**", "/styles/**", "/js/**", "/images/**","/listingImages/**","data:realCaptcha/**").permitAll()
