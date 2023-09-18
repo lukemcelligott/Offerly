@@ -122,9 +122,6 @@ public class UserDetailsController {
 	private ShippingAddressDomainController shippingController;
 	private StateDetailsController stateDetailsController;
 	
-
-
-
 	public UserDetailsController(UserController userController, UserRepository userRepository, 
 			TransactionController transController, CardTypeController cardController,
 			PaymentDetailsRepository payDetRepo,

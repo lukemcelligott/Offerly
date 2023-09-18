@@ -3,15 +3,33 @@ package edu.sru.cpsc.webshopping.controller;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.PhoneNumberUtil.PhoneNumberType;
 import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber;
+
+import edu.sru.cpsc.webshopping.controller.billing.CardTypeController;
+import edu.sru.cpsc.webshopping.controller.billing.PaymentDetailsController;
+import edu.sru.cpsc.webshopping.controller.billing.StateDetailsController;
+import edu.sru.cpsc.webshopping.controller.purchase.ConfirmPurchasePageController;
+import edu.sru.cpsc.webshopping.domain.billing.PaymentDetails;
+import edu.sru.cpsc.webshopping.domain.billing.PaymentDetails_Form;
+import edu.sru.cpsc.webshopping.domain.billing.Paypal_Form;
+import edu.sru.cpsc.webshopping.domain.billing.ShippingAddress;
+import edu.sru.cpsc.webshopping.domain.billing.ShippingAddress_Form;
+import edu.sru.cpsc.webshopping.domain.market.MarketListing;
+import edu.sru.cpsc.webshopping.domain.market.Transaction;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
+import edu.sru.cpsc.webshopping.repository.billing.PaymentDetailsRepository;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
 import edu.sru.cpsc.webshopping.util.PreLoad;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -19,6 +37,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +49,13 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -47,25 +69,62 @@ public class SignUpController {
   private WidgetController widgetController;
   private EmailController email;
   private UtilityController util;
+  private PaymentDetailsController payDetController;
+  private ShippingAddress address;
+  private PaymentDetails validatedDetails;
+  private PaymentDetails details;
+  private UserDetailsController userDetController;
+  private CardTypeController cardController;
+  
+  private Transaction purchase;
+  private MarketListing prevListing;
+  private PaymentDetailsRepository payDetRepository;
+  private Paypal_Form paypal;
+  
   private static final PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.getInstance();
   private boolean showedSuccess = false;
   User findUser = new User();
+  private boolean allSelected = false;
+  private boolean modifyPayment = false;
+  private boolean relogin = true;
+  private boolean depositPicked = false;
+  private boolean loginEr = false;
+  private boolean toShipping = false;
   private String answer;
   private String question;
   private int theId;
   private String page;
+  
+  /* shipping */
+  private StateDetailsController stateDetailsController;
+  private ShippingAddressDomainController shippingController;
+  private boolean addNewSA = false;
+  private boolean updateSA = false;
+  private boolean reloginSA = false;
+  private boolean delSA = false;
+  private long updateIdSA = -1;
 
   public SignUpController(
       UserController userController,
       WidgetController widgetController,
       EmailController email,
       UtilityController util,
-      UserRepository userRepository) {
+      PaymentDetailsController payDetController,
+      UserRepository userRepository,
+      CardTypeController cardController,
+      UserDetailsController userDetController,
+      StateDetailsController stateDetailsController,
+      ShippingAddressDomainController shippingController) {
     this.userController = userController;
     this.widgetController = widgetController;
     this.email = email;
     this.util = util;
     this.userRepository = userRepository;
+    this.userDetController = userDetController;
+    this.cardController = cardController;
+    this.payDetController = payDetController;
+    this.stateDetailsController = stateDetailsController;
+    this.shippingController = shippingController;
   }
 
   Map<String, String> countryCodesMap;
@@ -164,6 +223,7 @@ public class SignUpController {
   
   /**
    * creates a new user when someone signs up
+   * called by newUser.html
    * @param user
    * @param result
    * @param file
@@ -222,7 +282,6 @@ public class SignUpController {
     }
 
     if (!(usertemp.getPasswordconf().equals(usertemp.getPassword()))) {
-
       result.addError(new FieldError("passwordconf", "passwordconf", "Passwords don't match."));
     }
 
@@ -239,61 +298,247 @@ public class SignUpController {
       model.addAttribute("page", getPage());
       return "newUser";
     }
-
+    /* captcha */
     if (user.getCaptcha().equals(user.getHiddenCaptcha())) {
-      if (user.getUsername().contains("admin" + "widget")) {
-        user.setRole("ROLE_ADMIN");
-        user.setEnabled(true);
-      }
-      model.addAttribute("message", "User Registered successfully!");
-      setPage("success");
-      model.addAttribute("page", getPage());
-      if (user.getRole() != "ROLE_ADMIN") {
-        email.verificationEmail(user, util.randomStringGenerator());
-      }
-      userController.addUser(user, result);
-      user = userController.getUserByEmail(user.getEmail());
-      System.out.println(user.getId() + " user Id");
-      System.out.println(file.isEmpty() + " is the file empty");
-      if (!file.isEmpty()) {
-        String tempImageName;
-        tempImageName = user.getId() + StringUtils.cleanPath(file.getOriginalFilename());
-        System.out.println(file.getOriginalFilename());
-        System.out.println(tempImageName);
-        user.setUserImage(tempImageName);
-        try {
-        	String fileLocation = new File("src/main/resources/static/images/userImages").getAbsolutePath() + "/" + tempImageName;
-			String fileLocationTemp = new ClassPathResource("static/images/userImages").getFile().getAbsolutePath() + "/" + tempImageName;
+    	if (user.getUsername().contains("admin" + "widget")) {
+    		user.setRole("ROLE_ADMIN");
+    		user.setEnabled(true);
+    	}
+    	model.addAttribute("message", "User Registered successfully!");
+    	setPage("success");
+    	userController.setCurrently_Logged_In(user);
+    	model.addAttribute("page", getPage());
+    	if (user.getRole() != "ROLE_ADMIN") {
+    		email.verificationEmail(user, util.randomStringGenerator());
+    	}
+    	userController.addUser(user, result);
+      
+    	user = userController.getUserByEmail(user.getEmail());
+      
+    	System.out.println(user.getId() + " user Id");
+    	
+    	/* profile picture */
+    	System.out.println(file.isEmpty() + " is the file empty");
+    	if (!file.isEmpty()) {
+    		String tempImageName;
+    		tempImageName = user.getId() + StringUtils.cleanPath(file.getOriginalFilename());
+    		System.out.println(file.getOriginalFilename());
+    		System.out.println(tempImageName);
+    		user.setUserImage(tempImageName);
+    		try {
+    			String fileLocation = new File("src/main/resources/static/images/userImages").getAbsolutePath() + "/" + tempImageName;
+    			String fileLocationTemp = new ClassPathResource("static/images/userImages").getFile().getAbsolutePath() + "/" + tempImageName;
 
-			FileOutputStream output = new FileOutputStream(fileLocation);
-			output.write(file.getBytes());
-			output.close();
+    			FileOutputStream output = new FileOutputStream(fileLocation);
+    			output.write(file.getBytes());
+    			output.close();
 
-			output = new FileOutputStream(fileLocationTemp);
-			output.write(file.getBytes());
-			output.close();
-        } catch (IOException e) {
-          e.printStackTrace();
-          System.out.println("upload failed");
-        }
-        model.addAttribute("userImage", tempImageName);
-      }
-      userRepository.save(user);
-      model.addAttribute("user", user);
-      return "redirect:newUser";
+    			output = new FileOutputStream(fileLocationTemp);
+    			output.write(file.getBytes());
+    			output.close();
+    		} catch (IOException e) {
+    			e.printStackTrace();
+    			System.out.println("upload failed");
+    		}
+    		model.addAttribute("userImage", tempImageName);
+    	}
+    	
+    	userRepository.save(user);
+    	model.addAttribute("user", user);
+    	model.addAttribute("cardTypes", cardController.getAllCardTypes());
+    	
+    	System.out.println("line 341 " + user);
+    	User userLogin = userController.getUserByUsername(user.getUsername());
+    	System.out.println("line 343 " + userLogin);
+    	userController.setCurrently_Logged_In(userLogin);
+    	System.out.println(userController.getCurrently_Logged_In());
+    	
+    	return "newUserPayment";
     } else {
-      result.addError(new FieldError("captcha", "captcha", "Incorrect Captcha."));
-      userController.getCaptcha(user);
-      model.addAttribute("secretQuestion1", secretQuestion1);
-      model.addAttribute("secretQuestion2", secretQuestion2);
-      model.addAttribute("secretQuestion3", secretQuestion3);
-      model.addAttribute("user", user);
-      model.addAttribute("page", getPage());
-      model.addAttribute("countryCodes", countryCodesMap);
-      model.addAttribute("defaultCountryCode", defaultCountryCode);
-      return "newUser";
+    	userController.setCurrently_Logged_In(user);
+    	System.out.println("line 335 " + usertemp);
+    	System.out.println(userController.getCurrently_Logged_In());
+    	result.addError(new FieldError("captcha", "captcha", "Incorrect Captcha."));
+    	userController.getCaptcha(user);
+    	
+    	model.addAttribute("secretQuestion1", secretQuestion1);
+    	model.addAttribute("secretQuestion2", secretQuestion2);
+    	model.addAttribute("secretQuestion3", secretQuestion3);
+    	model.addAttribute("user", user);
+    	model.addAttribute("page", getPage());
+    	model.addAttribute("countryCodes", countryCodesMap);
+    	model.addAttribute("defaultCountryCode", defaultCountryCode);
+    	model.addAttribute("cardTypes", cardController.getAllCardTypes());
+    	
+    	return "newUserPayment";
     }
   }
+  
+  	/* used by newUserPayment.html */
+  	@Transactional
+	@PostMapping("/submitPurchaseSignup")
+  	public String submitPurchaseSignup(@Validated @ModelAttribute("paymentDetails") PaymentDetails_Form paymentDetails,
+			BindingResult result, Model model) {
+	  	System.out.println("got to start of payment");
+		PaymentDetails currDetails = new PaymentDetails();
+		allSelected = false;
+		currDetails.buildFromForm(paymentDetails);
+		model.addAttribute("cardTypes", cardController.getAllCardTypes());
+		// Test that payment details are valid
+		if (!paymentDetailsInvalid(paymentDetails) && !result.hasErrors()) {
+			// add the card to the database if it's new
+			if (!payDetController.checkDuplicateCard(currDetails)) {
+				payDetController.addPaymentDetails(currDetails);
+				System.out.println("option 1");
+			} else {
+				currDetails = payDetController.getPaymentDetailsByCardNumberAndExpirationDate(currDetails);
+				System.out.println(currDetails.getId());
+			}
+			if (address != null) {
+				allSelected = true;
+			}
+			User user = userController.getCurrently_Logged_In();
+			Set<PaymentDetails> PD = user.getPaymentDetails();
+			if(PD == null)
+				PD = new HashSet<PaymentDetails>();
+			PD.add(currDetails);
+			user.setPaymentDetails(PD);
+			if(user.getDefaultPaymentDetails() == null)
+				user.setDefaultPaymentDetails(currDetails);
+			currDetails.setUser(user);
+			payDetController.addPaymentDetails(currDetails);
+			modifyPayment = false;
+			relogin = true;
+			validatedDetails = currDetails;
+			return "newUserPayment";
+		}
+		// Transaction failed - post error
+		else {
+			if (address == null)
+				model.addAttribute("selectedAddress", null);
+			else
+				model.addAttribute("selectedAddress", address);
+			details = new PaymentDetails();
+			// Build credit card error message
+			for (FieldError item : result.getFieldErrors()) {
+				model.addAttribute(item.getField() + "Err", item.getDefaultMessage());
+			}
+			if (paymentDetails.getExpirationDate() != null && paymentDetailsExpired(paymentDetails)) {
+				model.addAttribute("cardError", "The Credit Card has expired.");
+			}
+			if (userDetController.cardFarFuture(paymentDetails) && paymentDetails.getExpirationDate() != "") {
+				model.addAttribute("cardError", "The expiration date is an impossible number of years in the future");
+			}
+			User user = userController.getCurrently_Logged_In();
+			System.out.println(user);
+			if (address == null) {
+				model.addAttribute("noAddress", "Please enter a shipping address");
+			}
+			model.addAttribute("expirationDate", paymentDetails.getExpirationDate());
+			model.addAttribute("purchase", purchase);
+			model.addAttribute("paymentDetails", details);
+			model.addAttribute("errMessage", "Payment Details Invalid");
+			model.addAttribute("paypal", paypal);
+			model.addAttribute("modifyPayment", modifyPayment);
+			model.addAttribute("selectedPayment", validatedDetails);
+			model.addAttribute("toShipping", toShipping);
+			model.addAttribute("useThis", true);
+			model.addAttribute("depositPicked", depositPicked);
+			model.addAttribute("relogin", relogin);
+			model.addAttribute("loginEr", loginEr);
+			model.addAttribute("allSelected", allSelected);
+			model.addAttribute("cardTypes", cardController.getAllCardTypes());
+			System.out.println(cardController.getAllCardTypes());
+			model.addAttribute("user", user);
+			model.addAttribute("existingSecurityCode", new String());
+			
+			return "newUserShipping";
+		}
+	}
+  	
+  	/**
+	 * takes the passed shipping address details and creates a new shipping address to be associated
+	 * with the user
+	 * @param details
+	 * @param result
+	 * @param stateId
+	 * @param model
+	 * @return
+	 */
+	@PostMapping(value = "/submitShippingAddressSignUp", params="submit")
+	public String createShippingDetails(@Validated @ModelAttribute("shippingDetails") ShippingAddress_Form details, BindingResult result, @RequestParam("stateId") String stateId, Model model) {
+		/* trying to get loadUser from UserDetailsController */
+		Method m = null;
+		try {
+			m = UserDetailsController.class.getDeclaredMethod("loadUserData");
+		} catch (NoSuchMethodException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		m.setAccessible(true);
+		
+		//selectedMenu = SUB_MENU.SHIPPING_DETAILS;
+		details.setState(stateDetailsController.getState(stateId));
+		//model.addAttribute("selectedMenu", selectedMenu);
+		if (result.hasErrors() || userDetController.shippingAddressConstraintsFailed(details)) {
+			// Add error messages
+			User user = userController.getCurrently_Logged_In();
+			if(!result.hasErrors() && userDetController.shippingAddressConstraintsFailed(details))
+				model.addAttribute("shippingError", "Address does not exist");
+			model.addAttribute("shippingDetails", new ShippingAddress_Form());
+			model.addAttribute("user", user);
+			model.addAttribute("states", stateDetailsController.getAllStates());
+			if(user.getDefaultShipping() != null)
+				model.addAttribute("defaultShippingDetails", user.getDefaultShipping());
+			else
+				model.addAttribute("defaultShippingDetails", null);
+			if(user.getShippingDetails() != null && user.getShippingDetails().isEmpty())
+				model.addAttribute("savedShippingDetails", null);
+			else
+				model.addAttribute("savedShippingDetails", shippingController.getShippingDetailsByUser(user));
+			for (FieldError error : result.getFieldErrors()) {
+				model.addAttribute(error.getField() + "Err", error.getDefaultMessage());
+			}
+			model.addAttribute("addNew", addNewSA);
+			model.addAttribute("updateId", updateIdSA);
+			model.addAttribute("update", updateSA);
+			model.addAttribute("relogin", reloginSA);
+			model.addAttribute("delete", delSA);
+			
+			/* trying to invoke loadUser from UserDetailsController */
+			try {
+				m.invoke(userDetController, model);
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			return "/newUserShipping";
+		}
+		ShippingAddress shipping = new ShippingAddress();
+		details.setState(stateDetailsController.getState(stateId));
+		shipping.buildFromForm(details);
+		shipping.setUser(userController.getCurrently_Logged_In());
+		User user = userController.getCurrently_Logged_In();
+		Set<ShippingAddress> SA = user.getShippingDetails();
+		if(SA == null)
+			SA = new HashSet<ShippingAddress>();
+		SA.add(shipping);
+		user.setShippingDetails(SA);
+		shippingController.addShippingAddress(shipping);
+		userRepository.save(user);
+		addNewSA = false;
+		return "redirect:/index";
+	}
 
   @GetMapping({"/forgotUser/{id}"})
   public String forgotUser(@PathVariable("id") int id, Model model) {
@@ -417,6 +662,25 @@ public class SignUpController {
       model.addAttribute("message", "Wrong verification code!");
       return "emailverification";
     }
+  }
+  
+  public boolean paymentDetailsInvalid(PaymentDetails_Form form) {
+		return paymentDetailsExpired(form);
+  }
+  
+  public boolean paymentDetailsExpired(PaymentDetails_Form form) {
+		if (form.getExpirationDate() == null || form.getExpirationDate().length() == 0)
+			return false;
+		// Check if current date is on or past the expiration date
+		LocalDate expirDate;
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM yyyy dd");
+		try {
+			expirDate = LocalDate.parse(form.getExpirationDate()+" 01", formatter);
+			return expirDate.compareTo(LocalDate.now()) < 0;
+		}
+		catch (Exception e) {
+			return false;
+		}
   }
 
   public String getPage() {
