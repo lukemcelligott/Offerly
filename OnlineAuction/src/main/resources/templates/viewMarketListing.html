@@ -138,7 +138,15 @@
                                            </form>
                                               <div class="row g-3 d-flex justify-content-center my-2">
                                   <!-- Add to Watchlist Button | Luke helped add functionality to fix Watchlist button  -->
-                                  <div class="col-auto">
+                                  <!-- TRYING TO ADD MODAL -->
+                                  <!--<div class="col-auto">
+                                      <form th:action="@{/viewMarketListing/wishlistItem/{id}(id = ${currListing.getId()})}" method="post">-->
+                                          <!--<input class="btn btn-success" id="addToWatchlistButton" data-bs-toggle="modal" data-bs-target="#watchlistModal" value="Add to Watchlist"/>-->
+                                          <!--<button class="btn btn-success" id="addToWatchlistButton">Add to Watchlist</button>-->
+                                      <!--</form>
+                                  </div>-->
+                                  <!-- OLD -->
+									<div class="col-auto">
                                       <form th:action="@{/viewMarketListing/wishlistItem/{id}(id = ${currListing.getId()})}" method="post">
                                           <button class="btn btn-success" id="addToWatchlistButton" onclick="addWatchlist()">Add to Watchlist</button>
                                       </form>
@@ -241,6 +249,28 @@
               </div>
             </div>
           </div>
+          
+        <!-- Watchlist Modal
+    	<div class="modal fade" id="watchlistModal" tabindex="-1" aria-labelledby="watchlistModalLabel" aria-hidden="true">
+        	<div class="modal-dialog modal-dialog-centered">
+         		<div class="modal-content">
+            		<div class="modal-header">
+              			<h5 class="modal-title" id="watchlistModalLabel">Watchlist</h5>
+              			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            		</div>
+            		<div class="modal-body">
+						<form th:action="@{/viewMarketListing/wishlistItem/{id}(id = ${currListing.getId()})}" method="post">
+              			<!--<form th:action="@{/updateBid}" method="post" onsubmit="return validateBid();">
+                			<div class="mb-3">
+								<p>Item added to watchlist</p>
+                			</div>
+                			<!--<input type="hidden" name="listingId" th:value="${currListing.id}"/>
+                			<input class="btn btn-success" id="bidButton" name="placeBid" type="submit" value="Bid Now" onclick="return confirmBid();"/>
+              			</form>
+            		</div>
+          		</div>
+        	</div>
+      	</div> -->
 
         <!-- Update Listing Modal -->
         <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
