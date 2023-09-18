@@ -1,12 +1,15 @@
 package edu.sru.cpsc.webshopping.domain.widgets;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import org.springframework.lang.NonNull;
 
@@ -26,8 +29,15 @@ public class Attribute {
 	@Enumerated(EnumType.STRING)
 	private AttributeDataType dataType;
 
-    @ManyToOne
-    private Category category;
+    @OneToMany(mappedBy = "attribute", fetch = FetchType.EAGER)
+    private List<AttributeRecommendation> categories;
+
+	public Attribute() {}
+
+	public Attribute(String name, AttributeDataType dataType) {
+		this.attributeKey = name;
+		this.dataType = dataType;
+	}
 
     // Getters and setters
 	public long getId() {
@@ -54,11 +64,10 @@ public class Attribute {
 		this.dataType = dataType;
 	}
 
-	public Category getCategory() {
-		return category;
+	public List<AttributeRecommendation> getCategories() {
+		return categories;
 	}
-
-	public void setCategory(Category category) {
-		this.category = category;
+	public void setCategories(List<AttributeRecommendation> categories) {
+		this.categories = categories;
 	}
 }

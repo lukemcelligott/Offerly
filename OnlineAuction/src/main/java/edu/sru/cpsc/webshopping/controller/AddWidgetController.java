@@ -9,6 +9,7 @@ import edu.sru.cpsc.webshopping.domain.widgets.WidgetImage;
 import edu.sru.cpsc.webshopping.domain.market.MarketListingCSVModel;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.widgets.Attribute;
+import edu.sru.cpsc.webshopping.domain.widgets.AttributeRecommendation;
 import edu.sru.cpsc.webshopping.domain.widgets.Category;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 import edu.sru.cpsc.webshopping.domain.widgets.WidgetAttribute;
@@ -16,6 +17,8 @@ import edu.sru.cpsc.webshopping.repository.market.MarketListingRepository;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
 import edu.sru.cpsc.webshopping.repository.widgets.CategoryRepository;
 import edu.sru.cpsc.webshopping.repository.widgets.WidgetRepository;
+import edu.sru.cpsc.webshopping.service.AttributeService;
+import edu.sru.cpsc.webshopping.service.CategoryService;
 import edu.sru.cpsc.webshopping.service.WidgetService;
 import edu.sru.cpsc.webshopping.repository.widgets.WidgetImageRepository;
 import edu.sru.cpsc.webshopping.util.PreLoad;
@@ -64,6 +67,12 @@ public class AddWidgetController
 {
 	@Autowired
 	private WidgetService widgetService;
+
+	@Autowired
+	private CategoryService categoryService;
+
+	@Autowired
+	private AttributeService attributeService;
 
 	WidgetRepository widgetRepository;
 	CategoryRepository categoryRepository;
@@ -139,8 +148,9 @@ public class AddWidgetController
 		        .orElseThrow(() -> new IllegalArgumentException("Invalid category ID"));
 		
 		this.category = category;
+		List<Attribute> attributes = categoryService.getTopRecommendedAttributes(category, 0);
 		model.addAttribute("category", category);
-		model.addAttribute("attributes", attributeController.getAllAttributesByCategory(category));
+		model.addAttribute("attributes", attributes);
 		model.addAttribute("user", userController.getCurrently_Logged_In());
 		
 		return "createWidgetTemplate";
@@ -173,6 +183,10 @@ public class AddWidgetController
 	}	
 	@RequestMapping("/createWidgetListing") 
 	public String createWidgetListing(Model model, @ModelAttribute WidgetForm widgetForm, BindingResult result) {
+
+		if (result.hasErrors()) {
+			return "createWidgetTemplate";  // return to the form page if there are errors
+		}
 
 		// create widget
 		Widget widget = new Widget();
@@ -240,7 +254,6 @@ public class AddWidgetController
 		model.addAttribute("auctionPrice", marketListing);
 		model.addAttribute("qtyAvailable", marketListing.getQtyAvailable());
 		model.addAttribute("listing", marketListing);
-		model.addAttribute("subcategory", subcategory);
     
 		marketListing.setSeller(userController.getCurrently_Logged_In());
 		marketListing.setWidgetSold(widget);
