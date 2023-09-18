@@ -74,6 +74,8 @@
 	        			<a th:unless="${page == 'tickets'}" class="submit4" th:href="@{/tickets}"><span>My Tickets</span></a>
 						<a th:if="${page == 'createTickets'}" class="submit4 nav-link active" th:href="@{/createTickets}"><span>Add Ticket</span></a>
 						<a th:unless="${page == 'createTickets'}" class="submit4" th:href="@{/createTickets}"><span>Add Ticket</span></a>
+						<a th:if="${page == 'refund'}" class="submit4 nav-link active" th:href="@{/refund}"><span>Refund</span></a>
+						<a th:unless="${page == 'refund'}" class="submit4" th:href="@{/refund}"><span>Refund</span></a>
 					</div>
 				</li>
 				

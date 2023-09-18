@@ -64,6 +64,22 @@ public class LandingPageController {
 		this.msgcontrol = msgcontrol;
 		this.emailController = emailController;
 	}
+	
+	  
+	  @GetMapping("/refund")
+	  public String showRefundPage(Model model, Model widgetModel,Model listingModel, String tempSearch) {
+		  User user = userController.getCurrently_Logged_In();
+		  model.addAttribute("user", user);
+		  model.addAttribute("page", "refund");
+		  widgetModel.addAttribute("widgets", widgetController.getAllWidgets());
+		  listingModel.addAttribute("listings", marketController.getAllListings());
+		  Iterable<Transaction> purchases =
+				  transController.getUserPurchases(userController.getCurrently_Logged_In());
+		  listingModel.addAttribute("purchases", purchases);
+		  
+	      return "refund";
+	  }
+	  
 
 	@GetMapping({"/friendsOff"})
 	public String friendsOff(Model model) {

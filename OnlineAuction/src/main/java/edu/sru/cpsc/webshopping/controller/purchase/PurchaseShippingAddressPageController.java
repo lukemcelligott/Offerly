@@ -28,11 +28,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+/**
 import com.smartystreets.api.exceptions.SmartyException;
 import com.smartystreets.api.us_street.Candidate;
 import com.smartystreets.api.us_street.Client;
 import com.smartystreets.api.us_street.ClientBuilder;
 import com.smartystreets.api.us_street.Lookup;
+*/
+
+import com.google.maps.GeoApiContext;
+import com.google.maps.PlacesApi;
+import com.google.maps.errors.ApiException;
+import com.google.maps.model.AutocompletePrediction;
 
 import edu.sru.cpsc.webshopping.controller.ShippingAddressDomainController;
 import edu.sru.cpsc.webshopping.controller.ShippingDomainController;
@@ -444,6 +451,8 @@ public class PurchaseShippingAddressPageController {
 	 * @param shipping
 	 * @return
 	 */
+	
+	/**
 	public boolean addressExists(ShippingAddress_Form shipping)
 	{
 		Client client = new ClientBuilder("15c052fe-6a81-8841-3359-59658192ff8e", "9d48LSyfCFhlZolc0gi6").build();
@@ -473,4 +482,30 @@ public class PurchaseShippingAddressPageController {
 		
 		return false;
 	}
+	*/
+	
+	public boolean addressExists(ShippingAddress_Form shipping) {
+	    GeoApiContext context = new GeoApiContext.Builder()
+	        .apiKey("AIzaSyCRm7IoRW0gGqjIgh_I5OrpzLWYKxxTr5s")
+	        .build();
+
+	    String address = shipping.getStreetAddress() + ", " + shipping.getCity() + ", " + shipping.getState().getStateName() + " " + shipping.getPostalCode();
+
+	    try {
+	        AutocompletePrediction[] results = PlacesApi.placeAutocomplete(context, address, null).await();
+	        if (results != null && results.length > 0) {
+	            // At least one address match found
+	            return true;
+	        } else {
+	            // No matches found
+	            System.out.println("Cannot find address");
+	            return false;
+	        }
+	    } catch (ApiException | InterruptedException | IOException e) {
+	        System.out.println(e.getMessage());
+	        e.printStackTrace();
+	        return false;
+	    }
+	}
+	
 }

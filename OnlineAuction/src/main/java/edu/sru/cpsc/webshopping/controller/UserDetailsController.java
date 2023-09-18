@@ -26,9 +26,16 @@ import java.util.Set;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+/**
 import com.smartystreets.api.StaticCredentials;
 import com.smartystreets.api.exceptions.SmartyException;
 import com.smartystreets.api.us_street.*;
+*/
+
+import com.google.maps.GeoApiContext;
+import com.google.maps.PlacesApi;
+import com.google.maps.errors.ApiException;
+import com.google.maps.model.AutocompletePrediction;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -52,6 +59,13 @@ import edu.sru.cpsc.webshopping.controller.billing.CardTypeController;
 import edu.sru.cpsc.webshopping.controller.billing.PaymentDetailsController;
 import edu.sru.cpsc.webshopping.controller.billing.SellerRatingController;
 import edu.sru.cpsc.webshopping.controller.billing.StateDetailsController;
+
+/**
+import edu.sru.cpsc.webshopping.controller.purchase.ApiException;
+import edu.sru.cpsc.webshopping.controller.purchase.AutocompletePrediction;
+import edu.sru.cpsc.webshopping.controller.purchase.GeoApiContext;
+*/
+
 import edu.sru.cpsc.webshopping.domain.billing.DirectDepositDetails;
 import edu.sru.cpsc.webshopping.domain.billing.DirectDepositDetails_Form;
 import edu.sru.cpsc.webshopping.domain.billing.PaymentDetails;
@@ -1147,6 +1161,8 @@ public class UserDetailsController {
 	 * @param shipping
 	 * @return
 	 */
+	
+	/**
 	public boolean addressExists(ShippingAddress_Form shipping)
 	{
 		Client client = new ClientBuilder("15c052fe-6a81-8841-3359-59658192ff8e", "9d48LSyfCFhlZolc0gi6").build();
@@ -1180,6 +1196,31 @@ public class UserDetailsController {
 		}
 		
 		return false;
+	}
+	*/
+	
+	public boolean addressExists(ShippingAddress_Form shipping) {
+	    GeoApiContext context = new GeoApiContext.Builder()
+	        .apiKey("AIzaSyCRm7IoRW0gGqjIgh_I5OrpzLWYKxxTr5s")
+	        .build();
+
+	    String address = shipping.getStreetAddress() + ", " + shipping.getCity() + ", " + shipping.getState().getStateName() + " " + shipping.getPostalCode();
+
+	    try {
+	        AutocompletePrediction[] results = PlacesApi.placeAutocomplete(context, address, null).await();
+	        if (results != null && results.length > 0) {
+	            // At least one address match found
+	            return true;
+	        } else {
+	            // No matches found
+	            System.out.println("Cannot find address");
+	            return false;
+	        }
+	    } catch (ApiException | InterruptedException | IOException e) {
+	        System.out.println(e.getMessage());
+	        e.printStackTrace();
+	        return false;
+	    }
 	}
 	
 	/**
