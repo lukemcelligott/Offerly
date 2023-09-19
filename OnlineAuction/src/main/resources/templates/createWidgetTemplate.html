@@ -271,11 +271,12 @@
 				hiddenInput3.name = "entries[" + index + "].widgetAttribute.attributeKey";
 				cell2.appendChild(hiddenInput3);
 				
-				attributeInput.setAttribute("th:name", "entries[" + index + "].widgetAttribute.value");
-				attributeInput.setAttribute("th:id", "entries[" + index + "].widgetAttribute.value");
+				attributeInput.setAttribute("name", "entries[" + index + "].widgetAttribute.value");
+				attributeInput.setAttribute("id", "entries[" + index + "].widgetAttribute.value");
 				//attributeInput.setAttribute("th:value", "");
 				attributeInput.placeholder = "-- Enter Value --";
 				attributeInput.classList.add('form-control');
+				attributeInput.classList.add('form-input');
 				attributeInput.required = true;
 
 				cell1.innerHTML = attributeName;
@@ -294,11 +295,26 @@
 				// Close the modal
 				var modal = bootstrap.Modal.getInstance(document.getElementById('attributeModal'));
 				modal.hide();
+
+				reindexEntries();
+			}
+
+			function reindexEntries() {
+				const rows = document.querySelectorAll('tbody tr:not(#addButtonRow)');
+				rows.forEach((row, index) => {
+					row.querySelectorAll('input, select, textarea').forEach(input => {
+						const name = input.getAttribute('name');
+						if (name) {
+							input.setAttribute('name', name.replace(/\[\d+\]/, '[' + index + ']'));
+						}
+					});
+				});
 			}
 
 			//Function to remove an attribute row
 			function removeAttribute(buttonElement) {		
 				jQuery(buttonElement).closest('tr').remove();
+				reindexEntries();
 			}
 
 			window.onload = function() {
