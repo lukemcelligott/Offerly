@@ -111,6 +111,7 @@ public class User implements UserDetails {
 	
 	private String emailVerification;
 	
+	
 	// The name that is visible to other users
 	@NonNull
 	@Size(max=200, message = "Maximum Character limit is 200")

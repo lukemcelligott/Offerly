@@ -32,11 +32,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+/**
 import com.smartystreets.api.exceptions.SmartyException;
 import com.smartystreets.api.us_street.Candidate;
 import com.smartystreets.api.us_street.Client;
 import com.smartystreets.api.us_street.ClientBuilder;
 import com.smartystreets.api.us_street.Lookup;
+*/
+
+import com.google.maps.GeoApiContext;
+import com.google.maps.PlacesApi;
+import com.google.maps.errors.ApiException;
+import com.google.maps.model.AutocompletePrediction;
 
 import edu.sru.cpsc.webshopping.controller.ShippingAddressDomainController;
 import edu.sru.cpsc.webshopping.controller.ShippingDomainController;
@@ -447,7 +454,9 @@ public class PurchaseShippingAddressPageController {
 	 * use the smartystreets api to verify if the passed address exists
 	 * @param shipping
 	 * @return
-	 
+	 */
+	
+	/**
 	public boolean addressExists(ShippingAddress_Form shipping)
 	{
 		Client client = new ClientBuilder("15c052fe-6a81-8841-3359-59658192ff8e", "9d48LSyfCFhlZolc0gi6").build();
@@ -479,41 +488,29 @@ public class PurchaseShippingAddressPageController {
 	}*/
 	
 	/* Google Maps Address Verification API */
-	public boolean addressExists(ShippingAddress_Form shipping){
-		try {
-            String apiKey = "AIzaSyCRm7IoRW0gGqjIgh_I5OrpzLWYKxxTr5s";
-            //String address = "1600 Amphitheatre Parkway, Mountain View, CA";
-
-            String url = "https://maps.googleapis.com/maps/api/geocode/json?address=" +
-                         shipping + "&key=" + apiKey;
-
-            HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
-            conn.setRequestMethod("GET");
-
-            int responseCode = conn.getResponseCode();
-            if (responseCode == 200) {
-                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                String inputLine;
-                StringBuilder response = new StringBuilder();
-
-                while ((inputLine = in.readLine()) != null) {
-                    response.append(inputLine);
-                }
-                in.close();
-
-                // Parse the JSON response here
-                String jsonResponse = response.toString();
-                System.out.println(jsonResponse);
-                return true;
-            } else {
-                System.out.println("Error: HTTP response code " + responseCode);
-                return false;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }	
 	
+	public boolean addressExists(ShippingAddress_Form shipping) {
+	    GeoApiContext context = new GeoApiContext.Builder()
+	        .apiKey("AIzaSyCRm7IoRW0gGqjIgh_I5OrpzLWYKxxTr5s")
+	        .build();
+
+	    String address = shipping.getStreetAddress() + ", " + shipping.getCity() + ", " + shipping.getState().getStateName() + " " + shipping.getPostalCode();
+
+	    try {
+	        AutocompletePrediction[] results = PlacesApi.placeAutocomplete(context, address, null).await();
+	        if (results != null && results.length > 0) {
+	            // At least one address match found
+	            return true;
+	        } else {
+	            // No matches found
+	            System.out.println("Cannot find address");
+	            return false;
+	        }
+	    } catch (ApiException | InterruptedException | IOException e) {
+	        System.out.println(e.getMessage());
+	        e.printStackTrace();
+	        return false;
+	    }
 	}
 	
 }
