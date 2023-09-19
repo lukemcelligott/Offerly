@@ -37,13 +37,13 @@
 									<th:block>
 							            <div class="form-group col-sm-12">
 							                <p style="margin-bottom: 0rem;">Product Name</p>
-							                <input type="text" maxlength="100" class="form-control" th:id="name" th:name="name" placeholder="-- Enter Product Name --" required data-char-counter="charNumTitle">
+							                <input type="text" maxlength="100" class="form-control form-input" th:id="name" th:name="name" placeholder="-- Enter Product Name --" required data-char-counter="charNumTitle">
 							            </div>
 							        </th:block>
 							        <th:block>
 							            <div class="form-group col-sm-12">
 							                <p style="margin-bottom: 0rem;">Product Description</p>
-											<textarea class="form-control" th:id="description" th:name="description" placeholder="-- Enter a Description of Product and any other Necessary Information --" maxlength="500" onkeyup="countCharacters(this)" data-char-counter="charNumDesc" ></textarea>
+											<textarea class="form-control form-input" th:id="description" th:name="description" placeholder="-- Enter a Description of Product and any other Necessary Information --" maxlength="500" onkeyup="countCharacters(this)" data-char-counter="charNumDesc" ></textarea>
 											<div id="charNumDesc" style="padding-bottom: 15px;"> 0 / 500 </div>
 							            </div>
 							        </th:block>
@@ -60,24 +60,29 @@
 									</thead>
 									<tbody>
 										<!-- Pre-populated recommended attributes -->
-										<th:block th:each="attribute : ${attributes}">
+										<th:block th:each="entry, iterStat : ${entries}">
 											<tr>
-												<td th:text="${attribute.attributeKey}"></td>
+												<td th:text="${entry.attribute.attributeKey}"></td>
 												<td>
+													<input type="hidden" th:value="${entry.attribute.dataType.name()}" th:name="'entries[' + ${iterStat.index} + '].attribute.dataType'" />
+													<input type="hidden" th:value="${entry.attribute.id}" th:name="'entries[' + ${iterStat.index} + '].attribute.id'" />
+													<input type="hidden" th:value="${entry.attribute.attributeKey}" th:name="'entries[' + ${iterStat.index} + '].attribute.attributeKey'" />
+													<input type="hidden" th:value="${entry.widgetAttribute.attributeKey}" th:name="'entries[' + ${iterStat.index} + '].widgetAttribute.attributeKey'" />
+													
 													<!--From https://www.w3schools.com/html/html_form_input_types.asp-->
-													<input th:if="${attribute.dataType.name() == 'STRING'}" maxlength="100"  type="text" class="form-control" th:id="${attribute.id}" th:name="'attributes[' + ${attribute.attributeKey} + ']'" placeholder="-- Enter Value --" required>
-													<textarea th:if="${attribute.dataType.name() == 'TEXTAREA'}" class="form-control" th:id="${attribute.id}" th:name="'attributes[' + ${attribute.attributeKey} + ']'" placeholder="-- Enter information --" maxlength="500" onkeyup="countCharacters(this)" data-char-counter="charNumDesc"></textarea>
-													<input th:if="${attribute.dataType.name() == 'YEAR'}" type="number" min="1900" step="1" class="form-control" th:id="${attribute.id}" th:name="'attributes[' + ${attribute.attributeKey} + ']'" placeholder="-- Enter Year --" required>
-													<input th:if="${attribute.dataType.name() == 'DATE'}" type="date" class="form-control" th:id="${attribute.id}" th:name="'attributes[' + ${attribute.attributeKey} + ']'" placeholder="-- Enter Date --" required>
-													<input th:if="${attribute.dataType.name() == 'INTEGER'}" type="number" min="0" class="form-control" th:id="${attribute.id}" th:name="'attributes[' + ${attribute.attributeKey} + ']'" placeholder="-- Enter Value --" required>
-													<input th:if="${attribute.dataType.name() == 'DECIMAL'}" type="number" step="0.01" min="0" class="form-control" th:id="${attribute.id}" th:name="'attributes[' + ${attribute.attributeKey} + ']'" placeholder="-- Enter Value --" required>
-													<input th:if="${attribute.dataType.name() == 'WEIGHT'}" type="number" step="0.01" min="0" class="form-control" th:id="${attribute.id}" th:name="'attributes[' + ${attribute.attributeKey} + ']'" placeholder="-- Enter Weight (lbs) --" required>
-													<input th:if="${attribute.dataType.name() == 'NUMBER'}" type="number" step="any" min="0" class="form-control" th:id="${attribute.id}" th:name="'attributes[' + ${attribute.attributeKey} + ']'" placeholder="-- Enter Value --" required>
-													<select th:if="${attribute.dataType.name() == 'BOOLEAN'}"  class="form-control" th:id="${attribute.id}" th:name="'attributes[' + ${attribute.attributeKey} + ']'" required>
+													<input th:if="${entry.attribute.dataType.name() == 'STRING'}" maxlength="100"  type="text" class="form-control form-input" th:id="'entries[' + ${iterStat.index} + '].widgetAttribute.value'" th:name="'entries[' + ${iterStat.index} + '].widgetAttribute.value'" placeholder="-- Enter Value --" required>
+													<textarea th:if="${entry.attribute.dataType.name() == 'TEXTAREA'}" class="form-control form-input" th:id="'entries[' + ${iterStat.index} + '].widgetAttribute.value'" th:name="'entries[' + ${iterStat.index} + '].widgetAttribute.value'" placeholder="-- Enter information --" maxlength="500" onkeyup="countCharacters(this)" data-char-counter="charNumDesc"></textarea>
+													<input th:if="${entry.attribute.dataType.name() == 'YEAR'}" type="number" min="1900" step="1" class="form-control form-input" th:id="'entries[' + ${iterStat.index} + '].widgetAttribute.value'" th:name="'entries[' + ${iterStat.index} + '].widgetAttribute.value'" placeholder="-- Enter Year --" required>
+													<input th:if="${entry.attribute.dataType.name() == 'DATE'}" type="date" class="form-control form-input" th:id="'entries[' + ${iterStat.index} + '].widgetAttribute.value'" th:name="'entries[' + ${iterStat.index} + '].widgetAttribute.value'"  placeholder="-- Enter Date --" required>
+													<input th:if="${entry.attribute.dataType.name() == 'INTEGER'}" type="number" min="0" class="form-control form-input" th:id="'entries[' + ${iterStat.index} + '].widgetAttribute.value'" th:name="'entries[' + ${iterStat.index} + '].widgetAttribute.value'" placeholder="-- Enter Value --" required>
+													<input th:if="${entry.attribute.dataType.name() == 'DECIMAL'}" type="number" step="0.01" min="0" class="form-control form-input" th:id="'entries[' + ${iterStat.index} + '].widgetAttribute.value'" th:name="'entries[' + ${iterStat.index} + '].widgetAttribute.value'"  placeholder="-- Enter Value --" required>
+													<input th:if="${entry.attribute.dataType.name() == 'WEIGHT'}" type="number" step="0.01" min="0" class="form-control form-input" th:id="'entries[' + ${iterStat.index} + '].widgetAttribute.value'" th:name="'entries[' + ${iterStat.index} + '].widgetAttribute.value'"  placeholder="-- Enter Weight (lbs) --" required>
+													<input th:if="${entry.attribute.dataType.name() == 'NUMBER'}" type="number" step="any" min="0" class="form-control form-input" th:id="'entries[' + ${iterStat.index} + '].widgetAttribute.value'" th:name="'entries[' + ${iterStat.index} + '].widgetAttribute.value'"  placeholder="-- Enter Value --" required>
+													<select th:if="${entry.attribute.dataType.name() == 'BOOLEAN'}"  class="form-control form-input" th:id="'entries[' + ${iterStat.index} + '].widgetAttribute.value'" th:name="'entries[' + ${iterStat.index} + '].widgetAttribute.value'"  required>
 														<option value="true">True</option>
 														<option value="false">False</option>
 													</select>
-													<select th:if="${attribute.dataType.name() == 'CONDITION'}"  class="form-control" th:id="${attribute.id}" th:name="'attributes[' + ${attribute.attributeKey} + ']'" required>
+													<select th:if="${entry.attribute.dataType.name() == 'CONDITION'}"  class="form-control form-input" th:id="'entries[' + ${iterStat.index} + '].widgetAttribute.value'" th:name="'entries[' + ${iterStat.index} + '].widgetAttribute.value'" required>
 														<option value="New">New</option>
 														<option value="New - opened box">New - opened box</option>
 														<option value="Used">Used</option>
@@ -126,9 +131,9 @@
 
 						<!-- Custom Attribute -->
 						<h6 class="mt-4">Custom Attribute</h6>
-						<input type="text" class="form-control" placeholder="Enter custom attribute name">
+						<input type="text" class="form-control custom-form-input" placeholder="Enter custom attribute name">
 						<p style="margin-bottom: 0rem;">Please Select a data type for this attribute</p>
-						<select class="form-control mt-2">
+						<select class="form-control form-input mt-2">
 							<option value="STRING">String</option>
 							<option value="TEXTAREA">Textarea</option>
 							<option value="YEAR">Year</option>
@@ -142,7 +147,7 @@
 						</select>
 					</div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-primary" onclick="addAttributeToTable()">Add</button>
+						<button id="addCustomAttributeButton" type="button" class="btn btn-primary" onclick="addAttributeToTable()" disabled>Add</button>
 						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 					</div>
 				</div>
@@ -246,6 +251,33 @@
 							attributeInput.type = 'text';
 					}
 
+				
+				var index = document.querySelectorAll(".table tbody tr").length - 2;
+				var hiddenInput1 = document.createElement("input");
+				hiddenInput1.type = "hidden";
+				hiddenInput1.value = attributeName;
+				hiddenInput1.name = "entries[" + index + "].attribute.attributeKey";
+				cell2.appendChild(hiddenInput1);
+
+				var hiddenInput2 = document.createElement("input");
+				hiddenInput2.type = "hidden";
+				hiddenInput2.value = datatype;
+				hiddenInput2.name = "entries[" + index + "].attribute.dataType";
+				cell2.appendChild(hiddenInput2);
+
+				var hiddenInput3 = document.createElement("input");
+				hiddenInput3.type = "hidden";
+				hiddenInput3.value = attributeName;
+				hiddenInput3.name = "entries[" + index + "].widgetAttribute.attributeKey";
+				cell2.appendChild(hiddenInput3);
+				
+				attributeInput.setAttribute("th:name", "entries[" + index + "].widgetAttribute.value");
+				attributeInput.setAttribute("th:id", "entries[" + index + "].widgetAttribute.value");
+				//attributeInput.setAttribute("th:value", "");
+				attributeInput.placeholder = "-- Enter Value --";
+				attributeInput.classList.add('form-control');
+				attributeInput.required = true;
+
 				cell1.innerHTML = attributeName;
 				cell2.appendChild(attributeInput);
 
@@ -268,6 +300,15 @@
 			function removeAttribute(buttonElement) {		
 				jQuery(buttonElement).closest('tr').remove();
 			}
+
+			window.onload = function() {
+				var buttons = document.querySelectorAll('.btn-danger.btn-sm');
+				buttons.forEach(function(button) {
+					button.onclick = function() {
+						removeAttribute(button);
+					};
+				});
+			};
 
 			// Function to load more recommended attributes (simulated for this example)
 			function loadMoreRecommendations() {
@@ -305,13 +346,18 @@
 
 			document.addEventListener("DOMContentLoaded", function () {
 				// Get all input fields within the form
-				const inputs = document.querySelectorAll('.form-control');
+				const inputs = document.querySelectorAll('.form-input');
 
 				// Get the "Next" button
 				const nextButton = document.getElementById('nextButton');
 
 				// Function to check if all fields are filled
 				const checkFields = () => {
+					//if no inputs, enable next button
+					if (inputs.length === 0) {
+						nextButton.disabled = false;
+						return;
+					}
 					for (let i = 0; i < inputs.length; i++) {
 						if (inputs[i].value === '') {
 							nextButton.disabled = true;
@@ -322,6 +368,28 @@
 				};
 
 				// Attach event listeners to input fields
+				inputs.forEach(input => {
+					input.addEventListener('input', checkFields);
+				});
+
+				// Initial check
+				checkFields();
+			});
+
+			document.addEventListener("DOMContentLoaded", function() {
+				const inputs = document.querySelectorAll('.custom-form-input');
+				const addButton = document.getElementById('addCustomAttributeButton');
+
+				const checkFields = () => {
+					for (let i = 0; i < inputs.length; i++) {
+						if (inputs[i].value === '') {
+							addButton.disabled = true;
+							return;
+						}
+					}
+					addButton.disabled = false;
+				};
+
 				inputs.forEach(input => {
 					input.addEventListener('input', checkFields);
 				});
