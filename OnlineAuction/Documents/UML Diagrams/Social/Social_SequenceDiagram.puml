@@ -1,0 +1,30 @@
+@startuml
+actor User
+participant SocialPage as "SocialPage (social.html)"
+participant UserController as "UserController (Java)"
+participant UserService as "UserService (Java)"
+Database UserRepository as "UserRepository (Java)"
+
+User -> SocialPage: Enter friend's name
+User -> SocialPage: Click "Add Friend"
+SocialPage -> UserController: AddFriendRequest (friendName)
+UserController -> UserService: addFriend(friendName)
+UserService -> UserRepository: findByUsername(friendName)
+alt Friend found
+    UserRepository --> UserService: return found friend
+    UserService --> UserController: Confirm friend addition
+    UserController --> SocialPage: Update friends list
+else Friend not found
+    UserService --> UserController: Friend not found message
+    UserController --> SocialPage: Display error
+end
+
+User -> SocialPage: Click "Remove" next to friend
+SocialPage -> UserController: RemoveFriendRequest(friendId)
+UserController -> UserService: removeFriend(friendId)
+UserService -> UserRepository: deleteById(friendId)
+UserRepository --> UserService: Confirm friend deletion
+UserService --> UserController: Update confirmation
+UserController --> SocialPage: Update friends list
+
+@enduml

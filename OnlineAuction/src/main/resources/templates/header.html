@@ -53,10 +53,16 @@
 					<a th:unless="${page == 'watchlistPage'}" th:href="@{/Watchlist}" class="submit4"><span>Watchlist</span></a>
 				</li>
 				
-				<!-- Social -->
+				<!-- Social 
 				<li class="nav-item">
-					<a th:if="${page == 'friends'}" th:href="@{/friends}" class="submit4 nav-link active">Social</a>
-					<a th:unless="${page == 'friends'}" th:href="@{/friends}" class="submit4">Social</a>
+					<a th:if="${page == 'friends'}" th:href="@{/friends}" class="submit4 nav-link active">Tocial</a>
+					<a th:unless="${page == 'friends'}" th:href="@{/friends}" class="submit4">Tocial</a>
+				</li>
+				-->
+				
+				<li class="nav-item">
+					<a th:if="${page == 'social'}" th:href="@{/friends/social}" class="submit4 nav-link active">Social</a>
+					<a th:unless="${page == 'social'}" th:href="@{/friends/social}" class="submit4">Social</a>
 				</li>
 				
 				<!-- Messages -->
@@ -74,6 +80,8 @@
 	        			<a th:unless="${page == 'tickets'}" class="submit4" th:href="@{/tickets}"><span>My Tickets</span></a>
 						<a th:if="${page == 'createTickets'}" class="submit4 nav-link active" th:href="@{/createTickets}"><span>Add Ticket</span></a>
 						<a th:unless="${page == 'createTickets'}" class="submit4" th:href="@{/createTickets}"><span>Add Ticket</span></a>
+						<a th:if="${page == 'refund'}" class="submit4 nav-link active" th:href="@{/refund}"><span>Refund</span></a>
+						<a th:unless="${page == 'refund'}" class="submit4" th:href="@{/refund}"><span>Refund</span></a>
 					</div>
 				</li>
 				
