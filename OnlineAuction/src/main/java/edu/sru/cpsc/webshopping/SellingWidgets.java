@@ -18,9 +18,10 @@ public class SellingWidgets implements CommandLineRunner {
 	@Autowired
     private Environment env;
 
-    @Autowired
-    public SellingWidgets(PreLoad preLoad) {
+	@Autowired
+    public SellingWidgets(PreLoad preLoad, Environment env) {
         this.preLoad = preLoad;
+        this.env = env;
     }
 
     public static void main(String[] args) {
