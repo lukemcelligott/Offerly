@@ -6,10 +6,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.Proxy;
+import java.net.URL;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -122,9 +126,6 @@ public class UserDetailsController {
 	private ShippingAddressDomainController shippingController;
 	private StateDetailsController stateDetailsController;
 	
-
-
-
 	public UserDetailsController(UserController userController, UserRepository userRepository, 
 			TransactionController transController, CardTypeController cardController,
 			PaymentDetailsRepository payDetRepo,
@@ -1143,14 +1144,12 @@ public class UserDetailsController {
 	
 	
 	/**
-	 * use the smartstreets api to check if the address passed exists
+	 * use the smartstreets api (expired) to check if the address passed exists
 	 * @param shipping
 	 * @return
-	 */
-	public boolean addressExists(ShippingAddress_Form shipping)
-	{
+	
+	public boolean addressExists(ShippingAddress_Form shipping){
 		Client client = new ClientBuilder("15c052fe-6a81-8841-3359-59658192ff8e", "9d48LSyfCFhlZolc0gi6").build();
-		
 		Lookup lookup = new Lookup();
 		lookup.setAddressee(shipping.getRecipient());
 		lookup.setStreet(shipping.getStreetAddress());
@@ -1162,7 +1161,6 @@ public class UserDetailsController {
 		System.out.println(lookup.getCity());
 		System.out.println(lookup.getState());
 		System.out.println(lookup.getZipCode());
-		
 		try {
 			client.send(lookup);
 		}
@@ -1170,17 +1168,58 @@ public class UserDetailsController {
 			System.out.println(ex.getMessage());
 			ex.printStackTrace();
 		}
-		
 		List<Candidate> results = lookup.getResult();
-		
-		if(results.isEmpty())
-		{
+		if(results.isEmpty()){
 			System.out.println("cannot find address");
 			return true;
 		}
-		
 		return false;
+	} */
+	
+	
+	/*
+	 * https://developers.google.com/maps/documentation/address-validation/get-api-key
+	 * https://developers.google.com/maps/documentation/address-validation/reference/rest/v1/TopLevel/validateAddress
+	 * 
+	 * Google Maps Address Verification API
+	 */
+	public boolean addressExists(ShippingAddress_Form shipping){
+		try {
+			// Google Maps API key
+            String apiKey = "AIzaSyCRm7IoRW0gGqjIgh_I5OrpzLWYKxxTr5s";
+            // API request url
+            String url = "https://maps.googleapis.com/maps/api/geocode/json?address=" + shipping + "&key=" + apiKey;
+
+            HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+            conn.setRequestMethod("GET");
+
+            int responseCode = conn.getResponseCode();
+            // if good response
+            if (responseCode == 200) {
+                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                String inputLine;
+                StringBuilder response = new StringBuilder();
+
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                in.close();
+
+                // Parse the JSON response here
+                String jsonResponse = response.toString();
+                System.out.println(jsonResponse);
+                return true; // return true if goof response
+            } else {
+                System.out.println("Error: HTTP response code " + responseCode);
+                return false; // return false if bad request
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }	
+	
 	}
+	
 	
 	/**
 	 * validates that the passed login information is the users login information
