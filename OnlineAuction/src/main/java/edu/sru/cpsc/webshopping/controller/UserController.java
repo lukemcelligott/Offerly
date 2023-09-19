@@ -8,6 +8,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -372,11 +373,14 @@ public class UserController {
 	public User getCurrently_Logged_In() {
 		// https://stackoverflow.com/questions/31159075/how-to-find-out-the-currently-logged-in-user-in-spring-boot
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		
 		// added this check to not allow anonymous authentication
-		if (!(auth instanceof AnonymousAuthenticationToken) && auth.isAuthenticated()) {
+		/*if (!(auth instanceof AnonymousAuthenticationToken) && auth.isAuthenticated()) {
 			return Currently_Logged_In;
 		}
-		return null;
+		return null;*/
+		
+		return Currently_Logged_In;
 	}
 
 	public void setCurrently_Logged_In(User currently_Logged_In) {
