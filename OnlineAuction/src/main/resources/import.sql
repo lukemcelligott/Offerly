@@ -172,7 +172,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `seller_rating` WRITE;
 /*!40000 ALTER TABLE `seller_rating` DISABLE KEYS */;
-INSERT INTO `seller_rating` VALUES (3,23,4.5),(6,12,2.3),(20,11,3.2);
+INSERT INTO `seller_rating` VALUES (1000,23,4.5),(6,12,2.3),(20,11,3.2);
 /*!40000 ALTER TABLE `seller_rating` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -255,7 +255,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (2,200,_binary '\0',_binary '\0','US','2023-09-14',_binary '\0',_binary '\0',NULL,'dsm1015@sru.edu','rnetagzcxh',_binary '','Douglas','Maxwell','$2a$10$S7hGuNYPhsbduUL9brRjMuQ2XCFo0Mt3ZC/d1wmmCjTZ6pmvVabea','utsimjqigw','7244754080','ROLE_USER','What is your mother\'s maiden name?','What is your favorite band?','What is your favorite beverage?','yo','2hack_frog.jpg','joe','rock','coffee','userName',NULL,NULL,NULL,NULL,3,NULL),(5,200,_binary '\0',_binary '\0','US','2023-09-14',_binary '\0',_binary '\0',NULL,'dmaxwell484@gmail.com','obvvxzmscc',_binary '\0','Tim','Baggins','$2a$10$Gvs7Jsie4aQljqmaewcwWeZlJxq4.GyFsCV1KscJ6StUlcB8u8xSa','hjwcislqpm','7244754080','ROLE_USER','What is your mother\'s maiden name?','What is your favorite band?','What is your favorite beverage?','',NULL,'joe','rock','coffee','sellerName',NULL,NULL,NULL,NULL,6,NULL),(19,200,_binary '\0',_binary '\0','US','2023-09-14',_binary '\0',_binary '\0',NULL,'lpm1006@sru.edu','xovxysbesc',_binary '','Douglas','Maxwell','$2a$10$k/nyrp4bhWdk5u8rj8VHOuaAg3H04kXI9Bog2ISzonRuIgyZ1.MH2','gbepmbkplx','7244754080','ROLE_USER','What is your mother\'s maiden name?','What is your favorite band?','What is your favorite beverage?','','191dollvatar.png','joe','rock','coffee','sellerName1',NULL,NULL,NULL,NULL,20,NULL);
+INSERT INTO `user` VALUES (2000,200,_binary '\0',_binary '\0','US','2023-09-14',_binary '\0',_binary '\0',NULL,'dsm1015@sru.edu','rnetagzcxh',_binary '','Douglas','Maxwell','$2a$10$S7hGuNYPhsbduUL9brRjMuQ2XCFo0Mt3ZC/d1wmmCjTZ6pmvVabea','utsimjqigw','7244754080','ROLE_USER','What is your mother\'s maiden name?','What is your favorite band?','What is your favorite beverage?','yo','2hack_frog.jpg','joe','rock','coffee','userName',NULL,NULL,NULL,NULL,1000,NULL),(5,200,_binary '\0',_binary '\0','US','2023-09-14',_binary '\0',_binary '\0',NULL,'dmaxwell484@gmail.com','obvvxzmscc',_binary '\0','Tim','Baggins','$2a$10$Gvs7Jsie4aQljqmaewcwWeZlJxq4.GyFsCV1KscJ6StUlcB8u8xSa','hjwcislqpm','7244754080','ROLE_USER','What is your mother\'s maiden name?','What is your favorite band?','What is your favorite beverage?','',NULL,'joe','rock','coffee','sellerName',NULL,NULL,NULL,NULL,6,NULL),(19,200,_binary '\0',_binary '\0','US','2023-09-14',_binary '\0',_binary '\0',NULL,'lpm1006@sru.edu','xovxysbesc',_binary '','Douglas','Maxwell','$2a$10$k/nyrp4bhWdk5u8rj8VHOuaAg3H04kXI9Bog2ISzonRuIgyZ1.MH2','gbepmbkplx','7244754080','ROLE_USER','What is your mother\'s maiden name?','What is your favorite band?','What is your favorite beverage?','','191dollvatar.png','joe','rock','coffee','sellerName1',NULL,NULL,NULL,NULL,20,NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 

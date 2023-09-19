@@ -1,0 +1,18 @@
+@startuml
+title     Sign Up \nSequence Diagram
+
+actor          Actor                       as actor
+participant    index                       as index
+participant    newUser                     as newUser
+entity         SignUpController            as signUpController
+entity         UserController              as userController
+entity         User                        as user
+entity         UserRepository              as userRepository
+database       Database                    as database 
+
+actor -> index : Click "Sign Up"
+index -> newUser : th:href="@{/newUser}"
+newUser ->
+
+
+@enduml
