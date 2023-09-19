@@ -74,16 +74,13 @@ public class FriendsController {
 
         model.addAttribute("friends", friends);
         model.addAttribute("messages", messages);
-
         return "social";  
     }
     
-    @PostMapping("/friends/add")
+    @PostMapping({"/add"})
     public String addFriend(@RequestParam("userName") String userName, Model model) {
-    	System.out.println("addFriend method invoked with username: " + userName);
         User currentUser = userController.getCurrently_Logged_In();
         User friendToAdd = userRepository.findByUsername(userName);
-        System.out.println("Fetched user: " + friendToAdd);
         
         if(friendToAdd == null) {
             // Log an error or add a message to the model
@@ -93,6 +90,7 @@ public class FriendsController {
         }
         
         if(friendToAdd != null && !currentUser.equals(friendToAdd)) {
+        	System.out.print("second if");
             Friendship friendship = new Friendship();
             friendship.setUser1(currentUser);
             friendship.setUser2(friendToAdd);
@@ -117,7 +115,17 @@ public class FriendsController {
         
         return "redirect:/friends/social";
     }
+    
+    @PostMapping("/remove")
+    public String removeFriend(@RequestParam("friendId") Long friendId, Model model) {
+        User currentUser = userController.getCurrently_Logged_In();
+        Friendship friendship = friendshipService.getFriendshipBetweenUsers(currentUser, friendId);
+        if(friendship != null) {
+            friendshipService.removeFriendship(friendship);
+        } else {
+            model.addAttribute("errorMessage", "Friendship record not found!");
+        }
+        return "redirect:/friends/social";
+    }
 
-
-    //... endpoints to handle friend requests, messaging, etc. ...
 }
