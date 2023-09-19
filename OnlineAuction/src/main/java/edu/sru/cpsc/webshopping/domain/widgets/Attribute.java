@@ -1,12 +1,19 @@
 package edu.sru.cpsc.webshopping.domain.widgets;
 
+import java.util.List;
+
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import org.springframework.lang.NonNull;
+
+import edu.sru.cpsc.webshopping.util.enums.AttributeDataType;
 
 @Entity
 public class Attribute {
@@ -19,8 +26,18 @@ public class Attribute {
     @NonNull
     private String attributeKey;
 
-    @ManyToOne
-    private Category category;
+	@Enumerated(EnumType.STRING)
+	private AttributeDataType dataType;
+
+    @OneToMany(mappedBy = "attribute", fetch = FetchType.EAGER)
+    private List<AttributeRecommendation> categories;
+
+	public Attribute() {}
+
+	public Attribute(String name, AttributeDataType dataType) {
+		this.attributeKey = name;
+		this.dataType = dataType;
+	}
 
     // Getters and setters
 	public long getId() {
@@ -39,11 +56,18 @@ public class Attribute {
 		this.attributeKey = attributeKey;
 	}
 
-	public Category getCategory() {
-		return category;
+	public AttributeDataType getDataType() {
+		return dataType;
 	}
 
-	public void setCategory(Category category) {
-		this.category = category;
+	public void setDataType(AttributeDataType dataType) {
+		this.dataType = dataType;
+	}
+
+	public List<AttributeRecommendation> getCategories() {
+		return categories;
+	}
+	public void setCategories(List<AttributeRecommendation> categories) {
+		this.categories = categories;
 	}
 }

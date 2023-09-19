@@ -32,6 +32,11 @@ public class WidgetAttribute {
 
 	}
 
+	public WidgetAttribute(Attribute attribute) {
+    	this.attribute = attribute;
+    	this.attributeKey = attribute.getAttributeKey(); //set key to attribute key
+    }
+
     public WidgetAttribute(Widget widget, Attribute attribute) {
     	this.attribute = attribute;
     	this.widget = widget;

@@ -1,10 +1,14 @@
 package edu.sru.cpsc.webshopping.domain.widgets;
 
+import java.util.List;
+
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Version;
 
 import org.springframework.lang.NonNull;
@@ -22,6 +26,9 @@ public class Category{
     // Self-join to represent the parent-child relationship
     @ManyToOne
     private Category parent;
+
+    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER)
+    private List<AttributeRecommendation> attributes;
 
     // Version field for optimistic locking and tracking updates
     @Version
@@ -60,7 +67,12 @@ public class Category{
     public void setParent(Category parent) {
         this.parent = parent;
     }
-
+    public List<AttributeRecommendation> getAttributes() {
+        return attributes;
+    }
+    public void setAttributes(List<AttributeRecommendation> attributes) {
+        this.attributes = attributes;
+    }
     public int getVersion() {
         return version;
     }

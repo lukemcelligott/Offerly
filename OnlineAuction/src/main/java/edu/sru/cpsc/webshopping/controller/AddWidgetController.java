@@ -9,6 +9,7 @@ import edu.sru.cpsc.webshopping.domain.widgets.WidgetImage;
 import edu.sru.cpsc.webshopping.domain.market.MarketListingCSVModel;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.widgets.Attribute;
+import edu.sru.cpsc.webshopping.domain.widgets.AttributeRecommendation;
 import edu.sru.cpsc.webshopping.domain.widgets.Category;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 import edu.sru.cpsc.webshopping.domain.widgets.WidgetAttribute;
@@ -16,6 +17,8 @@ import edu.sru.cpsc.webshopping.repository.market.MarketListingRepository;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
 import edu.sru.cpsc.webshopping.repository.widgets.CategoryRepository;
 import edu.sru.cpsc.webshopping.repository.widgets.WidgetRepository;
+import edu.sru.cpsc.webshopping.service.AttributeService;
+import edu.sru.cpsc.webshopping.service.CategoryService;
 import edu.sru.cpsc.webshopping.service.WidgetService;
 import edu.sru.cpsc.webshopping.repository.widgets.WidgetImageRepository;
 import edu.sru.cpsc.webshopping.util.PreLoad;
@@ -27,6 +30,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,6 +42,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.validator.Form;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.core.io.ClassPathResource;
@@ -46,6 +51,7 @@ import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -64,6 +70,12 @@ public class AddWidgetController
 {
 	@Autowired
 	private WidgetService widgetService;
+
+	@Autowired
+	private CategoryService categoryService;
+
+	@Autowired
+	private AttributeService attributeService;
 
 	WidgetRepository widgetRepository;
 	CategoryRepository categoryRepository;
@@ -131,6 +143,60 @@ public class AddWidgetController
 		model.addAttribute("page", "addWidget");
 		return "addWidget";
 	}
+
+	public class WidgetForm {
+		private String name;
+		private String description;
+		private List<AttributeFormEntry> entries = new ArrayList<>();
+
+		private static class AttributeFormEntry {
+			private Attribute attribute;
+			private WidgetAttribute widgetAttribute;
+			
+			public AttributeFormEntry() {}
+
+			public AttributeFormEntry(Attribute attribute, WidgetAttribute widgetAttribute) {
+				this.attribute = attribute;
+				this.widgetAttribute = widgetAttribute;
+			}
+		
+			public WidgetAttribute getWidgetAttribute() {
+				return widgetAttribute;
+			}
+			public void setWidgetAttribute(WidgetAttribute widgetAttribute) {
+				this.widgetAttribute = widgetAttribute;
+			}
+			public Attribute getAttribute() {
+				return attribute;
+			}
+			public void setAttribute(Attribute attribute) {
+				this.attribute = attribute;
+			}
+
+			public String toString() {
+				return String.format("AttributeFormEntry(attribute=%s, widgetAttribute=%s)", attribute, widgetAttribute);
+			}
+		}
+	
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		public String getDescription() {
+			return description;
+		}
+		public void setDescription(String description) {
+			this.description = description;
+		}
+		public List<AttributeFormEntry> getEntries() {
+			return entries;
+		}
+		public void setEntries(List<AttributeFormEntry> entries) {
+			this.entries = entries;
+		}
+	}	
 	
 	@RequestMapping("/createWidget")
 	public String createWidget(@RequestParam("category") Long categoryId, Model model)
@@ -139,66 +205,61 @@ public class AddWidgetController
 		        .orElseThrow(() -> new IllegalArgumentException("Invalid category ID"));
 		
 		this.category = category;
+		List<Attribute> attributes = categoryService.getTopRecommendedAttributes(category, 0);
+		WidgetForm widgetForm = new WidgetForm();
+		
+		for (Attribute attribute : attributes) {
+			WidgetAttribute widgetAttribute = new WidgetAttribute(attribute);
+			widgetForm.getEntries().add(new WidgetForm.AttributeFormEntry(attribute, widgetAttribute));
+		}
+
+
 		model.addAttribute("category", category);
-		model.addAttribute("attributes", attributeController.getAllAttributesByCategory(category));
+		model.addAttribute("entries", widgetForm.getEntries());
 		model.addAttribute("user", userController.getCurrently_Logged_In());
 		
 		return "createWidgetTemplate";
 	}
-	
-	public class WidgetForm {
-		private String name;
-		private String description;
-		private Map<String, String> attributes = new HashMap<>();
-
-		// getters, setters, etc.
-		public String getName() {
-			return name;
-		}
-		public void setName(String name) {
-			this.name = name;
-		}
-		public Map<String, String> getAttributes() {
-			return attributes;
-		}
-		public void setAttributes(Map<String, String> attributes) {
-			this.attributes = attributes;
-		}
-		public String getDescription() {
-			return description;
-		}
-		public void setDescription(String description) {
-			this.description = description;
-		}
-	}	
+		
 	@RequestMapping("/createWidgetListing") 
 	public String createWidgetListing(Model model, @ModelAttribute WidgetForm widgetForm, BindingResult result) {
 
+		if (result.hasErrors()) {
+			for (ObjectError error : result.getAllErrors()) {
+				System.out.println(error.getDefaultMessage());
+			}
+			return "createWidgetTemplate";  // return to the form page if there are errors
+		}
+	
 		// create widget
 		Widget widget = new Widget();
 		widget.setCategory(category);
 		widget.setName(widgetForm.getName());
 		widget.setDescription(widgetForm.getDescription());
 
-		widget.setAttributes(widgetForm.getAttributes().entrySet().stream().map(entry -> {
-			WidgetAttribute widgetAttribute = new WidgetAttribute();
-			widgetAttribute.setAttributeKey(entry.getKey());
+		Set<WidgetAttribute> widgetAttributes = new HashSet<>();
+		Set<Attribute> attributes = new HashSet<>();
+
+		for (WidgetForm.AttributeFormEntry entry : widgetForm.getEntries()) {
+			System.out.println(entry);
+			Attribute attribute = entry.getAttribute();
+			attributeService.associateAttributeWithCategory(attribute.getAttributeKey(), attribute.getDataType().toString(), category);
+			WidgetAttribute widgetAttribute = entry.getWidgetAttribute();
+			System.out.println(attribute.getAttributeKey() + " - " + attribute.getDataType() + " - " + widgetAttribute.getValue());
 			widgetAttribute.setWidget(widget);
-			widgetAttribute.setValue(entry.getValue());
-			return widgetAttribute;
-		}).collect(Collectors.toSet()));
-
-		this.widget = widget;
-
-		model.addAttribute("Widget", widget);
-		model.addAttribute("user", userController.getCurrently_Logged_In());
-		//loop print attributes
-		for (WidgetAttribute widgetAttribute : widget.getAttributes()) {
-			System.out.println(widgetAttribute.getAttributeKey() + " " + widgetAttribute.getValue());
+			widgetAttributes.add(widgetAttribute);
+			attributes.add(attribute);
 		}
 
+		widget.setAttributes(widgetAttributes);
+	
+		this.widget = widget;
+	
+		model.addAttribute("Widget", widget);
+		model.addAttribute("user", userController.getCurrently_Logged_In());
+	
 		widgetService.addWidget(widget);
-
+	
 		return "redirect:createListing"; 
 	}
 
@@ -240,7 +301,6 @@ public class AddWidgetController
 		model.addAttribute("auctionPrice", marketListing);
 		model.addAttribute("qtyAvailable", marketListing.getQtyAvailable());
 		model.addAttribute("listing", marketListing);
-		model.addAttribute("subcategory", subcategory);
     
 		marketListing.setSeller(userController.getCurrently_Logged_In());
 		marketListing.setWidgetSold(widget);
