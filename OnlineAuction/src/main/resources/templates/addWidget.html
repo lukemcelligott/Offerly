@@ -24,6 +24,9 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
 		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+		<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+		<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+
 		
 		<style type="text/css">
 		label {
@@ -53,16 +56,11 @@
         	<form action="#" th:action="@{/createWidget}" method="post">
 	        	<div>
 		        	<label for="category" style="text-align: center;"> Choose a Category </label>
-		        	<select id="category" name="category" class="form-select form-select-lg mb-3" onchange="enableNextButton()">
-		        		<option selected disabled hidden value="0"> -- Select One -- </option>
-		        		<option th:each="category : ${categories}" th:text="${category.name}" th:id="${category.name}" th:value="${category.id}"></option>
-		        	</select>
-		        	
-	        		<!--<label for="subcategory" style="text-align: center;"> Choose a Sub-category </label>
-		        	<select id="subcategory" name="subcategory" class="form-select form-select-lg mb-3" onchange="enableNextButton()" disabled>
-		        		<option selected disabled hidden value="0"> -- Select One -- </option>
-		        		<option th:each="subcategory : ${subcategories}" th:text="${subcategory.display}" th:id="${subcategory.parent}" th:value="${subcategory.name}"></option>
-		        	</select>-->
+		        	<select id="category" name="category" class="form-select form-select-lg mb-3 select2" onchange="enableNextButton()">
+						<option selected disabled hidden value="0"> -- Select One -- </option>
+						<option th:each="category : ${categories}" th:text="${category.name}" th:id="${category.name}" th:value="${category.id}"></option>
+					</select>
+					
 		        	
 		        	<div class="card-footer" style="display: flex; justify-content: center; align-items: center;">
 		        		<input id="nextButton" class="btn btn-success v-25 mx-4" type="submit" th:href="@{/createWidget}" value="Next" disabled>
@@ -114,6 +112,11 @@
 				btnelem.disabled = false;
 			}
 		}
+
+		$(document).ready(function() {
+			$('.select2').select2();
+		});
+
 		</script>
 	</body>
 </html>

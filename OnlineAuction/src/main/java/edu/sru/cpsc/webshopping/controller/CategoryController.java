@@ -40,18 +40,6 @@ public class CategoryController {
         return categoryRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid category ID"));
     }
-    
-    /*
-	 * gets entry of a category by name
-	 * @param  name of category to be retrieved
-	 * @return category entry associated with name
-	 */
-	/*
-	 * @GetMapping("/{name}") public Category
-	 * getCategoryByName(@PathVariable("name") String name) { return
-	 * categoryRepository.findById(name).orElseThrow(() -> new
-	 * IllegalArgumentException("Invalid name passed to getCategoryByName.")); }
-	 */
 
     // Read all Categories
     @GetMapping("/all")

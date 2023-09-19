@@ -1,6 +1,10 @@
 package edu.sru.cpsc.webshopping.controller.purchase;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -481,8 +485,9 @@ public class PurchaseShippingAddressPageController {
 		}
 		
 		return false;
-	}
-	*/
+	}*/
+	
+	/* Google Maps Address Verification API */
 	
 	public boolean addressExists(ShippingAddress_Form shipping) {
 	    GeoApiContext context = new GeoApiContext.Builder()

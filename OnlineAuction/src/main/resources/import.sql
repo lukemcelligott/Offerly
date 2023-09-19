@@ -31,7 +31,17 @@ UNLOCK TABLES;
 
 LOCK TABLES `attribute` WRITE;
 /*!40000 ALTER TABLE `attribute` DISABLE KEYS */;
-INSERT INTO `attribute` VALUES (1,'Year',1),(2,'Model',1),(3,'Color',1);
+INSERT INTO `attribute` VALUES (1,'Year', 'YEAR'),(2,'Model', 'STRING'),(3,'Color', 'STRING');
+/*!40000 ALTER TABLE `attribute` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Dumping data for table `attribute`
+--
+
+LOCK TABLES `attribute_recommendation` WRITE;
+/*!40000 ALTER TABLE `attribute` DISABLE KEYS */;
+INSERT INTO `attribute_recommendation` VALUES (1, 4, 1, 5367), (2, 3, 2, 5367), (3, 2, 3, 5367);
 /*!40000 ALTER TABLE `attribute` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -61,7 +71,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `category` WRITE;
 /*!40000 ALTER TABLE `category` DISABLE KEYS */;
-INSERT INTO `category` VALUES (1,'Vehicle Parts',1,NULL);
+
+/*INSERT INTO `category` VALUES (1,'Vehicle Parts',1,NULL);*/
 /*!40000 ALTER TABLE `category` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -98,7 +109,6 @@ UNLOCK TABLES;
 
 LOCK TABLES `hibernate_sequence` WRITE;
 /*!40000 ALTER TABLE `hibernate_sequence` DISABLE KEYS */;
-INSERT INTO `hibernate_sequence` VALUES (1000);
 /*!40000 ALTER TABLE `hibernate_sequence` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -135,7 +145,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `market_listing` WRITE;
 /*!40000 ALTER TABLE `market_listing` DISABLE KEYS */;
-INSERT INTO `market_listing` VALUES (14,122.00,'2jett-muffler-1.jpg',_binary '\0',134.00,1,2,10),(26,23.00,'191backofWheel.jpg',_binary '\0',53.00,1,19,22);
+INSERT INTO `market_listing` VALUES (14,122.00,'2jett-muffler-1.jpg',_binary '\0',134.00,1,2000,10),(26,23.00,'191backofWheel.jpg',_binary '\0',53.00,1,19,22);
 /*!40000 ALTER TABLE `market_listing` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -172,7 +182,11 @@ UNLOCK TABLES;
 
 LOCK TABLES `seller_rating` WRITE;
 /*!40000 ALTER TABLE `seller_rating` DISABLE KEYS */;
-INSERT INTO `seller_rating` VALUES (3,23,4.5),(6,12,2.3),(20,11,3.2);
+<<<<<<< HEAD
+INSERT INTO `seller_rating` VALUES (1000,23,4.5),(6,12,2.3),(20,11,3.2);
+=======
+INSERT INTO `seller_rating` VALUES (3,23,4.5),(1000,12,2.3),(20,11,3.2);
+>>>>>>> refs/remotes/origin/Luke-Signup
 /*!40000 ALTER TABLE `seller_rating` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -255,7 +269,11 @@ UNLOCK TABLES;
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (2,200,_binary '\0',_binary '\0','US','2023-09-14',_binary '\0',_binary '\0',NULL,'dsm1015@sru.edu','rnetagzcxh',_binary '','Douglas','Maxwell','$2a$10$S7hGuNYPhsbduUL9brRjMuQ2XCFo0Mt3ZC/d1wmmCjTZ6pmvVabea','utsimjqigw','7244754080','ROLE_USER','What is your mother\'s maiden name?','What is your favorite band?','What is your favorite beverage?','yo','2hack_frog.jpg','joe','rock','coffee','userName',NULL,NULL,NULL,NULL,3,NULL),(5,200,_binary '\0',_binary '\0','US','2023-09-14',_binary '\0',_binary '\0',NULL,'dmaxwell484@gmail.com','obvvxzmscc',_binary '\0','Tim','Baggins','$2a$10$Gvs7Jsie4aQljqmaewcwWeZlJxq4.GyFsCV1KscJ6StUlcB8u8xSa','hjwcislqpm','7244754080','ROLE_USER','What is your mother\'s maiden name?','What is your favorite band?','What is your favorite beverage?','',NULL,'joe','rock','coffee','sellerName',NULL,NULL,NULL,NULL,6,NULL),(19,200,_binary '\0',_binary '\0','US','2023-09-14',_binary '\0',_binary '\0',NULL,'lpm1006@sru.edu','xovxysbesc',_binary '','Douglas','Maxwell','$2a$10$k/nyrp4bhWdk5u8rj8VHOuaAg3H04kXI9Bog2ISzonRuIgyZ1.MH2','gbepmbkplx','7244754080','ROLE_USER','What is your mother\'s maiden name?','What is your favorite band?','What is your favorite beverage?','','191dollvatar.png','joe','rock','coffee','sellerName1',NULL,NULL,NULL,NULL,20,NULL);
+<<<<<<< HEAD
+INSERT INTO `user` VALUES (2000,200,_binary '\0',_binary '\0','US','2023-09-14',_binary '\0',_binary '\0',NULL,'dsm1015@sru.edu','rnetagzcxh',_binary '','Douglas','Maxwell','$2a$10$S7hGuNYPhsbduUL9brRjMuQ2XCFo0Mt3ZC/d1wmmCjTZ6pmvVabea','utsimjqigw','7244754080','ROLE_USER','What is your mother\'s maiden name?','What is your favorite band?','What is your favorite beverage?','yo','2hack_frog.jpg','joe','rock','coffee','userName',NULL,NULL,NULL,NULL,1000,NULL),(5,200,_binary '\0',_binary '\0','US','2023-09-14',_binary '\0',_binary '\0',NULL,'dmaxwell484@gmail.com','obvvxzmscc',_binary '\0','Tim','Baggins','$2a$10$Gvs7Jsie4aQljqmaewcwWeZlJxq4.GyFsCV1KscJ6StUlcB8u8xSa','hjwcislqpm','7244754080','ROLE_USER','What is your mother\'s maiden name?','What is your favorite band?','What is your favorite beverage?','',NULL,'joe','rock','coffee','sellerName',NULL,NULL,NULL,NULL,6,NULL),(19,200,_binary '\0',_binary '\0','US','2023-09-14',_binary '\0',_binary '\0',NULL,'lpm1006@sru.edu','xovxysbesc',_binary '','Douglas','Maxwell','$2a$10$k/nyrp4bhWdk5u8rj8VHOuaAg3H04kXI9Bog2ISzonRuIgyZ1.MH2','gbepmbkplx','7244754080','ROLE_USER','What is your mother\'s maiden name?','What is your favorite band?','What is your favorite beverage?','','191dollvatar.png','joe','rock','coffee','sellerName1',NULL,NULL,NULL,NULL,20,NULL);
+=======
+INSERT INTO `user` VALUES (2000,200,_binary '\0',_binary '\0','US','2023-09-14',_binary '\0',_binary '\0',NULL,'dsm1015@sru.edu','rnetagzcxh',_binary '','Douglas','Maxwell','$2a$10$S7hGuNYPhsbduUL9brRjMuQ2XCFo0Mt3ZC/d1wmmCjTZ6pmvVabea','utsimjqigw','7244754080','ROLE_USER','What is your mother\'s maiden name?','What is your favorite band?','What is your favorite beverage?','yo','2hack_frog.jpg','joe','rock','coffee','userName',NULL,NULL,NULL,NULL,1000,NULL),(4000,200,_binary '\0',_binary '\0','US','2023-09-14',_binary '\0',_binary '\0',NULL,'dmaxwell484@gmail.com','obvvxzmscc',_binary '\0','Tim','Baggins','$2a$10$Gvs7Jsie4aQljqmaewcwWeZlJxq4.GyFsCV1KscJ6StUlcB8u8xSa','hjwcislqpm','7244754080','ROLE_USER','What is your mother\'s maiden name?','What is your favorite band?','What is your favorite beverage?','',NULL,'joe','rock','coffee','sellerName',NULL,NULL,NULL,NULL,3000,NULL),(19,200,_binary '\0',_binary '\0','US','2023-09-14',_binary '\0',_binary '\0',NULL,'lpm1006@sru.edu','xovxysbesc',_binary '','Douglas','Maxwell','$2a$10$k/nyrp4bhWdk5u8rj8VHOuaAg3H04kXI9Bog2ISzonRuIgyZ1.MH2','gbepmbkplx','7244754080','ROLE_USER','What is your mother\'s maiden name?','What is your favorite band?','What is your favorite beverage?','','191dollvatar.png','joe','rock','coffee','sellerName1',NULL,NULL,NULL,NULL,20,NULL);
+>>>>>>> refs/remotes/origin/Luke-Signup
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -283,7 +301,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `widget` WRITE;
 /*!40000 ALTER TABLE `widget` DISABLE KEYS */;
-INSERT INTO `widget` VALUES (10,'A little beat up but in pretty good shape.','1.4l Rear Exhaust Muffler Fits VOLKSWAGEN JETTA 2019-2021',1),(22,'black leather steering wheel. Slightly used.','14\" Billet Black Muscle Chevy 69-94 GM Steering Wheel',1);
+INSERT INTO `widget` VALUES (10,'A little beat up but in pretty good shape.','1.4l Rear Exhaust Muffler Fits VOLKSWAGEN JETTA 2019-2021',5367),(22,'black leather steering wheel. Slightly used.','14\" Billet Black Muscle Chevy 69-94 GM Steering Wheel',5367);
 /*!40000 ALTER TABLE `widget` ENABLE KEYS */;
 UNLOCK TABLES;
 

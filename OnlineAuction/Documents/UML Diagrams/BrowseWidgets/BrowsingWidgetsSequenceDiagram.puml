@@ -1,0 +1,23 @@
+@startuml
+title     Browsing Widgets \nSequence Diagram
+
+actor          Actor                            as actor
+participant    header                           as header.html
+participant    browseWidgets                    as browseWidgets
+entity         EmployeeController               as employeeController
+entity         MarketListingDomainController    as marketListingDomainController
+entity         MarketListingRepository          as marketListingRepository
+entity         User                             as user
+database       Database                         as database
+
+actor                            ->    header.html                     : Click "Browse All Items"
+header.html                      ->    employeeController              : th:href="@{/BrowseWidgetsButton}"
+employeeController               ->    marketListingDomainController   : market.getAllListings();
+marketListingDomainController    ->    marketListingRepository         : marketRepository.findAll();
+marketListingRepository          ->    database                        : get all market listings from market_listing table
+database                         -->   marketListingDomainController   : return all market listings
+marketListingDomainController    -->   employeeController              : return listings
+employeeController               -->   browseWidgets                   : return "browseWidgets";
+browseWidgets                    -->   actor                           : display available market listings
+
+@enduml

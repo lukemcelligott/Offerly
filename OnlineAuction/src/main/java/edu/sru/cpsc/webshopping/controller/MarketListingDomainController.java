@@ -207,12 +207,10 @@ public class MarketListingDomainController {
 	@GetMapping("get-Market-Listing-by-User")
 	public MarketListing[] getListingbyUser(@Validated User user) {
 		return marketRepository.findBySeller(user).stream()
-				.filter(
-						marketListing ->
-						PreLoad.subCategoryConfiguration().stream()
-						.anyMatch(marketListing.getWidgetSold().getCategory().getName()::equalsIgnoreCase))
-						.toArray(MarketListing[]::new);
+				.filter(marketListing -> !marketListing.isDeleted())
+				.toArray(MarketListing[]::new);
 	}
+				
 
 	/**
 	 * Deletes a MarketListing from the database
