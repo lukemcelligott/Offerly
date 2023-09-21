@@ -1,5 +1,7 @@
 package edu.sru.cpsc.webshopping.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -12,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.sru.cpsc.webshopping.domain.widgets.Attribute;
 import edu.sru.cpsc.webshopping.domain.widgets.Category;
 import edu.sru.cpsc.webshopping.repository.widgets.CategoryRepository;
+import edu.sru.cpsc.webshopping.service.CategoryService;
 
 @RestController
 @RequestMapping("/api/categories")
@@ -21,6 +25,9 @@ public class CategoryController {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private CategoryService categoryService;
 
     @PostMapping("/add")
     public Category addCategory(@Validated @RequestBody Category category, BindingResult result) {
@@ -68,5 +75,14 @@ public class CategoryController {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid category ID"));
         categoryRepository.delete(category);
+    }
+
+    // Get recommended attribtues by offset
+    @GetMapping("/recommended/{id}/{offset}")
+    public List<Attribute> getTopRecommendedAttributes(@PathVariable long id, @PathVariable int offset) {
+        Category category = getCategory(id);
+        List<Attribute> attributes = categoryService.getTopRecommendedAttributes(category, offset);
+
+        return categoryService.getTopRecommendedAttributes(category, offset);
     }
 }

@@ -30,7 +30,10 @@
 			<div class="card-body">
 				<div class="card w-50" style="margin-left: auto; margin-right: auto;">
 					<form action="#" th:action="@{/createWidgetListing}" th:object="${WidgetForm}" method="post" class="form">
-						<div class="card-header d-flex justify-content-center"><h2>Item Specifications</h2></div>
+						<div class="card-header d-flex flex-column align-items-center">
+							<h2>Item Specifications</h2>
+							<h5 class="category" id="categoryId" th:data-category-id="${category.id}" th:text="${category.name}"></h5>
+						</div>
 						<div class="card-body d-flex justify-content-center">
 							<div class="row">
 								<div class="row">
@@ -61,7 +64,7 @@
 									<tbody>
 										<!-- Pre-populated recommended attributes -->
 										<th:block th:each="entry, iterStat : ${entries}">
-											<tr>
+											<tr id="recommendedAttribute">
 												<td th:text="${entry.attribute.attributeKey}"></td>
 												<td>
 													<input type="hidden" th:value="${entry.attribute.dataType.name()}" th:name="'entries[' + ${iterStat.index} + '].attribute.dataType'" />
@@ -127,7 +130,8 @@
 						<!-- Recommended Attributes -->
 						<h6>Recommended Attributes</h6>
 						<!-- List of recommended attributes with an option to select -->
-						<!-- ... -->
+						<div id="recommendedAttributes"></div>
+						<button type="button" class="btn btn-outline-secondary" onclick="getRecommendedAttributes()">Load More</button>
 
 						<!-- Custom Attribute -->
 						<h6 class="mt-4">Custom Attribute</h6>
@@ -326,38 +330,27 @@
 				});
 			};
 
-			// Function to load more recommended attributes (simulated for this example)
-			function loadMoreRecommendations() {
-				const attributesContainer = document.querySelector('.recommended-attributes-container');
-				// Simulating fetching 2 more attributes
-				const newAttributes = [
-					{ id: 6, name: 'New Attribute 1', type: 'STRING' },
-					{ id: 7, name: 'New Attribute 2', type: 'NUMBER' }
-				];
-
-				newAttributes.forEach(attr => {
-					const attributeDiv = document.createElement('div');
-					attributeDiv.classList.add('form-group', 'col-sm-12');
-
-					const attributeLabel = document.createElement('p');
-					attributeLabel.textContent = attr.name;
-					attributeDiv.appendChild(attributeLabel);
-
-					const attributeInput = document.createElement('input');
-					attributeInput.type = attr.type.toLowerCase();
-					attributeInput.classList.add('form-control');
-					attributeInput.placeholder = `-- Enter ${attr.name} --`;
-					attributeDiv.appendChild(attributeInput);
-
-					const removeButton = document.createElement('button');
-					removeButton.type = 'button';
-					removeButton.textContent = 'Remove';
-					removeButton.classList.add('btn', 'btn-danger', 'btn-sm');
-					removeButton.onclick = function() { removeAttribute(removeButton); };
-					attributeDiv.appendChild(removeButton);
-
-					attributesContainer.appendChild(attributeDiv);
-				});
+			// Function to load more recommended attributes 
+			function getRecommendedAttributes() {
+				var categoryId = document.getElementById('categoryId').getAttribute('data-category-id');
+				const offset = document.querySelectorAll('#recommendedAttribute tr').length;
+				fetch(`/api/categories/recommended/${categoryId}/${offset}`)
+					.then(response => response.json())
+					.then(data => {
+						const recommendedAttributes = document.getElementById('recommendedAttributes');
+						recommendedAttributes.innerHTML = '';
+						data.forEach(attribute => {
+							const button = document.createElement('button');
+							button.type = 'button';
+							button.classList.add('btn', 'btn-outline-secondary', 'me-2');
+							button.innerText = attribute.name;
+							addButton.onclick = function() {
+								addAttributeToTable();
+							};
+							recommendedAttributes.appendChild(button);
+						});
+					})
+					.catch(error => console.error(error));
 			}
 
 			document.addEventListener("DOMContentLoaded", function () {
