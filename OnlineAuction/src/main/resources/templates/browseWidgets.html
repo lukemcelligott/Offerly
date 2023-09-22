@@ -80,7 +80,7 @@
 	  
 		<div class="grid-item columns">
 			<th:block th:each="searchedMarkets: ${allMarketListings}" th:unless="${searchedMarkets.qtyAvailable == 0 || searchedMarkets.isDeleted == true}">
-				<table style="width: 80%; margin-bottom: 50px; margin-left: auto; margin-right: auto;">
+				<table style="width: 80%; margin-bottom: 50px; margin-left: auto; margin-right: auto;" class="card">
 					<!-- Product Name -->
 					<tr>
 						<th colspan="2"><p class="header-browse" th:text="${searchedMarkets.widgetSold.name}" style="margin-bottom:0;"></p></th>
@@ -110,22 +110,51 @@
 					<tr>
 						<th colspan="2"><a class="submitHybrid" th:href="@{/viewMarketListing/{id}(id = ${searchedMarkets.id})}"><span>View</span></a></th>
 					</tr>
-					<!-- Add to Watchlist 
-					<tr>
-						<form th:action="@{/viewMarketListing/wishlistItem/{id}(id = ${searchedMarkets.id})}" method="post">
-							<th colspan="2">
-								<button class="submitHybrid" id="addToWatchlistButton" onclick="addWatchlist()"><span>Add to Watchlist</span></button>
-							</th>
-						</form>
-					</tr>-->
-					
 				</table>
+			</th:block>
+		</div>
+		
+		<!-- new design using bootstrap -->
+		<div class="grid-item columns">
+			<th:block th:each="searchedMarkets: ${allMarketListings}" th:unless="${searchedMarkets.qtyAvailable == 0 || searchedMarkets.isDeleted == true}">
+				<div class="card" style="width: 80%; margin-bottom: 50px; margin-left: auto; margin-right: auto;">
+					<!-- image -->
+					<img class="card-img-top image" th:if="${searchedMarkets.coverImage == null}" src="https://previews.123rf.com/images/kritchanut/kritchanut1406/kritchanut140600093/29213195-.jpg?fj=1" alt="Blank Listing Avatar">
+					<img class="card-img-top image" th:unless="${searchedMarkets.coverImage == null}" th:src="@{/listingImages/{image}(image = ${searchedMarkets.coverImage})}" alt="Listing Avatar" src="">
+					
+					<div class="card-body">
+						<!-- title -->
+						<h5 class="card-title header-browse" th:text="${searchedMarkets.widgetSold.name}"></h5>
+					</div>
+					<ul class="list-group list-group-flush">
+						<!-- quantity -->
+						<ul class="list-group-item align-flex">
+							<p class="align-left">Quantity Available:</p>
+							<p class="align-right" th:text="${searchedMarkets.qtyAvailable}"></p>
+						</ul>
+						<!-- price -->
+						<ul class="list-group-item align-flex">
+							<p class="align-left">Price:</p>
+							<p class="align-right" th:text="'$' + ${searchedMarkets.pricePerItem}"></p>
+						</ul>						
+						<!-- auction price -->
+						<ul class="list-group-item align-flex">
+							<p class="align-left">Auction Price:</p>
+							<p class="align-right" th:text="'$' + ${searchedMarkets.auctionPrice}"></p>
+						</ul>			
+					</ul>
+					<div class="card-body">
+						<!-- view -->
+						<a class="submitHybrid" th:href="@{/viewMarketListing/{id}(id = ${searchedMarkets.id})}"><span>View</span></a>
+					
+					</div>
+				</div>
 			</th:block>
 		</div>
 		
 		<!-- display when there are no listings -->
 		<div th:if="${#lists.isEmpty(allMarketListings)}">
-			<h2>There are no listings currently on the market.</h2>
+			<h2></h2>
 		</div>
 	</body>
 </html>

@@ -1,3 +1,19 @@
+.align-flex {
+	display: flex;
+	justify-content: space-between;
+}
+
+.align-left {
+	text-align: left;
+	width: 50%;
+}
+
+.align-right {
+	text-align: right;
+	display: inline-block;
+	width: 50%;
+}
+
 .grid-container {
 	display: grid;
 	background-color: #ffffff;
@@ -18,6 +34,20 @@
   	width: 100%;
   	height: 100%;
   	position: relative;
+}
+
+.image {
+	display: block;
+	margin: 0 auto;
+	width: 200px;
+	height: 200px;
+	object-fit: contain;
+	background-color: #E9ECEF;
+}
+
+.inline {
+	display: inline;
+	margin-bottom: 0;
 }
 
 .item1 {
