@@ -3,13 +3,11 @@ package edu.sru.cpsc.webshopping.controller;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 
-import edu.sru.cpsc.webshopping.domain.market.Auction;
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.widgets.WidgetImage;
 import edu.sru.cpsc.webshopping.domain.market.MarketListingCSVModel;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.widgets.Attribute;
-import edu.sru.cpsc.webshopping.domain.widgets.AttributeRecommendation;
 import edu.sru.cpsc.webshopping.domain.widgets.Category;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 import edu.sru.cpsc.webshopping.domain.widgets.WidgetAttribute;
@@ -21,8 +19,6 @@ import edu.sru.cpsc.webshopping.service.AttributeService;
 import edu.sru.cpsc.webshopping.service.CategoryService;
 import edu.sru.cpsc.webshopping.service.WidgetService;
 import edu.sru.cpsc.webshopping.repository.widgets.WidgetImageRepository;
-import edu.sru.cpsc.webshopping.util.PreLoad;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -32,23 +28,18 @@ import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
-import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.validator.Form;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -91,7 +82,6 @@ public class AddWidgetController
 	CategoryController categories;
 	AttributeController attributeController;
 	private Set<Attribute> attributes;
-	FieldsController fields;
 	MarketListing marketListing;
 	private Widget widgetStorage;
 	private Category category;
@@ -111,12 +101,11 @@ public class AddWidgetController
 	}
 
 	public AddWidgetController(WidgetRepository widgetRepository, CategoryRepository categoryRepository, CategoryController categories,
-	 		AttributeController attributeController, FieldsController fields, WidgetImageRepository widgetImageRepository, WidgetImageController widgetImageController,
+	 		AttributeController attributeController, WidgetImageRepository widgetImageRepository, WidgetImageController widgetImageController,
 			MarketListingRepository marketListingRepos, WidgetController widgetController, UserController userController, MarketListingDomainController marketListingController, UserRepository userRepo)
 	{
 		this.categories = categories;
 		this.attributeController = attributeController;
-		this.fields = fields;
 		this.widgetRepository = widgetRepository;
 		this.categoryRepository = categoryRepository;
 		this.marketListingRepos = marketListingRepos;
@@ -149,7 +138,7 @@ public class AddWidgetController
 		private String description;
 		private List<AttributeFormEntry> entries = new ArrayList<>();
 
-		private static class AttributeFormEntry {
+		public static class AttributeFormEntry {
 			private Attribute attribute;
 			private WidgetAttribute widgetAttribute;
 			
@@ -177,6 +166,8 @@ public class AddWidgetController
 				return String.format("AttributeFormEntry(attribute=%s, widgetAttribute=%s)", attribute, widgetAttribute);
 			}
 		}
+
+		WidgetForm() {}
 	
 		public String getName() {
 			return name;
@@ -223,6 +214,10 @@ public class AddWidgetController
 		
 	@RequestMapping("/createWidgetListing") 
 	public String createWidgetListing(Model model, @ModelAttribute WidgetForm widgetForm, BindingResult result) {
+
+		if (result == null) {
+			result = new BeanPropertyBindingResult(widgetForm, "widgetForm");
+		}
 
 		if (result.hasErrors()) {
 			for (ObjectError error : result.getAllErrors()) {
@@ -289,73 +284,40 @@ public class AddWidgetController
 	 * @param result
 	 * @return
 	 */
-
 	@RequestMapping("/addListing")
-	public String addListing(Model model, @RequestParam("listingCoverImage") MultipartFile coverImage, @RequestParam("imageUpload") MultipartFile[] files, @RequestParam("qtyAvailable") Long qty, RedirectAttributes attributes, @Valid @ModelAttribute MarketListing marketListing, BindingResult result)
-	{
+	public String addListing(Model model, @RequestParam("listingCoverImage") MultipartFile coverImage, @RequestParam("imageUpload") MultipartFile[] files, @RequestParam("qtyAvailable") Long qty, RedirectAttributes attributes, @Valid @ModelAttribute MarketListing marketListing, BindingResult result) {
 		marketListing.getAuction().setCurrentBid(marketListing.getAuction().getStartingBid());
-
 		marketListing.setAuctionPrice(marketListing.getAuction().getStartingBid());
 		marketListing.setQtyAvailable(qty);
-		model.addAttribute("pricePerItem", marketListing);
-		model.addAttribute("auctionPrice", marketListing);
-		model.addAttribute("qtyAvailable", marketListing.getQtyAvailable());
-		model.addAttribute("listing", marketListing);
-    
 		marketListing.setSeller(userController.getCurrently_Logged_In());
 		marketListing.setWidgetSold(widget);
 		marketListing.setDeleted(false);
-		//code basis found at https://attacomsian.com/blog/spring-boot-thymeleaf-file-upload
-
 		marketListing.setCoverImage(marketListing.getSeller().getId() + StringUtils.cleanPath(coverImage.getOriginalFilename()));
 		marketListingController.addMarketListing(marketListing);
 		tempImage.setImageName(marketListing.getSeller().getId() + StringUtils.cleanPath(coverImage.getOriginalFilename()));
 		tempImage.setMarketListing(marketListing);
 		widgetImageController.addWidgetImage(tempImage);
 		listingImages.add(tempImage);
-		
+
 		BigDecimal oneCent = new BigDecimal("0.01");
-		
-		if(marketListing.getPricePerItem() == null)
-		{
-			setPage("error2");
-			result.addError(new FieldError("pricePerItem", "pricePerItem", "Price per item can't be null"));	    	
-		}
-		
-		// check if the price of the item is at least one cent
-		else if(marketListing.getPricePerItem().compareTo(oneCent) < 0)
-		{
+
+		if (marketListing.getPricePerItem() == null || marketListing.getPricePerItem().compareTo(oneCent) < 0) {
 			setPage("error2");
 			result.addError(new FieldError("pricePerItem", "pricePerItem", "Price per item must be greater than 0.01"));
 		}
-		
-		if(marketListing.getAuctionPrice() == null)
-		{
-			setPage("error2");
-			result.addError(new FieldError("auctionPrice", "auctionPrice", "Auction Price can't be null"));	    	
-		}
-		
-		else if(marketListing.getAuctionPrice().compareTo(oneCent) < 0)
-		{
+
+		if (marketListing.getAuctionPrice() == null || marketListing.getAuctionPrice().compareTo(oneCent) < 0) {
 			setPage("error2");
 			result.addError(new FieldError("auctionPrice", "auctionPrice", "Auction Price must be greater than 0.01"));
 		}
-		
-		if(Long.valueOf(marketListing.getQtyAvailable()).compareTo((long) 0) <= 0)
-		{
-			System.out.println(marketListing.getQtyAvailable());
-			System.out.println("help");
-			setPage("error3");
-			result.addError(new FieldError("pricePerItem", "pricePerItem", "Quantity must be greater than 0"));	    	
-		}
-		
-		if (result.hasErrors())
-		{
-			//print error
-			System.out.println(result.getAllErrors());
-			System.out.println(marketListing.getQtyAvailable());
-			setWidgetStorage(widget);
 
+		if (Long.valueOf(marketListing.getQtyAvailable()).compareTo((long) 0) <= 0) {
+			setPage("error3");
+			result.addError(new FieldError("pricePerItem", "pricePerItem", "Quantity must be greater than 0"));
+		}
+
+		if (result.hasErrors()) {
+			setWidgetStorage(widget);
 			widgetController.deleteWidget(getWidgetStorage().getId());
 			model.addAttribute("page", getPage());
 			model.addAttribute("pricePerItem", marketListing);
@@ -365,15 +327,14 @@ public class AddWidgetController
 			model.addAttribute("subcategory", subcategory);
 			return "createListing";
 		}
-		
-		if(!(files.length == 0))
-		{
+
+		if (!(files.length == 0)) {
 			marketListingController.getListingByWidget(widget).setCoverImage(marketListing.getSeller().getId() + StringUtils.cleanPath(coverImage.getOriginalFilename()));
-			List<MultipartFile> MPF = Arrays.asList(files).stream().collect(Collectors.toList());
-			MPF.forEach(file -> {setListingImage(file, marketListing);});
+			List<MultipartFile> MPF = Arrays.asList(files);
+			MPF.forEach(file -> setListingImage(file, marketListing));
 			marketListing.setImages(listingImages);
 		}
-		
+
 		model.addAttribute("user", userController.getCurrently_Logged_In());
 		return "redirect:homePage";
 	}
