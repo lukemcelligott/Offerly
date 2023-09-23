@@ -14,11 +14,9 @@ import edu.sru.cpsc.webshopping.domain.user.Ticket;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 import edu.sru.cpsc.webshopping.domain.widgets.Category;
-import edu.sru.cpsc.webshopping.domain.widgets.WidgetsInfo;
 import edu.sru.cpsc.webshopping.repository.applicant.ApplicantRepository;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
 import edu.sru.cpsc.webshopping.repository.widgets.WidgetRepository;
-import edu.sru.cpsc.webshopping.repository.widgets.WidgetsInfoRepository;
 import edu.sru.cpsc.webshopping.service.TicketService;
 import edu.sru.cpsc.webshopping.util.PreLoad;
 import edu.sru.cpsc.webshopping.util.constants.TimeConstants;
@@ -61,7 +59,6 @@ public class EmployeeController {
   private final MarketListingDomainController market;
   private final MessageDomainController msgcontrol;
   private final WidgetController widgetController;
-  private final WidgetsInfoRepository widgetsInfoRepository;
   private final ApplicantRepository appRepo;
   private final EmailController email;
   private final StatisticsDomainController statControl;
@@ -595,100 +592,6 @@ public class EmployeeController {
     return "employee";
   }
 
-  @PostMapping({"/widgetsInfoCategory"})
-  public String widgetsInfoCategory(@RequestParam("category") String category, Model model) {
-    setMasterPage("query");
-    model.addAttribute("masterPage", getMasterPage());
-    User user = userController.getCurrently_Logged_In();
-    if (user.getRole().equals("ROLE_ADMIN")
-        || user.getRole().equals("ROLE_CUSTOMERSERVICE")
-        || user.getRole().equals("ROLE_TECHNICALSERVICE")
-        || user.getRole().equals("ROLE_SECURITY")
-        || user.getRole().equals("ROLE_SALES")
-        || user.getRole().equals("ROLE_ADMIN_SHADOW")
-        || user.getRole().equals("ROLE_HELPDESK_ADMIN")
-        || user.getRole().equals("ROLE_HELPDESK_REGULAR")) {
-    } else {
-      setPage("notAuthorized");
-      model.addAttribute("page", getPage());
-      model.addAttribute("user", user);
-      return "employee";
-    }
-    
-    model.addAttribute("categories", categories.getAllCategories());
-    setPage("widgetsInfoCategory");
-    setPage2(category);
-    model.addAttribute("page", getPage());
-    model.addAttribute("page2", getPage2());
-    model.addAttribute("user", user);
-    return "employee";
-  }
-
-  @PostMapping({"/widgetsInfoSubCategory"})
-  public String widgetsInfoSubCategory(@RequestParam("subCategory") String subCategory, Model model) {  
-    setMasterPage("query");
-    model.addAttribute("masterPage", getMasterPage());
-    User user = userController.getCurrently_Logged_In();
-    if (user.getRole().equals("ROLE_ADMIN")
-        || user.getRole().equals("ROLE_CUSTOMERSERVICE")
-        || user.getRole().equals("ROLE_TECHNICALSERVICE")
-        || user.getRole().equals("ROLE_SECURITY")
-        || user.getRole().equals("ROLE_SALES")
-        || user.getRole().equals("ROLE_ADMIN_SHADOW")
-        || user.getRole().equals("ROLE_HELPDESK_ADMIN")
-        || user.getRole().equals("ROLE_HELPDESK_REGULAR")) {
-    } else {
-      setPage("notAuthorized");
-      model.addAttribute("page", getPage());
-      model.addAttribute("user", user);
-      return "employee";
-    }
-    
-    setPage("widgetsInfoSubCategory");
-    setPage2(subCategory);
-    model.addAttribute("page", getPage());
-    model.addAttribute("page2", getPage2());
-    model.addAttribute("user", user);
-    model.addAttribute("subCategory", subCategory);
-
-    List<WidgetsInfo> widgetsInfos =
-        widgetsInfoRepository.findAllBySubCategoryEqualsIgnoreCase(subCategory);
-    model.addAttribute("widgetsInfos", widgetsInfos);
-
-    return "employee";
-  }
-
-  @PostMapping({"/updateWidgetsInfo"})
-  public String updateWidgetsInfo(Model model, @RequestBody List<WidgetsInfo> widgetsInfos) {
-    setMasterPage("query");
-    model.addAttribute("masterPage", getMasterPage());
-    User user = userController.getCurrently_Logged_In();
-    if (user.getRole().equals("ROLE_ADMIN")
-        || user.getRole().equals("ROLE_CUSTOMERSERVICE")
-        || user.getRole().equals("ROLE_TECHNICALSERVICE")
-        || user.getRole().equals("ROLE_SECURITY")
-        || user.getRole().equals("ROLE_SALES")
-        || user.getRole().equals("ROLE_ADMIN_SHADOW")
-        || user.getRole().equals("ROLE_HELPDESK_ADMIN")
-        || user.getRole().equals("ROLE_HELPDESK_REGULAR")) {
-    } else {
-      setPage("notAuthorized");
-      model.addAttribute("page", getPage());
-      model.addAttribute("user", user);
-      return "employee";
-    }
-    setPage("widgetsInfoSubCategory");
-    for (WidgetsInfo widgetsInfo : widgetsInfos) {
-      System.out.println(widgetsInfo.getAttribute() + " - " + widgetsInfo.isVisible());
-    }
-    model.addAttribute("page", getPage());
-    model.addAttribute("page2", getPage2());
-    model.addAttribute("user", user);
-
-    model.addAttribute("widgetsInfos", Collections.emptyList());
-
-    return "employee";
-  }
   
   // https://attacomsian.com/blog/export-download-data-csv-file-spring-boot
   @GetMapping({"/downloadDataFile"})

@@ -62,6 +62,7 @@
                             </div>
                             <div class="card h-100" th:unless="${currListing.coverImage != null && !currListing.coverImage.isEmpty()}">
                                 <div class="d-flex justify-content-center card-header">
+                                    <img class="card-img-bottom" id="showWidget" th:src="@{/listingImages/{image}(image = no-listing-image-found.jpg)}" />
                                     <h2>No Image Provided</h2>
                                 </div>
                             </div>
@@ -69,7 +70,7 @@
                             <div class="d-flex justify-content-center mt-3"> <!-- mt-3 for some margin at the top -->
         						<div class="auction-price-container">
             						<span>Current Bid: </span>
-            						<span th:text="'$' + ${currListing.auctionPrice}"></span>
+            						<span th:text="'$' + ${currListing.auction.currentBid}"></span>
         						</div>
     						</div>
                         </div>
@@ -227,9 +228,9 @@
                 <div class="modal-body">
                   <form th:action="@{/updateBid}" method="post" onsubmit="return validateBid();">
                     <div class="mb-3">
-								      <span th:text="'Auction Price: $' + ${currListing.auctionPrice}"></span>
+								      <span th:text="'Auction Price: $' + ${currListing.auction.currentBid}"></span>
                       <label for="bidAmount" class="form-label">Bid Amount</label>
-                      <input type="number" class="form-control" id="bidAmount" name="bidAmount" data-auction-price="${currListing.auctionPrice}">
+                      <input type="number" class="form-control" id="bidAmount" name="bidAmount" data-auction-price="${currListing.auction.currentBid}">
                     </div>
                     <input type="hidden" name="listingId" th:value="${currListing.id}"/>
                     <input class="btn btn-success" id="bidButton" name="placeBid" type="submit" value="Bid Now" onclick="return confirmBid();"/>
