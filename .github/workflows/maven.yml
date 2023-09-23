@@ -33,8 +33,9 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-    - run: mvn --batch-mode --update-snapshots verify
-    - run: mkdir staging && cp target/*.jar staging
+        cache: maven
+    - run: mvn --batch-mode --update-snapshots verify --file OnlineAuction/pom.xml
+    - run: mkdir staging && cp OnlineAuction/target/*.jar staging
     - uses: actions/upload-artifact@v3
       with:
         name: Package

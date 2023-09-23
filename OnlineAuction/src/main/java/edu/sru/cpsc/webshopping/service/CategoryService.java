@@ -65,8 +65,4 @@ public class CategoryService {
         }
         return attributes;
     }
-    
-
-
-
 }
