@@ -183,7 +183,7 @@ public class AddWidgetControllerTest {
         Category category = new Category();
         when(userController.getCurrently_Logged_In()).thenReturn(new User());
         when(model.addAttribute("pricePerItem", marketListing.getPricePerItem())).thenReturn(model);
-        when(model.addAttribute("auctionPrice", marketListing.getAuctionPrice())).thenReturn(model);
+        when(model.addAttribute("auctionPrice", marketListing.getAuction().getCurrentBid())).thenReturn(model);
         when(model.addAttribute("qtyAvailable", marketListing.getQtyAvailable())).thenReturn(model);
         when(model.addAttribute("listing", marketListing)).thenReturn(model);
         when(model.addAttribute("Category", category)).thenReturn(model);
@@ -204,7 +204,7 @@ public class AddWidgetControllerTest {
 		when(marketListing.getAuction()).thenReturn(auction);
 		when(auction.getStartingBid()).thenReturn(BigDecimal.ONE);
 		when(marketListing.getPricePerItem()).thenReturn(BigDecimal.ONE);
-		when(marketListing.getAuctionPrice()).thenReturn(BigDecimal.ONE);
+		when(marketListing.getAuction().getCurrentBid()).thenReturn(BigDecimal.ONE);
 		when(marketListing.getQtyAvailable()).thenReturn(1L);
 		when(userController.getCurrently_Logged_In()).thenReturn(new User());
 		when(marketListing.getSeller()).thenReturn(seller);
@@ -221,7 +221,7 @@ public class AddWidgetControllerTest {
 		MultipartFile[] tempFileArray = fileList.isEmpty() ? null : fileList.toArray(new MultipartFile[0]);
 
 		// Act
-		String result = addWidgetController.addListing(model, coverImage, tempFileArray, 1L, attributes, marketListing, this.result);
+		String result = addWidgetController.addListing(model, coverImage, tempFileArray, attributes, marketListing, this.result);
 
 		// Assert
 		assertEquals("redirect:homePage", result);

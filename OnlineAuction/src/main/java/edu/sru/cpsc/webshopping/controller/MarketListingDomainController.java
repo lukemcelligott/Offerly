@@ -233,7 +233,7 @@ public class MarketListingDomainController {
 	public MarketListing updateMarketListingAuction(
 	        @RequestParam("marketListingId") Long marketListingId, 
 	        @RequestParam("startingBid") BigDecimal startingBid, 
-	        @RequestParam("endAuctionDate") Date endAuctionDate) {   // assuming java.util.Date, adjust as necessary
+	        @RequestParam("endAuctionDate") LocalDateTime endAuctionDate) {   // assuming java.util.Date, adjust as necessary
 	
 	    // Find the MarketListing entity
 	    MarketListing marketListing = entityManager.find(MarketListing.class, marketListingId);
@@ -260,8 +260,8 @@ public class MarketListingDomainController {
 	    MarketListing listing = marketRepository.findById(listingId).orElse(null);
 	
 	    // Ensure that listing.getAuctionPrice() also returns a BigDecimal
-	    if (listing != null && bidAmount.compareTo(listing.getAuctionPrice()) > 0) {
-	        listing.setAuctionPrice(bidAmount);
+	    if (listing != null && bidAmount.compareTo(listing.getAuction().getStartingBid()) > 0) {
+	        listing.getAuction().setCurrentBid(bidAmount);
 	        marketRepository.save(listing);
 	    } 
 	    URI redirectUri = URI.create("/viewMarketListing/" + listingId);

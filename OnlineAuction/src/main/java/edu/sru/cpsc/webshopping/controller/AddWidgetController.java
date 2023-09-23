@@ -3,6 +3,7 @@ package edu.sru.cpsc.webshopping.controller;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 
+import edu.sru.cpsc.webshopping.domain.market.Auction;
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.widgets.WidgetImage;
 import edu.sru.cpsc.webshopping.domain.market.MarketListingCSVModel;
@@ -262,9 +263,7 @@ public class AddWidgetController
 	public String createListing(Model model)
 	{
 		marketListing = new MarketListing();
-		model.addAttribute("pricePerItem", marketListing.getPricePerItem());
-		model.addAttribute("auctionPrice", marketListing.getAuctionPrice());
-		model.addAttribute("qtyAvailable", marketListing.getQtyAvailable());
+		marketListing.setAuction(new Auction());
 		model.addAttribute("listing", marketListing);
 		model.addAttribute("Category", category);
 		model.addAttribute("user", userController.getCurrently_Logged_In());
@@ -285,10 +284,8 @@ public class AddWidgetController
 	 * @return
 	 */
 	@RequestMapping("/addListing")
-	public String addListing(Model model, @RequestParam("listingCoverImage") MultipartFile coverImage, @RequestParam("imageUpload") MultipartFile[] files, @RequestParam("qtyAvailable") Long qty, RedirectAttributes attributes, @Valid @ModelAttribute MarketListing marketListing, BindingResult result) {
+	public String addListing(Model model, @RequestParam("listingCoverImage") MultipartFile coverImage, @RequestParam("imageUpload") MultipartFile[] files, RedirectAttributes attributes, @Valid @ModelAttribute MarketListing marketListing, BindingResult result) {
 		marketListing.getAuction().setCurrentBid(marketListing.getAuction().getStartingBid());
-		marketListing.setAuctionPrice(marketListing.getAuction().getStartingBid());
-		marketListing.setQtyAvailable(qty);
 		marketListing.setSeller(userController.getCurrently_Logged_In());
 		marketListing.setWidgetSold(widget);
 		marketListing.setDeleted(false);
@@ -306,7 +303,7 @@ public class AddWidgetController
 			result.addError(new FieldError("pricePerItem", "pricePerItem", "Price per item must be greater than 0.01"));
 		}
 
-		if (marketListing.getAuctionPrice() == null || marketListing.getAuctionPrice().compareTo(oneCent) < 0) {
+		if (marketListing.getAuction().getStartingBid() == null || marketListing.getAuction().getStartingBid().compareTo(oneCent) < 0) {
 			setPage("error2");
 			result.addError(new FieldError("auctionPrice", "auctionPrice", "Auction Price must be greater than 0.01"));
 		}
@@ -319,12 +316,9 @@ public class AddWidgetController
 		if (result.hasErrors()) {
 			setWidgetStorage(widget);
 			widgetController.deleteWidget(getWidgetStorage().getId());
-			model.addAttribute("page", getPage());
-			model.addAttribute("pricePerItem", marketListing);
-			model.addAttribute("auctionPrice", marketListing);
-			model.addAttribute("qtyAvailable", marketListing.getQtyAvailable());
+			model.addAttribute("Category", category);
+			model.addAttribute("user", userController.getCurrently_Logged_In());
 			model.addAttribute("listing", marketListing);
-			model.addAttribute("subcategory", subcategory);
 			return "createListing";
 		}
 

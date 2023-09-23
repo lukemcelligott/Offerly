@@ -13,6 +13,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -40,9 +41,10 @@ public class MarketListing {
 	@Column(precision = 10, scale = 2, columnDefinition="DECIMAL(10, 2)")
 	private BigDecimal pricePerItem;
 	
-	@NonNull
+	// removing auctionPrice because we are using the Auction class to hold the auction price
+/* 	@NonNull
 	@Column(precision = 10, scale = 2, columnDefinition="DECIMAL(10, 2)")
-	private BigDecimal auctionPrice;
+	private BigDecimal auctionPrice; */
 	
 	@NonNull
 	@Min(value=0, message="Must have 0 or more items available.")
@@ -67,7 +69,8 @@ public class MarketListing {
 	@OneToMany(mappedBy="marketListing", cascade = CascadeType.MERGE)
 	private Set<Transaction> transactions;
 	
-	@OneToOne(mappedBy = "marketListing", cascade = CascadeType.ALL)
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "auction_id")
 	private Auction auction;
 
 	public long getId() {
@@ -86,13 +89,13 @@ public class MarketListing {
 		this.pricePerItem = pricePerItem;
 	}
 	
-	public BigDecimal getAuctionPrice() {
+	/* public BigDecimal getAuctionPrice() {
 		return auctionPrice;
 	}
 
 	public void setAuctionPrice(BigDecimal auctionPrice) {
 		this.auctionPrice = auctionPrice;
-	}
+	} */
 
 	public long getQtyAvailable() {
 		return qtyAvailable;

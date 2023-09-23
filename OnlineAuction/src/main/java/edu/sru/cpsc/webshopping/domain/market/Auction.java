@@ -1,15 +1,17 @@
 package edu.sru.cpsc.webshopping.domain.market;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.Future;
 
 import java.math.BigDecimal;
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 /**
  * Auction attributes that will be dynamically changed when users bid
@@ -21,15 +23,21 @@ public class Auction {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @OneToOne
+    @OneToOne(mappedBy = "auction", cascade = CascadeType.ALL)
     private MarketListing marketListing;
 
     private BigDecimal startingBid;
     private BigDecimal currentBid;
-    private Date startAuctionDate;
+
+    private LocalDateTime startAuctionDate;
     
-    @Future(message = "End date should be in the future.")
-    private Date endAuctionDate;
+    //@Temporal(TemporalType.TIMESTAMP)
+    private LocalDateTime endAuctionDate;
+
+    public Auction() {
+        this.startAuctionDate = LocalDateTime.now();
+        this.endAuctionDate = LocalDateTime.now().plusDays(7);
+    }
     
     // id
     public long getId() {
@@ -68,20 +76,20 @@ public class Auction {
     }
 
     // startAuctionDate
-    public Date getStartAuctionDate() {
+    public LocalDateTime getStartAuctionDate() {
         return startAuctionDate;
     }
 
-    public void setStartAuctionDate(Date startAuctionDate) {
+    public void setStartAuctionDate(LocalDateTime startAuctionDate) {
         this.startAuctionDate = startAuctionDate;
     }
 
     // endAuctionDate
-    public Date getEndAuctionDate() {
+    public LocalDateTime getEndAuctionDate() {
         return endAuctionDate;
     }
 
-    public void setEndAuctionDate(Date endAuctionDate) {
+    public void setEndAuctionDate(LocalDateTime endAuctionDate) {
         this.endAuctionDate = endAuctionDate;
     }
 }
