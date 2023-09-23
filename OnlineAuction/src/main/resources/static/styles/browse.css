@@ -14,6 +14,11 @@
 	width: 50%;
 }
 
+.card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
 .grid-container {
 	display: grid;
 	background-color: #ffffff;
@@ -43,6 +48,7 @@
 	height: 200px;
 	object-fit: contain;
 	background-color: #E9ECEF;
+	margin-top: 5%;
 }
 
 .inline {

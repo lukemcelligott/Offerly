@@ -51,110 +51,71 @@
 	</head>
 
 	<body>
-	
+			
 		<!-- HEADER BAR -->
 		<div th:insert="header :: header" th:unless="${user == null}"></div>
 		<!-- END HEADER BAR -->
 	
-		
 		<nav class="navbar navbar-expand-sm" style="background-color: #222222;" th:if="${user == null}">
-		    <div class="container-fluid">
-		      <!-- Left justified unordered list -->
-		      <ul class="navbar nav">
-		        <li class="nav-item"><a class="navbar-brand" th:href="@{/index}">
-		          <img src="/images/pseudo_ebay_icon.png"
-		               alt="Return to Index"
-		               style="width:64px; height:64px;"></img></a></li>
-		      </ul>
-		      <!-- Right justified unordered list -->
-		      <ul class="navbar nav ms-md-auto">
-		        <li class="nav-item ms-md-auto"><a class="nav-link text-white"
-		                                           style="font-family:'Poppins'; font-size: 1.5em"
-		                                           th:href="@{/newUser}">Sign Up</a></li>
-		        <li class="nav-item ms-md-auto"><a class="nav-link text-white"
-		                                           style="font-family:'Poppins'; font-size: 1.5em"
-		                                           th:href="@{/homePage}">Log In</a></li>
-		      </ul>
-		    </div>
-		  </nav>
-	  
-		<div class="grid-item columns">
-			<th:block th:each="searchedMarkets: ${allMarketListings}" th:unless="${searchedMarkets.qtyAvailable == 0 || searchedMarkets.isDeleted == true}">
-				<table style="width: 80%; margin-bottom: 50px; margin-left: auto; margin-right: auto;" class="card">
-					<!-- Product Name -->
-					<tr>
-						<th colspan="2"><p class="header-browse" th:text="${searchedMarkets.widgetSold.name}" style="margin-bottom:0;"></p></th>
-					</tr>
-					<!-- Product Cover Image -->
-					<tr>
-						<td colspan="2"><img th:if="${searchedMarkets.coverImage == null}" style="width: 200px; height: 200px;" src="https://previews.123rf.com/images/kritchanut/kritchanut1406/kritchanut140600093/29213195-.jpg?fj=1" alt="Blank Listing Avatar">
-							<img th:unless="${searchedMarkets.coverImage == null}" style="width: 200px; height: 200px;" th:src="@{/listingImages/{image}(image = ${searchedMarkets.coverImage})}" alt="Listing Avatar" src="">
-						</td>
-					</tr>
-					<!-- Quantity Available -->
-					<tr>
-						<td id="bg-color"><p style="margin-bottom: 0;">Quantity Available:</p></td>
-						<td><p style="margin-bottom: 0;" th:text="${searchedMarkets.qtyAvailable}"></p></td>
-					</tr>
-					<!-- Price -->
-					<tr>
-						<td id="bg-color"><p style="margin-bottom: 0;">Price:</p></td>
-						<td><p style="margin-bottom: 0;" th:text="'$' + ${searchedMarkets.pricePerItem}"></p></td>
-					</tr>
-					<!-- Auction Price -->
-					<tr>
-						<td id="bg-color"><p style="margin-bottom: 0;">Auction Price:</p></td>
-						<td><p style="margin-bottom: 0;" th:text="'$' + ${searchedMarkets.auctionPrice}"></p></td>
-					</tr>
-					<!-- View -->
-					<tr>
-						<th colspan="2"><a class="submitHybrid" th:href="@{/viewMarketListing/{id}(id = ${searchedMarkets.id})}"><span>View</span></a></th>
-					</tr>
-				</table>
-			</th:block>
-		</div>
+			<div class="container-fluid">
+		    	<!-- Left justified unordered list -->
+		      	<ul class="navbar nav">
+		      		<li class="nav-item">
+						<a class="navbar-brand" th:href="@{/index}">
+		          			<img src="/images/pseudo_ebay_icon.png" alt="Return to Index" style="width:64px; height:64px;"></img>
+		          		</a>
+		          	</li>
+		      	</ul>
+		      	<!-- Right justified unordered list -->
+		      	<ul class="navbar nav ms-md-auto">
+					<li class="nav-item ms-md-auto">
+						<a class="nav-link text-white" style="font-family:'Poppins'; font-size: 1.5em" th:href="@{/newUser}">Sign Up</a>
+					</li>
+			        <li class="nav-item ms-md-auto">
+						<a class="nav-link text-white" style="font-family:'Poppins'; font-size: 1.5em" th:href="@{/homePage}">Log In</a>
+			        </li>
+		      	</ul>
+			</div>
+		</nav>
 		
 		<!-- new design using bootstrap -->
 		<div class="grid-item columns">
 			<th:block th:each="searchedMarkets: ${allMarketListings}" th:unless="${searchedMarkets.qtyAvailable == 0 || searchedMarkets.isDeleted == true}">
-				<div class="card" style="width: 80%; margin-bottom: 50px; margin-left: auto; margin-right: auto;">
-					<!-- image -->
-					<img class="card-img-top image" th:if="${searchedMarkets.coverImage == null}" src="https://previews.123rf.com/images/kritchanut/kritchanut1406/kritchanut140600093/29213195-.jpg?fj=1" alt="Blank Listing Avatar">
-					<img class="card-img-top image" th:unless="${searchedMarkets.coverImage == null}" th:src="@{/listingImages/{image}(image = ${searchedMarkets.coverImage})}" alt="Listing Avatar" src="">
-					
-					<div class="card-body">
-						<!-- title -->
-						<h5 class="card-title header-browse" th:text="${searchedMarkets.widgetSold.name}"></h5>
-					</div>
-					<ul class="list-group list-group-flush">
-						<!-- quantity -->
-						<ul class="list-group-item align-flex">
-							<p class="align-left">Quantity Available:</p>
-							<p class="align-right" th:text="${searchedMarkets.qtyAvailable}"></p>
+				<a th:href="@{/viewMarketListing/{id}(id = ${searchedMarkets.id})}" style="text-decoration: none; color: inherit;">
+					<div class="card card-hover" style="width: 80%; margin-bottom: 50px; margin-left: auto; margin-right: auto;">
+						<!-- image -->
+						<img class="card-img-top image" th:if="${searchedMarkets.coverImage == null}" src="https://previews.123rf.com/images/kritchanut/kritchanut1406/kritchanut140600093/29213195-.jpg?fj=1" alt="Blank Listing Avatar">
+						<img class="card-img-top image" th:unless="${searchedMarkets.coverImage == null}" th:src="@{/listingImages/{image}(image = ${searchedMarkets.coverImage})}" alt="Listing Avatar" src="">
+						
+						<div class="card-body">
+							<!-- title -->
+							<h5 class="card-title header-browse" th:text="${searchedMarkets.widgetSold.name}"></h5>
+						</div>
+						<ul class="list-group list-group-flush">
+							<!-- quantity -->
+							<ul class="list-group-item align-flex">
+								<p class="align-left">Quantity Available:</p>
+								<p class="align-right" th:text="${searchedMarkets.qtyAvailable}"></p>
+							</ul>
+							<!-- price -->
+							<ul class="list-group-item align-flex">
+								<p class="align-left">Price:</p>
+								<p class="align-right" th:text="'$' + ${searchedMarkets.pricePerItem}"></p>
+							</ul>						
+							<!-- auction price -->
+							<ul class="list-group-item align-flex">
+								<p class="align-left">Auction Price:</p>
+								<p class="align-right" th:text="'$' + ${searchedMarkets.auctionPrice}"></p>
+							</ul>			
 						</ul>
-						<!-- price -->
-						<ul class="list-group-item align-flex">
-							<p class="align-left">Price:</p>
-							<p class="align-right" th:text="'$' + ${searchedMarkets.pricePerItem}"></p>
-						</ul>						
-						<!-- auction price -->
-						<ul class="list-group-item align-flex">
-							<p class="align-left">Auction Price:</p>
-							<p class="align-right" th:text="'$' + ${searchedMarkets.auctionPrice}"></p>
-						</ul>			
-					</ul>
-					<div class="card-body">
-						<!-- view -->
-						<a class="submitHybrid" th:href="@{/viewMarketListing/{id}(id = ${searchedMarkets.id})}"><span>View</span></a>
-					
 					</div>
-				</div>
+				</a>
 			</th:block>
 		</div>
 		
 		<!-- display when there are no listings -->
 		<div th:if="${#lists.isEmpty(allMarketListings)}">
-			<h2></h2>
+			<h2>There are no listings currently on the market.</h2>
 		</div>
 	</body>
 </html>
