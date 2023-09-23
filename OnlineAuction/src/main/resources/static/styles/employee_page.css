@@ -310,7 +310,7 @@ background-color: #ced4da;
 }
 
 th {
-  border: 2px solid rgb(173, 210, 252);
+  /*border: 2px solid rgb(173, 210, 252);*/
   background-color: #e9ecef;
   height: 60px;
 }
@@ -318,7 +318,7 @@ th {
 td {
   overflow: hidden;
   text-overflow: ellipsis;
-  border: 2px solid rgb(173, 210, 252);
+  /*border: 2px solid rgb(173, 210, 252);*/
   height: 85px;
   margin-bottom: .5em;
 }
