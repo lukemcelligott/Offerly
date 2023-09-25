@@ -127,11 +127,13 @@
 			</div>
 		</div>
 		
-			<div class="card h-100 w-100">
+			<!-- set page (account info, card info, deposit info) -->
+			<div class="card my-4 mx-4">
 				<div class="card-header d-flex justify-content-center">
 					<h1 th:if="${selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).USER_DETAILS}">Personal Info</h1>
-					<h1 th:if="${selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).PAYMENT_DETAILS}">Card Info</h1>
+					<h1 th:if="${selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).PAYMENT_DETAILS}">Payment</h1>
 					<!--<h1 th:if="${selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).PAYPAL_DETAILS}">PayPal Info</h1>-->
+					<h1 th:if="${selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).SHIPPING_DETAILS}">Shipping</h1>
 					<h1 th:if="${selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).DEPOSIT_DETAILS}">Direct Deposit Info</h1>
 				</div>
 				
@@ -214,120 +216,112 @@
 							<h2>Current Payment Details</h2>
 						</div>
 						<div style="margin-bottom: 4px;  background-color: #FBD8B4; width:fit-content; margin-left:auto; margin-right:auto;" th:if="${defaultPaymentDetails != null}" class="d-flex justify-content-center">
-						<th:block th:if="${updateId == -1 or updateId == defaultPaymentDetails.id}">
-							<h3 th:inline="text">Default:&nbsp[[${defaultPaymentDetails.cardType}]]&nbspEnding In:&nbsp[[${defaultPaymentDetails.last4Digits}]]</h3>
-							<a style="margin-left:5px; margin-right: 5px;" class="btn btn-lg btn-success" th:href="@{/updatePaymentDetails/{id}(id = ${defaultPaymentDetails.id})}">Edit</a>
-							<a style="margin-left:5px; margin-right: 5px;" class="btn btn-lg btn-danger" th:href="@{/deleteExistingPaymentDetails/{id}(id = ${defaultPaymentDetails.id})}">X</a>
+							<th:block th:if="${updateId == -1 or updateId == defaultPaymentDetails.id}">
+								<h3 th:inline="text">Default:&nbsp[[${defaultPaymentDetails.cardType}]]&nbspEnding In:&nbsp[[${defaultPaymentDetails.last4Digits}]]</h3>
+								<a class="btn btn-lg btn-success details-button" th:href="@{/updatePaymentDetails/{id}(id = ${defaultPaymentDetails.id})}">Edit</a>
+								<a class="btn btn-lg btn-danger details-button" th:href="@{/deleteExistingPaymentDetails/{id}(id = ${defaultPaymentDetails.id})}">X</a>
 							</th:block>
 						</div>
 						<th:block th:if="${defaultPaymentDetails == null}">
-						<div style="margin-bottom: 4px" th:each="detail: ${savedDetails}" class="d-flex justify-content-center">
-						<th:block th:if="${updateId == -1 or updateId == detail.id}">
-							<h3 th:inline="text">[[${detail.cardType}]]&nbspEnding In:&nbsp[[${detail.last4Digits}]]</h3>
-							<a style="margin-left:5px; margin-right: 5px;" class="btn btn-lg btn-success" th:href="@{/makeDefaultPaymentDetails/{id}(id = ${detail.id})}">Make Default</a>
-							<a style="margin-left:5px; margin-right: 5px;" class="btn btn-lg btn-success" th:href="@{/updatePaymentDetails/{id}(id = ${detail.id})}">Edit</a>
-							<a style="margin-left:5px; margin-right: 5px;" class="btn btn-lg btn-danger" th:href="@{/deleteExistingPaymentDetails/{id}(id = ${detail.id})}">X</a>
-							</th:block>
-						</div>
+							<div style="margin-bottom: 4px" th:each="detail: ${savedDetails}" class="d-flex justify-content-center">
+								<th:block th:if="${updateId == -1 or updateId == detail.id}">
+									<h3 th:inline="text">[[${detail.cardType}]]&nbspEnding In:&nbsp[[${detail.last4Digits}]]</h3>
+									<a class="btn btn-lg btn-success details-button" th:href="@{/makeDefaultPaymentDetails/{id}(id = ${detail.id})}">Make Default</a>
+									<a class="btn btn-lg btn-success details-button" th:href="@{/updatePaymentDetails/{id}(id = ${detail.id})}">Edit</a>
+									<a class="btn btn-lg btn-danger details-button" th:href="@{/deleteExistingPaymentDetails/{id}(id = ${detail.id})}">X</a>
+								</th:block>
+							</div>
 						</th:block>
 						
 						<th:block th:unless="${defaultPaymentDetails == null}">
-						<div style="margin-bottom: 4px" th:each="detail: ${savedDetails}" class="d-flex justify-content-center">
-						<th:block th:if="${detail.id != defaultPaymentDetails.id}">
-						<th:block th:if="${updateId == -1 or updateId == detail.id}">
-							<h3 th:inline="text">[[${detail.cardType}]]&nbspEnding In:&nbsp[[${detail.last4Digits}]]</h3>
-							<a style="margin-left:5px; margin-right: 5px;" class="btn btn-lg btn-success" th:href="@{/makeDefaultPaymentDetails/{id}(id = ${detail.id})}">Make Default</a>
-							<a style="margin-left:5px; margin-right: 5px;" class="btn btn-lg btn-success" th:href="@{/updatePaymentDetails/{id}(id = ${detail.id})}">Edit</a>
-							<a style="margin-left:5px; margin-right: 5px;" class="btn btn-lg btn-danger" th:href="@{/deleteExistingPaymentDetails/{id}(id = ${detail.id})}">X</a>
-							</th:block>
-						</th:block>
-						</div>
+							<div style="margin-bottom: 4px" th:each="detail: ${savedDetails}" class="d-flex justify-content-center">
+								<th:block th:if="${detail.id != defaultPaymentDetails.id}">
+									<th:block th:if="${updateId == -1 or updateId == detail.id}">
+										<h3 th:inline="text">[[${detail.cardType}]]&nbspEnding In:&nbsp[[${detail.last4Digits}]]</h3>
+										<a class="btn btn-lg btn-success details-button" th:href="@{/makeDefaultPaymentDetails/{id}(id = ${detail.id})}">Make Default</a>
+										<a class="btn btn-lg btn-success details-button" th:href="@{/updatePaymentDetails/{id}(id = ${detail.id})}">Edit</a>
+										<a class="btn btn-lg btn-danger details-button" th:href="@{/deleteExistingPaymentDetails/{id}(id = ${detail.id})}">X</a>
+									</th:block>
+								</th:block>
+							</div>
 						</th:block>
 					</div>
 					<div th:unless="${savedDetails != null}">
-					<div class="d-flex justify-content-center">
-						<h2>Currently No Saved Payment Details</h2>
-					</div>
+						<div class="d-flex justify-content-center">
+							<h2>Currently No Saved Payment Details</h2>
+						</div>
 					</div>
 					<div th:if="${!addNew and !update and !delete}">
-							<h3 class="d-flex justify-content-center"><a class="btn btn-lg btn-success" th:href="@{/addNewCard}">Add New Card</a></h3>
-						</div>
-					<div th:if="${addNew and relogin == false or update and relogin == false}">
+						<h3 class="d-flex justify-content-center"><a class="btn btn-lg btn-success" th:href="@{/addNewCard}">Add New Card</a></h3>
+					</div>
 					
-						<table style="width:20vw; justify-content:center; margin-left:auto; margin-right:auto;" class="uniTableForm">
-										<thead>
-											<tr>
-												<td style="background-color: #D3D3D3;" colspan="3" th:if="${!update}"><h2>Add New Payment Details</h2></td>
-												<td style="background-color: #D3D3D3;" colspan="3" th:unless="${!update}"><h2>Update Payment Details</h2></td>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td style="background-color: #89CFF0" colspan="3"><label for="cardType" class="form-label">Card Type</label></td>
-											</tr>
-											<tr>
-												<td colspan="3"><select class="form-select" id="cardType" name="cardType">
-													<option th:each="type : ${cardTypes}"
-														th:value="${type.cardType}" th:text="${type.cardType}">
-													</option>
-												</select></td>
-											</tr>
-											<tr>
-												<td style="background-color: #89CFF0" colspan="3"><label for="cardholderName" class="form-label">Cardholder Name</label></td>
-											</tr>
-											<tr>
-												<td colspan="3"><input type="text" class="form-control" th:field="*{cardholderName}"></input>
-												<p th:if="${#fields.hasErrors('cardholderName')}" th:errors="*{cardholderName}">
-												</p></td>
-											</tr>
-											<tr>
-												<td style="background-color: #89CFF0" colspan="3"><label for="cardNumber" class="form-label">Card Number</label></td>
-											</tr>
-											<tr>
-												<td colspan="3"><input type="number" class="form-control" th:field="*{cardNumber}"></input>
-												<p th:if="${#fields.hasErrors('cardNumber')}" th:errors="*{cardNumber}">
-												</p></td>
-											</tr>
-											<tr>
-												<td style="background-color: #89CFF0"><label for="expirationDate" class="form-label">Expiration Date</label></td>
-												<td style="background-color: #89CFF0"><label for="securityCode" class="form-label">Security Code</label></td>
-												<td style="background-color: #89CFF0"><label for="postalCode" class="form-label">Postal Code</label></td>
-											</tr>
-											<tr>
-												<td><input style="display:none" type="month" name="pleaseWork">
-												<input th:field="*{expirationDate}" name="expirationDate" class="form-control date-picker" autocomplete="do-not-autofill"/> 
-												<script type="text/javascript"> <!--used for learning how to use jQuery to get month and year since input type="month" doesn't work on firefox https://stackoverflow.com/questions/2208480/jquery-ui-datepicker-to-show-month-year-only -->
-											        $(function() {
-											            $('.date-picker').datepicker( {
-											            changeMonth: true,
-											            changeYear: true,
-											            showButtonPanel: true,
-											            dateFormat: 'M yy',
-											            onClose: function(dateText, inst) { 
-											                $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
-											            }
-											            });
-											        });
-											    </script>
-												<p th:if="${#fields.hasErrors('expirationDate')}" th:errors="*{expirationDate}">
-												</p>
-												<p th:if="${cardError}" th:text="${cardError}"></p></td>
-												<td><input type="text" class="form-control" name="securityCode" id="securityCode" th:field="*{securityCode}"></input>
-												<p th:if="${#fields.hasErrors('securityCode')}" th:errors="*{securityCode}">
-												</p></td>
-												<td><input type="number" class="form-control" name="postalCode" id="postalCode" th:field="*{postalCode}"></input>
-												<p th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}">
-												</p></td>
-											</tr>
-										</tbody>
-									</table>
-							<div style="margin-top:5px;" class="d-flex justify-content-center mb-3">
-								<button style="margin-right:50px;" th:if="${!update}" type="submit" name="submit" class="btn btn-lg btn-success">Add</button>
-								<button style="margin-right:50px;" th:unless="${!update}" type="submit" name="update" class="btn btn-lg btn-success">update</button>
-								<button type="button" class="btn btn-lg btn-danger" disabled
-										th:if="${currUser.paymentDetails == null}">No Payment Details Added</button>
-								<a style="margin-left:50px;" class="btn btn-lg btn-danger" th:href="@{/goBackToMainPD}">Back</a>
-							</div>
+					<div th:if="${addNew and relogin == false or update and relogin == false}">
+						<!-- payment method -->
+				        <form method="post" action="#" class="row g-3 d-flex justify-content-center my-2" th:action="@{/submitPurchaseSignup}" object="${paymentDetails}">
+				            <!--<div th:if="${relogin == false}">-->
+				            <div class="card shadow bg-light" style="justify-content: center;">
+				                <div class="card-header">
+				                	<b>Payment Method</b>
+				                </div>
+				                <div class="card-body">
+									<div class="input-group mb-3">
+										<!-- Card Type -->
+										<select class="form-select" id="cardType" name="cardType">
+											<option
+												th:each="cardType : ${cardTypes}"
+												th:value="${cardType.cardType}"
+												th:text="${cardType.cardType}">
+											</option>
+										</select>
+										<!-- Cardholder Name -->
+					                    <input type="text" class="form-control" field="*{cardholderName}" name="cardholderName" placeholder="Cardholder Name"></input>
+									</div>
+									<div class="input-group mb-3">
+					                    <!-- Card Number -->
+					                    <input type="tel" class="form-control" field="*{cardNumber}" name="cardNumber" placeholder="Card Number" maxlength="16"></input>
+										<!-- Expiration Date -->
+					                    <input style="display:none" type="month" name="pleaseWork">
+					                    <input field="*{expirationDate}" name="expirationDate" class="form-control month-picker" placeholder="Exp. Date (MM / YY)" autocomplete="do-not-autofill"/>
+									        
+						                <!--used for learning how to use jQuery to get month and year since input type="month" doesn't work on firefox https://stackoverflow.com/questions/2208480/jquery-ui-datepicker-to-show-month-year-only --> 
+						                <script type="text/javascript"> 
+						                      $(function() {
+						                          $('.month-picker').datepicker( {
+						                              changeMonth: true,
+						                              changeYear: true,
+						                              showButtonPanel: true,
+						                              dateFormat: 'MM yy',
+						                              
+						                              onClose: function(dateText, inst) { 
+														  var year = inst.selectedYear;
+														  var month = inst.selectedMonth + 1;
+														  var lastDay = new Date(year, month, 0).getDate();
+						                                  $(this).datepicker('setDate', new Date(year, month - 1, lastDay));
+						                              }
+						                          });
+						                     });                                                                         
+						                </script>        
+										<p th:if="${cardError}" th:text="${cardError}"></p>
+									</div>
+									<div class="input-group mb-3">
+										<!-- Security Code -->
+										<input type="tel" class="form-control" id="securityCode" field="*{securityCode}" placeholder="CVV" name="securityCode" maxlength="4"></input>
+					                    <p th:text="${securityCodeErr}" th:if="${securityCodeErr != null}"></p>
+					                    <!-- Postal Code -->
+						                <input type="tel" class="form-control" id="postalCode" field="*{postalCode}" placeholder="Postal Code" name="postalCode" maxlength="5"></input>
+						                <p th:text="${postalCodeErr}" th:if="${postalCodeErr != null}"></p>
+									</div>
+				                    
+				                </div>
+				                <!-- buttons -->
+				                <div class="d-flex justify-content-center mb-3">
+									<!-- cancel -->
+				                    <button style="margin-right:50px;" class="btn btn-outline-danger ms-1" type="submit" name="cancel" th:href="@{/userDetails/initializePaymentDetails}">Cancel</button>
+				                    <!-- add -->
+				                    <button style="margin-left:50px;" class="btn btn-outline-success me-1" type="submit" name="submit" id="mysignupbutton">Confirm</button>
+				                </div>
+				            </div>
+				        </form>
 					</div>
 					
 					<div th:if="${relogin}">
@@ -351,9 +345,9 @@
 								</div>
 							</div>
 							<div class="d-flex justify-content-evenly mb-3">
-								<button th:if="${delete == false}" type="submit" name="loginInfo" class="btn btn-lg btn-success">submit</button>
 								<button th:unless="${delete == false}" type="submit" name="delete" class="btn btn-lg btn-success">delete</button>
-								<a class="btn btn-lg btn-danger" th:href="@{/goBackToMainPD}">Back</a>
+								<a class="btn btn-outline-danger ms-1" th:href="@{/goBackToMainPD}">Back</a>
+								<button th:if="${delete == false}" type="submit" name="loginInfo" class="btn btn-outline-success me-1">Submit</button>
 							</div>
 						</div>   
 						</div>   
@@ -488,67 +482,61 @@
 					</div>
 					<div th:if="${!addNew and !update and !delete}">
 							<h3 class="d-flex justify-content-center"><a class="btn btn-lg btn-success" th:href="@{/addShippingDetails}">Add Shipping Details</a></h3>
-						</div>
+					</div>
+					
 					<div th:if="${addNew and relogin == false or update and relogin == false}">
-					<div class="d-flex justify-content-center">
-						<h2 th:if="${!update}">Add New Shipping Details</h2>
-						<h2 th:unless="${!update}">Update Shipping Details</h2>
-					</div>
-					
-					<div style="width:20vw; justify-content:center; margin-left:auto; margin-right:auto;"  th:if="${shippingError != null}" class="alert alert-danger d-flex justify-content-center">
-						<h2 th:text="${shippingError}"></h2>
-					</div>
-					
-					<table style="width:20vw; justify-content:center; margin-left:auto; margin-right:auto;" class="uniTableForm">
-								<thead>
-              						<tr>
-              							<td colspan="3" style="background-color: #D3D3D3;"><h4>Confirm Shipping Address</h4></td>
-              						</tr>
-              					</thead>
-              					<tbody>
-              						<tr>
-              							<td colspan="3" style="background-color: #89CFF0"><label for="recipient" class="form-label">Recipient</label></td>
-									</tr>
-									<tr>
-										<td colspan="3"><input type="text" th:field="*{recipient}" class="form-control"></input>
-											<p th:if="${recipientErr != null}" th:text="${recipientErr}"></p></td>
-									</tr>
-									<tr>
-										<td colspan="3" style="background-color: #89CFF0"><label for="streetAddress" class="form-label">Street Address</label></td>
-									</tr>
-									<tr>
-										<td colspan="3"><input type="text" th:field="*{streetAddress}" class="form-control"></input>
-											<p th:if="${streetAddressErr != null}" th:text="${streetAddressErr}"></p></td>
-									</tr>
-									<tr>
-										<td colspan="3" style="background-color: #89CFF0"><label for="extraLocationInfo" class="form-label">Apt, suite, unit, building, floor, etc.</label></td>
-									</tr>
-									<tr>
-										<td colspan="3"><input type="text" th:field="*{extraLocationInfo}" class="form-control"></input></td>
-									</tr>
-									<tr>
-										<td style="background-color: #89CFF0"><label for="city" class="form-label">City</label></td>
-										<td style="background-color: #89CFF0"><label for="state" class="form-label">State</label></td>
-										<td style="background-color: #89CFF0"><label for="postalCode" class="form-label">Postal Code</label></td>
-									</tr>
-									<tr>
-										<td><input type="text" th:field="*{city}" class="form-control"></input>
-											<p th:if="${cityErr != null}" th:text="${cityErr}"></p></td>
-										<td><select class="form-select" id="stateId" name="stateId"><option th:each="state : ${states}" th:value="${state.stateName}" th:text="${state.stateName}"></option></select>
-											<p th:if="${stateIdErr}" th:text="${stateId}"></p></td>
-										<td><input type="number" th:field="*{postalCode}" class="form-control"></input>
-											<p th:if="${postalCodeErr != null}" th:text="${postalCodeErr}"></p></td>
-									</tr>
-              					</tbody>
-							</table>
-
-					<div style="margin-top:5px;" class="d-flex justify-content-center mb-3">
-						<button style="margin-right:50px;" th:if="${!update}" type="submit" name="submit" class="btn btn-lg btn-success">Add</button>
-						<button style="margin-right:50px;" th:unless="${!update}" type="submit" name="update" class="btn btn-lg btn-success">update</button>
-						<button type="button" class="btn btn-lg btn-danger" disabled
-								th:if="${currUser.shippingDetails == null}">No Shipping Details Added</button>
-						<a style="margin-left:50px;" class="btn btn-lg btn-danger" th:href="@{/goBackToMainSD}">Back</a>
-					</div>
+						<div class="d-flex justify-content-center">
+							<h2 th:if="${!update}">Add New Shipping Details</h2>
+							<h2 th:unless="${!update}">Update Shipping Details</h2>
+						</div>
+						<div style="width:20vw; justify-content:center; margin-left:auto; margin-right:auto;"  th:if="${shippingError != null}" class="alert alert-danger d-flex justify-content-center">
+							<h2 th:text="${shippingError}"></h2>
+						</div>
+										
+						<!-- add shipping -->
+						<form method="post" action="#" th:action="@{/submitShippingAddressSignUp}" object="${shippingDetails}" class="row g-3 d-flex justify-content-center my-2">
+					        <div class="card shadow bg-light" style="justify-content: center;">
+					            <div class="card-header">
+									<!-- card header -->
+					            	<b>Shipping Address</b>
+					            </div>
+					            <div class="card-body">
+					                <div class="input-group mb-3">
+										<!-- shipping recipient -->
+				                        <input type="text" field="*{recipient}" name="recipient" class="form-control" placeholder="Recipient"></input> 
+				                        <p th:if="${recipientErr != null}" th:text="${recipientErr}"></p>
+				                        <!-- street address -->
+				                        <input type="text" field="*{streetAddress}" name="streetAddress" class="form-control" placeholder="Street Address"></input>
+				                        <p th:if="${streetAddressErr != null}" th:text="${streetAddressErr}"></p>
+					                </div>
+					            	<div class="input-group mb-3">
+										<!-- apt, building, etc (optional) -->
+										<input type="text" field="*{extraLocationInfo}" name="extraLocationInfo" class="form-control" placeholder="Apt, suite, unit, building, etc. (optional)"></input>
+										<!-- city -->
+										<input type="text" field="*{city}" name="city" class="form-control" placeholder="City"></input>
+					                    <p th:if="${cityErr != null}" th:text="${cityErr}"></p>
+									</div>
+					             	<div class="input-group mb-3">
+										<!-- state -->
+										<select class="form-select" id="stateId" name="stateId">
+				                            <option th:each="state : ${states}" th:value="${state.stateName}" th:text="${state.stateName}"></option>
+				                        </select>
+				                        <p th:if="${stateIdErr}" th:text="${stateId}"></p>
+										<!-- postal code -->
+										<input type="tel" field="*{postalCode}" name="postalCode" class="form-control" maxlength="5" placeholder="Postal Code"></input>
+					                    <p th:if="${postalCodeErr != null}" th:text="${postalCodeErr}"></p>
+					             	</div>
+				
+					            </div>
+					        	<!-- submit and cancel buttons  -->
+						        <div style="margin-top:5px;" class="d-flex justify-content-center mb-3">
+									<!-- back button -->
+						            <a style="margin-right:50px;" class="btn btn-outline-danger ms-1" th:href="@{/goBackToMainSD}">Cancel</a>
+									<!-- add button -->
+						            <button style="margin-left:50px;" type="submit" name="submit" class="btn btn-outline-success me-1" id="mysignupbutton">Submit</button>	            
+						        </div>
+					        </div>
+						</form>
 					</div>
 					
 					<div th:if="${relogin}">
@@ -572,9 +560,9 @@
 								</div>
 							</div>
 							<div class="d-flex justify-content-evenly mb-3">
-								<button th:if="${delete == false}" type="submit" name="loginInfo" class="btn btn-lg btn-success">submit</button>
 								<button th:unless="${delete == false}" type="submit" name="delete" class="btn btn-lg btn-success">delete</button>
-								<a class="btn btn-lg btn-danger" th:href="@{/goBackToMainSD}">Back</a>
+								<a class="btn btn-outline-danger ms-1" th:href="@{/goBackToMainPD}">Back</a>
+								<button th:if="${delete == false}" type="submit" name="loginInfo" class="btn btn-outline-success me-1">Submit</button>
 							</div>
 						</div>   
 						</div>   
