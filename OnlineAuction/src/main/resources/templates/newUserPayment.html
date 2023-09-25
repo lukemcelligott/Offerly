@@ -57,104 +57,79 @@
 			}
         </style>
     </head>
+    
     <body style="background-color: white">
         <div class="card-header d-flex flex-column align-items-center justify-content-center mb-5">
             <h1 style="font-family: 'Poppins'">Sign Up</h1>
         </div>
         
-        <!-- payment method -->
-        <form method="post" action="#" class="row g-3 d-flex justify-content-center my-2"
-            th:action="@{/submitPurchaseSignup}" object="${paymentDetails}">
+        
+        
+        <!-- new payment method -->
+        <form method="post" action="#" class="row g-3 d-flex justify-content-center my-2" th:action="@{/submitPurchaseSignup}" object="${paymentDetails}">
             <!--<div th:if="${relogin == false}">-->
-            <div class="modal-body">
-                <table style="width:20vw; justify-content:center; margin-left:auto; margin-right:auto;" class="uniTableForm">
-                    <thead>
-                        <tr>
-                            <td colspan="3" style="background-color: #D3D3D3;">
-                                <h2>Payment Method</h2>
-                            </td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="grid-header" colspan="3"><label for="cardType" class="form-label">Card Type</label></td>
-                        </tr>
-                        <tr>
-                            <td colspan="3">
-								<select class="form-select" id="cardType" name="cardType">
-									<option
-										th:each="cardType : ${cardTypes}"
-										th:value="${cardType.cardType}"
-										th:text="${cardType.cardType}">
-									</option>
-								</select>
-							</td>
-                        </tr>
-                        <tr>
-                            <td colspan="3" class="grid-header"><label for="cardholderName" class="form-label">Cardholder Name</label></td>
-                        </tr>
-                        <tr>
-                            <td colspan="3"><input type="text" class="form-control" field="*{cardholderName}" name="cardholderName"></input>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="3" class="grid-header"><label for="cardNumber" class="form-label">Card Number</label></td>
-                        </tr>
-                        <tr>
-                            <td colspan="3">
-                                <input type="tel" class="form-control" field="*{cardNumber}" name="cardNumber" maxlength="16"></input>
-                                <p th:text="${cardNumberErr}" th:if="${cardNumberErr != null}"></p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="grid-header"><label for="expirationDate" class="form-label">Expiration Date</label></td>
-                            <td class="grid-header"><label for="securityCode" class="form-label">Security Code</label></td>
-                            <td class="grid-header"><label for="postalCode" class="form-label">Postal Code</label></td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <input style="display:none" type="month" name="pleaseWork">
-                                <input field="*{expirationDate}" name="expirationDate" class="form-control month-picker" autocomplete="do-not-autofill"/>
-                                
-                                <!--used for learning how to use jQuery to get month and year since input type="month" doesn't work on firefox https://stackoverflow.com/questions/2208480/jquery-ui-datepicker-to-show-month-year-only --> 
-                                <script type="text/javascript"> 
-                                      $(function() {
-                                          $('.month-picker').datepicker( {
-                                              changeMonth: true,
-                                              changeYear: true,
-                                              showButtonPanel: true,
-                                              dateFormat: 'MM yy',
-                                              onClose: function(dateText, inst) { 
-                                                  $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
-                                              }
-                                          });
-                                     });                                                                         
-                                </script>
-                                
-                                <!--<p th:if="${#fields.hasErrors('expirationDate')}" th:errors="*{expirationDate}"></p>-->
-                                <p th:if="${cardError}" th:text="${cardError}"></p>
-                            </td>
-                            <td>
-                                <input type="number" class="form-control" id="securityCode" field="*{securityCode}" name="securityCode" maxlength="4"></input>
-                                <p th:text="${securityCodeErr}" th:if="${securityCodeErr != null}"></p>
-                            </td>
-                            <td>
-                                <input type="number" class="form-control" id="postalCode" field="*{postalCode}" name="postalCode" maxlength="5"></input>
-                                <p th:text="${postalCodeErr}" th:if="${postalCodeErr != null}"></p>
-                            </td>
-                        </tr>
-                        <!-- <button type="button" class="btn btn-lg btn-danger" disabled
-                            th:if="${currUser.directDepositDetails == null}">No Deposit Details Added</button></div> -->
-                    </tbody>
-                </table>
+            <div class="card shadow bg-light w-50 me-3 ms-5 mb-3">
+                <div class="card-header">
+                	<b>Payment Method</b>
+                </div>
+                <div class="card-body">
+					<div class="input-group mb-3">
+						<!-- Card Type -->
+						<select class="form-select" id="cardType" name="cardType">
+							<option
+								th:each="cardType : ${cardTypes}"
+								th:value="${cardType.cardType}"
+								th:text="${cardType.cardType}">
+							</option>
+						</select>
+						<!-- Cardholder Name -->
+	                    <input type="text" class="form-control" field="*{cardholderName}" name="cardholderName" placeholder="Cardholder Name"></input>
+					</div>
+					<div class="input-group mb-3">
+	                    <!-- Card Number -->
+	                    <input type="tel" class="form-control" field="*{cardNumber}" name="cardNumber" placeholder="Card Number" maxlength="16"></input>
+						<!-- Expiration Date -->
+	                    <input style="display:none" type="month" name="pleaseWork">
+	                    <input field="*{expirationDate}" name="expirationDate" class="form-control month-picker" placeholder="Exp. Date (MM / YY)" autocomplete="do-not-autofill"/>
+					        
+		                <!--used for learning how to use jQuery to get month and year since input type="month" doesn't work on firefox https://stackoverflow.com/questions/2208480/jquery-ui-datepicker-to-show-month-year-only --> 
+		                <script type="text/javascript"> 
+		                      $(function() {
+		                          $('.month-picker').datepicker( {
+		                              changeMonth: true,
+		                              changeYear: true,
+		                              showButtonPanel: true,
+		                              dateFormat: 'MM yy',
+		                              
+		                              onClose: function(dateText, inst) { 
+										  var year = inst.selectedYear;
+										  var month = inst.selectedMonth + 1;
+										  var lastDay = new Date(year, month, 0).getDate();
+		                                  $(this).datepicker('setDate', new Date(year, month - 1, lastDay));
+		                              }
+		                          });
+		                     });                                                                         
+		                </script>        
+						<p th:if="${cardError}" th:text="${cardError}"></p>
+					</div>
+					<div class="input-group mb-3">
+						<!-- Security Code -->
+						<input type="tel" class="form-control" id="securityCode" field="*{securityCode}" placeholder="CVV" name="securityCode" maxlength="4"></input>
+	                    <p th:text="${securityCodeErr}" th:if="${securityCodeErr != null}"></p>
+	                    <!-- Postal Code -->
+		                <input type="tel" class="form-control" id="postalCode" field="*{postalCode}" placeholder="Postal Code" name="postalCode" maxlength="5"></input>
+		                <p th:text="${postalCodeErr}" th:if="${postalCodeErr != null}"></p>
+					</div>
+                    
+                </div>
                 <!-- Purchase decisions -->
                 <div class="d-flex justify-content-center mb-3">
-                    <button style="margin-right:50px;" class="btn btn-danger btn-lg" type="submit" name="cancel">Cancel</button>
-                    <button style="margin-left:50px;" class="btn btn-primary btn-lg" type="submit" name="submit" id="mysignupbutton">Confirm</button>
+                    <button style="margin-right:50px;" class="btn btn-outline-danger ms-1" type="submit" name="cancel">Cancel</button>
+                    <button style="margin-left:50px;" class="btn btn-outline-success me-1" type="submit" name="submit" id="mysignupbutton">Confirm</button>
                 </div>
             </div>
-            </div>
         </form>
+        
         <script>
             function myFunction() {           
               document.getElementById('mysignupbutton').setAttribute('disabled', 'disabled');

@@ -10,6 +10,11 @@ body {
 	color: #222222;
 }
 
+
+.ui-datepicker-calendar {
+    display: none;
+}
+
 h1 {
 	font-family: 'Poppins';
 }
