@@ -1,5 +1,5 @@
 table {
-	width: 170%;
+	width: 100%;
 }
 
 .grid-container {
@@ -173,12 +173,3 @@ table {
   background-color: #100095;
   color: #fff;
 }
-
-.table {
-  border: 1px solid black;
-  text-align: center;
-  margin-top: 5%;
-  margin-left: 5%;
-}
-
-
