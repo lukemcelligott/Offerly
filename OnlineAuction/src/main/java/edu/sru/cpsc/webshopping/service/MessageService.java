@@ -14,9 +14,16 @@ public class MessageService {
 	
     @Autowired
     private MessageSocialRepository messageRepository;
+    
+    @Autowired
+    private MessageSocialRepository messageSocialRepository;
 
     public List<SocialMessage> getAllMessagesForUser(User user) {
         return messageRepository.findBySenderOrReceiver(user, user);
+    }
+    
+    public List<SocialMessage> getAllMessagesForUser(User user1, User user2) {
+        return messageSocialRepository.getAllMessagesForUser(user1, user2);
     }
 
     public void sendMessage(SocialMessage message) {
