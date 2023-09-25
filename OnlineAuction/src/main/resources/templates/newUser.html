@@ -74,8 +74,7 @@
                                             th:text="${countryCode.getValue()}"
                                             th:selected="${#strings.equals(countryCode.getKey(), defaultCountryCode)}"></option>
                                     </select>
-                                    <input class="col" type="tel" th:field="*{phoneNumber}" id="phoneNumber"
-                                        placeholder="Phone Number">
+                                    <input class="col" type="tel" th:field="*{phoneNumber}" id="phoneNumber" placeholder="Phone Number">
                                 </div>
                                 <span style="color:red" th:if="${#fields.hasErrors('phoneNumber')}"
                                     th:errors="*{phoneNumber}"></span>

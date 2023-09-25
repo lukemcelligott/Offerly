@@ -44,17 +44,6 @@
 	            border-spacing: 0 15px;
 	            border-collapse: seperate;
             }
-            /* used to hide arrows from number inputs - https://www.w3schools.com/howto/howto_css_hide_arrow_number.asp */
-            /* Chrome, Safari, Edge, Opera */
-			input::-webkit-outer-spin-button,
-			input::-webkit-inner-spin-button {
-				-webkit-appearance: none;
-			  	margin: 0;
-			}
-			/* Firefox */
-			input[type=number] {
-			  	-moz-appearance: textfield;
-			}
         </style>
     </head>
     
@@ -65,7 +54,7 @@
         
         
         
-        <!-- new payment method -->
+        <!-- payment method -->
         <form method="post" action="#" class="row g-3 d-flex justify-content-center my-2" th:action="@{/submitPurchaseSignup}" object="${paymentDetails}">
             <!--<div th:if="${relogin == false}">-->
             <div class="card shadow bg-light w-50 me-3 ms-5 mb-3">
