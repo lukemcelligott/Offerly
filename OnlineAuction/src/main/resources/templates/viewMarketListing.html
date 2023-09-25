@@ -135,27 +135,16 @@
                                         <input class="btn btn-success" id="purchaseButton" name="buyProduct" type="submit" th:value="'Buy Now for $' + ${currListing.pricePerItem}" />
                                     </div>
                             	</form>
-                              	<div class="row g-3 d-flex justify-content-center my-2">	
-									  								  
+                              	<div class="row g-3 d-flex justify-content-center my-2">										  								  
                                 	<!-- Add to Watchlist Button -->                                	
-                                	<!-- watchlist alert | NOT WORKING -->
-                                  	<div if="${successMessage}" class="alert alert-success alert-dismissible fade d-none" role="alert">
-									  	<p th:text="${successMessage}"></p>
-									  	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-									    	<span aria-hidden="true">&times;</span>
-									 	</button>
-									</div> 
-                                	
-                                	<!-- try to add modal from line 247 -->
 									<div class="col-auto">
                                     	<form id="addToWatchlistForm" th:action="@{/viewMarketListing/wishlistItem/{id}(id = ${currListing.getId()})}" method="post" th:if="${!foundInWatchlist}">
                                           	<button class="btn btn-success" id="addToWatchlistButton" data-toggle="modal" data-target="#watchlistModal">
 												  Add to Watchlist
                                           	</button>
-                                      	</form>
-                                      	
+                                      	</form>                                      	
                                   	</div>
-                                  	
+                                  	<!-- Remove from Watchlist Button -->
                                   	<div class="col-auto">
                                     	<form id="removeFromWatchlistForm" th:action="@{/viewMarketListing/delWishlistItem/{id}(id = ${currListing.getId()})}" method="post" th:if="${foundInWatchlist}">
                                           	<button class="btn btn-success" id="addToWatchlistButton" data-toggle="modal" data-target="#watchlistModal">
@@ -164,45 +153,12 @@
                                       	</form>
                                       	
                                   	</div>
-                                  	
-                                  	<!-- SHOWING MODAL BUT NOT ADDING TO WATCHLIST
-									<script>
-									    // When the form is submitted
-									    $("#addToWatchlistForm").submit(function(event) {
-									        event.preventDefault(); // Prevent the default form submission
-									
-									        // Show the modal
-									        $("#watchlistModal").modal("show");
-									
-									        // Make an AJAX request to the server to process the form data
-									        $.ajax({
-									            type: "POST",
-									            url: "/viewMarketListing/wishlistItem/{id}", // Replace with the actual URL
-									            data: {
-									                id: $("#currListingId").val() // Get the ID value from somewhere
-									            },
-									            success: function(response) {
-									                // Handle the success response from the server
-									                // You can close the modal or update its content here
-									                $("#watchlistModal .modal-body").html("Item added to watchlist"); // Update modal content
-									                setTimeout(function() {
-									                    $("#watchlistModal").modal("hide"); // Hide the modal after a delay
-									                }, 2000); // Adjust the delay as needed
-									            },
-									            error: function(error) {
-									                // Handle any error that occurs during the AJAX request
-									                console.error(error);
-									                // Optionally, you can display an error message in the modal here
-									            }
-									        });
-									    });
-									</script>-->      	
-									                          
+                                  	<!-- Bid button -->     
                               		<div class="col-auto">
                                     	<input type="hidden" name="listingId" th:value="${currListing.id}"/>  
                                       	<input class="btn btn-success" id="bidButton" name="placeBid" type="button" value="Bid Now" data-bs-toggle="modal" data-bs-target="#bidModal"/>
                                   	</div>
-
+									<!-- back button -->
                                   	<div class="col-auto">
                                       	<a class="btn btn-danger" href="/BrowseWidgetsButton">Back</a>
                                   	</div>
@@ -210,7 +166,7 @@
                               </div> 	
 
                             <!-- For Sellers -->
-                            <div th:if="${!isBuyer}" class="mt-4">
+                            <div th:if="${!isBuyer}" class="mt-4" style="display: flex; justify-content: center; gap: 5%;">
                                     <!-- Update Listing and Delete Listing -->
                                     <div class="d-flex justify-content-center mb-3">
                                         <input class="btn btn-primary" id="update-listing" name="update-listing" type="button" value="Update" data-bs-toggle="modal" data-bs-target="#updateModal" />
