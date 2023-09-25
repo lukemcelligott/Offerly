@@ -91,40 +91,6 @@
 						</div>
 					</div>
 		    	</div>
-		
-		    	<!-- CREATE TICKETS
-		    	<div th:case="createTickets">
-		      		<form th:action="@{/createTickets}" th:object="${ticket}" method="post">
-		        		<table class="ticketTableForm" style="margin-top: 20px; margin-left: auto; margin-right: auto; width: 60%;">
-		          			<thead>
-			          			<tr>
-			            			<td colspan="2" style="color: #FFFFFF; background-color:#0d6efd; text-align: center;"><h4> Create a Ticket </h4></td>
-			          			</tr>
-			          			<tr>
-			            			<td style="background-color:#d3d3d3"><label for="subject"> Ticket Subject: </label></td>
-			            			<td><input type="text" th:field="*{subject}" id="subject" cols="90"/></td>
-			          			</tr>
-			          			For Nested Objects Binding in form input https://stackoverflow.com/questions/38635850/nested-objects-in-thymeleaf
-			          			<tr>
-			            			<td style="background-color:#d3d3d3"><label for="message"> Ticket Description: </label></td>
-			            			<td>
-			              				<th:block th:each="message, stat : *{messages}">
-			              					<textarea th:field="*{messages[__${stat.index}__].content}" id="message" rows="4" cols="90"></textarea>
-			              				</th:block>
-			            			</td>
-			          			</tr>
-		          			</thead>
-		          			<tbody>
-		          				<tr>
-			          				<td colspan="2" class="justify-content-center">
-			            				<input type="submit" class="btn btn-primary btn-sm" value="Create Ticket">
-			            				<a class="btn btn-danger btn-sm" th:href="@{/tickets}"><span>Cancel Ticket</span></a>
-			            			</td>
-		            			</tr>
-		          			</tbody>
-		        		</table>
-		      		</form>
-		    	</div> -->
 		    	
 		    	<!-- new CREATE TICKETS -->
 		    	<div th:case="createTickets">
