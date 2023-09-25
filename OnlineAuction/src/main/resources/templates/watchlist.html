@@ -77,49 +77,40 @@
 		      </ul>
 		    </div>
 		  </nav>
-	  
+		
+		<!-- display wishllisted widgets -->
 		<div class="grid-item columns">
 			<th:block th:each="wishlistedWidgets: ${allWatchlistItems}" th:unless="${wishlistedWidgets.qtyAvailable == 0 || wishlistedWidgets.isDeleted == true}">
-				<table style="width: 80%; margin-bottom: 50px; margin-left: auto; margin-right: auto;">
-					<!-- Product Name -->
-					<tr>
-						<th colspan="2"><p class="header-browse" th:text="${wishlistedWidgets.widgetSold.name}" style="margin-bottom:0;"></p></th>
-					</tr>
-					<!-- Cover Image -->
-					<tr>
-						<td colspan="2"><img th:if="${wishlistedWidgets.coverImage == null}" style="width: 200px; height: 200px;" src="https://previews.123rf.com/images/kritchanut/kritchanut1406/kritchanut140600093/29213195-.jpg?fj=1" alt="Blank Listing Avatar">
-							<img th:unless="${wishlistedWidgets.coverImage == null}" style="width: 200px; height: 200px;" th:src="@{/listingImages/{image}(image = ${wishlistedWidgets.coverImage})}" alt="Listing Avatar" src="">
-						</td>
-					</tr>
-					<!-- Quantity Available -->
-					<tr>
-						<td id="bg-color"><p style="margin-bottom: 0;">Quantity Available:</p></td>
-						<td><p style="margin-bottom: 0;" th:text="${wishlistedWidgets.qtyAvailable}"></p></td>
-					</tr>
-					<!-- Price -->
-					<tr>
-						<td id="bg-color"><p style="margin-bottom: 0;">Price:</p></td>
-						<td><p style="margin-bottom: 0;" th:text="'$' + ${wishlistedWidgets.pricePerItem}"></p></td>
-					</tr>
-					<!-- Auction Price -->
-					<tr>
-						<td id="bg-color"><p style="margin-bottom: 0;">Auction Price:</p></td>
-						<td><p style="margin-bottom: 0;" th:text="'$' + ${wishlistedWidgets.pricePerItem}"></p></td>
-					</tr>
-					<!-- View -->
-					<tr>
-						<th colspan="2"><a class="submitHybrid" th:href="@{/viewMarketListing/{id}(id = ${wishlistedWidgets.id})}"><span>View</span></a></th>
-					</tr>
-					<!-- Remove from Watchlist -->
-					<tr>
-						<form th:action="@{/viewMarketListing/delWishlistItem/{id}(id = ${wishlistedWidgets.id})}" method="post">
-							<th colspan="2">
-								<button class="submitHybrid" id="addToWatchlistButton" onclick="removeWatchlist()"><span>Remove from Watchlist</span></button>
-							</th>
-						</form>
-					</tr>
-					
-				</table>
+				<a th:href="@{/viewMarketListing/{id}(id = ${wishlistedWidgets.id})}" style="text-decoration: none; color: inherit;">
+					<div class="card card-hover" style="width: 80%; margin-bottom: 50px; margin-left: auto; margin-right: auto;">
+						<!-- Cover Image -->
+						<img class="card-img-top image" th:if="${wishlistedWidgets.coverImage == null}" style="width: 200px; height: 200px;" src="https://previews.123rf.com/images/kritchanut/kritchanut1406/kritchanut140600093/29213195-.jpg?fj=1" alt="Blank Listing Avatar">
+						<img class="card-img-top image" th:unless="${wishlistedWidgets.coverImage == null}" style="width: 200px; height: 200px;" th:src="@{/listingImages/{image}(image = ${wishlistedWidgets.coverImage})}" alt="Listing Avatar" src="">
+							
+						<!-- Product Name -->
+						<div class="card-body">
+							<h5 class="card-title header-browse" th:text="${wishlistedWidgets.widgetSold.name}" style="margin-bottom:0;"></h5>
+						</div>
+						
+						<ul class="list-group list-group-flush">
+							<!-- Quantity Available -->
+							<ul class="list-group-item align-flex">
+								<p class="align-left">Quantity Available:</p>
+								<p class="align-right" th:text="${wishlistedWidgets.qtyAvailable}"></p>
+							</ul>
+							<!-- Price -->
+							<ul class="list-group-item align-flex">
+								<p class="align-left">Price:</p>
+								<p class="align-right" th:text="'$' + ${wishlistedWidgets.pricePerItem}"></p>
+							</ul>
+							<!-- Auction Price -->
+							<ul class="list-group-item align-flex">
+								<p class="align-left">Auction Price:</p>
+								<p class="align-right" th:text="'$' + ${wishlistedWidgets.pricePerItem}"></p>
+							</ul>
+						</ul>
+					</div>
+				</a>
 			</th:block>
 		</div>
 		

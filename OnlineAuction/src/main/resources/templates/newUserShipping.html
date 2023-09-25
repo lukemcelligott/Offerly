@@ -51,80 +51,53 @@
             <h1 style="font-family: 'Poppins'">Sign Up</h1>
         </div>
         
-        <form method="post" action="#"
-		    th:action="@{/submitShippingAddressSignUp}" object="${shippingDetails}">
-	        <table style="width:20vw; justify-content:center; margin-left:auto; margin-right:auto;" class="uniTableForm">
-	            <thead>
-	                <tr>
-	                    <td colspan="3" style="background-color: #D3D3D3;">
-	                        <h4>Confirm Shipping Address</h4> <!-- table header -->
-	                    </td>
-	                </tr>
-	            </thead>
-	            <tbody>
-	                <tr>
-	                    <td colspan="3" class="grid-header"><label for="recipient" class="form-label">Recipient</label></td>
-	                </tr>
-	                <tr>
-	                    <td colspan="3">
-							<!-- shipping recipient -->
-	                        <input type="text" field="*{recipient}" name="recipient" class="form-control"></input> 
-	                        <p th:if="${recipientErr != null}" th:text="${recipientErr}"></p>
-	                    </td>
-	                </tr>
-	                <tr>
-						<!-- address -->
-	                    <td colspan="3" class="grid-header"><label for="streetAddress" class="form-label">Street Address</label></td> 
-	                </tr>
-	                <tr>
-	                    <td colspan="3">
-	                        <input type="text" field="*{streetAddress}" name="streetAddress" class="form-control"></input>
-	                        <p th:if="${streetAddressErr != null}" th:text="${streetAddressErr}"></p>
-	                    </td>
-	                </tr>
-	                <tr>
-						<!-- apt, building, etc -->
-	                    <td colspan="3" class="grid-header"><label for="extraLocationInfo" class="form-label">Apt, suite, unit, building, floor, etc.</label></td>
-	                </tr>
-	                <tr>
-	                    <td colspan="3"><input type="text" field="*{extraLocationInfo}" name="extraLocationInfo" class="form-control"></input></td>
-	                </tr>
-	                <tr>
-						<!-- city, state, postal code -->
-	                    <td class="grid-header"><label for="city" class="form-label">City</label></td>
-	                    <td class="grid-header"><label for="state" class="form-label">State</label></td>
-	                    <td class="grid-header"><label for="postalCode" class="form-label">Postal Code</label></td>
-	                </tr>
-	                <tr>
-	                    <td>
-							<!-- city error handling -->
-	                        <input type="text" field="*{city}" name="city" class="form-control"></input>
-	                        <p th:if="${cityErr != null}" th:text="${cityErr}"></p>
-	                    </td>
-	                    <td>
-							<!-- state error handling and form population -->
-	                        <select class="form-select" id="stateId" name="stateId">
-	                            <option th:each="state : ${states}" th:value="${state.stateName}" th:text="${state.stateName}"></option>
-	                        </select>
-	                        <p th:if="${stateIdErr}" th:text="${stateId}"></p>
-	                    </td>
-	                    <td>
-							<!-- postal code error handling -->
-	                        <input type="number" field="*{postalCode}" name="postalCode" class="form-control"></input>
-	                        <p th:if="${postalCodeErr != null}" th:text="${postalCodeErr}"></p>
-	                    </td>
-	                </tr>
-	            </tbody>
-	        </table>
-	        <div style="margin-top:5px;" class="d-flex justify-content-center mb-3">
-				<!-- back button -->
-	            <a style="margin-right:50px;" class="btn btn-lg btn-danger" th:href="@{/goBackToMainSD}">Back</a>
-				<!-- add button -->
-	            <button style="margin-left:50px;" type="submit" name="submit" class="btn btn-lg btn-success" id="mysignupbutton">Add</button>	            
-	        </div>
-		</form>      
         
-        </form>
+        <!-- new shipping -->
+		<form method="post" action="#" th:action="@{/submitShippingAddressSignUp}" object="${shippingDetails}" class="row g-3 d-flex justify-content-center my-2">
+	        <div class="card shadow bg-light w-50 me-3 ms-5 mb-3">
+	            <div class="card-header">
+					<!-- card header -->
+	            	<b>Shipping Address</b>
+	            </div>
+	            <div class="card-body">
+	                <div class="input-group mb-3">
+						<!-- shipping recipient -->
+                        <input type="text" field="*{recipient}" name="recipient" class="form-control" placeholder="Recipient"></input> 
+                        <p th:if="${recipientErr != null}" th:text="${recipientErr}"></p>
+                        <!-- street address -->
+                        <input type="text" field="*{streetAddress}" name="streetAddress" class="form-control" placeholder="Street Address"></input>
+                        <p th:if="${streetAddressErr != null}" th:text="${streetAddressErr}"></p>
+	                </div>
+	            	<div class="input-group mb-3">
+						<!-- apt, building, etc (optional) -->
+						<input type="text" field="*{extraLocationInfo}" name="extraLocationInfo" class="form-control" placeholder="Apt, suite, unit, building, etc. (optional)"></input>
+						<!-- city -->
+						<input type="text" field="*{city}" name="city" class="form-control" placeholder="City"></input>
+	                    <p th:if="${cityErr != null}" th:text="${cityErr}"></p>
+					</div>
+	             	<div class="input-group mb-3">
+						<!-- state -->
+						<select class="form-select" id="stateId" name="stateId">
+                            <option th:each="state : ${states}" th:value="${state.stateName}" th:text="${state.stateName}"></option>
+                        </select>
+                        <p th:if="${stateIdErr}" th:text="${stateId}"></p>
+						<!-- postal code -->
+						<input type="tel" field="*{postalCode}" name="postalCode" class="form-control" maxlength="5" placeholder="Postal Code"></input>
+	                    <p th:if="${postalCodeErr != null}" th:text="${postalCodeErr}"></p>
+	             	</div>
+
+	            </div>
+	        	<!-- submit and cancel buttons  -->
+		        <div style="margin-top:5px;" class="d-flex justify-content-center mb-3">
+					<!-- back button -->
+		            <a style="margin-right:50px;" class="btn btn-outline-danger ms-1" th:href="@{/goBackToMainSD}">Cancel</a>
+					<!-- add button -->
+		            <button style="margin-left:50px;" type="submit" name="submit" class="btn btn-outline-success me-1" id="mysignupbutton">Submit</button>	            
+		        </div>
+	        </div>
+		</form>
+
+
         <script>
             function myFunction() {           
               document.getElementById('mysignupbutton').setAttribute('disabled', 'disabled');
