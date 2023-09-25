@@ -2,7 +2,9 @@ package edu.sru.cpsc.webshopping.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.Test;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -21,22 +23,28 @@ import edu.sru.cpsc.webshopping.domain.user.Applicant;
 @SpringBootTest
 public class IndexControllerTest {
 	
-	  @Autowired
-	  private WebApplicationContext webApplicationContext;
-	  private MockMvc mvc;
+	@Mock
+	private WebApplicationContext webApplicationContext;
+	
+	private MockMvc mvc;
 	  
-		@Autowired
-		private ObjectMapper mapper;
-		
-		@Mock
-		private Model model;
-		@Mock
-		private BindingResult result;
+	@Mock
+	private ObjectMapper mapper;
 
-	  @BeforeEach
-	  public void setUp() {
-	    this.mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-	  }
+	@InjectMocks
+    private IndexController indexController;
+	
+	@Mock
+	private Model model;
+
+	@Mock
+	private BindingResult result;
+
+	@BeforeEach
+	public void setUp() {
+		MockitoAnnotations.openMocks(this);
+		mvc = MockMvcBuilders.standaloneSetup(indexController).build();
+	}
 	
 	@Test
 	// Tests that invalid indexes are rejected

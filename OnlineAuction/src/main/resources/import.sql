@@ -51,7 +51,6 @@ UNLOCK TABLES;
 
 LOCK TABLES `auction` WRITE;
 /*!40000 ALTER TABLE `auction` DISABLE KEYS */;
-INSERT INTO `auction` VALUES (15,122.00,NULL,NULL,122.00,NULL),(27,23.00,NULL,NULL,23.00,NULL);
 /*!40000 ALTER TABLE `auction` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -71,8 +70,6 @@ UNLOCK TABLES;
 
 LOCK TABLES `category` WRITE;
 /*!40000 ALTER TABLE `category` DISABLE KEYS */;
-
-/*INSERT INTO `category` VALUES (1,'Vehicle Parts',1,NULL);*/
 /*!40000 ALTER TABLE `category` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -83,15 +80,6 @@ UNLOCK TABLES;
 LOCK TABLES `direct_deposit_details` WRITE;
 /*!40000 ALTER TABLE `direct_deposit_details` DISABLE KEYS */;
 /*!40000 ALTER TABLE `direct_deposit_details` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Dumping data for table `fields`
---
-
-LOCK TABLES `fields` WRITE;
-/*!40000 ALTER TABLE `fields` DISABLE KEYS */;
-/*!40000 ALTER TABLE `fields` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -131,21 +119,11 @@ LOCK TABLES `image_packet` WRITE;
 UNLOCK TABLES;
 
 --
--- Dumping data for table `item_condition`
---
-
-LOCK TABLES `item_condition` WRITE;
-/*!40000 ALTER TABLE `item_condition` DISABLE KEYS */;
-/*!40000 ALTER TABLE `item_condition` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Dumping data for table `market_listing`
 --
 
 LOCK TABLES `market_listing` WRITE;
 /*!40000 ALTER TABLE `market_listing` DISABLE KEYS */;
-INSERT INTO `market_listing` VALUES (14,122.00,'2jett-muffler-1.jpg',_binary '\0',134.00,1,2000,10),(26,23.00,'191backofWheel.jpg',_binary '\0',53.00,1,19,22);
 /*!40000 ALTER TABLE `market_listing` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -293,7 +271,6 @@ UNLOCK TABLES;
 
 LOCK TABLES `widget` WRITE;
 /*!40000 ALTER TABLE `widget` DISABLE KEYS */;
-INSERT INTO `widget` VALUES (10,'A little beat up but in pretty good shape.','1.4l Rear Exhaust Muffler Fits VOLKSWAGEN JETTA 2019-2021',5367),(22,'black leather steering wheel. Slightly used.','14\" Billet Black Muscle Chevy 69-94 GM Steering Wheel',5367);
 /*!40000 ALTER TABLE `widget` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -303,8 +280,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `widget_attribute` WRITE;
 /*!40000 ALTER TABLE `widget_attribute` DISABLE KEYS */;
-INSERT INTO `widget_attribute` VALUES (11,'Year','2012',NULL,10),(12,'Model','VW',NULL,10),(13,'Color','sliver',NULL,10),(23,'Color','black',NULL,22),(24,'Model','Chevy',NULL,22),(25,'Year','2012',NULL,22);
-/*!40000 ALTER TABLE `widget_attribute` ENABLE KEYS */;
+ /*!40000 ALTER TABLE `widget_attribute` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -313,7 +289,6 @@ UNLOCK TABLES;
 
 LOCK TABLES `widget_image` WRITE;
 /*!40000 ALTER TABLE `widget_image` DISABLE KEYS */;
-INSERT INTO `widget_image` VALUES (16,'2jett-muffler-1.jpg',14),(17,'2jetta-muffler-2.jpg',14),(28,'191backofWheel.jpg',26),(29,'191frontofWheel.jpg',26);
 /*!40000 ALTER TABLE `widget_image` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -330,10 +305,6 @@ UNLOCK TABLES;
 -- Dumping data for table `widgets_info`
 --
 
-LOCK TABLES `widgets_info` WRITE;
-/*!40000 ALTER TABLE `widgets_info` DISABLE KEYS */;
-/*!40000 ALTER TABLE `widgets_info` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
