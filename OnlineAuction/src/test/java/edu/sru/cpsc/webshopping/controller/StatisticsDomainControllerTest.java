@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.mockito.Mock;
 import org.junit.Test;
 import org.springframework.validation.BindingResult;
 
@@ -17,8 +18,11 @@ import edu.sru.cpsc.webshopping.domain.user.Statistics;
 import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
 
 public class StatisticsDomainControllerTest {
+	@Mock
 	private static final Statistics Statistics = null;
+	@Mock
 	private static final StatsCategory Category = null;
+	@Mock
 	private Logger log= Logger.getLogger(null);
 	
 @BeforeAll

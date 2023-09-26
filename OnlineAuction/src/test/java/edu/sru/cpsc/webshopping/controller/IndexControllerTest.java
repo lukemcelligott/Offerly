@@ -1,99 +1,140 @@
 package edu.sru.cpsc.webshopping.controller;
 
+import edu.sru.cpsc.webshopping.domain.user.Applicant;
+import edu.sru.cpsc.webshopping.domain.user.User;
+import edu.sru.cpsc.webshopping.repository.applicant.ApplicantRepository;
+import edu.sru.cpsc.webshopping.repository.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.Test;
-import org.mockito.InjectMocks;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.context.WebApplicationContext;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-import edu.sru.cpsc.webshopping.domain.user.Applicant;
+import java.util.ArrayList;
+import java.util.List;
 
-@SpringBootTest
-public class IndexControllerTest {
-	
-	@Mock
-	private WebApplicationContext webApplicationContext;
-	
-	private MockMvc mvc;
-	  
-	@Mock
-	private ObjectMapper mapper;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
-	@InjectMocks
+class IndexControllerTest {
+    @Mock
+    private UserRepository userRepository;
+
+    @Mock
+    private UserController userController;
+
+    @Mock
+    private ApplicantRepository appRepo;
+
+    @Mock
+    private Model model;
+
+    @Mock
+    private BindingResult bindingResult;
+
     private IndexController indexController;
-	
-	@Mock
-	private Model model;
 
-	@Mock
-	private BindingResult result;
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+        indexController = new IndexController(userRepository, userController, appRepo);
+    }
 
-	@BeforeEach
-	public void setUp() {
-		MockitoAnnotations.openMocks(this);
-		mvc = MockMvcBuilders.standaloneSetup(indexController).build();
-	}
-	
-	@Test
-	// Tests that invalid indexes are rejected
-	public void indexStatusTests() throws Exception {
-		
-		mvc
-	    .perform(MockMvcRequestBuilders.get("/index"))
-	    .andExpect(MockMvcResultMatchers.status().isOk());
+    @Test
+    void testShowUserList() {
+        // Arrange
+        List<User> users = new ArrayList<>();
+        users.add(new User());
+        users.add(new User());
+		User singleUser = new User();
+        when(userRepository.findAll()).thenReturn(users);
+        when(userController.getCurrently_Logged_In()).thenReturn(singleUser);
 
-		mvc
-	    .perform(MockMvcRequestBuilders.get("/"))
-	    .andExpect(MockMvcResultMatchers.status().isOk());
-		
-		mvc
-	    .perform(MockMvcRequestBuilders.get("/login"))
-	    .andExpect(MockMvcResultMatchers.status().isOk());
-		
-		mvc
-	    .perform(MockMvcRequestBuilders.get("/missionStatement"))
-	    .andExpect(MockMvcResultMatchers.status().isOk());
-		
-		mvc
-	    .perform(MockMvcRequestBuilders.get("/FAQ"))
-	    .andExpect(MockMvcResultMatchers.status().isOk());
-		
-		mvc
-	    .perform(MockMvcRequestBuilders.get("/application"))
-	    .andExpect(MockMvcResultMatchers.status().isOk());
+        // Act
+        String viewName = indexController.showUserList(model);
 
+        // Assert
+        assertEquals("index", viewName);
+        verify(model, times(1)).addAttribute("users", users);
+        verify(model, times(1)).addAttribute("user", singleUser);
+    }
 
+    @Test
+    void testShowIndex() {
+        // Arrange
+		User user = new User();
+        when(userController.getCurrently_Logged_In()).thenReturn(user);
 
-					
-	}
-	@Test
-	//  Tests that invalid applications are rejected
-	public void applicationPostTest() throws Exception {
+        // Act
+        String viewName = indexController.showIndex(model);
 
-		Applicant newApplicant = new Applicant();
+        // Assert
+        assertEquals("index", viewName);
+        verify(model, times(1)).addAttribute("user", user);
+    }
 
-		String json = mapper.writeValueAsString(newApplicant);
-		MvcResult res = mvc.perform(MockMvcRequestBuilders.post("/apply")
-				.secure( true ) 
-				.content(json)
-				.contentType(MediaType.APPLICATION_JSON)
-				.characterEncoding("utf-8"))
-					.andExpect(MockMvcResultMatchers.status().is3xxRedirection())
-					.andExpect(MockMvcResultMatchers.view().name("redirect:index"))
-					.andReturn();
-		
-	}
+    @Test
+    void testShowLoginPage() {
+        // Act
+        String viewName = indexController.showLoginPage();
 
+        // Assert
+        assertEquals("login", viewName);
+    }
+
+    @Test
+    void testShowMission() {
+        // Act
+        String viewName = indexController.showMission();
+
+        // Assert
+        assertEquals("missionStatement", viewName);
+    }
+
+    @Test
+    void testShowFAQ() {
+        // Act
+        String viewName = indexController.showFAQ();
+
+        // Assert
+        assertEquals("FAQ", viewName);
+    }
+
+    @Test
+    void testShowApplication() {
+        // Act
+        String viewName = indexController.showApplication(model);
+
+        // Assert
+        assertEquals("application", viewName);
+        verify(model, times(1)).addAttribute(eq("applicant"), any(Applicant.class));
+    }
+
+    @Test
+    void testAddApplicationWithErrors() {
+        // Arrange
+        Applicant applicant = new Applicant();
+        when(bindingResult.hasErrors()).thenReturn(true);
+
+        // Act
+        String viewName = indexController.addApplication(applicant, bindingResult, model);
+
+        // Assert
+        assertEquals("application", viewName);
+    }
+
+    @Test
+    void testAddApplicationWithoutErrors() {
+        // Arrange
+        Applicant applicant = new Applicant();
+        when(bindingResult.hasErrors()).thenReturn(false);
+
+        // Act
+        String viewName = indexController.addApplication(applicant, bindingResult, model);
+
+        // Assert
+        assertEquals("redirect:index", viewName);
+        verify(appRepo, times(1)).save(applicant);
+    }
 }

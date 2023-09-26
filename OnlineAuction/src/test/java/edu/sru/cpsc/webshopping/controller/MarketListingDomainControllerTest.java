@@ -6,8 +6,8 @@ import java.math.BigDecimal;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.mockito.Mock;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.validation.BindingResult;
 
@@ -20,12 +20,13 @@ import edu.sru.cpsc.webshopping.domain.widgets.Widget;
  */
 @SpringBootTest
 public class MarketListingDomainControllerTest {
-	@Autowired
+	@Mock
 	private WidgetController widgetController;
-	@Autowired 
+	@Mock
 	private UserController userController;
-	@Autowired
+	@Mock
 	private MarketListingDomainController mlDomainController;
+	@Mock
 	private MarketListing newListing;
 	
 	/**

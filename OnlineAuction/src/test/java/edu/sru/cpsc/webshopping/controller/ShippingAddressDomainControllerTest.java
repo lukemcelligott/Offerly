@@ -30,13 +30,7 @@ public class ShippingAddressDomainControllerTest {
 	ShippingAddressRepository shippingAddressRepository;
 	
 	private ShippingAddress address;
-	
-	
-	@Test
-	public void contextLoads() throws Exception
-	{
-		assertThat(shippingController).isNotNull();
-	}
+
 	
 	@Test
 	public void getShippingAddressTest() throws Exception

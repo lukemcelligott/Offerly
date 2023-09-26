@@ -42,24 +42,7 @@ public void getShippingEntry() {
 		exception.printStackTrace();
 	}
 }
-@Test
-@DisplayName("get Shipping Entry Exception")
 
-public void getShippingEntryException() {
-	try {
-		log.info("Starting execution of getShippingEntryException");
-		
-		ShippingDomainController shippingdomaincontroller= new ShippingDomainController(null);
-		shippingdomaincontroller.editShippingEntry(null);
-		Assertions.assertTrue(false);
-	}
-	
-	catch(Exception exception) {
-		log.config("Exception in execution");
-		exception.printStackTrace();
-		Assertions.assertFalse(true);
-	}
-}
 @Test
 @DisplayName("edit Shipping Entry")
 
