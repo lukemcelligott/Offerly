@@ -1,0 +1,29 @@
+@startuml
+autonumber
+
+Actor User
+participant "Browser\n(inbox.html)" as Browser
+participant Server
+database "Messages Database" as DB
+
+User -> Browser: Navigate to Inbox page
+Browser -> Server: GET /inbox
+Server --> Browser: Returns inbox.html
+Browser --> User: Displays Inbox page
+
+User -> Browser: Clicks on a friend from list
+Browser -> Browser: Calls loadConversation(friendId)
+Browser -> Server: GET /api/conversations/{friendId}
+Server -> DB: Retrieve conversation\nby friendId
+DB --> Server: Conversation data
+Server --> Browser: Returns conversation data
+Browser --> User: Displays selected conversation
+
+User -> Browser: Types a message\nSubmits form
+Browser -> Server: POST /friends/messages/send\n{content, receiver}
+Server -> DB: Save message to\nfriend's conversation
+DB --> Server: Confirm save
+Server --> Browser: Responds with status
+Browser --> User: Appends message to chat box
+
+@enduml
