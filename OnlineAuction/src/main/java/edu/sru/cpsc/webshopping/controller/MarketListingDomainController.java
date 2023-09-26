@@ -9,6 +9,7 @@ import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 import edu.sru.cpsc.webshopping.domain.widgets.WidgetImage;
 import edu.sru.cpsc.webshopping.repository.market.MarketListingRepository;
+import edu.sru.cpsc.webshopping.repository.user.UserRepository;
 import edu.sru.cpsc.webshopping.repository.widgets.WidgetRepository;
 import edu.sru.cpsc.webshopping.util.PreLoad;
 
@@ -22,6 +23,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -42,7 +44,10 @@ public class MarketListingDomainController {
 	private StatisticsDomainController statControl;
 	private WidgetImageController imageController;
 	@PersistenceContext private EntityManager entityManager;
+	
+	
 
+	
 	MarketListingDomainController(
 			MarketListingRepository marketRepository,
 			WidgetRepository widgetRepository,
@@ -60,6 +65,8 @@ public class MarketListingDomainController {
 	 * @param id the ID to search for product
 	 * @return the MarketListing found, or null if no MarketListing with the passed id is found
 	 */
+	
+	
 	@RequestMapping("/get-market-listing/{id}")
 	@Transactional
 	public MarketListing getMarketListing(@PathVariable("id") long id) {
@@ -267,5 +274,6 @@ public class MarketListingDomainController {
 	    URI redirectUri = URI.create("/viewMarketListing/" + listingId);
 	    return ResponseEntity.status(HttpStatus.SEE_OTHER).location(redirectUri).build();
 		}
+
 
 }
