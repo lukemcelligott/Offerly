@@ -66,19 +66,41 @@
                                     <h2>No Image Provided</h2>
                                 </div>
                             </div>
-                            <!-- Listing: Current Bid -->
-                            <div class="d-flex justify-content-center mt-3"> <!-- mt-3 for some margin at the top -->
-        						<div class="auction-price-container">
-            						<span>Current Bid: </span>
-            						<span th:text="'$' + ${currListing.auction.currentBid}"></span>
-        						</div>
-    						</div>
-                        </div>
-                                         
-                     
+                            
+                        	<!-- Listing: Current Bid -->                       	
+							<div class="d-flex justify-content-center" style="margin-top: 5px !important;"> <!-- Adjusted margin-top -->
+							    <div class="auction-price-container">
+							        <span>Current Bid: </span>
+							        <span th:text="'$' + ${currListing.auction.currentBid}"></span>
+							    </div>
+							</div>
+							
+							<!-- Auction End Date -->														
+							<div class="d-flex justify-content-center" style="margin-top: 5px !important;"> <!-- Adjusted margin-top -->
+							    <div class="auction-price-container">
+							        <span>Auction Ends In: </span>
+							        <span id="countdown"></span>
+							    </div>
+							</div>
+							
+							<!-- Purchase Auction Div -->							
+							<div id="purchaseAuctionDiv" class="col-auto" style="display:none; margin-top: 5px !important;"> <!-- Adjusted margin-top -->
+							    <form id="purchaseAuctionForm" class="row g-3 d-flex justify-content-center my-2" th:action="@{/viewMarketListing/attemptPurchase}" th:object="${newTransaction}" method="post">
+							        <!-- Hidden input for the auction current bid price -->
+							        <input type="hidden" name="pricePerItem" th:value="${currListing.auction.currentBid}" />
+							        <!-- Hidden input for the quantity bought, set to 1 -->
+							        <input type="hidden" name="qtyBought" th:value="1" />
+							        <div class="col-auto">
+							            <input class="btn btn-success" id="purchaseAuctionButton" name="buyProduct" type="submit" th:value="'Purchase Auction for $' + ${currListing.auction.currentBid}" />
+							        </div>
+							    </form>
+							</div>
+						</div>
+                        
+                  
                         <!-- Right Column: Seller Details and Action Buttons -->
                         <div class="col-lg-5">
-                            <div class="seller-display d-flex align-items-center mb-3">
+                            <div class="seller-display d-flex align-items-center mb-1">
                                 <!-- Seller Avatar -->
                                 <img th:if="${seller.userImage == null}" th:src="@{/images/userImages/default_user_icon.png}" alt="Seller Avatar" class="rounded-circle me-3" style="width:50px; height:50px;"></img>
 								<img th:if="${seller.userImage != null}" th:src="@{/images/userImages/{icon}(icon = ${seller.userImage})}" alt="Seller Avatar" class="rounded-circle me-3" style="width:50px; height:50px;"></img>
@@ -120,38 +142,38 @@
                     		<div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 
                             <!-- Action Buttons -->
-                            <div th:if="${isBuyer}" class="mt-4">
-                            	<form th:if="${isBuyer}" id="buy-product" class="row g-3 d-flex justify-content-center my-2" action="#" th:action="@{/viewMarketListing/attemptPurchase}" th:object=${newTransaction} method="post">
-                                	<div class="col-auto">
-                                    	<label for="qtyBought" class="col-form-label"> Number to Buy: </label>
-                                    </div>
-                                    <div class="col-auto">
-                                    	<input id="qtyBought" class="form-control" name="qtyBought" type="number" th:field="*{qtyBought}" placeholder="Number to Buy" min="1" th:max="${currListing.qtyAvailable}" value="0" required></input>
-                                    </div>
-                                    <div class="col-auto">
-                                        <input class="btn btn-success" id="purchaseButton" name="buyProduct" type="submit" th:value="'Buy Now for $' + ${currListing.pricePerItem}" />
-                                    </div>
-                            	</form>
-                              	<div class="row g-3 d-flex justify-content-center my-2">	
-									  								  
-                                	<!-- Add to Watchlist Button | Luke added functionality to fix Watchlist button  -->
-                                	<!-- try to add modal from line 247 -->
-									<div class="col-auto">
-                                      <form th:action="@{/viewMarketListing/wishlistItem/{id}(id = ${currListing.getId()})}" method="post">
-                                          <button class="btn btn-success" id="addToWatchlistButton" onclick="addWatchlist()">Add to Watchlist</button>
-                                      </form>
-                                  	</div> 
-
-                              		<div class="col-auto">
-                                    	<input type="hidden" name="listingId" th:value="${currListing.id}"/>  
-                                      	<input class="btn btn-success" id="bidButton" name="placeBid" type="button" value="Bid Now" data-bs-toggle="modal" data-bs-target="#bidModal"/>
-                                  	</div>
-
-                                  	<div class="col-auto">
-                                      	<a class="btn btn-danger" href="/BrowseWidgetsButton">Back</a>
-                                  	</div>
-                              </div> 		                                 
-                              </div> 	
+							<div th:if="${isBuyer}" class="mt-4">
+							
+							    <!-- Buy Now Form -->
+							    <form th:if="${isBuyer}" id="buy-product" class="row g-3 d-flex justify-content-center my-2" action="#" th:action="@{/viewMarketListing/attemptPurchase}" th:object=${newTransaction} method="post">
+							        <div class="col-auto">
+							            <label for="qtyBought" class="col-form-label"> Number to Buy: </label>
+							        </div>
+							        <div class="col-auto">
+							            <input id="qtyBought" class="form-control" name="qtyBought" type="number" th:field="*{qtyBought}" placeholder="Number to Buy" min="1" th:max="${currListing.qtyAvailable}" value="0" required></input>
+							        </div>
+							        <div class="col-auto">
+							            <input class="btn btn-success" id="purchaseButton" name="buyProduct" type="submit" th:value="'Buy Now for $' + ${currListing.pricePerItem}" />
+							        </div>
+							    </form>
+							
+							    <!-- Other Buttons and Actions -->
+							    <div class="row g-3 d-flex justify-content-center my-2">
+							        <div class="col-auto">
+							            <form th:action="@{/viewMarketListing/wishlistItem/{id}(id = ${currListing.getId()})}" method="post">
+							                <button class="btn btn-success" id="addToWatchlistButton" onclick="addWatchlist()">Add to Watchlist</button>
+							            </form>
+							        </div>
+							        <div class="col-auto">
+							            <input type="hidden" name="listingId" th:value="${currListing.id}"/>  
+							            <input class="btn btn-success" id="bidButton" name="placeBid" type="button" value="Bid Now" data-bs-toggle="modal" data-bs-target="#bidModal"/>
+							        </div>
+							        
+							        <div class="col-auto">
+							            <a class="btn btn-danger" href="/BrowseWidgetsButton">Back</a>
+							        </div>
+							    </div>
+							</div>
 
                             <!-- For Sellers -->
                             <div th:if="${!isBuyer}" class="mt-4">
@@ -340,6 +362,49 @@
               // Display the alert
               alert(message);
             }
+            
+            
+            document.addEventListener('DOMContentLoaded', function() {
+		        // Get the endAuctionDate from Thymeleaf variable
+		        var endAuctionDateStr = /*[[${currListing.auction.endAuctionDate}]]*/ '2023-08-27T19:55';
+		        var endAuctionDate = new Date(endAuctionDateStr);
+		        
+		        // Get reference to the "Bid Now" button
+	    		var bidButton = document.getElementById('bidButton');
+	    		
+	    		// Get reference to the "Purchase Auction" div
+    			var purchaseAuctionDiv = document.getElementById('purchaseAuctionDiv');
+		        
+		        // Update the countdown every 1 second
+		        var x = setInterval(function() {
+		            var now = new Date().getTime();
+		            var distance = endAuctionDate - now;		        
+		            
+		            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+		            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+		            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+		            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+		            
+		            document.getElementById("countdown").innerHTML = days + "d " + hours + "h "
+		            + minutes + "m " + seconds + "s ";
+		            
+				    // If the countdown is over, write some text and hide the "Bid Now" button
+			        if (distance < 0) {
+			            clearInterval(x);
+			            document.getElementById("countdown").innerHTML = "EXPIRED";
+			            
+			            // Hide the "Bid Now" button
+			            if (bidButton) {
+			                bidButton.style.display = 'none';
+			            }
+			
+			            // Show the "Purchase Auction" button
+			            if (purchaseAuctionDiv) {
+			                purchaseAuctionDiv.style.display = 'block';
+			            }
+			        }
+			    }, 1000);
+			});			             
         </script>        
     </body>
 </html>
