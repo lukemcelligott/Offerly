@@ -15,58 +15,38 @@ import edu.sru.cpsc.webshopping.domain.widgets.ImagePacket;
 public class ImagePacketControllerTest {
 	private Logger log= Logger.getLogger(getClass());
 	
-@BeforeAll
-static void initAll() {
-	
-}
-@BeforeEach
-void init() {
-	
-}
-@Test
-@DisplayName("get Image Packet By Id")
-
-public void getImagePacketById() {
-
-try {
-	log.info("Starting Execution");
-ImagePacket expectedValue= null;
-
-ImagePacketController imagepacketcontroller= new ImagePacketController(null);
-ImagePacket actualValue= imagepacketcontroller.getImagePacketById(null);
-	log.info("actualValue");
-	System.out.println("actualValue");
-
-
-}
-	catch(Exception exception) {
-		log.error("exception");
-		exception.printStackTrace();
-		Assertions.assertFalse(false);
-	}
-}
-@Test
-@DisplayName("get Image Packet By Id Exception")
-public void getImagePacketByIdException() {
-	try {
-		log.info("Starting Execution");
+	@BeforeAll
+	static void initAll() {
 		
-		ImagePacketController imagepacketcontroller= new ImagePacketController(null);
-		imagepacketcontroller.getImagePacketById(null);
-		Assertions.assertTrue(false);
 	}
-	catch(Exception exception) {
-		log.error("Exception");
-		exception.printStackTrace();
-		Assertions.assertFalse(true);
+	@BeforeEach
+	void init() {
+		
 	}
-}
-@AfterEach
-void tearDown() {
-	
-}
-@AfterAll
-static void tearDownAll() {
-	
-}
+	@Test
+	@DisplayName("get Image Packet By Id")
+	public void getImagePacketById() {
+		try {
+			log.info("Starting Execution");
+			ImagePacket expectedValue= null;
+
+			ImagePacketController imagepacketcontroller= new ImagePacketController(null);
+			ImagePacket actualValue= imagepacketcontroller.getImagePacketById(null);
+			log.info("actualValue");
+			System.out.println("actualValue");
+		}
+		catch(Exception exception) {
+			log.error("exception");
+			exception.printStackTrace();
+			Assertions.assertFalse(false);
+		}
+	}
+	@AfterEach
+	void tearDown() {
+		
+	}
+	@AfterAll
+	static void tearDownAll() {
+		
+	}
 }

@@ -74,7 +74,7 @@ public class MessageControllerTest {
 	  }
 	  
 	@Test
-	void messagePageStatusTests() throws Exception {
+	public void messagePageStatusTests() throws Exception {
 		
 		mvc
 	    .perform(MockMvcRequestBuilders.get("/messages"))
@@ -283,43 +283,6 @@ public class MessageControllerTest {
 		assertEquals(mailbox.length, 0);
 		
 	}
-/*	@Test
-	public void messageIntegrationTestSendMessageandOpen()throws Exception {
-
-		User user = userController.getCurrently_Logged_In();
-		System.out.println(userController.getCurrently_Logged_In().getUsername());
-		MvcResult res = mvc.perform(MockMvcRequestBuilders.post("/sendmail")
-				.secure( true ) 
-				.param("recipient", "timMock")
-				.param("message", "Hello World")
-				.param("subject", "Test Subject")
-				.contentType(MediaType.APPLICATION_JSON)
-				.characterEncoding("utf-8"))
-					.andExpect(MockMvcResultMatchers.status().isOk())
-					.andExpect(MockMvcResultMatchers.view().name("messages"))
-					.andReturn();
-		Message mailbox[] = msgcontrol.getUserInbox(user);
-		System.out.println(mailbox[0].getContent());
-		assertEquals(mailbox[0].getContent(), "Hello World");
-		
-		
-		String json = mapper.writeValueAsString(mailbox[0].getId());
-		MvcResult res2 = mvc.perform(MockMvcRequestBuilders.post("/openMessage/" + mailbox[0].getId())
-				.secure( true ) 
-				.contentType(MediaType.APPLICATION_JSON)
-				.characterEncoding("utf-8"))
-					.andExpect(MockMvcResultMatchers.status().isOk())
-					.andExpect(MockMvcResultMatchers.view().name("messages"))
-					.andReturn();
-		mailbox = msgcontrol.getUserTrash(user);
-		System.out.println(mailbox[0].getContent());
-		assertEquals(mailbox[0].getContent(), "Hello World");
-		
-				mvc
-	    .perform(MockMvcRequestBuilders.get("/replyButton"))
-	    .andExpect(MockMvcResultMatchers.status().isOk());
-		msgrepo.deleteAll();
-	}*/
 	
 
 }

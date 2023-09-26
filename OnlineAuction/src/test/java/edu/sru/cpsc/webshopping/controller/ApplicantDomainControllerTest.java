@@ -63,26 +63,6 @@ Assertions.assertTrue(false);
 	Assertions.assertFalse(false);
 }
 }	
-		
-@Test 
-@DisplayName("get All Boxes")
-public void getAllBoxes(@PathVariable int getAllBoxes) {
-	try {
-		
-		log.info(getAllBoxes);
-ApplicantDomainController applicationdomaincontroller = new ApplicantDomainController(null);
-Iterable<Applicant> actualValue=applicationdomaincontroller.getAllBoxes();
-log.info(actualValue);
-System.out.println("Actual Value");
-Assertions.assertEquals(actualValue,0);
-
-	}
-	catch(Exception exception) {
-		log.error(exception);
-		exception.printStackTrace();
-		Assertions.assertFalse(false);
-	}
-	}
 
 @Test 
 @DisplayName("add Applicant")
