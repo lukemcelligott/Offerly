@@ -32,7 +32,7 @@ public class SellingWidgets implements CommandLineRunner {
     public void run(String... args) throws Exception {
         String ddlAuto = env.getProperty("spring.jpa.hibernate.ddl-auto");
         if (!"update".equals(ddlAuto)) {
-            preLoad.importCategoriesFromCSV();
+            //preLoad.importCategoriesFromCSV();
         }
         System.out.println("Running");
     }

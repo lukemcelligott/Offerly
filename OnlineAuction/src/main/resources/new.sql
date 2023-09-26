@@ -1,6 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.34, for Win64 (x86_64)
 --
--- Host: localhost    Database: online-auction
+-- Host: localhost    Database: sellingwidgets
 -- ------------------------------------------------------
 -- Server version	8.0.34
 
@@ -15,7 +15,6 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
-SET foreign_key_checks = 0;
 --
 -- Dumping data for table `applicant`
 --
@@ -36,13 +35,13 @@ INSERT INTO `attribute` VALUES (1,'Year','YEAR'),(2,'Model','STRING'),(3,'Color'
 UNLOCK TABLES;
 
 --
--- Dumping data for table `attribute`
+-- Dumping data for table `attribute_recommendation`
 --
 
 LOCK TABLES `attribute_recommendation` WRITE;
-/*!40000 ALTER TABLE `attribute` DISABLE KEYS */;
+/*!40000 ALTER TABLE `attribute_recommendation` DISABLE KEYS */;
 INSERT INTO `attribute_recommendation` VALUES (1,5,1,5367),(2,5,2,5367),(3,4,3,5367),(5598,2,5597,5367),(5600,2,5599,5367),(5611,2,1,319),(5612,2,5599,319),(5614,2,5613,319),(5616,2,5615,319);
-/*!40000 ALTER TABLE `attribute` ENABLE KEYS */;
+/*!40000 ALTER TABLE `attribute_recommendation` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -94,11 +93,21 @@ LOCK TABLES `friend_request` WRITE;
 UNLOCK TABLES;
 
 --
+-- Dumping data for table `friendship`
+--
+
+LOCK TABLES `friendship` WRITE;
+/*!40000 ALTER TABLE `friendship` DISABLE KEYS */;
+/*!40000 ALTER TABLE `friendship` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Dumping data for table `hibernate_sequence`
 --
 
 LOCK TABLES `hibernate_sequence` WRITE;
 /*!40000 ALTER TABLE `hibernate_sequence` DISABLE KEYS */;
+INSERT INTO `hibernate_sequence` VALUES (5645);
 /*!40000 ALTER TABLE `hibernate_sequence` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -163,7 +172,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `seller_rating` WRITE;
 /*!40000 ALTER TABLE `seller_rating` DISABLE KEYS */;
-INSERT INTO `seller_rating` VALUES (1000,23,4.5),(6,12,2.3),(20,11,3.2);
+INSERT INTO `seller_rating` VALUES (6,12,2.3),(20,11,3.2),(1000,23,4.5);
 /*!40000 ALTER TABLE `seller_rating` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -205,6 +214,15 @@ INSERT INTO `social_friend_request` VALUES (1,'PENDING',2000,19);
 UNLOCK TABLES;
 
 --
+-- Dumping data for table `social_message`
+--
+
+LOCK TABLES `social_message` WRITE;
+/*!40000 ALTER TABLE `social_message` DISABLE KEYS */;
+/*!40000 ALTER TABLE `social_message` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Dumping data for table `state_details`
 --
 
@@ -220,6 +238,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `statistics` WRITE;
 /*!40000 ALTER TABLE `statistics` DISABLE KEYS */;
+INSERT INTO `statistics` VALUES (5596,3,'2023-09-26 16:05:52.161887','userName logged in',16,1),(5626,3,'2023-09-26 16:12:25.171950','sellerName1 logged in',16,1);
 /*!40000 ALTER TABLE `statistics` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -256,7 +275,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (2000,200,_binary '\0',_binary '\0','US','2023-09-14',_binary '\0',_binary '\0',NULL,'dsm1015@sru.edu','rnetagzcxh',_binary '','Douglas','Maxwell','$2a$10$S7hGuNYPhsbduUL9brRjMuQ2XCFo0Mt3ZC/d1wmmCjTZ6pmvVabea','utsimjqigw','7244754080','ROLE_USER','What is your mother\'s maiden name?','What is your favorite band?','What is your favorite beverage?','yo','2hack_frog.jpg','joe','rock','coffee','userName',NULL,NULL,NULL,NULL,1000,NULL),(5,200,_binary '\0',_binary '\0','US','2023-09-14',_binary '\0',_binary '\0',NULL,'dmaxwell484@gmail.com','obvvxzmscc',_binary '\0','Tim','Baggins','$2a$10$Gvs7Jsie4aQljqmaewcwWeZlJxq4.GyFsCV1KscJ6StUlcB8u8xSa','hjwcislqpm','7244754080','ROLE_USER','What is your mother\'s maiden name?','What is your favorite band?','What is your favorite beverage?','',NULL,'joe','rock','coffee','sellerName',NULL,NULL,NULL,NULL,6,NULL),(19,200,_binary '\0',_binary '\0','US','2023-09-14',_binary '\0',_binary '\0',NULL,'lpm1006@sru.edu','xovxysbesc',_binary '','Douglas','Maxwell','$2a$10$k/nyrp4bhWdk5u8rj8VHOuaAg3H04kXI9Bog2ISzonRuIgyZ1.MH2','gbepmbkplx','7244754080','ROLE_USER','What is your mother\'s maiden name?','What is your favorite band?','What is your favorite beverage?','','191dollvatar.png','joe','rock','coffee','sellerName1',NULL,NULL,NULL,NULL,20,NULL);
+INSERT INTO `user` VALUES (5,200,_binary '\0',_binary '\0','US','2023-09-14',_binary '\0',_binary '\0',NULL,'dmaxwell484@gmail.com','obvvxzmscc',_binary '\0','Tim','Baggins','$2a$10$Gvs7Jsie4aQljqmaewcwWeZlJxq4.GyFsCV1KscJ6StUlcB8u8xSa','hjwcislqpm','7244754080','ROLE_USER','What is your mother\'s maiden name?','What is your favorite band?','What is your favorite beverage?','',NULL,'joe','rock','coffee','sellerName',NULL,NULL,NULL,NULL,6,NULL),(19,200,_binary '\0',_binary '\0','US','2023-09-14',_binary '\0',_binary '\0',NULL,'lpm1006@sru.edu','xovxysbesc',_binary '','Douglas','Maxwell','$2a$10$k/nyrp4bhWdk5u8rj8VHOuaAg3H04kXI9Bog2ISzonRuIgyZ1.MH2','gbepmbkplx','7244754080','ROLE_USER','What is your mother\'s maiden name?','What is your favorite band?','What is your favorite beverage?','','191dollvatar.png','joe','rock','coffee','sellerName1',NULL,NULL,NULL,NULL,20,NULL),(2000,200,_binary '\0',_binary '\0','US','2023-09-14',_binary '\0',_binary '\0',NULL,'dsm1015@sru.edu','rnetagzcxh',_binary '','Douglas','Maxwell','$2a$10$S7hGuNYPhsbduUL9brRjMuQ2XCFo0Mt3ZC/d1wmmCjTZ6pmvVabea','utsimjqigw','7244754080','ROLE_USER','What is your mother\'s maiden name?','What is your favorite band?','What is your favorite beverage?','yo','2hack_frog.jpg','joe','rock','coffee','userName',NULL,NULL,NULL,NULL,1000,NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -295,7 +314,7 @@ UNLOCK TABLES;
 LOCK TABLES `widget_attribute` WRITE;
 /*!40000 ALTER TABLE `widget_attribute` DISABLE KEYS */;
 INSERT INTO `widget_attribute` VALUES (5602,'Model','Jetta',NULL,5601),(5603,'Condition','New - opened box',NULL,5601),(5604,'Make','VW',NULL,5601),(5605,'Year','2012',NULL,5601),(5606,'Color','Silver',NULL,5601),(5618,'Player','Gordy Coleman',NULL,5617),(5619,'Year','1961',NULL,5617),(5620,'Team','Cincinnati Reds',NULL,5617),(5621,'Condition','New',NULL,5617),(5628,'Model','Blazer',NULL,5627),(5629,'Color','red',NULL,5627),(5630,'make','Chevrolet',NULL,5627),(5631,'condition','Used',NULL,5627),(5637,'condition','New',NULL,5636),(5638,'team','Atlanta Braves',NULL,5636),(5639,'Year','2023',NULL,5636),(5640,'player','Michael Harris II',NULL,5636);
- /*!40000 ALTER TABLE `widget_attribute` ENABLE KEYS */;
+/*!40000 ALTER TABLE `widget_attribute` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -317,6 +336,14 @@ LOCK TABLES `widget_wishlist_entry` WRITE;
 /*!40000 ALTER TABLE `widget_wishlist_entry` ENABLE KEYS */;
 UNLOCK TABLES;
 
+--
+-- Dumping data for table `widgets_info`
+--
+
+LOCK TABLES `widgets_info` WRITE;
+/*!40000 ALTER TABLE `widgets_info` DISABLE KEYS */;
+/*!40000 ALTER TABLE `widgets_info` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -327,6 +354,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-09-12 17:40:05
-
-SET foreign_key_checks = 1;
+-- Dump completed on 2023-09-26 16:21:02
