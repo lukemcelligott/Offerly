@@ -264,16 +264,17 @@ public class MarketListingDomainController {
 
 	@PostMapping("/updateBid")
 	public ResponseEntity<Object> updateBid(@RequestParam BigDecimal bidAmount, @RequestParam Long listingId, Model model, RedirectAttributes redirectAttributes) {
-	    MarketListing listing = marketRepository.findById(listingId).orElse(null);
-	
-	    // Ensure that listing.getAuctionPrice() also returns a BigDecimal
-	    if (listing != null && bidAmount.compareTo(listing.getAuction().getStartingBid()) > 0) {
-	        listing.getAuction().setCurrentBid(bidAmount);
-	        marketRepository.save(listing);
-	    } 
-	    URI redirectUri = URI.create("/viewMarketListing/" + listingId);
-	    return ResponseEntity.status(HttpStatus.SEE_OTHER).location(redirectUri).build();
-		}
+		MarketListing listing = marketRepository.findById(listingId).orElse(null);
+
+		// Ensure that listing.getAuctionPrice() also returns a BigDecimal. Bid amount should be less than 20
+		BigDecimal newBid = listing.getAuction().getCurrentBid().add(bidAmount);
+		if (listing != null && bidAmount.compareTo(new BigDecimal(20)) <= 0 && newBid.compareTo(listing.getAuction().getStartingBid()) >= 0){
+			listing.getAuction().setCurrentBid(newBid);
+			marketRepository.save(listing);
+		} 
+		URI redirectUri = URI.create("/viewMarketListing/" + listingId);
+		return ResponseEntity.status(HttpStatus.SEE_OTHER).location(redirectUri).build();
+	}
 
 
 }
