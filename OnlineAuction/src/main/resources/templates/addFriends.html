@@ -80,7 +80,6 @@
             border-color: #007BFF;
             box-shadow: none;
         }
-        
     </style>
 </head>
 
@@ -88,56 +87,79 @@
 
     <!-- HEADER BAR -->
     <div th:insert="header :: header" th:unless="${user == null}"></div>
-
+ 
     <div class="container mt-5">
-
-        <!-- Friends List Section -->
+		
+		<!-- Alert for friend request sent -->
+    	<div th:if="${requestSent}" class="alert alert-success" role="alert">
+        Friend request has been sent!
+    	</div>
+    	
+    	<!-- Alert for error message -->
+    	<div th:if="${errorMessage}" class="alert alert-danger" role="alert" th:text="${errorMessage}"></div>
+		
         <div class="row mb-5">
-            <div class="col-md-4">
-                <h3>Friends List</h3>
-                <ul class="list-group">
-                    <li class="list-group-item" th:each="friend : ${friends}">
-                        <span th:text="${friend.username}"></span>
-                        <form th:action="@{/friends/remove}" method="post" style="display: inline;">
-                            <input type="hidden" th:value="${friend.id}" name="friendId" />
-                            <button class="btn btn-sm btn-danger float-end" type="submit">Remove</button>
-                        </form>
-                    </li>
-                </ul>
-            </div>
-
+        	<!-- Friends List Section -->
+			<div class="col-md-6">
+			    <h3>Friends List</h3>
+			    <ul class="list-group">
+			        <li class="list-group-item" th:each="friend : ${friends}">
+			            <span th:text="${friend.username}"></span>
+			            
+			      		<div class="float-end">
+						    <!-- Message Button -->
+						   <form th:action="@{/friends/inbox}" method="get" style="display: inline;">
+							    <button type="submit" class="btn btn-sm btn-primary me-2">Message</button>
+						   </form>
+						    
+						    <!-- Remove Button -->
+						    <form th:action="@{/friends/remove}" method="post" style="display: inline;">
+						        <input type="hidden" th:value="${friend.id}" name="friendId" />
+						        <button class="btn btn-sm btn-danger" type="submit">Remove</button>
+						    </form>
+						</div>
+			        </li>
+			    </ul>
+			</div>
+			
             <!-- Add Friend Section -->
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <h3>Add Friend</h3>
                 <form th:action="@{/friends/add}" method="post">
                     <input id="userName" type="text" name="userName" placeholder="Enter friend's name" class="form-control mb-3" />
                     <button type="submit" class="btn btn-primary w-100">Add Friend</button>
                 </form>
-            </div>
-
-            <!-- Messaging Section -->
-            <div class="col-md-4">
-                <h3>Messages</h3>
-                <ul class="list-group mb-3">
-                    <li class="list-group-item" th:each="message : ${messages}">
-                        <strong th:text="${message.sender.name}"></strong>: <span th:text="${message.content}"></span>
-                    </li>
-                </ul>
-                <form th:action="@{/messages/send}" method="post">
-                    <select name="receiver" class="form-control mb-3">
-                        <option th:each="friend : ${friends}" th:value="${friend.id}" th:text="${friend.username}"></option>
-                    </select>
-                    <textarea name="content" placeholder="Type your message..." class="form-control mb-3"></textarea>
-                    <button type="submit" class="btn btn-success w-100">Send Message</button>
-                </form>
-            </div>
+	        </div>
+	        
+	        <div class="col-md-6">
+			    <h3>Friend Requests</h3>
+			    <ul class="list-group">
+			        <li class="list-group-item" th:each="request : ${friendRequests}">
+			            <span th:text="${request.sender.username}"></span>
+			            
+			            <div class="float-end">
+			                <!-- Accept Button -->
+			                <form th:action="@{/friends/acceptRequest}" method="post" style="display: inline;">
+			                    <input type="hidden" th:value="${request.id}" name="requestId" />
+			                    <button class="btn btn-sm btn-success me-2" type="submit">Accept</button>
+			                </form>
+			                
+			                <!-- Decline Button -->
+			                <form th:action="@{/friends/declineRequest}" method="post" style="display: inline;">
+			                    <input type="hidden" th:value="${request.id}" name="requestId" />
+			                    <button class="btn btn-sm btn-danger" type="submit">Decline</button>
+			                </form>
+			            </div>
+			        </li>
+			    </ul>
+			</div>
+            
         </div>
-
     </div>
+
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>
-

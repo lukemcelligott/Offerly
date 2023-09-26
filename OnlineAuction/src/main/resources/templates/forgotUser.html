@@ -32,32 +32,30 @@
 		    				</div>
 						</div>
 					</div>
-					<div th:case="findUserFail">
- 	    				<div class="d-flex flex-column">
-		    				<div class="card w-25 shadow bg-light mx-3 mt-3 mb-3" id="center">
-								<div class="card-header"><b>Let's Recover Your Account</b></div>
-									<div class="card-body d-flex flex-column">
-										<form th:action="@{/findUser}"  method="post">
-											<p>That email address is not associated with an account</p>
-											<label for="email">Email</label>
-											<input type="text" name="email"/>
-											<input type="submit" class="btn btn-outline-success me-1" value="Search">
-											<a class="btn btn-outline-danger ms-1" style="margin-right: 10px" th:href="@{/index}"><span>Back</span></a>
-										</form> 
-									</div>
-								</div>
-							</div>
-						</div>
-						<div th:case="user">
-							<div class="d-flex flex-column">
-		    					<div class="card w-25 shadow bg-light mx-3 mt-3 mb-3" id="center">
-									<div class="card-header"><b>An email with your username has been sent to your inbox</b></div>
-										<div class="card-body d-flex flex-column">
- 											<a class="btn btn-outline-danger ms-1" style="margin-right: 10px" th:href="@{/index}"><span>Back</span></a>
- 										</div>
- 								</div>
- 							</div>
-    					</div>
+					<div th:case="findUserFail" class="d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+					    <div class="card w-25 shadow bg-light mx-3 mt-3 mb-3">
+					        <div class="card-header"><b>Let's Recover Your Account</b></div>
+					        <div class="card-body d-flex flex-column align-items-center">
+					            <form th:action="@{/findUser}" method="post">
+					                <p>That email address is not associated with an account</p>
+					                <label for="email">Email</label>
+					                <input type="text" name="email"/>
+					                <input type="submit" class="btn btn-outline-success me-1" value="Search">
+					                <a class="btn btn-outline-danger ms-1" style="margin-right: 10px" th:href="@{/index}"><span>Back</span></a>
+					            </form>
+					        </div>
+					    </div>
+					</div>
+					<div th:case="user" class="d-flex align-items-center justify-content-center" style="min-height: 80vh;">
+					    <div class="card w-50 shadow bg-light mx-3 mt-3 mb-3">
+					        <div class="card-header text-center">
+					            <b>An email with your username has been sent to <span th:text="${maskedEmail}"></span></b>
+					        </div>
+					        <div class="card-body d-flex flex-column align-items-center">
+					            <a class="btn btn-outline-danger ms-1" th:href="@{/index}"><span>Back</span></a>
+					        </div>
+					    </div>
+					</div>
     					<div th:case="pass">
  							<div class="d-flex flex-column">
 		    					<div class="card w-25 shadow bg-light mx-3 mt-3 mb-3" id="center">

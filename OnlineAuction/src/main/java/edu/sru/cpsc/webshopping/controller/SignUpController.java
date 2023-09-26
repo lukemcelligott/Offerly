@@ -558,34 +558,55 @@ public class SignUpController {
 
   @PostMapping({"/findUser"})
   public String findUser(Model model, @RequestParam("email") String email2) {
-    if (userController.getUserByEmail(email2) == null) {
-      setPage("findUserFail");
+      if (userController.getUserByEmail(email2) == null) {
+          setPage("findUserFail");
+          model.addAttribute("page", page);
+          return "forgotUser";
+      }
+      findUser = userController.getUserByEmail(email2);
+
+      // Mask the email and add it to the model
+      String maskedEmail = maskEmail(email2);
+      model.addAttribute("maskedEmail", maskedEmail);
+
+      if (getTheId() == 0) {
+          email.usernameRecovery(findUser);
+      }
+      Random rand = new Random();
+      int rand_int1 = rand.nextInt(3);
+
+      if (rand_int1 == 0) {
+          setQuestion(findUser.getSecret1());
+          setAnswer(findUser.getUserSecret1());
+      }
+      if (rand_int1 == 1) {
+          setQuestion(findUser.getSecret2());
+          setAnswer(findUser.getUserSecret2());
+      } else {
+          setQuestion(findUser.getSecret3());
+          setAnswer(findUser.getUserSecret3());
+      }
+      model.addAttribute("question", question);
       model.addAttribute("page", page);
       return "forgotUser";
-    }
-    findUser = userController.getUserByEmail(email2);
-    if (getTheId() == 0) {
-      email.usernameRecovery(findUser);
-    }
-    Random rand = new Random();
-    // Generate random integers in range 0 to 2
-    int rand_int1 = rand.nextInt(3);
-
-    if (rand_int1 == 0) {
-      setQuestion(findUser.getSecret1());
-      setAnswer(findUser.getUserSecret1());
-    }
-    if (rand_int1 == 1) {
-      setQuestion(findUser.getSecret2());
-      setAnswer(findUser.getUserSecret2());
-    } else {
-      setQuestion(findUser.getSecret3());
-      setAnswer(findUser.getUserSecret3());
-    }
-    model.addAttribute("question", question);
-    model.addAttribute("page", page);
-    return "forgotUser";
   }
+  
+  private String maskEmail(String email) {
+	    int index = email.indexOf('@');
+	    if (index <= 3) return "****"; // if the email has 3 or fewer characters before '@', return "****"
+
+	    String firstPart = email.substring(0, 1);
+	    String middlePart = email.substring(1, index - 2);
+	    String lastPart = email.substring(index - 2);
+
+	    StringBuilder maskedMiddle = new StringBuilder();
+	    for (int i = 0; i < middlePart.length(); i++) {
+	        maskedMiddle.append('*');
+	    }
+
+	    return firstPart + maskedMiddle.toString() + lastPart;
+	}
+	
 
   @PostMapping({"/answerQuestion"})
   public String answerQuestion(@RequestParam("answer") String answer2, Model model) {
@@ -724,4 +745,7 @@ public class SignUpController {
   public void setShowedSuccess(boolean showedSuccess) {
     this.showedSuccess = showedSuccess;
   }
+  
+  
+  
 }

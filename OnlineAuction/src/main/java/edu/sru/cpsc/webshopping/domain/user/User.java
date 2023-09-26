@@ -530,5 +530,5 @@ public class User implements UserDetails {
 
 	public void setSellerRating(SellerRating sellerRating) {
 		this.sellerRating = sellerRating;
-	}
+	}		
 }
