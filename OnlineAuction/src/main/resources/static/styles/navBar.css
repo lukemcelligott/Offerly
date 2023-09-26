@@ -4,6 +4,10 @@ header {
 	margin-bottom: 56px;
 }
 
+#text {
+	color: #DEE2E6;
+}
+
 .ul1 {
 	list-style-type: none;
 	top: 0;

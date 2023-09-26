@@ -29,7 +29,7 @@
 		<div th:insert="header :: header" th:unless="${user == null}"></div>
 		<!-- END HEADER BAR -->
 		
-				<!-- List of purchased Transactions -->
+				<!-- List of purchased Transactions 
 		<div class="card my-4 mx-4">
 			<div class="card-header">
 				<h2>Purchased Items</h2>
@@ -65,7 +65,45 @@
 					</tbody>
 				</table>
 			</div>
-		</div>
+		</div>-->
+		
+		<!-- list of purchased items -->
+					<div class="card my-4 mx-4">
+						<div class="card-header">
+							<h2>Purchased Items</h2>
+						</div>
+						<div class="card-body">
+							<table class="table">
+								<thead>
+									<tr>
+										<th scope="col"><h5>Purchase Date</h5></th>
+										<th scope="col"><h5>Number Bought</h5></td>
+										<th scope="col"><h5>Net Price</h5></td>
+										<th scope="col"><h5>Product Name</h5></td>
+										<th scope="col"><h5>Refund Order</h5></th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr th:each="purchase : ${purchases}">
+										<th:block th:if="${user.id == purchase.buyer.id && purchase.marketListing.isDeleted == false}">
+											<td class="text" th:text="${purchase.purchaseDate}">
+											<td class="text" th:text="${purchase.qtyBought}">
+											<td class="text">
+												<p>$<span  th:text="${purchase.totalPriceAfterTaxes}"></span></p>
+											</td>
+											<td class="text" th:text="${purchase.marketListing.widgetSold.name}">
+											<td>
+												<div class="col-auto">
+				        							<input type="hidden" class="refund-amount" th:value="${purchase.totalPriceAfterTaxes}" />
+				        							<input class="btn btn-success" id="refundButton" name="refund" type="button" value="Refund" data-bs-toggle="modal" data-bs-target="#refundModal"/>
+				    							</div>
+											</td>
+										</th:block>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
 		
 		<!-- Refund Modal -->
 		<div class="modal fade" id="refundModal" tabindex="-1" aria-labelledby="refundModalLabel" aria-hidden="true">

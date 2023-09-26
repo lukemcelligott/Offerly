@@ -33,6 +33,7 @@ import javax.persistence.PersistenceContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -42,6 +43,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * Manages the functionality of the MarketListing page This page is used for ing and interacting
@@ -130,21 +132,18 @@ public class MarketListingPageController {
    * @return the viewMarketListing page string
    */
   @RequestMapping({"/viewMarketListing/{marketListingId}"})
-  public String viewMarketListingPage(@PathVariable("marketListingId") long marketListingId, Model model)
-  {
+  public String viewMarketListingPage(@PathVariable("marketListingId") long marketListingId, Model model) {
     heldListing = marketListingController.getMarketListing(marketListingId);
     WidgetImage [] widgetImages = widgetImageController.getwidgetImageByMarketListing(heldListing);
     
     // TODO: Open an error page
     // TODO: Set user status by reading from a User server
     
-    if(heldListing == null || heldListing.isDeleted() || heldListing.getQtyAvailable() == 0)
-    {
+    if(heldListing == null || heldListing.isDeleted() || heldListing.getQtyAvailable() == 0) {
     	return "redirect:/homePage";
     }
     
-    if (heldListing.isDeleted())
-    {
+    if (heldListing.isDeleted()) {
       throw new IllegalArgumentException("Attempted to access an invalid Market Listing!");
     }
     
@@ -163,10 +162,20 @@ public class MarketListingPageController {
 
     // Generate the category stack for the widget
     List<String> categoryStack = categoryService.generateCategoryStack(widget.getCategory());
+    
+    // check if the product is in the user's watchlist
+    boolean foundInWatchlist = false;
+    Set<MarketListing> wishlist = user.getWishlistedWidgets();
+    for(MarketListing element : wishlist) {
+    	if(marketListingId == element.getId()) {
+    		foundInWatchlist = true;
+    	}
+    }
 
     model.addAttribute("categories", categoryStack);
     model.addAttribute("images", widgetNames);
     model.addAttribute("attributes", widgetAttributes);
+    model.addAttribute("foundInWatchlist", foundInWatchlist);
     reloadModel(model);
     return "viewMarketListing";
   }
@@ -223,6 +232,8 @@ public class MarketListingPageController {
 	  heldListing = marketListingController.getMarketListing(marketListingId);
 	  // call addToWishlist in UserController.java and pass in the widget assigned to heldListing
 	  userController.addToWishlist(heldListing);
+	  // redirect attributes
+	  model.addAttribute("successMessage", "Item added to watchlist.");
 	  // redirect the user to the listing for the widget
 	  return "redirect:/viewMarketListing/" + heldListing.getId();
   }
@@ -239,8 +250,8 @@ public class MarketListingPageController {
 	  heldListing = marketListingController.getMarketListing(marketListingId);
 	  // call removeFromWishlist in UserController.java and pass in the widget assigned to heldListing
 	  userController.removeFromWishlist(heldListing);
-	  // redirect the user to the watchlist page
- 	  return "redirect:/Watchlist";
+	  // redirect the user to the listing
+ 	  return "redirect:/viewMarketListing/" + heldListing.getId();
   }
   
   /**

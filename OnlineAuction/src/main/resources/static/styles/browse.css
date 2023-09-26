@@ -1,3 +1,31 @@
+body {
+	font-family: 'Poppins', sans-serif;
+	background-color: #f4f6f8;
+	margin: 0;
+	padding: 0;
+}
+
+.align-flex {
+	display: flex;
+	justify-content: space-between;
+}
+
+.align-left {
+	text-align: left;
+	width: 50%;
+}
+
+.align-right {
+	text-align: right;
+	display: inline-block;
+	width: 50%;
+}
+
+.card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
 .grid-container {
 	display: grid;
 	background-color: #ffffff;
@@ -18,6 +46,21 @@
   	width: 100%;
   	height: 100%;
   	position: relative;
+}
+
+.image {
+	display: block;
+	margin: 0 auto;
+	width: 200px;
+	height: 200px;
+	object-fit: contain;
+	background-color: #E9ECEF;
+	margin-top: 5%;
+}
+
+.inline {
+	display: inline;
+	margin-bottom: 0;
 }
 
 .item1 {
@@ -270,4 +313,13 @@
 
 .submitHybrid:hover {
    color: #100095;
+}
+
+#category {
+    width: 100%;
+}
+
+.category-select {
+    max-height: 200px;
+    overflow-y: auto;
 }
