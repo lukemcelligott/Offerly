@@ -2,27 +2,23 @@ package edu.sru.cpsc.webshopping.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import edu.sru.cpsc.webshopping.domain.user.FriendRequest;
-import edu.sru.cpsc.webshopping.repository.user.FriendRequestRepository;
+import edu.sru.cpsc.webshopping.controller.misc.SocialFriendRequest;
+import edu.sru.cpsc.webshopping.repository.misc.FriendSocialRequestRepository;
 
 @RestController
 public class FriendRequestController{
-	private FriendRequestRepository requestRepo;
+	private FriendSocialRequestRepository requestRepo;
 	
-	FriendRequestController(FriendRequestRepository requestRepo)
+	FriendRequestController(FriendSocialRequestRepository requestRepo)
 	{
 		this.requestRepo = requestRepo;
 	}
 	
 	@RequestMapping("/get-all-friend-requests")
-	public Iterable<FriendRequest> getAllFriendRequests()
+	public Iterable<SocialFriendRequest> getAllFriendRequests()
 	{
 		return requestRepo.findAll();
 	}
-	
-	
-	
 }
 
 

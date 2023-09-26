@@ -35,6 +35,7 @@ import edu.sru.cpsc.webshopping.controller.billing.PaymentDetailsController;
 import edu.sru.cpsc.webshopping.controller.billing.PaypalController;
 import edu.sru.cpsc.webshopping.controller.billing.SellerRatingController;
 import edu.sru.cpsc.webshopping.controller.misc.Friendship;
+import edu.sru.cpsc.webshopping.controller.misc.SocialFriendRequest;
 import edu.sru.cpsc.webshopping.controller.misc.SocialMessage;
 import edu.sru.cpsc.webshopping.domain.billing.DirectDepositDetails;
 import edu.sru.cpsc.webshopping.domain.billing.PaymentDetails;
@@ -46,6 +47,7 @@ import edu.sru.cpsc.webshopping.domain.user.Statistics;
 import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
+import edu.sru.cpsc.webshopping.repository.misc.FriendSocialRequestRepository;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
 import edu.sru.cpsc.webshopping.secure.CaptchaUtil;
 import edu.sru.cpsc.webshopping.service.FriendshipService;
@@ -67,6 +69,9 @@ public class FriendsController {
     @Autowired
     private UserRepository userRepository;
     
+    @Autowired
+    private FriendSocialRequestRepository friendSocialRequestRepository;
+    
     @GetMapping("/addFriends")
     public String getSocialPage(Model model) {
     	User user = userController.getCurrently_Logged_In();
@@ -75,32 +80,35 @@ public class FriendsController {
        
 		List<User> friends = friendshipService.getAllFriendsForUser(user);
 		List<SocialMessage> messages = messageService.getAllMessagesForUser(user);
+		List<SocialFriendRequest> friendRequests = friendSocialRequestRepository.findAllByReceiver(user);
 
         model.addAttribute("friends", friends);
         model.addAttribute("messages", messages);
+        model.addAttribute("friendRequests", friendRequests);
         return "addFriends";  
     }
     
     @PostMapping({"/add"})
-    public String addFriend(@RequestParam("userName") String userName, Model model) {
+    public String addFriend(@RequestParam("userName") String userName, Model model, RedirectAttributes redirectAttributes) {
         User currentUser = userController.getCurrently_Logged_In();
-        User friendToAdd = userRepository.findByUsername(userName);
         
+        if(currentUser.getUsername().equals(userName)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "You cannot send a friend request to yourself!");
+            return "redirect:/friends/addFriends";
+        }
+        
+        User friendToAdd = userRepository.findByUsername(userName);
+
         if(friendToAdd == null) {
-            // Log an error or add a message to the model
             System.out.println("User with username: " + userName + " not found!");
             model.addAttribute("errorMessage", "User not found!");
-            return "redirect:/friends/addFriends"; // or return to an error page
+            return "redirect:/friends/addFriends";
         }
-        
-        if(friendToAdd != null && !currentUser.equals(friendToAdd)) {
-        	System.out.print("second if");
-            Friendship friendship = new Friendship();
-            friendship.setUser1(currentUser);
-            friendship.setUser2(friendToAdd);
-            friendshipService.addFriend(friendship);
+
+        if(friendshipService.sendFriendRequest(currentUser, friendToAdd)) {
+            redirectAttributes.addFlashAttribute("requestSent", true);
         }
-        
+
         return "redirect:/friends/addFriends";
     }
     
@@ -168,4 +176,36 @@ public class FriendsController {
     }
     
 
+    @PostMapping("/acceptRequest")
+    public String acceptFriendRequest(@RequestParam("requestId") Long requestId) {
+        SocialFriendRequest request = friendSocialRequestRepository.findById(requestId).orElse(null);
+        if (request != null) {
+            User sender = request.getSender();
+            User receiver = request.getReceiver();
+            
+            Friendship friendship = new Friendship();
+            friendship.setUser1(sender);
+            friendship.setUser2(receiver);
+            friendshipService.addFriend(friendship);
+
+            friendSocialRequestRepository.delete(request);
+        } else {
+            System.err.println("Friend request with ID " + requestId + " not found.");
+        }
+        return "redirect:/friends/addFriends";
+    }
+
+    @PostMapping("/declineRequest")
+    public String declineFriendRequest(@RequestParam("requestId") Long requestId) {
+        SocialFriendRequest request = friendSocialRequestRepository.findById(requestId)
+                .orElse(null);
+        if (request != null) {
+            friendshipService.declineRequest(request);
+        } else {
+        	// Log an error message
+            System.err.println("Friend request with ID " + requestId + " not found!!!");
+        }
+        return "redirect:/friends/addFriends";
+    }
+    
 }
