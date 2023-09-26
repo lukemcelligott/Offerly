@@ -49,57 +49,34 @@
 
 		
 		<!-- Choose Categories Div -->
-    <div class="card h-100 w-100">
-    	<div class="card-body">
-      	<div class="card" style="margin-left: auto; margin-right: auto; width: 20%;">
-        	<div class="card-header" style="text-align: center;"><h4> Select Item Categories </h4></div>
-        	<form action="#" th:action="@{/createWidget}" method="post">
-	        	<div>
-		        	<label for="category" style="text-align: center;"> Choose a Category </label>
-		        	<select id="category" name="category" class="form-select form-select-lg mb-3 select2" onchange="enableNextButton()">
-						<option selected disabled hidden value="0"> -- Select One -- </option>
-						<option th:each="category : ${categories}" th:text="${category.name}" th:id="${category.name}" th:value="${category.id}"></option>
-					</select>
-					
-		        	
-		        	<div class="card-footer" style="display: flex; justify-content: center; align-items: center;">
-		        		<input id="nextButton" class="btn btn-success v-25 mx-4" type="submit" th:href="@{/createWidget}" value="Next" disabled>
-		        		<a class="btn btn-danger v-25 mx-4" href="/homePage"> Cancel </a>
-		        	</div>
-		        </div>
-	      	</form>
-      	</div>
-    	</div>
-  	</div>
+	<div class="container mt-5">
+		<div style="margin-left: auto; margin-right: auto; width: 50%;">
+				<div class="card-header" style="text-align: center;"><h4> Select Item Categories </h4></div>
+				<form action="#" th:action="@{/createWidget}" method="post">
+					<div>
+						<label for="category" style="text-align: center;"> Choose a Category </label>
+						<select id="category" name="category" class="form-select form-select-lg mb-3 select2" onchange="enableNextButton()">
+							<option selected disabled hidden value="0"> -- Select One -- </option>
+							<option th:each="category : ${categories}" th:text="${category.name}" th:id="${category.name}" th:value="${category.id}"></option>
+						</select>
+						
+						
+						<div class="card-footer" style="display: flex; justify-content: center; align-items: center;">
+							<input id="nextButton" class="btn btn-success v-25 mx-4" type="submit" th:href="@{/createWidget}" value="Next" disabled>
+							<a class="btn btn-danger v-25 mx-4" href="/homePage"> Cancel </a>
+						</div>
+					</div>
+				</form>
+		</div>
+	</div>
   	<!-- End Choose Categories Div -->
   	
   	<script>
-		/*function enableSubcatDropdown()
-		{
-			var categoryValue = document.getElementById("category").value;
-			var subcatSelect = document.getElementById("subcategory");
-			var secondValue, i;
-			
-			if(categoryValue != 0)
-			{
-				subcatSelect.disabled = false;
-			}
-			
-			for(i = 0; i < subcatSelect.length; i++)
-			{
-				secondValue = subcatSelect[i].id;
-				
-				if(categoryValue == secondValue)
-				{
-					subcatSelect[i].hidden = false;
-				}
-				
-				else
-				{
-					subcatSelect[i].hidden = true;
-				}
-			}
-		}*/
+		$(document).ready(function() {
+			$('#category').select2({
+				dropdownCssClass: 'your-custom-class'
+			});
+		});
 		
 		function enableNextButton()
 		{

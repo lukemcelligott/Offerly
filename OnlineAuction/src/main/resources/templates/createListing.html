@@ -21,10 +21,6 @@
 	  	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 	  	
 	  	<style>
-			#page {
-				display: flex;
-				height: calc(100vh - 60px);
-			}
 			
 			#website-title {
 				margin-left: 8px;
@@ -41,74 +37,68 @@
 		<!-- END HEADER BAR -->
 	
 	  
-		<div id="page">
-			<div class="card h-100 w-100">
-				<div class="card-body">
-					<div class="card w-25" style="margin-left: auto; margin-right: auto;">
-						<div class="card-header d-flex justify-content-center">
-							<h2> Create a Listing </h2>
+		<div class="card w-25" style="margin-left: auto; margin-right: auto;">
+			<div class="card-header d-flex justify-content-center">
+				<h2> Create a Listing </h2>
+			</div>
+			<form action="#" th:action="@{/addListing}" th:object="${listing}" method="post" class="form" enctype="multipart/form-data">
+				<div class="card-body d-flex justify-content-center">
+					<div class="row">
+						<div class="form-group" style="padding-bottom: 15px;">
+							<label for="price"> Price of Product: </label>
+							<input class="form-control" type="number" step="0.01" placeholder="-- Enter in the Price of the Product --" th:field="*{pricePerItem}" id="price">
+							<p th:if="${#fields.hasErrors('pricePerItem')}" th:errors="*{pricePerItem}"></p>
+							<th:block th:switch="${page}">
+							<div th:case="error2">
+							<p style="color:red"> Please enter a valid price per item </p>
+							</div>
+							</th:block>
 						</div>
-						<form action="#" th:action="@{/addListing}" th:object="${listing}" method="post" class="form" enctype="multipart/form-data">
-							<div class="card-body d-flex justify-content-center">
-								<div class="row">
-									<div class="form-group" style="padding-bottom: 15px;">
-										<label for="price"> Price of Product: </label>
-										<input class="form-control" type="number" step="0.01" placeholder="-- Enter in the Price of the Product --" th:field="*{pricePerItem}" id="price">
-										<p th:if="${#fields.hasErrors('pricePerItem')}" th:errors="*{pricePerItem}"></p>
-										<th:block th:switch="${page}">
-										<div th:case="error2">
-										<p style="color:red"> Please enter a valid price per item </p>
-										</div>
-										</th:block>
-									</div>
-									<p th:if="${#fields.hasErrors('pricePerItem')}" th:errors="*{pricePerItem}"></p>
+						<p th:if="${#fields.hasErrors('pricePerItem')}" th:errors="*{pricePerItem}"></p>
 
-									<div class="form-group" style="padding-bottom: 15px;">
-										<label for="startingBid">Starting Auction Price:</label>
-										<input class="form-control" type="number" step="0.01" placeholder="-- Enter the Starting Bid --" th:field="*{auction.startingBid}" id="startingBid">
-										<p th:if="${#fields.hasErrors('auction.startingBid')}" th:errors="*{auction.startingBid}"></p>
-									</div>
-									
-									<div class="form-group" style="padding-bottom: 15px;">
-										<label for="endDate">End Auction Date and Time:</label>
-										<input class="form-control" type="datetime-local" th:field="*{auction.endAuctionDate}" id="endDate">
-										<p th:if="${#fields.hasErrors('auction.endAuctionDate')}" th:errors="*{auction.endAuctionDate}"></p>
-									</div>
-									
-									<div class="form-group" style="padding-bottom: 15px;">
-										<label for="quantity"> Quantity: </label>
-										<input class="form-control" type="number" min="0" name="qtyAvailable" id="quantity" value="1">
-										<p th:if="${#fields.hasErrors('qtyAvailable')}" th:errors="*{qtyAvailable}"></p>
-										<th:block th:switch="${page}">
-										<div th:case="error3">
-										<p style="color:red"> Please enter a valid quantity </p>
-										</div>
-										</th:block>
-									</div>
-									<p th:if="${#fields.hasErrors('qtyAvailable')}" th:errors="*{qtyAvailable}"></p>
-									<div class="form-group w-35" style="padding-bottom: 15px;">
-										<label for="coverImage"> Choose the Cover Image (Add File to next Upload as Well): </label>
-										<input type="file" class="form-control" id="coverImage" name="listingCoverImage" accept="image/*" required>
-										<label for="fileUpload"> Choose Listing Images (Hold shift or ctrl while clicking to add multiple images): </label>
-										<input type="file" class="form-control" id="fileUpload" name="imageUpload" accept="image/*" multiple required>
-										<div id="selectedFiles"></div>
-									</div>
-								</div>
+						<div class="form-group" style="padding-bottom: 15px;">
+							<label for="startingBid">Starting Auction Price:</label>
+							<input class="form-control" type="number" step="0.01" placeholder="-- Enter the Starting Bid --" th:field="*{auction.startingBid}" id="startingBid">
+							<p th:if="${#fields.hasErrors('auction.startingBid')}" th:errors="*{auction.startingBid}"></p>
+						</div>
+						
+						<div class="form-group" style="padding-bottom: 15px;">
+							<label for="endDate">End Auction Date and Time:</label>
+							<input class="form-control" type="datetime-local" th:field="*{auction.endAuctionDate}" id="endDate">
+							<p th:if="${#fields.hasErrors('auction.endAuctionDate')}" th:errors="*{auction.endAuctionDate}"></p>
+						</div>
+						
+						<div class="form-group" style="padding-bottom: 15px;">
+							<label for="quantity"> Quantity: </label>
+							<input class="form-control" type="number" min="0" name="qtyAvailable" id="quantity" value="1">
+							<p th:if="${#fields.hasErrors('qtyAvailable')}" th:errors="*{qtyAvailable}"></p>
+							<th:block th:switch="${page}">
+							<div th:case="error3">
+							<p style="color:red"> Please enter a valid quantity </p>
 							</div>
-							<div class="card-footer d-flex justify-content-center" style="padding-top: 10px;">
-								<th:block th:switch="${page}">
-									<div th:case="error">
-										<p style="color:red">Upload at least one picture</p>
-									</div>
-								</th:block>
-								<input class="btn btn-success v-25 mx-4" type="submit" value="Create Listing">
-								<a class="btn btn-danger v-25 mx-4" th:href="@{/back-and-delete}"> Back </a>
-								<a class="btn btn-danger v-25 mx-4" href="/homePage"> Cancel </a>
-							</div>
-						</form>
+							</th:block>
+						</div>
+						<p th:if="${#fields.hasErrors('qtyAvailable')}" th:errors="*{qtyAvailable}"></p>
+						<div class="form-group w-35" style="padding-bottom: 15px;">
+							<label for="coverImage"> Choose the Cover Image (Add File to next Upload as Well): </label>
+							<input type="file" class="form-control" id="coverImage" name="listingCoverImage" accept="image/*" required>
+							<label for="fileUpload"> Choose Listing Images (Hold shift or ctrl while clicking to add multiple images): </label>
+							<input type="file" class="form-control" id="fileUpload" name="imageUpload" accept="image/*" multiple required>
+							<div id="selectedFiles"></div>
+						</div>
 					</div>
 				</div>
-			</div>
+				<div class="card-footer d-flex justify-content-center" style="padding-top: 10px;">
+					<th:block th:switch="${page}">
+						<div th:case="error">
+							<p style="color:red">Upload at least one picture</p>
+						</div>
+					</th:block>
+					<input class="btn btn-success v-25 mx-4" type="submit" value="Create Listing">
+					<a class="btn btn-danger v-25 mx-4" th:href="@{/back-and-delete}"> Back </a>
+					<a class="btn btn-danger v-25 mx-4" href="/homePage"> Cancel </a>
+				</div>
+			</form>
 		</div>
 		
 		<!-- script code to show file names from https://www.raymondcamden.com/2013/09/10/Adding-a-file-display-list-to-a-multifile-upload-HTML-control -->
