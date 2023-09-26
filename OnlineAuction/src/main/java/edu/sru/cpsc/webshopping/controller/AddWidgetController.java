@@ -289,12 +289,15 @@ public class AddWidgetController
 		marketListing.setSeller(userController.getCurrently_Logged_In());
 		marketListing.setWidgetSold(widget);
 		marketListing.setDeleted(false);
-		marketListing.setCoverImage(marketListing.getSeller().getId() + StringUtils.cleanPath(coverImage.getOriginalFilename()));
+		
+		String coverImagePath = marketListing.getSeller().getId() + StringUtils.cleanPath(coverImage.getOriginalFilename());
+		marketListing.setCoverImage(coverImagePath);
+		
+		List<MultipartFile> allImages = new ArrayList<>();
+		allImages.add(coverImage);
+		allImages.addAll(Arrays.asList(files));
+		
 		marketListingController.addMarketListing(marketListing);
-		tempImage.setImageName(marketListing.getSeller().getId() + StringUtils.cleanPath(coverImage.getOriginalFilename()));
-		tempImage.setMarketListing(marketListing);
-		widgetImageController.addWidgetImage(tempImage);
-		listingImages.add(tempImage);
 
 		BigDecimal oneCent = new BigDecimal("0.01");
 
@@ -322,12 +325,10 @@ public class AddWidgetController
 			return "createListing";
 		}
 
-		if (!(files.length == 0)) {
-			marketListingController.getListingByWidget(widget).setCoverImage(marketListing.getSeller().getId() + StringUtils.cleanPath(coverImage.getOriginalFilename()));
-			List<MultipartFile> MPF = Arrays.asList(files);
-			MPF.forEach(file -> setListingImage(file, marketListing));
-			marketListing.setImages(listingImages);
+		for (MultipartFile file : allImages) {
+			setListingImage(file, marketListing);
 		}
+		marketListing.setImages(listingImages);
 
 		model.addAttribute("user", userController.getCurrently_Logged_In());
 		return "redirect:homePage";
@@ -380,8 +381,6 @@ public class AddWidgetController
 			e.printStackTrace();
 			System.out.println("upload failed");
 		}
-		
-		tempImage = new WidgetImage();
 	}
 
 	@PostMapping({"/uploadComputerDataFile"})

@@ -1,3 +1,10 @@
+body {
+	font-family: 'Poppins', sans-serif;
+	background-color: #f4f6f8;
+	margin: 0;
+	padding: 0;
+}
+
 .align-flex {
 	display: flex;
 	justify-content: space-between;
@@ -306,4 +313,13 @@
 
 .submitHybrid:hover {
    color: #100095;
+}
+
+#category {
+    width: 100%;
+}
+
+.category-select {
+    max-height: 200px;
+    overflow-y: auto;
 }
