@@ -180,7 +180,8 @@
                                       	</form>
                                       	
                                   	</div>
-							            <div class="col-auto">
+                                  	<!-- bid button -->
+							        <div class="col-auto">
 							            <input type="hidden" name="listingId" th:value="${currListing.id}"/>  
 							            <input class="btn btn-success" id="bidButton" name="placeBid" type="button" value="Bid Now" data-bs-toggle="modal" data-bs-target="#bidModal"/>
 							        </div>
@@ -189,6 +190,7 @@
 							            <a class="btn btn-danger" href="/BrowseWidgetsButton">Back</a>
 							        </div>
 							    </div>
+							    
 							</div>
 
                             <!-- For Sellers -->
@@ -258,68 +260,51 @@
 
         <!-- Bid Modal -->
         <div class="modal fade" id="bidModal" tabindex="-1" aria-labelledby="bidModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="bidModalLabel">Place a Bid</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <form th:action="@{/updateBid}" method="post" onsubmit="return validateBid();">
-                    <div class="mb-3">
-								      <span th:text="'Auction Price: $' + ${currListing.auction.currentBid}"></span>
-                      <label for="bidAmount" class="form-label">Bid Amount</label>
-                      <input type="number" class="form-control" id="bidAmount" name="bidAmount" max="20" min="0.01" step="0.01" data-auction-price="${currListing.auction.currentBid}">
-                    </div>
-                    <input type="hidden" name="listingId" th:value="${currListing.id}"/>
-                    <input class="btn btn-success" id="bidButton" name="placeBid" type="submit" value="Bid Now" onclick="return confirmBid();"/>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-        <!-- Watchlist Modal - need to add functionality -->
-    	<div class="modal fade" id="watchlistModal" tabindex="-1" aria-labelledby="watchlistModalLabel" aria-hidden="true">
         	<div class="modal-dialog modal-dialog-centered">
-         		<div class="modal-content">
-            		<div class="modal-header">
-              			<h5 class="modal-title" id="watchlistModalLabel">Watchlist</h5>
-              			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            		</div>
-            		<div class="modal-body">						
-                		<div class="mb-3">
-							<p>Item added to watchlist</p>
-                		</div>
-            		</div>
-          		</div>
-        	</div>
-      	</div>
+            	<div class="modal-content">
+                	<div class="modal-header">
+                  		<h5 class="modal-title" id="bidModalLabel">Place a Bid</h5>
+                  		<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                	</div>
+                	<div class="modal-body">
+                  		<form th:action="@{/updateBid}" method="post" onsubmit="return validateBid();">
+                    		<div class="mb-3">
+								<span th:text="'Auction Price: $' + ${currListing.auction.currentBid}"></span>
+                      			<label for="bidAmount" class="form-label">Bid Amount</label>
+                      			<input type="number" class="form-control" id="bidAmount" name="bidAmount" max="20" min="0.01" step="0.01" data-auction-price="${currListing.auction.currentBid}">
+                    		</div>
+                    		<input type="hidden" name="listingId" th:value="${currListing.id}"/>
+                    		<input class="btn btn-success" id="bidButton" name="placeBid" type="submit" value="Bid Now" onclick="return confirmBid();"/>
+                  		</form>
+                	</div>
+              	</div>
+            </div>
+         </div>
 
         <!-- Update Listing Modal -->
         <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="updateModalLabel">Update Listing</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <form action="#" method="post" id="update-listing" th:action="@{/viewMarketListing/editListing}" th:object="${currListing}">
-                    <input type="hidden" th:field="*{id}">
-                    <div class="mb-3">
-                      <p class="form-label" th:text="'Current Price: $' + ${currListing.pricePerItem}"></p>
-                      <label for="pricePerItem" class="form-label" >New Price</label>
-                      <input type="number" class="form-control" id="pricePerItem" name="pricePerItem" placeholder="${currListing.pricePerItem}" th:field="*{pricePerItem}" min="0.0" value="0.0" step="0.01" required>
-                      <label for="qtyAvailable" class="form-label" >New Quantity</label>
-                      <input type="number" class="form-control" id="qtyAvailable" name="qtyAvailable" placeholder="${currListing.qtyAvailable}" th:field="*{qtyAvailable}" min="0" value="0" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Update Listing</button>
-                  </form>
-                </div>
-              </div>
+        	<div class="modal-dialog modal-dialog-centered">
+              	<div class="modal-content">
+                	<div class="modal-header">
+                  		<h5 class="modal-title" id="updateModalLabel">Update Listing</h5>
+                  		<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                	</div>
+                	<div class="modal-body">
+                  		<form action="#" method="post" id="update-listing" th:action="@{/viewMarketListing/editListing}" th:object="${currListing}">
+                    		<input type="hidden" th:field="*{id}">
+                    		<div class="mb-3">
+                      			<p class="form-label" th:text="'Current Price: $' + ${currListing.pricePerItem}"></p>
+                      			<label for="pricePerItem" class="form-label" >New Price</label>
+                      			<input type="number" class="form-control" id="pricePerItem" name="pricePerItem" placeholder="${currListing.pricePerItem}" th:field="*{pricePerItem}" min="0.0" value="0.0" step="0.01" required>
+                      			<label for="qtyAvailable" class="form-label" >New Quantity</label>
+                      			<input type="number" class="form-control" id="qtyAvailable" name="qtyAvailable" placeholder="${currListing.qtyAvailable}" th:field="*{qtyAvailable}" min="0" value="0" required>
+                    		</div>
+                    		<button type="submit" class="btn btn-primary">Update Listing</button>
+                  		</form>
+               		</div>
+              	</div>
             </div>
-          </div>
+        </div>
           
         
           <script th:inline="javascript">
