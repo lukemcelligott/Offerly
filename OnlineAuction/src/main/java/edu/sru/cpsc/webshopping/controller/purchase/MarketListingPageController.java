@@ -172,10 +172,14 @@ public class MarketListingPageController {
     	}
     }
 
+    // add current user
+    User currentUser = userController.getCurrently_Logged_In();
+
     model.addAttribute("categories", categoryStack);
     model.addAttribute("images", widgetNames);
     model.addAttribute("attributes", widgetAttributes);
     model.addAttribute("foundInWatchlist", foundInWatchlist);
+    model.addAttribute("currentUser", currentUser);
     reloadModel(model);
     return "viewMarketListing";
   }
