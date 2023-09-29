@@ -13,6 +13,8 @@ import edu.sru.cpsc.webshopping.repository.user.UserRepository;
 import edu.sru.cpsc.webshopping.repository.widgets.WidgetRepository;
 import edu.sru.cpsc.webshopping.util.PreLoad;
 import edu.sru.cpsc.webshopping.service.WatchlistService;
+import edu.sru.cpsc.webshopping.service.AuctionService;
+import edu.sru.cpsc.webshopping.service.UserService;
 
 import java.math.BigDecimal;
 import java.net.URI;
@@ -42,16 +44,20 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class MarketListingDomainController {
 	private User currentlyLoggedIn;
 	private MarketListingRepository marketRepository;
+	@Autowired
 	private WidgetRepository widgetRepository;
 	private StatisticsDomainController statControl;
 	private WidgetImageController imageController;
 	private UserController userController;
 	private WatchlistService watchlistService;
+	@Autowired
+	private AuctionService auctionService;
+	@Autowired
+	private UserService userService;
 	@PersistenceContext private EntityManager entityManager;
 	
 	MarketListingDomainController(
 			MarketListingRepository marketRepository,
-			WidgetRepository widgetRepository,
 			StatisticsDomainController statControl,
 			WidgetImageController imageController,
 			WatchlistService watchlistService
@@ -64,6 +70,7 @@ public class MarketListingDomainController {
 			this.watchlistService = watchlistService;
 			//this.userController = userController;
 		}
+
 
 	/**
 	 * Gets the MarketListing with an id matching the passed id
@@ -82,10 +89,10 @@ public class MarketListingDomainController {
 		return marketListing;
 	}
 
-	@RequestMapping("/get-widget-by-name")
+	@RequestMapping("/get-widget-by-name/{name}")
 	public Widget getWidget(@PathVariable("name") String name) {
-		Widget widget = widgetRepository.findByName(name);
-		return widget;
+	    Widget widget = widgetRepository.findByName(name);
+	    return widget;
 	}
 
 	@RequestMapping("/get-listing-by-widget")
@@ -268,17 +275,27 @@ public class MarketListingDomainController {
 		}
 
 	@PostMapping("/updateBid")
-	public ResponseEntity<Object> updateBid(@RequestParam BigDecimal bidAmount, @RequestParam Long listingId, Model model, RedirectAttributes redirectAttributes) {
+	public ResponseEntity<Object> updateBid(@RequestParam BigDecimal bidAmount, @RequestParam Long listingId, @RequestParam Long bidderId, Model model, RedirectAttributes redirectAttributes) {
+		User bidder = userService.getUserById(bidderId);
 		MarketListing listing = marketRepository.findById(listingId).orElse(null);
-		
+
 		// Ensure that listing.getAuctionPrice() also returns a BigDecimal. Bid amount should be less than 20
-		BigDecimal newBid = listing.getAuction().getCurrentBid().add(bidAmount);
-		if (listing != null && bidAmount.compareTo(new BigDecimal(20)) <= 0 && newBid.compareTo(listing.getAuction().getStartingBid()) >= 0){
+		if (listing != null && bidAmount.compareTo(new BigDecimal(20)) <= 0 && listing.getAuction().getCurrentBid().add(bidAmount).compareTo(listing.getAuction().getStartingBid()) >= 0){
+			BigDecimal newBid = listing.getAuction().getCurrentBid().add(bidAmount);
+			auctionService.bid(listing.getAuction(), bidder, bidAmount);
 			listing.getAuction().setCurrentBid(newBid);
 			marketRepository.save(listing);
-			// add listing to the user's watchlist when they bid on the item
-			// watchlistService.watchlistAdd(listing, user);
-		} 
+			// add listing to bidder's watchlist
+			watchlistService.watchlistAdd(listing, bidder);
+			
+			// NEED TO SET USER LOGGED IN HERE
+			
+			// save bidder to the user repository
+			userService.addUser(bidder);
+
+		}
+		
+		// redirect
 		URI redirectUri = URI.create("/viewMarketListing/" + listingId);
 		return ResponseEntity.status(HttpStatus.SEE_OTHER).location(redirectUri).build();
 	}

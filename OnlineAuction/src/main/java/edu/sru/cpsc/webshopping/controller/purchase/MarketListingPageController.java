@@ -172,10 +172,14 @@ public class MarketListingPageController {
     	}
     }
 
+    // add current user
+    User currentUser = userController.getCurrently_Logged_In();
+
     model.addAttribute("categories", categoryStack);
     model.addAttribute("images", widgetNames);
     model.addAttribute("attributes", widgetAttributes);
     model.addAttribute("foundInWatchlist", foundInWatchlist);
+    model.addAttribute("currentUser", currentUser);
     reloadModel(model);
     return "viewMarketListing";
   }
@@ -232,8 +236,6 @@ public class MarketListingPageController {
 	  heldListing = marketListingController.getMarketListing(marketListingId);
 	  // call addToWishlist in UserController.java and pass in the widget assigned to heldListing
 	  userController.addToWishlist(heldListing);
-	  // redirect attributes
-	  model.addAttribute("successMessage", "Item added to watchlist.");
 	  // redirect the user to the listing for the widget
 	  return "redirect:/viewMarketListing/" + heldListing.getId();
   }

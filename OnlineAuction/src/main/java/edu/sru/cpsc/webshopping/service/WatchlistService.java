@@ -8,15 +8,16 @@ import org.springframework.validation.annotation.Validated;
 
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.user.User;
+import edu.sru.cpsc.webshopping.controller.UserController;
 
 @Service
 public class WatchlistService {
-
+	UserController userController;
 	@PersistenceContext
 	private EntityManager entityManager;
 	
 	WatchlistService() {
-		
+
 	}
 	
 	/*
@@ -31,7 +32,8 @@ public class WatchlistService {
 			throw new IllegalArgumentException("Widget pass to addToWishlist not found in database.");
 		}
 		
-		user.getWishlistedWidgets().add(addedWidget);
+		user.getWishlistedWidgets().add(marketListing);
+		
 	}
 	
 	/*
