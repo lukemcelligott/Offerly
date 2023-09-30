@@ -1,12 +1,15 @@
 package edu.sru.cpsc.webshopping.controller;
 
 
+import java.security.Principal;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.method.P;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -40,10 +43,11 @@ import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
 import edu.sru.cpsc.webshopping.secure.CaptchaUtil;
+import edu.sru.cpsc.webshopping.service.UserService;
 
 @RestController
 public class UserController {
-	private User Currently_Logged_In;
+	//private User Currently_Logged_In;
 	private UserRepository userRepository;
 	private StatisticsDomainController statControl;
 	private PaypalController paypalController;
@@ -53,6 +57,8 @@ public class UserController {
 	private UtilityController util;
 	@PersistenceContext
 	private EntityManager entityManager;
+	@Autowired
+	private UserService userService;
 		
 	UserController(UserRepository userRepository,StatisticsDomainController statControl,
 			PaymentDetailsController paymentDetailsController, DirectDepositController directDepositDetailsController,
@@ -76,11 +82,11 @@ public class UserController {
 	 */
 	@PostMapping("/add-to-wishlist")
 	@Transactional
-	public void addToWishlist(@Validated MarketListing marketListing) {
-		if (Currently_Logged_In == null) {
+	public void addToWishlist(@Validated MarketListing marketListing, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
+		if (user == null) {
 			throw new IllegalStateException("User not logged in when attempting to add new Widget to wishlist.");
 		}
-		User user = entityManager.find(User.class, Currently_Logged_In.getId());
 		MarketListing addedWidget = entityManager.find(MarketListing.class, marketListing.getId());
 		// check if the widget is null
 		if (addedWidget == null) {
@@ -88,8 +94,6 @@ public class UserController {
 		}
 		
 		user.getWishlistedWidgets().add(addedWidget);
-		//update the user
-		this.Currently_Logged_In = user;
 		userRepository.save(user);
 	}
 	
@@ -101,11 +105,11 @@ public class UserController {
 	 */
 	@PostMapping("/remove-from-wishlist")
 	@Transactional
-	public void removeFromWishlist(@Validated MarketListing marketListing) {
-		if (Currently_Logged_In == null) {
+	public void removeFromWishlist(@Validated MarketListing marketListing, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
+		if (user == null) {
 			throw new IllegalStateException("User not logged in when attempting to remove Widget from wishlist.");
 		}
-		User user = entityManager.find(User.class, Currently_Logged_In.getId());
 		MarketListing delWidget = entityManager.find(MarketListing.class, marketListing.getId());
 		// check if the widget is null
 		if (delWidget == null) {
@@ -113,8 +117,6 @@ public class UserController {
 		}
 		
 		user.getWishlistedWidgets().remove(delWidget);
-		// update the user
-		this.Currently_Logged_In = user;
 		userRepository.save(user);
 	}
 	
@@ -126,11 +128,11 @@ public class UserController {
 	 */
 	@PostMapping("/update-paypal-details")
 	@Transactional
-	public void updatePaypalDetails(@Validated Paypal paypal) {
-		if (Currently_Logged_In == null) {
+	public void updatePaypalDetails(@Validated Paypal paypal, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
+		if (user == null) {
 			throw new IllegalStateException("Error updating payment details: User not logged in.");
 		}
-		User user = entityManager.find(User.class, Currently_Logged_In.getId());
 		paypal.setPaypalLogin(passwordEncoder.encode(paypal.getPaypalLogin()));
 		paypal.setPaypalPassword(passwordEncoder.encode(paypal.getPaypalPassword()));
 		if (user.getPaypal() == null) {
@@ -144,7 +146,7 @@ public class UserController {
 			user.setPaypal(curr);
 			entityManager.merge(paypal);
 		}
-		Currently_Logged_In.setPaypal(paypal);
+		user.setPaypal(paypal);
 	}
 	
 	/**
@@ -155,12 +157,12 @@ public class UserController {
 	 */
 	@PostMapping("/update-default-payment-details") 
 	@Transactional
-	public void updateDefaultPaymentDetails(@Validated PaymentDetails details) {
+	public void updateDefaultPaymentDetails(@Validated PaymentDetails details, Principal principal) {
 		System.out.println("update payment details database function called");
-		if (Currently_Logged_In == null) {
+		User user = userService.getUserByUsername(principal.getName());
+		if (user == null) {
 			throw new IllegalStateException("Error updating payment details: User not logged in.");
 		}
-		User user = entityManager.find(User.class, Currently_Logged_In.getId());
 		// Encode fields
 		details.setCardholderName(passwordEncoder.encode(details.getCardholderName()));
 		details.setCardNumber(passwordEncoder.encode(details.getCardNumber()));
@@ -181,18 +183,16 @@ public class UserController {
 			user.setDefaultPaymentDetails(curr);
 			entityManager.merge(user);
 		}
-		Currently_Logged_In.setDefaultPaymentDetails(details);
+		user.setDefaultPaymentDetails(details);
 	}
 	
 	/**
 	 * Deletes the Paypal associated with the user
 	 */
 	@Transactional
-	public void deletePaypal() {
-		User user = entityManager.find(User.class, Currently_Logged_In.getId());
+	public void deletePaypal(User user) {
 		Paypal details = user.getPaypal();
 		user.setPaypal(null);
-		Currently_Logged_In.setPaypal(null);
 		userRepository.save(user);
 		paypalController.deletePaypalDetails(details);
 	}
@@ -201,11 +201,9 @@ public class UserController {
 	 * Deletes the DirectDepositDetails associated with the user
 	 */
 	@Transactional
-	public void deleteDirectDepositDetails() {
-		User user = entityManager.find(User.class, Currently_Logged_In.getId());
+	public void deleteDirectDepositDetails(User user) {
 		DirectDepositDetails details = user.getDirectDepositDetails();
 		user.setDirectDepositDetails(null);
-		Currently_Logged_In.setDirectDepositDetails(null);
 		userRepository.save(user);
 		directDepositDetailsController.deleteDirectDepositDetails(details);
 	}
@@ -220,14 +218,15 @@ public class UserController {
 	 */
 	@GetMapping("/verify-paypal-details")
 	@Transactional
-	public boolean verifyPaypalDetails(@Validated Paypal details) {
-		if (Currently_Logged_In == null) {
+	public boolean verifyPaypalDetails(@Validated Paypal details, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
+		if (user == null) {
 			throw new IllegalStateException("No logged in user when attempting to verify payment details.");
 		}
-		else if (Currently_Logged_In.getPaypal() == null) {
+		else if (user.getPaypal() == null) {
 			throw new IllegalStateException("User does not have an added Paypal for verifying.");
 		}
-		Paypal encodedDetails = Currently_Logged_In.getPaypal();
+		Paypal encodedDetails = user.getPaypal();
 		boolean isValid = true;
 		isValid = isValid && passwordEncoder.matches(details.getPaypalLogin(), encodedDetails.getPaypalLogin());
 		isValid = isValid && passwordEncoder.matches(details.getPaypalPassword(), encodedDetails.getPaypalPassword());
@@ -242,12 +241,12 @@ public class UserController {
 	 */
 	@PostMapping("/update-direct-deposit-details") 
 	@Transactional
-	public void updateDirectDepositDetails(@Validated DirectDepositDetails details) {
+	public void updateDirectDepositDetails(@Validated DirectDepositDetails details, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
 		System.out.println("update direct deposit details database function called");
-		if (Currently_Logged_In == null) {
+		if (user == null) {
 			throw new IllegalStateException("Error updating payment details: User not logged in.");
 		}
-		User user = entityManager.find(User.class, Currently_Logged_In.getId());
 		// Encode fields
 		details.setAccountholderName(passwordEncoder.encode(details.getAccountholderName()));
 		details.setAccountNumber(passwordEncoder.encode(details.getAccountNumber()));
@@ -265,7 +264,7 @@ public class UserController {
 			user.setDirectDepositDetails(curr);
 			entityManager.merge(user);
 		}
-		Currently_Logged_In.setDirectDepositDetails(details);
+		user.setDirectDepositDetails(details);
 	}
 	
 	/**
@@ -279,14 +278,15 @@ public class UserController {
 	 */
 	@GetMapping("/verify-direct-deposit-details")
 	@Transactional
-	public boolean verifyDirectDepositDetails(@Validated DirectDepositDetails details) {
-		if (Currently_Logged_In == null) {
+	public boolean verifyDirectDepositDetails(@Validated DirectDepositDetails details, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
+		if (user == null) {
 			throw new IllegalStateException("No logged in user when attempting to verify payment details.");
 		}
-		else if (Currently_Logged_In.getDirectDepositDetails() == null) {
+		else if (user.getDirectDepositDetails() == null) {
 			throw new IllegalStateException("User does not have an added PaymentDetails for verifying.");
 		}
-		DirectDepositDetails encodedDetails = Currently_Logged_In.getDirectDepositDetails();
+		DirectDepositDetails encodedDetails = user.getDirectDepositDetails();
 		boolean isValid = true;
 		isValid = isValid && passwordEncoder.matches(details.getAccountholderName(), encodedDetails.getAccountholderName());
 		isValid = isValid && passwordEncoder.matches(details.getAccountNumber(), encodedDetails.getAccountNumber());
@@ -370,29 +370,29 @@ public class UserController {
 	}
 	// End of basic CRUD functions
 
-	public User getCurrently_Logged_In() {
+	/* public User getCurrently_Logged_In() {
 		// https://stackoverflow.com/questions/31159075/how-to-find-out-the-currently-logged-in-user-in-spring-boot
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		
 		// added this check to not allow anonymous authentication
-		/*if (!(auth instanceof AnonymousAuthenticationToken) && auth.isAuthenticated()) {
+		if (!(auth instanceof AnonymousAuthenticationToken) && auth.isAuthenticated()) {
 			return Currently_Logged_In;
 		}
-		return null;*/
+		return null;
 		
 		return Currently_Logged_In;
 	}
 
 	public void setCurrently_Logged_In(User currently_Logged_In) {
 		Currently_Logged_In = currently_Logged_In;
-	}
+	} */
 	
-	public SellerRating getSellerRating() {
-		if (Currently_Logged_In == null) {
+	public SellerRating getSellerRating(User user) {
+		if (user == null) {
 			return null;
 		}
 		else {
-			return Currently_Logged_In.getSellerRating();
+			return user.getSellerRating();
 		}
 	}
 	

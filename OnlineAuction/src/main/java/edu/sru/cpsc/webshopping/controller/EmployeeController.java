@@ -18,6 +18,7 @@ import edu.sru.cpsc.webshopping.repository.applicant.ApplicantRepository;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
 import edu.sru.cpsc.webshopping.repository.widgets.WidgetRepository;
 import edu.sru.cpsc.webshopping.service.TicketService;
+import edu.sru.cpsc.webshopping.service.UserService;
 import edu.sru.cpsc.webshopping.util.PreLoad;
 import edu.sru.cpsc.webshopping.util.constants.TimeConstants;
 import edu.sru.cpsc.webshopping.util.enums.MessageType;
@@ -36,6 +37,9 @@ import java.util.stream.StreamSupport;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import java.security.Principal;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -54,6 +58,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequiredArgsConstructor
 public class EmployeeController {
+  @Autowired
+  UserService userService;
   private final UserController userController;
   private final ApplicantDomainController appControl;
   private final MarketListingDomainController market;
@@ -133,9 +139,10 @@ public class EmployeeController {
   }
 
   @RequestMapping({"/statButton"})
-  public String statButton(Model model) {
-    //
-    User user = userController.getCurrently_Logged_In();
+  public String statButton(Model model, Principal principal) {
+
+    String username = principal.getName();
+    User user = userService.getUserByUsername(username);
     if (user.getRole().equals("ROLE_SALES")) {
       setPage("statistics");
     } else {
@@ -160,9 +167,9 @@ public class EmployeeController {
   }
 
   @RequestMapping({"/lookupStatistics"})
-  public String StatisticsButton(
-      @RequestParam String date, @RequestParam StatsCategory category, Model model) {
-    User user = userController.getCurrently_Logged_In();
+  public String StatisticsButton(@RequestParam String date, @RequestParam StatsCategory category, Model model, Principal principal) {
+    String username = principal.getName();
+    User user = userService.getUserByUsername(username);
     if (user.getRole().equals("ROLE_SALES")) {
       setPage2("stats");
     } else {
@@ -296,7 +303,8 @@ public class EmployeeController {
   }
 
   @RequestMapping({"/employee"})
-  public String showEmployeePage(Model model) {
+  public String showEmployeePage(Model model, Principal principal) {
+    User user = userService.getUserByUsername(principal.getName());
     String[] allusernames = new String[getAllUsers().size()];
     setMasterPage("base");
     if (getMasterPage().equals("base")) {
@@ -318,7 +326,6 @@ public class EmployeeController {
     model.addAttribute("widgetNames", allWidgetNames);
 
     User useradd = new User();
-    User user = userController.getCurrently_Logged_In();
     if (user.getRole().contains("ROLE_USER")) {
       setPage("notAuthorized");
       setMasterPage("query");
@@ -337,7 +344,8 @@ public class EmployeeController {
   }
 
   @RequestMapping({"/backButton"})
-  public String backButton(Model model) {
+  public String backButton(Model model, Principal principal) {
+    User user = userService.getUserByUsername(principal.getName());
     String[] allusernames = new String[getAllUsers().size()];
 
     setMasterPage("query");
@@ -354,8 +362,6 @@ public class EmployeeController {
     }
 
     model.addAttribute("widgetNames", allWidgetNames);
-
-    User user = userController.getCurrently_Logged_In();
     if (user.getRole().contains("ROLE_USER")) {
       setPage("notAuthorized");
       setMasterPage("query");
@@ -383,10 +389,10 @@ public class EmployeeController {
 
   @PostMapping({"/createEmployee"})
   public String createEmp(
-      @Valid User useradd, BindingResult result, @RequestParam String role, Model model) {
+      @Valid User useradd, BindingResult result, @RequestParam String role, Model model, Principal principal) {
     setMasterPage("query");
     model.addAttribute("masterPage", getMasterPage());
-    User user2 = userController.getCurrently_Logged_In();
+    User user2 = userService.getUserByUsername(principal.getName());
 
     if (user2.getRole().equals("ROLE_ADMIN")) {
     } else {
@@ -430,11 +436,11 @@ public class EmployeeController {
   }
 
   @RequestMapping({"/createButton"})
-  public String createButton(Model model) {
+  public String createButton(Model model, Principal principal) {
     setPage("create");
     setMasterPage("query");
     model.addAttribute("masterPage", getMasterPage());
-    User user = userController.getCurrently_Logged_In();
+    User user = userService.getUserByUsername(principal.getName());
     if (!user.getRole().equals("ROLE_ADMIN")) {
       setPage("notAuthorized");
       setMasterPage("query");
@@ -452,11 +458,11 @@ public class EmployeeController {
   }
 
   @RequestMapping({"/cancelButton"})
-  public String cancelButton(Model model) {
+  public String cancelButton(Model model, Principal principal) {
     setPage("null");
     setMasterPage("query");
     model.addAttribute("masterPage", getMasterPage());
-    User user = userController.getCurrently_Logged_In();
+    User user = userService.getUserByUsername(principal.getName());
 
     User useradd = new User();
     model.addAttribute("useradd", useradd);
@@ -466,13 +472,13 @@ public class EmployeeController {
   }
 
   @RequestMapping({"/searchButton"})
-  public String searchButton(Model model) {
+  public String searchButton(Model model, Principal principal) {
 
     setPage("search");
     setMasterPage("query");
 
     model.addAttribute("masterPage", getMasterPage());
-    User user = userController.getCurrently_Logged_In();
+    User user = userService.getUserByUsername(principal.getName());
     if (user.getRole().equals("ROLE_ADMIN")
         || user.getRole().equals("ROLE_CUSTOMERSERVICE")
         || user.getRole().equals("ROLE_TECHNICALSERVICE")
@@ -514,11 +520,11 @@ public class EmployeeController {
   }
 
   @RequestMapping({"/searchWidgetButton"})
-  public String searchWidgetButton(Model model) {
+  public String searchWidgetButton(Model model, Principal principal) {
 
     setMasterPage("query");
     model.addAttribute("masterPage", getMasterPage());
-    User user = userController.getCurrently_Logged_In();
+    User user = userService.getUserByUsername(principal.getName());
     if (user.getRole().equals("ROLE_ADMIN")
         || user.getRole().equals("ROLE_CUSTOMERSERVICE")
         || user.getRole().equals("ROLE_TECHNICALSERVICE")
@@ -566,11 +572,11 @@ public class EmployeeController {
   }
 
   @GetMapping({"/widgetsInfo"})
-  public String widgetsInfo(Model model) {
+  public String widgetsInfo(Model model, Principal principal) {
 
     setMasterPage("query");
     model.addAttribute("masterPage", getMasterPage());
-    User user = userController.getCurrently_Logged_In();
+    User user = userService.getUserByUsername(principal.getName());
     if (user.getRole().equals("ROLE_ADMIN")
         || user.getRole().equals("ROLE_CUSTOMERSERVICE")
         || user.getRole().equals("ROLE_TECHNICALSERVICE")
@@ -624,9 +630,9 @@ public class EmployeeController {
   }
   
   @RequestMapping({"/BrowseWidgetsButton"})
-  public String browseWidgetsButton(Model model) {
+  public String browseWidgetsButton(Model model, Principal principal) {
 
-    User user = userController.getCurrently_Logged_In();
+    User user = userService.getUserByUsername(principal.getName());
     model.addAttribute("user", user);
 
     setPage("searchWidgetSellerMarketListing");
@@ -660,9 +666,9 @@ public class EmployeeController {
 
 // Controller for the watchlist
   @RequestMapping({"/Watchlist"})
-  public String watchlist(Model model) {
+  public String watchlist(Model model, Principal principal) {
 
-    User user = userController.getCurrently_Logged_In();
+    User user = userService.getUserByUsername(principal.getName());
     model.addAttribute("user", user);
 
     setPage("watchlistPage");
@@ -702,7 +708,7 @@ public class EmployeeController {
   }
 
   @RequestMapping({"/searchMessageButton"})
-  public String searchMessageButton(Model model) {
+  public String searchMessageButton(Model model, Principal principal) {
     String[] allusernames = new String[getAllUsers().size()];
     for (int i = 0; i < allusernames.length; i++) {
       allusernames[i] = getAllUsers().get(i).getUsername();
@@ -718,7 +724,7 @@ public class EmployeeController {
     setPage("searchMessage");
     setMasterPage("query");
     model.addAttribute("masterPage", getMasterPage());
-    User user = userController.getCurrently_Logged_In();
+    User user = userService.getUserByUsername(principal.getName());
     if (user.getRole().equals("ROLE_ADMIN")
         || user.getRole().equals("ROLE_CUSTOMERSERVICE")
         || user.getRole().equals("ROLE_TECHNICALSERVICE")
@@ -750,8 +756,8 @@ public class EmployeeController {
   }
 
   @GetMapping({"/viewSpecificUserInbox/{id}"})
-  public String viewUserInbox(@PathVariable("id") int id, Model model) {
-    User user = userController.getCurrently_Logged_In();
+  public String viewUserInbox(@PathVariable("id") int id, Model model, Principal principal) {
+    User user = userService.getUserByUsername(principal.getName());
     setMasterPage("result");
     model.addAttribute("masterPage", getMasterPage());
     if (user.getRole().equals("ROLE_ADMIN")
@@ -792,8 +798,8 @@ public class EmployeeController {
   }
 
   @GetMapping({"/viewSpecificUserOutbox/{id}"})
-  public String viewUserOutbox(@PathVariable("id") int id, Model model) {
-    User user = userController.getCurrently_Logged_In();
+  public String viewUserOutbox(@PathVariable("id") int id, Model model, Principal principal) {
+    User user = userService.getUserByUsername(principal.getName());
     setMasterPage("result");
     model.addAttribute("masterPage", getMasterPage());
     if (user.getRole().equals("ROLE_ADMIN")
@@ -830,8 +836,8 @@ public class EmployeeController {
   }
 
   @GetMapping({"/viewSpecificUserTrash/{id}"})
-  public String viewUserTrash(@PathVariable("id") int id, Model model) {
-    User user = userController.getCurrently_Logged_In();
+  public String viewUserTrash(@PathVariable("id") int id, Model model, Principal principal) {
+    User user = userService.getUserByUsername(principal.getName());
     setMasterPage("result");
     model.addAttribute("masterPage", getMasterPage());
     if (user.getRole().equals("ROLE_ADMIN")
@@ -868,11 +874,11 @@ public class EmployeeController {
   }
 
   @RequestMapping({"/searchApplicationsButton"})
-  public String searchApplicationsButton(@RequestParam("id") int id, Model model) {
+  public String searchApplicationsButton(@RequestParam("id") int id, Model model, Principal principal) {
     setPage("applications");
     setMasterPage("query");
     model.addAttribute("masterPage", getMasterPage());
-    User user = userController.getCurrently_Logged_In();
+    User user = userService.getUserByUsername(principal.getName());
     if (user.getRole().equals("ROLE_HIRINGMANAGER")) {
     } else {
       setPage("notAuthorized");
@@ -915,10 +921,10 @@ public class EmployeeController {
   }
 
   @GetMapping({"/searchTickets"})
-  public String searchTickets(Model model) {
+  public String searchTickets(Model model, Principal principal) {
     setMasterPage("query");
     model.addAttribute("masterPage", getMasterPage());
-    User user = userController.getCurrently_Logged_In();
+    User user = userService.getUserByUsername(principal.getName());
     if (user.getRole().equals("ROLE_ADMIN")
         || user.getRole().equals("ROLE_CUSTOMERSERVICE")
         || user.getRole().equals("ROLE_TECHNICALSERVICE")
@@ -951,10 +957,10 @@ public class EmployeeController {
   }
 
   @GetMapping({"/searchTickets/{id}"})
-  public String searchTickets(@PathVariable("id") Long id, Model model) {
+  public String searchTickets(@PathVariable("id") Long id, Model model, Principal principal) {
     setMasterPage("query");
     model.addAttribute("masterPage", getMasterPage());
-    User user = userController.getCurrently_Logged_In();
+    User user = userService.getUserByUsername(principal.getName());
     if (user.getRole().equals("ROLE_ADMIN")
         || user.getRole().equals("ROLE_CUSTOMERSERVICE")
         || user.getRole().equals("ROLE_TECHNICALSERVICE")
@@ -983,8 +989,8 @@ public class EmployeeController {
 
   @PostMapping("/assignTicket/{id}")
   public String getTicketsPage(
-      @PathVariable Long id, @RequestParam(value = "username") String userName, Model model) {
-    User user = userController.getCurrently_Logged_In();
+      @PathVariable Long id, @RequestParam(value = "username") String userName, Model model, Principal principal) {
+    User user = userService.getUserByUsername(principal.getName());
     model.addAttribute("user", user);
 
     User user1 = userRepository.findByUsername(userName);
@@ -1015,8 +1021,8 @@ public class EmployeeController {
 
   @PostMapping("/reply/{id}")
   public String getTicketsPage(
-      @PathVariable Long id, @ModelAttribute Message message, Model model) {
-    User user = userController.getCurrently_Logged_In();
+      @PathVariable Long id, @ModelAttribute Message message, Model model, Principal principal) {
+    User user = userService.getUserByUsername(principal.getName());
     model.addAttribute("user", user);
 
     Ticket ticket = ticketService.findById(id).get();
@@ -1046,8 +1052,8 @@ public class EmployeeController {
   }
 
   @PostMapping("/resolveTicket/{id}")
-  public String resolveTicket(@PathVariable Long id, Model model) {
-    User user = userController.getCurrently_Logged_In();
+  public String resolveTicket(@PathVariable Long id, Model model, Principal principal) {
+    User user = userService.getUserByUsername(principal.getName());
     model.addAttribute("user", user);
 
     Ticket ticket = ticketService.getTicketById(id);
@@ -1075,8 +1081,8 @@ public class EmployeeController {
   }
 
   @GetMapping({"/editUserButton/{id}"})
-  public String editUserButton(@PathVariable("id") int id, Model model) {
-    User user = userController.getCurrently_Logged_In();
+  public String editUserButton(@PathVariable("id") int id, Model model, Principal principal) {
+    User user = userService.getUserByUsername(principal.getName());
     setMasterPage("result");
     model.addAttribute("masterPage", getMasterPage());
     if (user.getRole().equals("ROLE_ADMIN")
@@ -1123,10 +1129,10 @@ public class EmployeeController {
       @RequestParam("dispName") String dispName,
       @RequestParam("userDesc") String userDesc,
       @RequestParam("creationDate") String creationDate,
-      Model model) {
+      Model model, Principal principal) {
     setMasterPage("result");
     model.addAttribute("masterPage", getMasterPage());
-    User user = userController.getCurrently_Logged_In();
+    User user = userService.getUserByUsername(principal.getName());
     if (user.getRole().equals("ROLE_ADMIN")
         || user.getRole().equals("ROLE_CUSTOMERSERVICE")
         || user.getRole().equals("ROLE_TECHNICALSERVICE")
@@ -1212,10 +1218,10 @@ public class EmployeeController {
       @RequestParam("marketId") String marketId,
       @RequestParam("marketQty") String marketQty,
       @RequestParam("marketPrice") String marketPrice,
-      Model model) {
+      Model model, Principal principal) {
     setMasterPage("result");
     model.addAttribute("masterPage", getMasterPage());
-    User user2 = userController.getCurrently_Logged_In();
+    User user2 = userService.getUserByUsername(principal.getName());
     if (user2.getRole().equals("ROLE_ADMIN")
         || user2.getRole().equals("ROLE_CUSTOMERSERVICE")
         || user2.getRole().equals("ROLE_TECHNICALSERVICE")) {
@@ -1338,11 +1344,11 @@ public class EmployeeController {
 
   @RequestMapping({"/escalateApplication"})
   public String escalateApplication(
-      @RequestParam("id") int id, @RequestParam("id2") int id2, Model model) {
+      @RequestParam("id") int id, @RequestParam("id2") int id2, Model model, Principal principal) {
     setPage("applications");
     setMasterPage("query");
     model.addAttribute("masterPage", getMasterPage());
-    User user = userController.getCurrently_Logged_In();
+    User user = userService.getUserByUsername(principal.getName());
     if (user.getRole().equals("ROLE_HIRINGMANAGER")) {
     } else {
       setPage("notAuthorized");
@@ -1409,7 +1415,7 @@ public class EmployeeController {
   }
 
   @RequestMapping({"/searchUser"})
-  public String searchuser(@RequestParam("userName") String userName, @RequestParam("filterUser") String filterUser, Model model) {
+  public String searchuser(@RequestParam("userName") String userName, @RequestParam("filterUser") String filterUser, Model model, Principal principal) {
     String[] allusernames = new String[getAllUsers().size()];
     for (int i = 0; i < allusernames.length; i++) {
       allusernames[i] = getAllUsers().get(i).getUsername();
@@ -1422,7 +1428,7 @@ public class EmployeeController {
     }
 
     model.addAttribute("widgetNames", allWidgetNames);
-    User user = userController.getCurrently_Logged_In();
+    User user = userService.getUserByUsername(principal.getName());
     setMasterPage("query");
     model.addAttribute("masterPage", getMasterPage());
     if (user.getRole().equals("ROLE_ADMIN")
@@ -1497,7 +1503,7 @@ public class EmployeeController {
   }
 
   @RequestMapping({"/searchUser/{id}"})
-  public String searchUserById(@PathVariable("id") int id, Model model) {
+  public String searchUserById(@PathVariable("id") int id, Model model, Principal principal) {
     String[] allusernames = new String[getAllUsers().size()];
     for (int i = 0; i < allusernames.length; i++) {
       allusernames[i] = getAllUsers().get(i).getUsername();
@@ -1510,7 +1516,7 @@ public class EmployeeController {
     }
 
     model.addAttribute("widgetNames", allWidgetNames);
-    User user = userController.getCurrently_Logged_In();
+    User user = userService.getUserByUsername(principal.getName());
     setMasterPage("query");
     model.addAttribute("masterPage", getMasterPage());
     if (user.getRole().equals("ROLE_ADMIN")
@@ -1543,7 +1549,7 @@ public class EmployeeController {
   }
 
   @GetMapping({"/viewListing/{id}"})
-  public String searchMarketListingButton(@PathVariable("id") int id, Model model) {
+  public String searchMarketListingButton(@PathVariable("id") int id, Model model, Principal principal) {
     String[] allusernames = new String[getAllUsers().size()];
     for (int i = 0; i < allusernames.length; i++) {
       allusernames[i] = getAllUsers().get(i).getUsername();
@@ -1556,7 +1562,7 @@ public class EmployeeController {
     }
 
     model.addAttribute("widgetNames", allWidgetNames);
-    User user = userController.getCurrently_Logged_In();
+    User user = userService.getUserByUsername(principal.getName());
     setMasterPage("result");
     model.addAttribute("masterPage", getMasterPage());
     if (user.getRole().equals("ROLE_ADMIN")
@@ -1608,7 +1614,7 @@ public class EmployeeController {
   }
 
   @GetMapping({"/viewOneListing/{id}"})
-  public String searchListing(@PathVariable("id") int id, Model model) {
+  public String searchListing(@PathVariable("id") int id, Model model, Principal principal) {
     String[] allusernames = new String[getAllUsers().size()];
     for (int i = 0; i < allusernames.length; i++) {
       allusernames[i] = getAllUsers().get(i).getUsername();
@@ -1621,7 +1627,7 @@ public class EmployeeController {
     }
 
     model.addAttribute("widgetNames", allWidgetNames);
-    User user = userController.getCurrently_Logged_In();
+    User user = userService.getUserByUsername(principal.getName());
     setMasterPage("result");
     model.addAttribute("masterPage", getMasterPage());
     if (user.getRole().equals("ROLE_ADMIN")
@@ -1674,7 +1680,7 @@ public class EmployeeController {
   }
 
   @RequestMapping({"/viewWidgetListing"})
-  public String searchOneListing(@RequestParam("name") String name, @RequestParam("filterSearch") String filter, Model model) {
+  public String searchOneListing(@RequestParam("name") String name, @RequestParam("filterSearch") String filter, Model model, Principal principal) {
     getAllMarketListings().clear();
     getAllWidgets().clear();
     getAllSellers().clear();
@@ -1709,7 +1715,7 @@ public class EmployeeController {
     model.addAttribute("widgetNames", allWidgetNames);
     model.addAttribute("widgetDesc", allWidgetDesc);
     model.addAttribute("widgetCate", allWidgetCate);
-    User user = userController.getCurrently_Logged_In();
+    User user = userService.getUserByUsername(principal.getName());
     setMasterPage("query");
     model.addAttribute("masterPage", getMasterPage());
     if (user.getRole().equals("ROLE_ADMIN")

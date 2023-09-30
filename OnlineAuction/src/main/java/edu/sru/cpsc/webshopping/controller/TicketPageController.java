@@ -8,6 +8,7 @@ import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 import edu.sru.cpsc.webshopping.repository.ticket.TicketRepository;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
+import edu.sru.cpsc.webshopping.service.UserService;
 import edu.sru.cpsc.webshopping.util.constants.TimeConstants;
 import edu.sru.cpsc.webshopping.util.enums.MessageType;
 import edu.sru.cpsc.webshopping.util.enums.TicketState;
@@ -21,6 +22,10 @@ import java.util.stream.StreamSupport;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+
+import java.security.Principal;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,10 +45,13 @@ public class TicketPageController {
   private final TicketRepository ticketRepository;
   private final EmailController emailController;
 
+  @Autowired
+  private UserService userService;
+
 
   @GetMapping("/tickets")
-  public String getTicketsPage(Model model) {
-    User user = userController.getCurrently_Logged_In();
+  public String getTicketsPage(Model model, Principal principal) {
+    User user = userService.getUserByUsername(principal.getName());
     model.addAttribute("user", user);
 
     Iterable<Ticket> tickets = ticketRepository.findAllByCreatedBy(user);
@@ -55,8 +63,8 @@ public class TicketPageController {
   }
 
   @GetMapping("/tickets/{id}")
-  public String getTicketDetailsPage(@PathVariable("id") Long id, Model model) {
-    User user = userController.getCurrently_Logged_In();
+  public String getTicketDetailsPage(@PathVariable("id") Long id, Model model, Principal principal) {
+    User user = userService.getUserByUsername(principal.getName());
     model.addAttribute("user", user);
 
     Ticket ticket = ticketRepository.findById(id).get();
@@ -69,8 +77,8 @@ public class TicketPageController {
   }
 
   @PostMapping("/reopenTicket/{id}")
-  public String reopenTicket(@PathVariable("id") Long id, Model model) {
-    User user = userController.getCurrently_Logged_In();
+  public String reopenTicket(@PathVariable("id") Long id, Model model, Principal principal) {
+    User user = userService.getUserByUsername(principal.getName());
     model.addAttribute("user", user);
 
     Ticket ticket = ticketRepository.findById(id).get();
@@ -89,8 +97,8 @@ public class TicketPageController {
   }
 
   @GetMapping("/createTickets")
-  public String createTicketsPage(Model model) {
-    User user = userController.getCurrently_Logged_In();
+  public String createTicketsPage(Model model, Principal principal) {
+    User user = userService.getUserByUsername(principal.getName());
     model.addAttribute("user", user);
 
     Ticket ticket = new Ticket();
@@ -106,8 +114,8 @@ public class TicketPageController {
   }
   
   @PostMapping("/createTickets")
-  public String createTickets(Model model, Ticket ticket) {
-    User user = userController.getCurrently_Logged_In();
+  public String createTickets(Model model, Ticket ticket, Principal principal) {
+    User user = userService.getUserByUsername(principal.getName());
     model.addAttribute("user", user);
     model.addAttribute("ticket", ticket);
 
@@ -135,13 +143,13 @@ public class TicketPageController {
   /**
   @GetMapping("/refund")
   public String showRefundPage(Model model, Model widgetModel,Model listingModel, String tempSearch) {
-	  User user = userController.getCurrently_Logged_In();
+	  User user = userService.getUserByUsername(principal.getName());
 	  model.addAttribute("user", user);
 	  model.addAttribute("page", "refund");
 	  widgetModel.addAttribute("widgets", widgetController.getAllWidgets());
 	  listingModel.addAttribute("listings", marketController.getAllListings());
 	  Iterable<Transaction> purchases =
-			  transController.getUserPurchases(userController.getCurrently_Logged_In());
+			  transController.getUserPurchases(user);
 	  listingModel.addAttribute("purchases", purchases);
 	  
       return "refund";
@@ -150,8 +158,8 @@ public class TicketPageController {
 
   @PostMapping("/replyTicket/{id}")
   public String getTicketsPage(
-      @PathVariable Long id, @ModelAttribute Message message, Model model) {
-    User user = userController.getCurrently_Logged_In();
+      @PathVariable Long id, @ModelAttribute Message message, Model model, Principal principal) {
+    User user = userService.getUserByUsername(principal.getName());
     model.addAttribute("user", user);
 
     Ticket ticket = ticketRepository.findById(id).get();

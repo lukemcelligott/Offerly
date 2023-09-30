@@ -1,7 +1,9 @@
 package edu.sru.cpsc.webshopping.controller;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import edu.sru.cpsc.webshopping.domain.user.Message;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
+import edu.sru.cpsc.webshopping.service.UserService;
 
 @Controller
 public class MessagePageController {
@@ -30,6 +33,9 @@ public class MessagePageController {
 	private String page4;
 	private int[] id;
 
+	@Autowired
+	private UserService userService;
+
 	
 	public MessagePageController(UserController userController,MessageDomainController msgcontrol,EmailController emailController,UserRepository repo) {
 		this.userController = userController;
@@ -41,10 +47,9 @@ public class MessagePageController {
 	
 	
 	 @RequestMapping({"/messages"})
-	    public String returnMessages(Model model) {
-		 
-		 	
-			User user = userController.getCurrently_Logged_In();
+	    public String returnMessages(Model model, Principal principal) {
+			
+			User user = userService.getUserByUsername(principal.getName());
 		
 			setViewMessage(false);
 			
@@ -84,12 +89,6 @@ public class MessagePageController {
 			
 					*/
 					
-			
-			
-					
-					
-			
-			
 			setPage("messages");
 			
 			model.addAttribute("view",getViewMessage());
@@ -99,276 +98,273 @@ public class MessagePageController {
 	
 	        return "messages";
 	 }
-	 @RequestMapping({"/outbox"})
-	    public String returnSent(Model model) {
-		 User user = userController.getCurrently_Logged_In();
-			setMailbox(msgcontrol.getUserOutbox(user));
-			Message[] tempBox = getMailbox();
-			Message[] tempBox2 = getMailbox();
+	
+	@RequestMapping({"/outbox"})
+	public String returnSent(Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
+		setMailbox(msgcontrol.getUserOutbox(user));
+		Message[] tempBox = getMailbox();
+		Message[] tempBox2 = getMailbox();
 
-			setPage("outbox");
-			setViewMessage(false);
-			model.addAttribute("mailbox",tempBox );
-			model.addAttribute("view",getViewMessage());
-			model.addAttribute("page",page);
-			model.addAttribute("user",user);
-
-			
-	        return "messages";
-	    }
-	 
-	 @RequestMapping({"/trashbox"})
-	    public String returnTrash(Model model) {
-		 User user = userController.getCurrently_Logged_In();
-			setMailbox(msgcontrol.getUserTrash(user));
-			Message[] tempBox = getMailbox();
-			Message[] tempBox2 = getMailbox();
-
-			setPage("trashBox");
-			setViewMessage(false);
-			model.addAttribute("mailbox",getMailbox());
-			//model.addAttribute("mailbox",tempBox );
-			model.addAttribute("view",getViewMessage());
-			model.addAttribute("page",page);
-			model.addAttribute("user",user);
-
-	        return "messages";
-	    }
-	 
-	 @RequestMapping({"/spambox"})
-	    public String returnSpam(Model model) {
-		 User user = userController.getCurrently_Logged_In();
-			setMailbox(msgcontrol.getUserSpam(user));
-			Message[] tempBox = getMailbox();
-			Message[] tempBox2 = getMailbox();
-
-			setPage("spamBox");
-			setViewMessage(false);
-			model.addAttribute("mailbox",getMailbox());
-			//model.addAttribute("mailbox",tempBox );
-			model.addAttribute("view",getViewMessage());
-			model.addAttribute("page",page);
-			model.addAttribute("user",user);
-
-	        return "messages";
-	    }
-	 
-   @RequestMapping({"/sendmail"})
-   public String sendMessage(@RequestParam("recipient") String name, @RequestParam("message") String content,@RequestParam("subject") String subject,Model model) {
+		setPage("outbox");
+		setViewMessage(false);
+		model.addAttribute("mailbox",tempBox );
+		model.addAttribute("view",getViewMessage());
+		model.addAttribute("page",page);
+		model.addAttribute("user",user);
 
 		
-		User user = userController.getCurrently_Logged_In();
-		User receiver = userController.getUserByUsername(name);
+		return "messages";
+	}
+	 
+	@RequestMapping({"/trashbox"})
+	public String returnTrash(Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
+		setMailbox(msgcontrol.getUserTrash(user));
+		Message[] tempBox = getMailbox();
+		Message[] tempBox2 = getMailbox();
 
-			model.addAttribute("page",getPage());
-			model.addAttribute("user",user);
-			model.addAttribute("mailbox",getMailbox() );
-			
-			setViewMessage(false);
+		setPage("trashBox");
+		setViewMessage(false);
+		model.addAttribute("mailbox",getMailbox());
+		//model.addAttribute("mailbox",tempBox );
+		model.addAttribute("view",getViewMessage());
+		model.addAttribute("page",page);
+		model.addAttribute("user",user);
+
+		return "messages";
+	}
+	 
+	@RequestMapping({"/spambox"})
+	public String returnSpam(Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
+		setMailbox(msgcontrol.getUserSpam(user));
+		Message[] tempBox = getMailbox();
+		Message[] tempBox2 = getMailbox();
+
+		setPage("spamBox");
+		setViewMessage(false);
+		model.addAttribute("mailbox",getMailbox());
+		//model.addAttribute("mailbox",tempBox );
+		model.addAttribute("view",getViewMessage());
+		model.addAttribute("page",page);
+		model.addAttribute("user",user);
+
+		return "messages";
+	}
+	 
+   @RequestMapping({"/sendmail"})
+   public String sendMessage(@RequestParam("recipient") String name, @RequestParam("message") String content,@RequestParam("subject") String subject,Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
+		User receiver = userController.getUserByUsername(name);
+		model.addAttribute("page",getPage());
+		model.addAttribute("user",user);
+		model.addAttribute("mailbox",getMailbox() );
+		
+		setViewMessage(false);
+		model.addAttribute("view",getViewMessage());
+		if(userController.getUserByUsername(name) == null) {
+			setPage2("fail");
+			model.addAttribute("page2",getPage2());
+		if(getPage().contains("reply")) {
+			setPage3("fail");
+			model.addAttribute("page3",getPage3());
+			model.addAttribute("msg", getTempMessage().getContent());
+			model.addAttribute("sentFrom", getTempMessage().getSender());
+			model.addAttribute("sentDate", getTempMessage().getMsgDate());
+			model.addAttribute("sentSubject", getTempMessage().getSubject());
+			setViewMessage(true);
 			model.addAttribute("view",getViewMessage());
-		    if(userController.getUserByUsername(name) == null) {
-		    	setPage2("fail");
-		    	model.addAttribute("page2",getPage2());
-		    if(getPage().contains("reply")) {
-		    	setPage3("fail");
-		    	model.addAttribute("page3",getPage3());
+		}
+			return "messages";   	
+			}
+		else {
+			if(getPage().contains("reply")) {
+				setPage3("sent");
+				model.addAttribute("page3",getPage3());
 				model.addAttribute("msg", getTempMessage().getContent());
 				model.addAttribute("sentFrom", getTempMessage().getSender());
 				model.addAttribute("sentDate", getTempMessage().getMsgDate());
 				model.addAttribute("sentSubject", getTempMessage().getSubject());
-		    	setViewMessage(true);
-		    	model.addAttribute("view",getViewMessage());
-		    }
-		    	return "messages";   	
-		       }
-		    else {
-			    if(getPage().contains("reply")) {
-			    	setPage3("sent");
-			    	model.addAttribute("page3",getPage3());
-					model.addAttribute("msg", getTempMessage().getContent());
-					model.addAttribute("sentFrom", getTempMessage().getSender());
-					model.addAttribute("sentDate", getTempMessage().getMsgDate());
-					model.addAttribute("sentSubject", getTempMessage().getSubject());
-			    	setViewMessage(true);
-			    	model.addAttribute("view",getViewMessage());
-			    }
-		    	setPage2("sent");
-		    	model.addAttribute("page2",getPage2());
-		    }
-		    if(subject.length() == 0)
-		    {
-		    	subject = "<no subject>";
-		    }
-		    if(content.length() == 0)
-		    {
-		    	content = "<no content>";
-		    }
-			Message message = new Message();
-			message.setOwner(user);
-			message.setSender(user.getUsername());
-			message.setContent(content);
-			message.setSubject(subject);
-			message.setMsgDate();
-			message.setReceiverName(name);
-			message.setReceiver(receiver);
-			msgcontrol.addMessage(message);
-			user = userController.getCurrently_Logged_In();
-			if(getPage().contains("home")) {
-				setMailbox(msgcontrol.getUserInbox(user));
+				setViewMessage(true);
+				model.addAttribute("view",getViewMessage());
 			}
-			if(getPage().contains("outbox")) {
-				setMailbox(msgcontrol.getUserOutbox(user));
-			}
-			if(getPage().contains("trash")) {
-				setMailbox(msgcontrol.getUserTrash(user));
-			}
-			if(getPage().contains("spam")) {
-				setMailbox(msgcontrol.getUserSpam(user));
-			}
-			
-			//setMailbox(user.)
-			model.addAttribute("mailbox",getMailbox());
-			model.addAttribute("page",getPage());
-			model.addAttribute("user",user);
+			setPage2("sent");
+			model.addAttribute("page2",getPage2());
+		}
+		if(subject.length() == 0)
+		{
+			subject = "<no subject>";
+		}
+		if(content.length() == 0)
+		{
+			content = "<no content>";
+		}
+		Message message = new Message();
+		message.setOwner(user);
+		message.setSender(user.getUsername());
+		message.setContent(content);
+		message.setSubject(subject);
+		message.setMsgDate();
+		message.setReceiverName(name);
+		message.setReceiver(receiver);
+		msgcontrol.addMessage(message);
+		if(getPage().contains("home")) {
+			setMailbox(msgcontrol.getUserInbox(user));
+		}
+		if(getPage().contains("outbox")) {
+			setMailbox(msgcontrol.getUserOutbox(user));
+		}
+		if(getPage().contains("trash")) {
+			setMailbox(msgcontrol.getUserTrash(user));
+		}
+		if(getPage().contains("spam")) {
+			setMailbox(msgcontrol.getUserSpam(user));
+		}
+		
+		//setMailbox(user.)
+		model.addAttribute("mailbox",getMailbox());
+		model.addAttribute("page",getPage());
+		model.addAttribute("user",user);
 
-			emailController.messageEmail(receiver,user,message);
-       return "messages";
+		emailController.messageEmail(receiver,user,message);
+    	return "messages";
    }
+
    @RequestMapping({"/trash"})
-   public String sendToTrash(@RequestParam("id") int[] id,Model model) {
-	   
-	   User user = userController.getCurrently_Logged_In();
-		   for(int i = 0; i < id.length; i++)
-		   {
-			   
-			   Message tempMessage = msgcontrol.getMessage(id[i]);
-			   msgcontrol.addMessageToTrash(tempMessage, user);
+	public String sendToTrash(@RequestParam("id") int[] id,Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
+		for(int i = 0; i < id.length; i++)
+		{
+			Message tempMessage = msgcontrol.getMessage(id[i]);
+			msgcontrol.addMessageToTrash(tempMessage, user);
+		}
+		setPage("home");
+		setPage4("sentToTrash");
+		//setMailbox(msgcontrol.getUserTrash(user));
+		Message[] tempBox = getMailbox();
+		Message[] tempBox2 = getMailbox();
 
-			   }
-		   setPage("home");
-		   setPage4("sentToTrash");
-			//setMailbox(msgcontrol.getUserTrash(user));
-			Message[] tempBox = getMailbox();
-			Message[] tempBox2 = getMailbox();
-
-			//setPage("trashBox");
-			setViewMessage(false);
-			model.addAttribute("mailbox",getMailbox());
-			//model.addAttribute("mailbox",tempBox );
-			model.addAttribute("view",getViewMessage());
-			model.addAttribute("page4",getPage4());
-			model.addAttribute("page",getPage());
-			model.addAttribute("user",user);
-return "messages";
+		//setPage("trashBox");
+		setViewMessage(false);
+		model.addAttribute("mailbox",getMailbox());
+		//model.addAttribute("mailbox",tempBox );
+		model.addAttribute("view",getViewMessage());
+		model.addAttribute("page4",getPage4());
+		model.addAttribute("page",getPage());
+		model.addAttribute("user",user);
+		return "messages";
    }
    
-   @RequestMapping({"/recoverFromTrash"})
-   public String recoverFromTrash(@RequestParam("id") int[] id,Model model) {
-	   User user = userController.getCurrently_Logged_In();
-		   for(int i = 0; i < id.length; i++)
-		   {
-			   
-			   Message tempMessage = msgcontrol.getMessage(id[i]);
-			   msgcontrol.restoreTrash(tempMessage, user);
+	@RequestMapping({"/recoverFromTrash"})
+	public String recoverFromTrash(@RequestParam("id") int[] id,Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
+		for(int i = 0; i < id.length; i++)
+		{
+			
+			Message tempMessage = msgcontrol.getMessage(id[i]);
+			msgcontrol.restoreTrash(tempMessage, user);
 
-			   }
-		   
-			setMailbox(msgcontrol.getUserTrash(user));
-			Message[] tempBox = getMailbox();
-			Message[] tempBox2 = getMailbox();
+		}
+		
+		setMailbox(msgcontrol.getUserTrash(user));
+		Message[] tempBox = getMailbox();
+		Message[] tempBox2 = getMailbox();
 
-			setPage("trashBox");
-			setPage4("recoverFromTrash");
-			setViewMessage(false);
-			model.addAttribute("mailbox",getMailbox());
-			//model.addAttribute("mailbox",tempBox );
-			model.addAttribute("view",getViewMessage());
-			model.addAttribute("page",getPage());
-			model.addAttribute("page4",getPage4());
-			model.addAttribute("user",user);
-		   return "messages";	   
-   }
+		setPage("trashBox");
+		setPage4("recoverFromTrash");
+		setViewMessage(false);
+		model.addAttribute("mailbox",getMailbox());
+		//model.addAttribute("mailbox",tempBox );
+		model.addAttribute("view",getViewMessage());
+		model.addAttribute("page",getPage());
+		model.addAttribute("page4",getPage4());
+		model.addAttribute("user",user);
+		return "messages";	   
+	}
+
    @RequestMapping({"/trashDelete"})
-   public String sendToTrashDelete(@RequestParam("id") int[] id,Model model) {
-	   User user = userController.getCurrently_Logged_In();
-		   for(int i = 0; i < id.length; i++)
-		   {
-			   
-			   Message tempMessage = msgcontrol.getMessage(id[i]);
-			   msgcontrol.deleteFromTrash(tempMessage, user);
+   public String sendToTrashDelete(@RequestParam("id") int[] id,Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
+		for(int i = 0; i < id.length; i++)
+		{
+			
+			Message tempMessage = msgcontrol.getMessage(id[i]);
+			msgcontrol.deleteFromTrash(tempMessage, user);
 
-			   }
-		   
-			setMailbox(msgcontrol.getUserTrash(user));
-			Message[] tempBox = getMailbox();
-			Message[] tempBox2 = getMailbox();
-			setPage4("deleteFromTrash");
-			setPage("trashBox");
-			setViewMessage(false);
-			model.addAttribute("mailbox",getMailbox());
-			//model.addAttribute("mailbox",tempBox );
-			model.addAttribute("view",getViewMessage());
-			model.addAttribute("page",getPage());
-			model.addAttribute("page4",getPage4());
-			model.addAttribute("user",user);
-return "messages";
+		}
+		
+		setMailbox(msgcontrol.getUserTrash(user));
+		Message[] tempBox = getMailbox();
+		Message[] tempBox2 = getMailbox();
+		setPage4("deleteFromTrash");
+		setPage("trashBox");
+		setViewMessage(false);
+		model.addAttribute("mailbox",getMailbox());
+		//model.addAttribute("mailbox",tempBox );
+		model.addAttribute("view",getViewMessage());
+		model.addAttribute("page",getPage());
+		model.addAttribute("page4",getPage4());
+		model.addAttribute("user",user);
+		return "messages";
    }
   
    @RequestMapping({"/recoverFromSpam"})
-   public String recoverFromSpam(@RequestParam("id") int[] id,Model model) {
-	   User user = userController.getCurrently_Logged_In();
-		   for(int i = 0; i < id.length; i++)
-		   {
-			   
-			   Message tempMessage = msgcontrol.getMessage(id[i]);
-			   msgcontrol.restoreSpam(tempMessage, user);
+   public String recoverFromSpam(@RequestParam("id") int[] id,Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
+		for(int i = 0; i < id.length; i++)
+		{
+			
+			Message tempMessage = msgcontrol.getMessage(id[i]);
+			msgcontrol.restoreSpam(tempMessage, user);
 
-			   }
-			setMailbox(msgcontrol.getUserSpam(user));
-			Message[] tempBox = getMailbox();
-			Message[] tempBox2 = getMailbox();
+			}
+		setMailbox(msgcontrol.getUserSpam(user));
+		Message[] tempBox = getMailbox();
+		Message[] tempBox2 = getMailbox();
 
-			setPage("spamBox");
-			setPage4("recoverFromSpam");
-			setViewMessage(false);
-			model.addAttribute("mailbox",getMailbox());
-			//model.addAttribute("mailbox",tempBox );
-			model.addAttribute("view",getViewMessage());
-			model.addAttribute("page",getPage());
-			model.addAttribute("page4",getPage4());
-			model.addAttribute("user",user);
-		   return "messages";	   
+		setPage("spamBox");
+		setPage4("recoverFromSpam");
+		setViewMessage(false);
+		model.addAttribute("mailbox",getMailbox());
+		//model.addAttribute("mailbox",tempBox );
+		model.addAttribute("view",getViewMessage());
+		model.addAttribute("page",getPage());
+		model.addAttribute("page4",getPage4());
+		model.addAttribute("user",user);
+		return "messages";	   
    }
+
    @RequestMapping({"/spamDelete"})
-   public String sendToSpamDelete(@RequestParam("id") int[] id,Model model) {
-	   User user = userController.getCurrently_Logged_In();
-		   for(int i = 0; i < id.length; i++)
-		   {
-			   
-			   Message tempMessage = msgcontrol.getMessage(id[i]);
-			   msgcontrol.deleteFromSpam(tempMessage, user);
+   public String sendToSpamDelete(@RequestParam("id") int[] id,Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
+		for(int i = 0; i < id.length; i++)
+		{
+			
+			Message tempMessage = msgcontrol.getMessage(id[i]);
+			msgcontrol.deleteFromSpam(tempMessage, user);
 
-			   }
-			setMailbox(msgcontrol.getUserSpam(user));
-			Message[] tempBox = getMailbox();
-			Message[] tempBox2 = getMailbox();
+		}
+		setMailbox(msgcontrol.getUserSpam(user));
+		Message[] tempBox = getMailbox();
+		Message[] tempBox2 = getMailbox();
 
-			setPage("spamBox");
-			setPage4("deleteFromSpam");
-			setViewMessage(false);
-			model.addAttribute("mailbox",getMailbox());
-			//model.addAttribute("mailbox",tempBox );
-			model.addAttribute("view",getViewMessage());
-			model.addAttribute("page",getPage());
-			model.addAttribute("page4",getPage4());
-			model.addAttribute("user",user);
-return "messages";
+		setPage("spamBox");
+		setPage4("deleteFromSpam");
+		setViewMessage(false);
+		model.addAttribute("mailbox",getMailbox());
+		//model.addAttribute("mailbox",tempBox );
+		model.addAttribute("view",getViewMessage());
+		model.addAttribute("page",getPage());
+		model.addAttribute("page4",getPage4());
+		model.addAttribute("user",user);
+		return "messages";
    }
    
    @RequestMapping({"/replyButton"})
-   public String replyButton(Model model) {
+   public String replyButton(Model model, Principal principal) {
 	   setPage("reply");
-	   User user = userController.getCurrently_Logged_In();
+	   User user = userService.getUserByUsername(principal.getName());
 		model.addAttribute("msg", getTempMessage().getContent());
 		model.addAttribute("sentFrom", getTempMessage().getSender());
 		model.addAttribute("sentDate", getTempMessage().getMsgDate());
@@ -378,39 +374,39 @@ return "messages";
 		model.addAttribute("page2",getPage2());
 		model.addAttribute("user",user);
 
-return "messages";
+		return "messages";
    }
 
 
    @RequestMapping({"/spam"})
-   public String sendToSpam(@RequestParam("id") int[] id,Model model) {
+   public String sendToSpam(@RequestParam("id") int[] id,Model model, Principal principal) {
 
-	   User user = userController.getCurrently_Logged_In();
-		   for(int i = 0; i < id.length; i++)
-		   {
-			   
-			   Message tempMessage = msgcontrol.getMessage(id[i]);
-			   msgcontrol.addMessageToSpam(tempMessage, user,"Spam","none");
+		User user = userService.getUserByUsername(principal.getName());
+		for(int i = 0; i < id.length; i++)
+		{
+			
+			Message tempMessage = msgcontrol.getMessage(id[i]);
+			msgcontrol.addMessageToSpam(tempMessage, user,"Spam","none");
 
-			   }
-			//setMailbox(msgcontrol.getUserSpam(user));
-			Message[] tempBox = getMailbox();
-			Message[] tempBox2 = getMailbox();
+			}
+		//setMailbox(msgcontrol.getUserSpam(user));
+		Message[] tempBox = getMailbox();
+		Message[] tempBox2 = getMailbox();
 
-			setPage4("sentToSpam");
-			setViewMessage(false);
-			model.addAttribute("mailbox",getMailbox());
-			//model.addAttribute("mailbox",tempBox );
-			model.addAttribute("view",getViewMessage());
-			model.addAttribute("page",getPage());
-			model.addAttribute("page4",getPage4());
-			model.addAttribute("user",user);
-return "messages";
+		setPage4("sentToSpam");
+		setViewMessage(false);
+		model.addAttribute("mailbox",getMailbox());
+		//model.addAttribute("mailbox",tempBox );
+		model.addAttribute("view",getViewMessage());
+		model.addAttribute("page",getPage());
+		model.addAttribute("page4",getPage4());
+		model.addAttribute("user",user);
+		return "messages";
    }
+
    @GetMapping({"/openMessage/{id}"})
-   public String openMessage(@PathVariable("id") int id,Model model) {
-		User user = new User();
-		user = userController.getCurrently_Logged_In();
+   public String openMessage(@PathVariable("id") int id,Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
 		setViewMessage(true);
 		setTempMessage(msgcontrol.getMessage(id));
 		model.addAttribute("view",getViewMessage());
@@ -421,13 +417,12 @@ return "messages";
 		model.addAttribute("user", user);
        return "messages";
    }
+
    @GetMapping({"/closeMessage"})
    public String closeMessage(Model model) {
-		User user = new User();
-		user = userController.getCurrently_Logged_In();
 		setViewMessage(false);
 		model.addAttribute("view",getViewMessage());
-       return "redirect:messages";
+       	return "redirect:messages";
    }
 	
 	public String getPage() {

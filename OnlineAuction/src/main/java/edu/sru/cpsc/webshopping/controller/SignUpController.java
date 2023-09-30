@@ -19,6 +19,7 @@ import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 import edu.sru.cpsc.webshopping.repository.billing.PaymentDetailsRepository;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
+import edu.sru.cpsc.webshopping.service.UserService;
 import edu.sru.cpsc.webshopping.util.PreLoad;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -42,6 +43,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
+import java.security.Principal;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -64,6 +66,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 // @RequestMapping(value = "/user")
 public class SignUpController {
   @Autowired private PasswordEncoder passwordEncoder;
+  @Autowired private UserService userService;
   private UserController userController;
   private UserRepository userRepository;
   private WidgetController widgetController;
@@ -306,7 +309,7 @@ public class SignUpController {
     	}
     	model.addAttribute("message", "User Registered successfully!");
     	setPage("success");
-    	userController.setCurrently_Logged_In(user);
+    	//userController.setCurrently_Logged_In(user);
     	model.addAttribute("page", getPage());
     	if (user.getRole() != "ROLE_ADMIN") {
     		email.verificationEmail(user, util.randomStringGenerator());
@@ -350,14 +353,14 @@ public class SignUpController {
     	System.out.println("line 341 " + user);
     	User userLogin = userController.getUserByUsername(user.getUsername());
     	System.out.println("line 343 " + userLogin);
-    	userController.setCurrently_Logged_In(userLogin);
-    	System.out.println(userController.getCurrently_Logged_In());
+    	//userController.setCurrently_Logged_In(userLogin);
+    	//System.out.println(userController.getCurrently_Logged_In());
     	
     	return "newUserPayment";
     } else {
-    	userController.setCurrently_Logged_In(user);
+    	//userController.setCurrently_Logged_In(user);
     	System.out.println("line 335 " + usertemp);
-    	System.out.println(userController.getCurrently_Logged_In());
+    	//System.out.println(userController.getCurrently_Logged_In());
     	result.addError(new FieldError("captcha", "captcha", "Incorrect Captcha."));
     	userController.getCaptcha(user);
     	
@@ -378,7 +381,7 @@ public class SignUpController {
   	@Transactional
 	@PostMapping("/submitPurchaseSignup")
   	public String submitPurchaseSignup(@Validated @ModelAttribute("paymentDetails") PaymentDetails_Form paymentDetails,
-			BindingResult result, Model model) {
+			BindingResult result, Model model, Principal principal) {
 	  	System.out.println("got to start of payment");
 		PaymentDetails currDetails = new PaymentDetails();
 		allSelected = false;
@@ -397,7 +400,7 @@ public class SignUpController {
 			if (address != null) {
 				allSelected = true;
 			}
-			User user = userController.getCurrently_Logged_In();
+			User user = userService.getUserByUsername(principal.getName());
 			Set<PaymentDetails> PD = user.getPaymentDetails();
 			if(PD == null)
 				PD = new HashSet<PaymentDetails>();
@@ -430,7 +433,7 @@ public class SignUpController {
 			if (userDetController.cardFarFuture(paymentDetails) && paymentDetails.getExpirationDate() != "") {
 				model.addAttribute("cardError", "The expiration date is an impossible number of years in the future");
 			}
-			User user = userController.getCurrently_Logged_In();
+			User user = userService.getUserByUsername(principal.getName());
 			System.out.println(user);
 			if (address == null) {
 				model.addAttribute("noAddress", "Please enter a shipping address");
@@ -467,7 +470,7 @@ public class SignUpController {
 	 * @return
 	 */
 	@PostMapping(value = "/submitShippingAddressSignUp", params="submit")
-	public String createShippingDetails(@Validated @ModelAttribute("shippingDetails") ShippingAddress_Form details, BindingResult result, @RequestParam("stateId") String stateId, Model model) {
+	public String createShippingDetails(@Validated @ModelAttribute("shippingDetails") ShippingAddress_Form details, BindingResult result, @RequestParam("stateId") String stateId, Model model, Principal principal) {
 		/* https://www.geeksforgeeks.org/how-to-call-private-method-from-another-class-in-java-with-help-of-reflection-api/ */
 		/* trying to get loadUser from UserDetailsController */
 		Method m = null;
@@ -487,7 +490,7 @@ public class SignUpController {
 		//model.addAttribute("selectedMenu", selectedMenu);
 		if (result.hasErrors()) { // || userDetController.shippingAddressConstraintsFailed(details)) {
 			// Add error messages
-			User user = userController.getCurrently_Logged_In();
+			User user = userService.getUserByUsername(principal.getName());
 			if(!result.hasErrors() && userDetController.shippingAddressConstraintsFailed(details))
 				model.addAttribute("shippingError", "Address does not exist");
 			model.addAttribute("shippingDetails", new ShippingAddress_Form());
@@ -527,16 +530,16 @@ public class SignUpController {
 			return "/newUserShipping";
 		}
 		ShippingAddress shipping = new ShippingAddress();
+    User user = userService.getUserByUsername(principal.getName());
 		details.setState(stateDetailsController.getState(stateId));
 		shipping.buildFromForm(details);
-		shipping.setUser(userController.getCurrently_Logged_In());
-		User user = userController.getCurrently_Logged_In();
+		shipping.setUser(user);
 		Set<ShippingAddress> SA = user.getShippingDetails();
 		if(SA == null)
 			SA = new HashSet<ShippingAddress>();
 		SA.add(shipping);
 		user.setShippingDetails(SA);
-		shippingController.addShippingAddress(shipping);
+		shippingController.addShippingAddress(shipping, user);
 		userRepository.save(user);
 		addNewSA = false;
 		return "redirect:/newUser";

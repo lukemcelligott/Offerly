@@ -19,10 +19,12 @@ import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 import edu.sru.cpsc.webshopping.domain.widgets.WidgetAttribute;
 import edu.sru.cpsc.webshopping.domain.widgets.WidgetImage;
 import edu.sru.cpsc.webshopping.service.CategoryService;
+import edu.sru.cpsc.webshopping.service.UserService;
 import edu.sru.cpsc.webshopping.service.WidgetService;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -73,6 +75,9 @@ public class MarketListingPageController {
   @Autowired
   private CategoryService categoryService;
 
+  @Autowired
+  private UserService userService;
+
   public MarketListingPageController(
       MarketListingDomainController marketListingController,
       TransactionController transController,
@@ -99,14 +104,13 @@ public class MarketListingPageController {
   }
 
   /** Reloads the page model data */
-  public void reloadModel(Model model) {
+  public void reloadModel(Model model, User user) {
 
     model.addAttribute("currListing", heldListing);
     model.addAttribute("widget", heldListing.getWidgetSold());
     model.addAttribute("category", heldListing.getWidgetSold().getCategory());
 
     // Check if User is the owner of the market listing
-    User user = userController.getCurrently_Logged_In();
     model.addAttribute("user", user);
     // If user is the seller or an admin, give them access to modify the listing
     if (user.getId() == heldListing.getSeller().getId() || user.getRole().equals("ROLE_ADMIN"))
@@ -132,7 +136,8 @@ public class MarketListingPageController {
    * @return the viewMarketListing page string
    */
   @RequestMapping({"/viewMarketListing/{marketListingId}"})
-  public String viewMarketListingPage(@PathVariable("marketListingId") long marketListingId, Model model) {
+  public String viewMarketListingPage(@PathVariable("marketListingId") long marketListingId, Model model, Principal principal) {
+    User user = userService.getUserByUsername(principal.getName());
     heldListing = marketListingController.getMarketListing(marketListingId);
     WidgetImage [] widgetImages = widgetImageController.getwidgetImageByMarketListing(heldListing);
     
@@ -146,8 +151,7 @@ public class MarketListingPageController {
     if (heldListing.isDeleted()) {
       throw new IllegalArgumentException("Attempted to access an invalid Market Listing!");
     }
-    
-    User user = userController.getCurrently_Logged_In();
+
     UserList myList = new UserList();
     myList.setOwner(user);
     
@@ -172,15 +176,13 @@ public class MarketListingPageController {
     	}
     }
 
-    // add current user
-    User currentUser = userController.getCurrently_Logged_In();
 
     model.addAttribute("categories", categoryStack);
     model.addAttribute("images", widgetNames);
     model.addAttribute("attributes", widgetAttributes);
     model.addAttribute("foundInWatchlist", foundInWatchlist);
-    model.addAttribute("currentUser", currentUser);
-    reloadModel(model);
+    model.addAttribute("currentUser", user);
+    reloadModel(model, user);
     return "viewMarketListing";
   }
 
@@ -193,8 +195,8 @@ public class MarketListingPageController {
    * @return the confirmShippingPage
    */
   @PostMapping({"/viewMarketListing/attemptPurchase"})
-  public String attemptPurchase(
-      @Validated Transaction newTransaction, BindingResult result, Model model) {
+  public String attemptPurchase(@Validated Transaction newTransaction, BindingResult result, Model model, Principal principal) {
+    User user = userService.getUserByUsername(principal.getName());
     // Initial validation - validation must also be done when updating the database
     if (newTransaction.getQtyBought() > heldListing.getQtyAvailable()) {
       System.out.println("failure 1");
@@ -206,13 +208,12 @@ public class MarketListingPageController {
     }
     // Errors found - refresh page
     if (result.hasErrors()) {
-      reloadModel(model);
+      reloadModel(model, user);
       return "viewMarketListing";
     }
-    User user = userController.getCurrently_Logged_In();
     ShippingAddress address;
     Transaction purchaseAttempt = new Transaction();
-    purchaseAttempt.setBuyer(userController.getCurrently_Logged_In());
+    purchaseAttempt.setBuyer(user);
     purchaseAttempt.setSeller(heldListing.getSeller());
     purchaseAttempt.setMarketListing(heldListing);
     purchaseAttempt.setQtyBought(newTransaction.getQtyBought());
@@ -220,8 +221,8 @@ public class MarketListingPageController {
         heldListing.getPricePerItem().multiply(BigDecimal.valueOf(newTransaction.getQtyBought())));
     // Add shipping entry if user confirms purchase on next page
     purchaseAttempt.setShippingEntry(null);
-    model.addAttribute("user", userController.getCurrently_Logged_In());
-    return this.purchaseController.initializePurchasePage(heldListing, purchaseAttempt, model);
+    model.addAttribute("user", user);
+    return this.purchaseController.initializePurchasePage(heldListing, purchaseAttempt, model, principal);
   }
 
   /**
@@ -231,11 +232,11 @@ public class MarketListingPageController {
    * @return the current viewMarketListing page
    */
   @PostMapping({"/viewMarketListing/wishlistItem/{marketListingId}"})
-  public String wishlistItem(@PathVariable("marketListingId") long marketListingId, Model model) {
+  public String wishlistItem(@PathVariable("marketListingId") long marketListingId, Model model, Principal principal) {
 	  // define held listing as the targeted listing bby passing in the market listing ID
 	  heldListing = marketListingController.getMarketListing(marketListingId);
 	  // call addToWishlist in UserController.java and pass in the widget assigned to heldListing
-	  userController.addToWishlist(heldListing);
+	  userController.addToWishlist(heldListing, principal);
 	  // redirect attributes
 	  model.addAttribute("successMessage", "Item added to watchlist.");
 	  // redirect the user to the listing for the widget
@@ -249,11 +250,11 @@ public class MarketListingPageController {
    * @return the current viewMarketListing page
    */
   @PostMapping({"/viewMarketListing/delWishlistItem/{marketListingId}"})
-  public String delWishlistItem(@PathVariable("marketListingId") long marketListingId, Model model) {
+  public String delWishlistItem(@PathVariable("marketListingId") long marketListingId, Model model, Principal principal) {
 	  // define held listing as the targeted listing bby passing in the market listing ID
 	  heldListing = marketListingController.getMarketListing(marketListingId);
 	  // call removeFromWishlist in UserController.java and pass in the widget assigned to heldListing
-	  userController.removeFromWishlist(heldListing);
+	  userController.removeFromWishlist(heldListing, principal);
 	  // redirect the user to the listing
  	  return "redirect:/viewMarketListing/" + heldListing.getId();
   }
@@ -265,12 +266,12 @@ public class MarketListingPageController {
    * @return the current viewMarketListing page
    */
   @RequestMapping({"/viewWishlist"})
-  public String getWishlist() {
+  public String getWishlist(Principal principal) {
 	  // define held listing as the targeted listing bby passing in the market listing ID
 	  //heldListing = marketListingController.getMarketListing(marketListingId);
 	  
 	  // get the currently logged in user
-	  User user = userController.getCurrently_Logged_In();
+	  User user = userService.getUserByUsername(principal.getName());
 	  
 	  user.getWishlistedWidgets();
 
@@ -308,20 +309,20 @@ public class MarketListingPageController {
    * @return returns to the index
    */
   @RequestMapping({"/viewMarketListing/deleteListing/{id}"})
-  public String deleteListing(@PathVariable long id, Model model) {
+  public String deleteListing(@PathVariable long id, Model model, Principal principal) {
     // go to marketListingController and delete the listing (it has the repository there)
-	marketListingController.deleteMarketListing(id);
-    // redirect - if the user is an admin send to their search page
-	User user = userController.getCurrently_Logged_In();
-	if (user.getRole().equals("ROLE_ADMIN")
-	        || user.getRole().equals("ROLE_CUSTOMERSERVICE")
-	        || user.getRole().equals("ROLE_TECHNICALSERVICE")
-	        || user.getRole().equals("ROLE_SECURITY")
-	        || user.getRole().equals("ROLE_SALES")
-	        || user.getRole().equals("ROLE_ADMIN_SHADOW")
-	        || user.getRole().equals("ROLE_HELPDESK_ADMIN")
-	        || user.getRole().equals("ROLE_HELPDESK_REGULAR")) {
-		return "redirect:/searchWidgetButton";
+    marketListingController.deleteMarketListing(id);
+      // redirect - if the user is an admin send to their search page
+    User user = userService.getUserByUsername(principal.getName());
+    if (user.getRole().equals("ROLE_ADMIN")
+            || user.getRole().equals("ROLE_CUSTOMERSERVICE")
+            || user.getRole().equals("ROLE_TECHNICALSERVICE")
+            || user.getRole().equals("ROLE_SECURITY")
+            || user.getRole().equals("ROLE_SALES")
+            || user.getRole().equals("ROLE_ADMIN_SHADOW")
+            || user.getRole().equals("ROLE_HELPDESK_ADMIN")
+            || user.getRole().equals("ROLE_HELPDESK_REGULAR")) {
+    return "redirect:/searchWidgetButton";
 	}
 	// otherwise return user home
     return "redirect:/homePage";
@@ -330,17 +331,19 @@ public class MarketListingPageController {
   }
 
   @RequestMapping({"/viewMarketListing/openMessage"})
-  public String openMessagePane(Model model) {
+  public String openMessagePane(Model model, Principal principal) {
+    User user = userService.getUserByUsername(principal.getName());
     setPage("openMessage");
-    reloadModel(model);
+    reloadModel(model, user);
     model.addAttribute("page", page);
     return "viewMarketListing";
   }
 
   @RequestMapping({"/viewMarketListing/closeMessage"})
-  public String closeMessagePane(Model model) {
+  public String closeMessagePane(Model model, Principal principal) {
+    User user = userService.getUserByUsername(principal.getName());
     setPage("fail");
-    reloadModel(model);
+    reloadModel(model, user);
     model.addAttribute("page", page);
     return "viewMarketListing";
   }
@@ -349,15 +352,15 @@ public class MarketListingPageController {
   public String marketSendMessage(
       @RequestParam("message") String content2,
       @RequestParam("subject") String subject2,
-      Model model) {
-    User user = userController.getCurrently_Logged_In();
+      Model model, Principal principal) {
+    User user = userService.getUserByUsername(principal.getName());
     User receiver = heldListing.getSeller();
     setPage("Success");
     model.addAttribute("page", page);
 
     if (subject2.length() == 0 || content2.length() == 0) {
       setPage("fail");
-      reloadModel(model);
+      reloadModel(model, user);
       model.addAttribute("page", page);
       return "viewMarketListing";
     }
@@ -372,7 +375,7 @@ public class MarketListingPageController {
     message.setReceiver(receiver);
     msgcontrol.addMessage(message);
     emailController.messageEmail(receiver, user, message);
-    reloadModel(model);
+    reloadModel(model, user);
     model.addAttribute("page", page);
     return "viewMarketListing";
   }

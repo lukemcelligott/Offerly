@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.URL;
+import java.security.Principal;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -88,6 +89,7 @@ import edu.sru.cpsc.webshopping.repository.billing.ShippingAddressRepository;
 import edu.sru.cpsc.webshopping.repository.market.ShippingRepository;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
 import edu.sru.cpsc.webshopping.secure.UserDetailsServiceImpl;
+import edu.sru.cpsc.webshopping.service.UserService;
 
 
 /**
@@ -139,6 +141,9 @@ public class UserDetailsController {
 	private SUB_MENU selectedMenu;
 	private ShippingAddressDomainController shippingController;
 	private StateDetailsController stateDetailsController;
+
+	@Autowired
+	private UserService userService;
 	
 	public UserDetailsController(UserController userController, UserRepository userRepository, 
 			TransactionController transController, CardTypeController cardController,
@@ -161,9 +166,10 @@ public class UserDetailsController {
 	 * @return
 	 */
 	@RequestMapping("/userDetails")
-	public String userDetails(Model model)
+	public String userDetails(Model model, Principal principal)
 	{
-		loadUserData(model);
+		User user = userService.getUserByUsername(principal.getName());
+		loadUserData(model, user);
 		// Model for updating Paypal details
 		model.addAttribute("paypalDetails", new Paypal_Form());
 		// Model for updating Payment Details
@@ -172,8 +178,6 @@ public class UserDetailsController {
 		// Model for updating Direct Deposit Details
 		DirectDepositDetails_Form details = new DirectDepositDetails_Form();
 		model.addAttribute("directDepositDetails", details);
-		User user  = new User();
-		user = userController.getCurrently_Logged_In();
 		model.addAttribute("user", user);
 		selectedMenu = SUB_MENU.USER_DETAILS;
 		model.addAttribute("selectedMenu", selectedMenu);
@@ -187,8 +191,9 @@ public class UserDetailsController {
 	 * @return
 	 */
 	@RequestMapping("/userDetails/initializePaymentDetails")
-	public String initializePaymentDetails(Model model) {
-		loadUserData(model);
+	public String initializePaymentDetails(Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
+		loadUserData(model, user);
 		addNewPD = false;
 		updatePD = false;
 		updateIdPD = -1;
@@ -202,8 +207,6 @@ public class UserDetailsController {
 		// Model for updating Direct Deposit Details
 		DirectDepositDetails_Form details = new DirectDepositDetails_Form();
 		model.addAttribute("directDepositDetails", details);
-		User user  = new User();
-		user = userController.getCurrently_Logged_In();
 		model.addAttribute("user", user);
 		if(user.getDefaultPaymentDetails() != null)
 			model.addAttribute("defaultPaymentDetails", payDetCont.getPaymentDetail(user.getDefaultPaymentDetails().getId(), null));
@@ -230,8 +233,9 @@ public class UserDetailsController {
 	 * @return
 	 */
 	@RequestMapping("/userDetails/paymentDetails")
-	public String openPaymentDetails(Model model) {
-		loadUserData(model);
+	public String openPaymentDetails(Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
+		loadUserData(model, user);
 		// Model for updating Paypal details
 		model.addAttribute("paypalDetails", new Paypal_Form());
 		// Model for updating Payment Details
@@ -240,8 +244,6 @@ public class UserDetailsController {
 		// Model for updating Direct Deposit Details
 		DirectDepositDetails_Form details = new DirectDepositDetails_Form();
 		model.addAttribute("directDepositDetails", details);
-		User user  = new User();
-		user = userController.getCurrently_Logged_In();
 		model.addAttribute("user", user);
 		if(user.getDefaultPaymentDetails() != null)
 			model.addAttribute("defaultPaymentDetails", payDetCont.getPaymentDetail(user.getDefaultPaymentDetails().getId(), null));
@@ -269,17 +271,17 @@ public class UserDetailsController {
 	 * @return
 	 */
 	@RequestMapping("/userDetails/initializeShippingDetails")
-	public String initializeShippingDetails(Model model) {
+	public String initializeShippingDetails(Model model, Principal principal) {
 		addNewSA = false;
 		updateSA = false;
 		updateIdSA = -1;
 		delSA = false;
 		reloginSA = false;
+		User user = userService.getUserByUsername(principal.getName());
 		
-		loadUserData(model);
+		loadUserData(model, user);
 		model.addAttribute("loginError", loginErrorSA);
 		model.addAttribute("shippingDetails", new ShippingAddress_Form());
-		User user = userController.getCurrently_Logged_In();
 		model.addAttribute("user", user);
 		selectedMenu = SUB_MENU.SHIPPING_DETAILS;
 		model.addAttribute("selectedMenu", selectedMenu);
@@ -306,11 +308,11 @@ public class UserDetailsController {
 	 * @return
 	 */
 	@RequestMapping("/userDetails/shippingDetails")
-	public String openShippingDetails(Model model) {
-		loadUserData(model);
+	public String openShippingDetails(Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
+		loadUserData(model, user);
 		model.addAttribute("loginError", loginErrorSA);
 		model.addAttribute("shippingDetails", new ShippingAddress_Form());
-		User user = userController.getCurrently_Logged_In();
 		model.addAttribute("user", user);
 		selectedMenu = SUB_MENU.SHIPPING_DETAILS;
 		model.addAttribute("selectedMenu", selectedMenu);
@@ -418,8 +420,9 @@ public class UserDetailsController {
 	}
 	
 	@RequestMapping("/userDetails/paypalDetails")
-	public String openPaypalDetails(Model model) {
-		loadUserData(model);
+	public String openPaypalDetails(Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
+		loadUserData(model, user);
 		// Model for updating Paypal details
 		model.addAttribute("paypalDetails", new Paypal_Form());
 		// Model for updating Payment Details
@@ -428,8 +431,6 @@ public class UserDetailsController {
 		// Model for updating Direct Deposit Details
 		DirectDepositDetails_Form details = new DirectDepositDetails_Form();
 		model.addAttribute("directDepositDetails", details);
-		User user  = new User();
-		user = userController.getCurrently_Logged_In();
 		model.addAttribute("user", user);
 		selectedMenu = SUB_MENU.PAYPAL_DETAILS;
 		model.addAttribute("selectedMenu", selectedMenu);
@@ -442,8 +443,9 @@ public class UserDetailsController {
 	 * @return
 	 */
 	@RequestMapping("/userDetails/depositDetails")
-	public String openDepositDetails(Model model) {
-		loadUserData(model);
+	public String openDepositDetails(Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
+		loadUserData(model, user);
 		// Model for updating Paypal details
 		model.addAttribute("paypalDetails", new Paypal_Form());
 		// Model for updating Payment Details
@@ -452,8 +454,6 @@ public class UserDetailsController {
 		// Model for updating Direct Deposit Details
 		DirectDepositDetails_Form details = new DirectDepositDetails_Form();
 		model.addAttribute("directDepositDetails", details);
-		User user  = new User();
-		user = userController.getCurrently_Logged_In();
 		model.addAttribute("user", user);
 		selectedMenu = SUB_MENU.DEPOSIT_DETAILS;
 		model.addAttribute("selectedMenu", selectedMenu);
@@ -472,14 +472,10 @@ public class UserDetailsController {
 	 * @return
 	 */
 	@RequestMapping("/updateUser")
-	public String updateUser(Model model, @RequestParam("imageName") MultipartFile file, RedirectAttributes attributes, @RequestParam("username") String username, @RequestParam("description") String description, @RequestParam("displayName") String displayName, @RequestParam("email") String email)
+	public String updateUser(Model model, @RequestParam("imageName") MultipartFile file, RedirectAttributes attributes, @RequestParam("username") String username, @RequestParam("description") String description, @RequestParam("displayName") String displayName, @RequestParam("email") String email, Principal principal)
 	{
-		/*
-		model.addAttribute("user", userRepository.findAll());
-		model.addAttribute("users", userController.getAllUsers());
-		*/
-		User user  = new User();
-		user = userController.getCurrently_Logged_In();
+
+		User user = userService.getUserByUsername(principal.getName());
 		userName = username;
 		this.userDescription = description;
 		this.displayName = displayName;
@@ -530,12 +526,7 @@ public class UserDetailsController {
 	 * @param model The page Model
 	 * @return true if successful
 	 */
-	private boolean loadUserData(Model model) {
-		model.addAttribute("user", userRepository.findAll());
-		model.addAttribute("users", userController.getAllUsers());
-		User user = new User();
-		user = userController.getCurrently_Logged_In();
-		model.addAttribute("currUser", user);
+	private boolean loadUserData(Model model, User user) {
 		System.out.println(user.getUserImage());
 		userName = user.getUsername();
 		userDescription = user.getUserDescription();
@@ -547,7 +538,7 @@ public class UserDetailsController {
 		model.addAttribute("userDescription", userDescription);
 		model.addAttribute("creationDate", creationDate);
 		model.addAttribute("displayName", displayName);
-		model.addAttribute("currUser", userController.getCurrently_Logged_In());
+		model.addAttribute("currUser", user);
 		model.addAttribute("sellerRating", user.getSellerRating());
 		model.addAttribute("email", email);
 		model.addAttribute("displayUserID", user.getId());
@@ -563,19 +554,20 @@ public class UserDetailsController {
 			method = RequestMethod.POST, params="submit")
 	public String sendUpdateDD(
 			@Validated @ModelAttribute("directDepositDetails") DirectDepositDetails_Form details,
-			BindingResult result, Model model) {
+			BindingResult result, Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
 		selectedMenu = SUB_MENU.DEPOSIT_DETAILS;
 		model.addAttribute("selectedMenu", selectedMenu);
 		if (result.hasErrors()) {
 			System.out.println("deposit error");
 			model.addAttribute("errMessage", "Your updated direct deposit details has errors.");
 			model.addAttribute("paymentDetails", new PaymentDetails_Form());
-			loadUserData(model);
+			loadUserData(model, user);
 			return "userDetails";
 		}
 		DirectDepositDetails deposit = new DirectDepositDetails();
 		deposit.buildFromForm(details);
-		this.userController.updateDirectDepositDetails(deposit);
+		this.userController.updateDirectDepositDetails(deposit, principal);
 		return "redirect:/userDetails/depositDetails";
 	}
 	
@@ -591,18 +583,19 @@ public class UserDetailsController {
 			method = RequestMethod.POST, params="delete")
 	public String deleteExisting(
 			@Validated @ModelAttribute("directDepositDetails") DirectDepositDetails_Form details,
-			BindingResult result, Model model) {
+			BindingResult result, Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
 		selectedMenu = SUB_MENU.DEPOSIT_DETAILS;
 		model.addAttribute("selectedMenu", selectedMenu);
-		if (userController.getCurrently_Logged_In().getDirectDepositDetails() == null) {
+		if (user.getDirectDepositDetails() == null) {
 			model.addAttribute("errMessage", "Your direct deposit details have already been deleted.");
 			// Add back page data
 			model.addAttribute("cardTypes", cardController.getAllCardTypes());
 			model.addAttribute("paymentDetails", new PaymentDetails_Form());
-			loadUserData(model);
+			loadUserData(model, user);
 			return "userDetails";
 		}
-		this.userController.deleteDirectDepositDetails();
+		this.userController.deleteDirectDepositDetails(user);
 		return "redirect:/userDetails/depositDetails";
 	}
 	
@@ -613,13 +606,13 @@ public class UserDetailsController {
 	 */
 	@Transactional
 	@PostMapping(value = "/submitPaymentDetailsAction", params="submit")
-	public String createDetails(@Validated @ModelAttribute("paymentDetails") PaymentDetails_Form details, BindingResult result, Model model) {
+	public String createDetails(@Validated @ModelAttribute("paymentDetails") PaymentDetails_Form details, BindingResult result, Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
 		selectedMenu = SUB_MENU.PAYMENT_DETAILS;
 		model.addAttribute("selectedMenu", selectedMenu);
 		System.out.println(details.getExpirationDate());
 		if (result.hasErrors() || paymentDetailsConstraintsFailed(details)) {
 			// Add error messages
-			User user = userController.getCurrently_Logged_In();
 			if (cardExpired(details))
 				model.addAttribute("cardError", "The credit card is expired.");
 			if(cardFarFuture(details))
@@ -641,13 +634,12 @@ public class UserDetailsController {
 			model.addAttribute("update", updatePD);
 			model.addAttribute("relogin", reloginPD);
 			model.addAttribute("delete", delPD);
-			loadUserData(model);
+			loadUserData(model, user);
 			return "/userDetails";
 		}
 		PaymentDetails payment = new PaymentDetails();
 		payment.buildFromForm(details);
-		payment.setUser(userController.getCurrently_Logged_In());
-		User user = userController.getCurrently_Logged_In();
+		payment.setUser(user);
 		Set<PaymentDetails> PD = user.getPaymentDetails();
 		if(PD == null)
 			PD = new HashSet<PaymentDetails>();
@@ -668,14 +660,14 @@ public class UserDetailsController {
 	 * @return 	a redirection string pointing to the userDetails page
 	 */
 	@PostMapping(value = "/submitPaymentDetailsAction", params="update")
-	public String sendUpdatePD(@Validated @ModelAttribute("paymentDetails") PaymentDetails_Form details, BindingResult result, Model model) {
+	public String sendUpdatePD(@Validated @ModelAttribute("paymentDetails") PaymentDetails_Form details, BindingResult result, Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
 		selectedMenu = SUB_MENU.PAYMENT_DETAILS;
 		model.addAttribute("selectedMenu", selectedMenu);
 		PaymentDetails currDetails = payDetCont.getPaymentDetail(id2PD, model);
 		System.out.println(details.getExpirationDate());
 		if (result.hasErrors() || paymentDetailsConstraintsFailed(details)) {
 			// Add error messages
-			User user = userController.getCurrently_Logged_In();
 			if (cardExpired(details))
 				model.addAttribute("cardError", "The credit card is expired.");
 			if(cardFarFuture(details))
@@ -697,13 +689,12 @@ public class UserDetailsController {
 			model.addAttribute("update", updatePD);
 			model.addAttribute("relogin", reloginPD);
 			model.addAttribute("delete", delPD);
-			loadUserData(model);
+			loadUserData(model, user);
 			return "/userDetails";
 		}
 		PaymentDetails payment = new PaymentDetails();
 		payment.buildFromForm(details);
-		payDetCont.updatePaymentDetails(payment, currDetails);
-		User user = userController.getCurrently_Logged_In();		
+		payDetCont.updatePaymentDetails(payment, currDetails);	
 		Set<PaymentDetails> pDetails = user.getPaymentDetails();
 		List<PaymentDetails> PD = new ArrayList<>(pDetails);
 		for(PaymentDetails payDet : PD)
@@ -744,11 +735,11 @@ public class UserDetailsController {
 	 */
 	@Transactional
 	@PostMapping(value = "/submitPaymentDetailsAction", params="delete")
-	public String deleteExisting(@RequestParam("usernamePD") String username, @RequestParam("passwordPD") String password, Model model) {
+	public String deleteExisting(@RequestParam("usernamePD") String username, @RequestParam("passwordPD") String password, Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
 		System.out.println("entered udcont");
-		if(reloginPD(username, password, model).equals("false"))
+		if(reloginPD(username, password, model, principal).equals("false"))
 			return "redirect:/userDetails/paymentDetails";
-		User user = userController.getCurrently_Logged_In();
 		selectedMenu = SUB_MENU.PAYMENT_DETAILS;
 		int index = -1;
 		System.out.println(paymentDelId);
@@ -796,9 +787,9 @@ public class UserDetailsController {
 	 */
 	@Transactional
 	@RequestMapping(value = "/makeDefaultPaymentDetails/{id}")
-	public String makeDefaultPaymentDetails(@PathVariable("id") long id) {
+	public String makeDefaultPaymentDetails(@PathVariable("id") long id, Principal principal) {
 		selectedMenu = SUB_MENU.PAYMENT_DETAILS;
-		User user = userController.getCurrently_Logged_In();
+		User user = userService.getUserByUsername(principal.getName());
 		PaymentDetails currDetails = payDetCont.getPaymentDetail(id, null);
 		user.setDefaultPaymentDetails(currDetails);
 		System.out.println(user.getDefaultPaymentDetails().getCardType());
@@ -814,7 +805,8 @@ public class UserDetailsController {
 	 * @return
 	 */
 	@RequestMapping(value = "/submitPaypalDetailsAction", method = RequestMethod.POST, params="submit")
-	public String sendUpdatePPD(@Validated @ModelAttribute("paypalDetails") Paypal_Form details, BindingResult result, Model model) {
+	public String sendUpdatePPD(@Validated @ModelAttribute("paypalDetails") Paypal_Form details, BindingResult result, Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
 		selectedMenu = SUB_MENU.PAYPAL_DETAILS;
 		model.addAttribute("selectedMenu", selectedMenu);
 		if (result.hasErrors()) {
@@ -822,13 +814,13 @@ public class UserDetailsController {
 			// Add back page data
 			model.addAttribute("cardTypes", cardController.getAllCardTypes());
 			model.addAttribute("directDepositDetails", new DirectDepositDetails_Form());
-			loadUserData(model);
+			loadUserData(model, user);
 			return "userDetails";
 		}
 		Paypal payment = new Paypal();
 		payment.buildFromForm(details);
 		System.out.println("after printing errors");
-		this.userController.updatePaypalDetails(payment);
+		this.userController.updatePaypalDetails(payment, principal);
 		return "redirect:/userDetails";
 	}
 	
@@ -841,17 +833,18 @@ public class UserDetailsController {
 	 */
 	
 	@RequestMapping(value ="/submitPaypalDetailsAction", method = RequestMethod.POST, params="delete")
-	public String deleteExisting(@Validated @ModelAttribute("paypalDetails") Paypal_Form details, BindingResult result, Model model) {
+	public String deleteExisting(@Validated @ModelAttribute("paypalDetails") Paypal_Form details, BindingResult result, Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
 		selectedMenu = SUB_MENU.PAYPAL_DETAILS;
 		model.addAttribute("selectedMenu", selectedMenu);
-		if (userController.getCurrently_Logged_In().getPaypal() == null) {
+		if (user.getPaypal() == null) {
 			model.addAttribute("errMessage", "Your paypal details have already been deleted.");
 			model.addAttribute("cardTypes", cardController.getAllCardTypes());
 			model.addAttribute("directDepositDetails", new DirectDepositDetails_Form());
-			loadUserData(model);
+			loadUserData(model, user);
 			return "userDetails";
 		}
-		this.userController.deletePaypal();
+		this.userController.deletePaypal(user);
 		return "redirect:/userDetails";
 	}
 	
@@ -896,13 +889,13 @@ public class UserDetailsController {
 	 * @return
 	 */
 	@PostMapping(value = "/submitShippingAddressAction", params="submit")
-	public String createShippingDetails(@Validated @ModelAttribute("shippingDetails") ShippingAddress_Form details, BindingResult result, @RequestParam("stateId") String stateId, Model model) {
+	public String createShippingDetails(@Validated @ModelAttribute("shippingDetails") ShippingAddress_Form details, BindingResult result, @RequestParam("stateId") String stateId, Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
 		selectedMenu = SUB_MENU.SHIPPING_DETAILS;
 		details.setState(stateDetailsController.getState(stateId));
 		model.addAttribute("selectedMenu", selectedMenu);
 		if (result.hasErrors() || shippingAddressConstraintsFailed(details)) {
 			// Add error messages
-			User user = userController.getCurrently_Logged_In();
 			if(!result.hasErrors() && shippingAddressConstraintsFailed(details))
 				model.addAttribute("shippingError", "Address does not exist");
 			model.addAttribute("shippingDetails", new ShippingAddress_Form());
@@ -924,20 +917,19 @@ public class UserDetailsController {
 			model.addAttribute("update", updateSA);
 			model.addAttribute("relogin", reloginSA);
 			model.addAttribute("delete", delSA);
-			loadUserData(model);
+			loadUserData(model, user);
 			return "/userDetails";
 		}
 		ShippingAddress shipping = new ShippingAddress();
 		details.setState(stateDetailsController.getState(stateId));
 		shipping.buildFromForm(details);
-		shipping.setUser(userController.getCurrently_Logged_In());
-		User user = userController.getCurrently_Logged_In();
+		shipping.setUser(user);
 		Set<ShippingAddress> SA = user.getShippingDetails();
 		if(SA == null)
 			SA = new HashSet<ShippingAddress>();
 		SA.add(shipping);
 		user.setShippingDetails(SA);
-		shippingController.addShippingAddress(shipping);
+		shippingController.addShippingAddress(shipping, user);
 		userRepository.save(user);
 		addNewSA = false;
 		return "redirect:/userDetails/shippingDetails";
@@ -950,7 +942,8 @@ public class UserDetailsController {
 	 * @return 	a redirection string pointing to the userDetails page
 	 */
 	@PostMapping(value = "/submitShippingAddressAction", params="update")
-	public String sendUpdateSA(@Validated @ModelAttribute("shippingDetail") ShippingAddress_Form details, BindingResult result, @RequestParam("stateId") String stateId, Model model) {
+	public String sendUpdateSA(@Validated @ModelAttribute("shippingDetail") ShippingAddress_Form details, BindingResult result, @RequestParam("stateId") String stateId, Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
 		selectedMenu = SUB_MENU.SHIPPING_DETAILS;
 		details.setState(stateDetailsController.getState(stateId));
 		model.addAttribute("selectedMenu", selectedMenu);
@@ -958,7 +951,6 @@ public class UserDetailsController {
 		
 		if (result.hasErrors() || shippingAddressConstraintsFailed(details)) {
 			// Add error messages
-			User user = userController.getCurrently_Logged_In();
 			if(!result.hasErrors() && shippingAddressConstraintsFailed(details))
 				model.addAttribute("shippingError", "Address does not exist");
 			model.addAttribute("shippingDetails", new ShippingAddress_Form());
@@ -983,7 +975,7 @@ public class UserDetailsController {
 			model.addAttribute("update", updateSA);
 			model.addAttribute("relogin", reloginSA);
 			model.addAttribute("delete", delSA);
-			loadUserData(model);
+			loadUserData(model, user);
 			
 			return "/userDetails";
 		}
@@ -991,8 +983,7 @@ public class UserDetailsController {
 		ShippingAddress shipping = new ShippingAddress();
 		details.setState(stateDetailsController.getState(stateId));
 		shipping.buildFromForm(details);
-		shippingController.updateShippingAddress(shipping, currDetails);
-		User user = userController.getCurrently_Logged_In();		
+		shippingController.updateShippingAddress(shipping, currDetails);	
 		Set<ShippingAddress> sAddress = user.getShippingDetails();
 		List<ShippingAddress> SA = new ArrayList<>(sAddress);
 		
@@ -1022,13 +1013,13 @@ public class UserDetailsController {
 	 */
 	@Transactional
 	@PostMapping(value = "/submitShippingAddressAction", params="delete")
-	public String deleteExistingShipping(@RequestParam("usernameSA") String username, @RequestParam("passwordSA") String password, Model model) {
+	public String deleteExistingShipping(@RequestParam("usernameSA") String username, @RequestParam("passwordSA") String password, Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
 		System.out.println("entered udcont");
-		if(this.reloginSA(username, password, model).equals("false"))
+		if(this.reloginSA(username, password, model, principal).equals("false"))
 		{
 			return "redirect:/userDetails/shippingDetails";
 		}
-		User user = userController.getCurrently_Logged_In();
 		selectedMenu = SUB_MENU.SHIPPING_DETAILS;
 		int index = -1;
 		System.out.println(shippingDelId);
@@ -1076,9 +1067,9 @@ public class UserDetailsController {
 	 */
 	@Transactional
 	@RequestMapping(value = "/makeDefaultShippingDetails/{id}")
-	public String makeDefaultShippingDetails(@PathVariable("id") long id) {
+	public String makeDefaultShippingDetails(@PathVariable("id") long id, Principal principal) {
 		selectedMenu = SUB_MENU.SHIPPING_DETAILS;
-		User user = userController.getCurrently_Logged_In();
+		User user = userService.getUserByUsername(principal.getName());
 		ShippingAddress currDetails = shippingController.getShippingAddressEntry(id);
 		user.setDefaultShipping(currDetails);
 		System.out.println(user.getDefaultShipping().getStreetAddress());
@@ -1098,8 +1089,9 @@ public class UserDetailsController {
 	 * @return
 	 */
 	@PostMapping(value = "/submitShippingAddressAction", params="loginInfo")
-	public String reloginSA(@RequestParam("usernameSA") String username, @RequestParam("passwordSA") String password, Model model) {
-		if(!validateLoginInfo(username, password))
+	public String reloginSA(@RequestParam("usernameSA") String username, @RequestParam("passwordSA") String password, Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
+		if(!validateLoginInfo(username, password, user))
 		{
 			if(delSA == true)
 			{
@@ -1122,8 +1114,9 @@ public class UserDetailsController {
 	 * @return
 	 */
 	@PostMapping(value = "/submitPaymentDetailsAction", params="loginInfo")
-	public String reloginPD(@RequestParam("usernamePD") String username, @RequestParam("passwordPD") String password, Model model) {
-		if(!validateLoginInfo(username, password))
+	public String reloginPD(@RequestParam("usernamePD") String username, @RequestParam("passwordPD") String password, Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
+		if(!validateLoginInfo(username, password, user))
 		{
 			if(delPD == true)
 			{
@@ -1230,9 +1223,8 @@ public class UserDetailsController {
 	 * @param password
 	 * @return
 	 */
-	public boolean validateLoginInfo(String username, String password)
+	public boolean validateLoginInfo(String username, String password, User user)
 	{
-		User user = userController.getCurrently_Logged_In();
 		System.out.println(username.equals(user.getUsername()));
 		System.out.println(passwordEncoder.matches(password, user.getPassword()));
 		if(username.equals(user.getUsername()) && passwordEncoder.matches(password, user.getPassword()))

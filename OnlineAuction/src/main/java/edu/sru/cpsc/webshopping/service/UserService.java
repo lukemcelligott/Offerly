@@ -47,6 +47,15 @@ public class UserService {
         return user;
     }
 
+    //Get user by username
+    public User getUserByUsername(String username) {
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new IllegalStateException("User with username " + username + " does not exist");
+        }
+        return user;
+    }
+
     //Rate user
     public User rateUser(Long userId, float rating) {
         User userToRate = userRepository.findById(userId)

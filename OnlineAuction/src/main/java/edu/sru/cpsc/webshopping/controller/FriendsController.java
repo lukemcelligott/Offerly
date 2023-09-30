@@ -9,6 +9,7 @@ import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import java.security.Principal;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -52,6 +53,7 @@ import edu.sru.cpsc.webshopping.repository.user.UserRepository;
 import edu.sru.cpsc.webshopping.secure.CaptchaUtil;
 import edu.sru.cpsc.webshopping.service.FriendshipService;
 import edu.sru.cpsc.webshopping.service.MessageService;
+import edu.sru.cpsc.webshopping.service.UserService;
 
 
 @Controller
@@ -64,17 +66,17 @@ public class FriendsController {
     private MessageService messageService;
     
     @Autowired
-    private UserController userController;
-    
-    @Autowired
     private UserRepository userRepository;
     
     @Autowired
     private FriendSocialRequestRepository friendSocialRequestRepository;
+
+    @Autowired
+    private UserService userService;
     
     @GetMapping("/addFriends")
-    public String getSocialPage(Model model) {
-    	User user = userController.getCurrently_Logged_In();
+    public String getSocialPage(Model model, Principal principal) {
+    	User user = userService.getUserByUsername(principal.getName());
     	model.addAttribute("user", user);
 		model.addAttribute("page", "addFriends");
        
@@ -89,8 +91,8 @@ public class FriendsController {
     }
     
     @PostMapping({"/add"})
-    public String addFriend(@RequestParam("userName") String userName, Model model, RedirectAttributes redirectAttributes) {
-        User currentUser = userController.getCurrently_Logged_In();
+    public String addFriend(@RequestParam("userName") String userName, Model model, RedirectAttributes redirectAttributes, Principal principal) {
+        User currentUser = userService.getUserByUsername(principal.getName());
         
         if(currentUser.getUsername().equals(userName)) {
             redirectAttributes.addFlashAttribute("errorMessage", "You cannot send a friend request to yourself!");
@@ -113,8 +115,8 @@ public class FriendsController {
     }
     
     @PostMapping("/remove")
-    public String removeFriend(@RequestParam("friendId") Long friendId, Model model) {
-        User currentUser = userController.getCurrently_Logged_In();
+    public String removeFriend(@RequestParam("friendId") Long friendId, Model model, Principal principal) {
+        User currentUser = userService.getUserByUsername(principal.getName());
         Friendship friendship = friendshipService.getFriendshipBetweenUsers(currentUser, friendId);
         if(friendship != null) {
             friendshipService.removeFriendship(friendship);
@@ -126,8 +128,8 @@ public class FriendsController {
     
     
     @GetMapping("inbox")
-    public String displayInboxPage(Model model) {
-    	User user = userController.getCurrently_Logged_In();
+    public String displayInboxPage(Model model, Principal principal) {
+    	User user = userService.getUserByUsername(principal.getName());
     	model.addAttribute("user", user);
 		model.addAttribute("page", "inbox");
        
@@ -140,8 +142,8 @@ public class FriendsController {
     }
     
     @GetMapping("/api/conversations/{friendId}")
-    public ResponseEntity<Map<String, Object>> getConversation(@PathVariable Long friendId) {
-        User currentUser = userController.getCurrently_Logged_In();
+    public ResponseEntity<Map<String, Object>> getConversation(@PathVariable Long friendId, Principal principal) {
+        User currentUser = userService.getUserByUsername(principal.getName());
         User friend = userRepository.findById(friendId).orElse(null);
 
         if (friend == null) {
@@ -158,8 +160,8 @@ public class FriendsController {
     }
     
     @PostMapping("/messages/send")
-    public ResponseEntity<?> sendMessage(@RequestParam String content, @RequestParam Long receiver) {
-        User sender = userController.getCurrently_Logged_In();
+    public ResponseEntity<?> sendMessage(@RequestParam String content, @RequestParam Long receiver, Principal principal) {
+        User sender = userService.getUserByUsername(principal.getName());
         User receiverUser = userRepository.findById(receiver).orElse(null);
         
         if (receiverUser == null) {

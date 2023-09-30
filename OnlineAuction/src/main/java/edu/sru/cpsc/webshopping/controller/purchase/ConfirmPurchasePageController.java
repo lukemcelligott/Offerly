@@ -2,6 +2,7 @@ package edu.sru.cpsc.webshopping.controller.purchase;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
@@ -54,6 +55,7 @@ import edu.sru.cpsc.webshopping.domain.market.Transaction;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.repository.market.ShippingRepository;
 import edu.sru.cpsc.webshopping.repository.market.TransactionRepository;
+import edu.sru.cpsc.webshopping.service.UserService;
 import edu.sru.cpsc.webshopping.repository.billing.PaymentDetailsRepository;
 
 /**
@@ -69,6 +71,9 @@ public class ConfirmPurchasePageController {
 	private PaymentDetailsRepository payDetRepository;
 	private ShippingAddress address;
 	private Paypal_Form paypal;
+
+	@Autowired
+	private UserService userService;
 	
 	@Lazy
 	private PurchaseShippingAddressPageController shippingController;
@@ -113,8 +118,9 @@ public class ConfirmPurchasePageController {
 	 */
 	
 	@RequestMapping("/initializePurchasePage")
-	public String initializePurchasePage(MarketListing prevListing, Transaction purchaseOrder, Model model) {
+	public String initializePurchasePage(MarketListing prevListing, Transaction purchaseOrder, Model model, Principal principal) {
 		
+		User user = userService.getUserByUsername(principal.getName());
 		System.out.println(address);
 		// Setup purchase with total price and profit
 		if(purchaseOrder != null)
@@ -127,7 +133,6 @@ public class ConfirmPurchasePageController {
 		relogin = true;
 		loginEr = false;
 		
-		User user = userController.getCurrently_Logged_In();
 		if(user.getDefaultShipping() != null) //when the page is initialized then use the users default if it exists
 	    	address = user.getDefaultShipping();
 	    else
@@ -189,8 +194,8 @@ public class ConfirmPurchasePageController {
 	 * @return
 	 */
 	@RequestMapping("/confirmPurchase")
-	public String openConfirmPurchasePage(ShippingAddress address, MarketListing prevListing, Transaction purchaseOrder,
-			Model model) {
+	public String openConfirmPurchasePage(ShippingAddress address, MarketListing prevListing, Transaction purchaseOrder, Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
 		// Setup purchase with total price and profit
 		toShipping = false;
 		System.out.println(address);
@@ -205,7 +210,6 @@ public class ConfirmPurchasePageController {
 		// Prepare a form for verifying the user's payment details
 		details = new PaymentDetails();
 		paypal = new Paypal_Form();
-		User user = userController.getCurrently_Logged_In();
 		if(validatedDetails == null)
 			validatedDetails = user.getDefaultPaymentDetails();
 		if(user.getDefaultShipping() == null && this.address == null)
@@ -254,14 +258,15 @@ public class ConfirmPurchasePageController {
 	@RequestMapping(value = "/confirmPurchase/existingCard", method = RequestMethod.POST, params = "submit")
 	public String submitPurchaseExistingCard(@Validated @ModelAttribute("selected_payment_details") Long id,
 			@Validated @ModelAttribute("existingSecurityCode") String existingSecurityCode, BindingResult result,
-			Model model) {
-		if (this.userController.getCurrently_Logged_In() == null) {
+			Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
+		if (user == null) {
 			throw new IllegalStateException("Cannot purchase an item when not logged in.");
 		}
 		allSelected = false;
 		// Test that payment details are valid
 		System.out.println(id);
-		if (id != null && payDetController.matchExistingCard(existingSecurityCode, payDetRepository.findById(id).get()) || id == userController.getCurrently_Logged_In().getDefaultPaymentDetails().getId()) {
+		if (id != null && payDetController.matchExistingCard(existingSecurityCode, payDetRepository.findById(id).get()) || id == user.getDefaultPaymentDetails().getId()) {
 			validatedDetails = payDetRepository.findById(id).get();
 			if(this.address != null && validatedDetails != null)
 				allSelected = true;
@@ -277,7 +282,6 @@ public class ConfirmPurchasePageController {
 				model.addAttribute("selectedAddress", address);
 			details = new PaymentDetails();
 			// Build credit card error message
-			User user = userController.getCurrently_Logged_In();
 			model.addAttribute("exSecurityCodeErr", "Security code doesn't match current user's saved card");
 			model.addAttribute("purchase", purchase);
 			if (address == null)
@@ -296,7 +300,7 @@ public class ConfirmPurchasePageController {
 			model.addAttribute("modifyPayment", modifyPayment);
 			model.addAttribute("toShipping", toShipping);
 			model.addAttribute("allSelected", allSelected);
-			model.addAttribute("defaultDetails", userController.getCurrently_Logged_In().getDefaultPaymentDetails());
+			model.addAttribute("defaultDetails", user.getDefaultPaymentDetails());
 			if (user.getPaymentDetails() != null && user.getPaymentDetails().isEmpty())
 				model.addAttribute("allDetails", null);
 			else
@@ -323,11 +327,12 @@ public class ConfirmPurchasePageController {
 	@Transactional
 	@RequestMapping(value = "/confirmPurchase/submitPurchase", method = RequestMethod.POST, params = "submit")
 	public String submitPurchase(@Validated @ModelAttribute("paymentDetails") PaymentDetails_Form paymentDetails,
-			BindingResult result, Model model) {
+			BindingResult result, Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
 		PaymentDetails currDetails = new PaymentDetails();
 		allSelected = false;
 		currDetails.buildFromForm(paymentDetails);
-		if (this.userController.getCurrently_Logged_In() == null) {
+		if (user == null) {
 			throw new IllegalStateException("Cannot purchase an item when not logged in.");
 		}
 		// Test that payment details are valid
@@ -342,8 +347,6 @@ public class ConfirmPurchasePageController {
 			}
 			if (address != null)
 				allSelected = true;
-			
-			User user = userController.getCurrently_Logged_In();
 			Set<PaymentDetails> PD = user.getPaymentDetails();
 			if(PD == null)
 				PD = new HashSet<PaymentDetails>();
@@ -375,7 +378,6 @@ public class ConfirmPurchasePageController {
 			if (userDetController.cardFarFuture(paymentDetails) && paymentDetails.getExpirationDate() != "")
 				model.addAttribute("cardError", "The expiration date is an impossible number of years in the future");
 
-			User user = userController.getCurrently_Logged_In();
 			if (address == null)
 				model.addAttribute("noAddress", "Please enter a shipping address");
 			model.addAttribute("purchase", purchase);
@@ -394,7 +396,7 @@ public class ConfirmPurchasePageController {
 			model.addAttribute("allSelected", allSelected);
 			model.addAttribute("cardTypes", cardController.getAllCardTypes());
 			model.addAttribute("user", user);
-			model.addAttribute("defaultDetails", userController.getCurrently_Logged_In().getDefaultPaymentDetails());
+			model.addAttribute("defaultDetails", user.getDefaultPaymentDetails());
 			if (user.getPaymentDetails() != null && user.getPaymentDetails().isEmpty())
 				model.addAttribute("allDetails", null);
 			else
@@ -432,13 +434,14 @@ public class ConfirmPurchasePageController {
 	 */
 	@RequestMapping(value = "/confirmPurchase/submitPurchasePaypal", method = RequestMethod.POST, params = "submit")
 	public String submitPurchasePaypal(@Validated @ModelAttribute("paypal") Paypal_Form paypal, BindingResult result,
-			Model model) {
+			Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
 		Paypal currPaypal = new Paypal();
 		currPaypal.buildFromForm(paypal);
-		if (this.userController.getCurrently_Logged_In() == null) {
+		if (user == null) {
 			throw new IllegalStateException("Cannot purchase an item when not logged in.");
 		}
-		if (this.userController.verifyPaypalDetails(currPaypal)) {
+		if (this.userController.verifyPaypalDetails(currPaypal, principal)) {
 			// Update market listing to reflect purchase
 			marketListingController.marketListingPurchaseUpdate(prevListing, purchase.getQtyBought());
 			// Creates an unfinished shipping label, to be filled out later by the seller
@@ -463,7 +466,7 @@ public class ConfirmPurchasePageController {
 			model.addAttribute("errMessage", "Paypal Details Invalid");
 			model.addAttribute("paypal", paypal);
 			model.addAttribute("cardTypes", cardController.getAllCardTypes());
-			model.addAttribute("user", userController.getCurrently_Logged_In());
+			model.addAttribute("user", user);
 			return "confirmPurchase";
 		}
 	}
@@ -499,15 +502,16 @@ public class ConfirmPurchasePageController {
 	 * @return
 	 */
 	@RequestMapping(value = "/toShipping")
-	public String toShipping(Model model) {
+	public String toShipping(Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
 		PaymentDetails details = null;
 		allSelected = false;
 		toShipping = true;
 		depositPicked = false;
 		allSelected = false;
-		if (userController.getCurrently_Logged_In().getDefaultPaymentDetails() != null)
-			details = userController.getCurrently_Logged_In().getDefaultPaymentDetails();
-		return this.shippingController.openConfirmShippingPage(true, prevListing, purchase, details, model);
+		if (user.getDefaultPaymentDetails() != null)
+			details = user.getDefaultPaymentDetails();
+		return this.shippingController.openConfirmShippingPage(true, prevListing, purchase, details, model, principal);
 	}
 	
 	/**
@@ -516,12 +520,12 @@ public class ConfirmPurchasePageController {
 	 * @return
 	 */
 	@RequestMapping(value = "/modifyPayment")
-	public String modifyPayment(Model model) {
+	public String modifyPayment(Model model, Principal principal) {
 		toShipping = false;
 		depositPicked = false;
 		allSelected = false;
 		modifyPayment = true;
-		return this.openConfirmPurchasePage(address, prevListing, purchase, model);
+		return this.openConfirmPurchasePage(address, prevListing, purchase, model, principal);
 	}
 	
 	
@@ -532,7 +536,8 @@ public class ConfirmPurchasePageController {
 	 */
 	@Transactional
 	@RequestMapping(value = "/attemptPurchase")
-	public String attemptPurchase(Model model) {
+	public String attemptPurchase(Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
 		if ((address != null && validatedDetails != null) || (address != null && depositPicked == true)) {
 			BigDecimal salesTaxPercentage = this.address.getState().getSalesTaxRate().divide(new BigDecimal(100));
 			BigDecimal afterSalesTax = purchase.getTotalPriceBeforeTaxes()
@@ -552,7 +557,7 @@ public class ConfirmPurchasePageController {
 			if(depositPicked == false)
 				purchase.setPaymentDetails(validatedDetails);
 			else
-				purchase.setDepositDetails(userController.getCurrently_Logged_In().getDirectDepositDetails());
+				purchase.setDepositDetails(user.getDirectDepositDetails());
 			transController.addTransaction(purchase);
 			return "redirect:/homePage";
 		} else {
@@ -564,7 +569,6 @@ public class ConfirmPurchasePageController {
 			details = new PaymentDetails();
 			// Build credit card error message
 
-			User user = userController.getCurrently_Logged_In();
 			if (address == null)
 				model.addAttribute("noAddress", "Please enter a shipping address");
 			model.addAttribute("purchase", purchase);
@@ -581,7 +585,7 @@ public class ConfirmPurchasePageController {
 			model.addAttribute("user", user);
 			model.addAttribute("relogin", relogin);
 			model.addAttribute("loginEr", loginEr);
-			model.addAttribute("defaultDetails", userController.getCurrently_Logged_In().getDefaultPaymentDetails());
+			model.addAttribute("defaultDetails", user.getDefaultPaymentDetails());
 			if (user.getPaymentDetails() != null && user.getPaymentDetails().isEmpty())
 				model.addAttribute("allDetails", null);
 			else
@@ -618,8 +622,9 @@ public class ConfirmPurchasePageController {
 	 */
 	
 	@PostMapping(value = "/confirmPurchase/submitPurchase", params="loginInfo")
-	public String relogin(@RequestParam("usernamePD") String username, @RequestParam("passwordPD") String password, Model model) {
-		if(!validateLoginInfo(username, password))
+	public String relogin(@RequestParam("usernamePD") String username, @RequestParam("passwordPD") String password, Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
+		if(!validateLoginInfo(username, password, user))
 		{
 			loginEr = true;
 			model.addAttribute("loginError", "Incorrect Username or Password Entered");
@@ -636,9 +641,8 @@ public class ConfirmPurchasePageController {
 	 * @param password
 	 * @return
 	 */
-	public boolean validateLoginInfo(String username, String password)
+	public boolean validateLoginInfo(String username, String password, User user)
 	{
-		User user = userController.getCurrently_Logged_In();
 		System.out.println(username.equals(user.getUsername()));
 		System.out.println(passwordEncoder.matches(password, user.getPassword()));
 		if(username.equals(user.getUsername()) && passwordEncoder.matches(password, user.getPassword()))
