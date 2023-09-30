@@ -1,17 +1,15 @@
 package edu.sru.cpsc.webshopping.controller;
-import org.junit.Test;
 import java.util.function.BooleanSupplier;
 
 import org.jboss.logging.Logger;
+import org.junit.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import edu.sru.cpsc.webshopping.domain.user.Applicant;
 public class ApplicantDomainControllerTest {

@@ -3,20 +3,15 @@ package edu.sru.cpsc.webshopping.domain.market;
 import java.sql.Date;
 import java.time.LocalDate;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
 import org.springframework.lang.NonNull;
 
 import edu.sru.cpsc.webshopping.domain.billing.ShippingAddress;
-import edu.sru.cpsc.webshopping.domain.user.User;
 
 /**
  * Associated with a Transaction

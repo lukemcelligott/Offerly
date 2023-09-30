@@ -4,10 +4,10 @@ import static org.mockito.Mockito.mock;
 
 import java.math.BigDecimal;
 
+import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mock;
-import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.validation.BindingResult;
 

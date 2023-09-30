@@ -1,8 +1,10 @@
 package edu.sru.cpsc.webshopping.controller.purchase;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.security.Principal;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +34,7 @@ import edu.sru.cpsc.webshopping.domain.market.Transaction;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.widgets.Category;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
+import edu.sru.cpsc.webshopping.service.UserService;
 
 /**
  * jUnit code for testing the ViewMarketListing page
@@ -58,6 +61,10 @@ public class MarketListingPageControllerTest {
 	private BindingResult result;
 	@Autowired
 	private ObjectMapper mapper;
+	@Mock
+	private UserService userService;
+	@Mock
+	private Principal principal;
 	
 	/**
 	 * Setups data to use for tests
@@ -69,7 +76,11 @@ public class MarketListingPageControllerTest {
 		// Initializes User
 		User user = new User();
 		user.setPassword("");
-		userController.setCurrently_Logged_In(user);
+		
+        when(principal.getName()).thenReturn("testuser");
+        user.setUsername("testuser");
+        when(userService.getUserByUsername("testuser")).thenReturn(user);
+
 		// Initializes Widget and MarketListing
 		newListing.setDeleted(false);
 		newListing.setPricePerItem(new BigDecimal(50.05));
@@ -121,7 +132,6 @@ public class MarketListingPageControllerTest {
 	@Test
 	public void LoadPageNotLoggedIn() throws Exception {
 		try {
-			userController.setCurrently_Logged_In(null);
 			mvc.perform(MockMvcRequestBuilders.get("/viewMarketListing/" + newListing.getId()));
 			throw new Error("LoadPageNotLoggedIn test failed.");
 		}
@@ -139,10 +149,10 @@ public class MarketListingPageControllerTest {
 	 */
 	@Test
 	public void AttemptPurchaseSuccess() throws Exception {
-		pageController.viewMarketListingPage(newListing.getId(), model);
+		pageController.viewMarketListingPage(newListing.getId(), model, principal);
 		Transaction currTrans = new Transaction();
 		currTrans.setQtyBought(20);
-		String redirectRes = pageController.attemptPurchase(currTrans, result, model);
+		String redirectRes = pageController.attemptPurchase(currTrans, result, model, principal);
 		Assertions.assertEquals("confirmShippingAddressPage", redirectRes);
 	}
 	

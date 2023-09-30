@@ -1,20 +1,21 @@
 package edu.sru.cpsc.webshopping.controller;
 
+import java.security.Principal;
 import java.util.Arrays;
-import java.util.Set;
 import java.util.Vector;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import edu.sru.cpsc.webshopping.controller.billing.SellerRatingController;
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.user.Message;
 import edu.sru.cpsc.webshopping.domain.user.SellerRating;
 import edu.sru.cpsc.webshopping.domain.user.User;
+import edu.sru.cpsc.webshopping.service.UserService;
 
 /**
  * Page for viewing the details of other users
@@ -22,11 +23,13 @@ import edu.sru.cpsc.webshopping.domain.user.User;
 @Controller
 public class ViewUserProfilePageController {
 	// Database controllers
-	private UserController userController;
 	private MarketListingDomainController listingController;
-	private SellerRatingController ratingController;
 	private MessageDomainController messageController;
 	private EmailController emailController;
+
+	@Autowired
+	private UserService userService;
+
 	// Page data
 	private User selectedUser;
 	private MarketListing[] soldItems;
@@ -37,11 +40,8 @@ public class ViewUserProfilePageController {
 	// Configuration constant
 	private final int NUM_LISTINGS_PER_PAGE = 4;
 	
-	ViewUserProfilePageController(UserController userController, MarketListingDomainController listingController,
-			SellerRatingController ratingController, MessageDomainController messageController, EmailController emailController) {
-		this.userController = userController;
+	ViewUserProfilePageController(MarketListingDomainController listingController, MessageDomainController messageController, EmailController emailController) {
 		this.listingController = listingController;
-		this.ratingController = ratingController;
 		this.messageController = messageController;
 		this.emailController = emailController;
 	}
@@ -50,9 +50,9 @@ public class ViewUserProfilePageController {
 	 * Loads model data based on the current state of the controller
 	 * @param model the page model
 	 */
-	private void reloadPageModel(Model model) {
+	private void reloadPageModel(Model model, User user) {
 		model.addAttribute("selectedUser", selectedUser);
-		model.addAttribute("currUser", userController.getCurrently_Logged_In());
+		model.addAttribute("currUser", user);
 		model.addAttribute("currPageItems", itemsEachPage.get(pageNumber - 1));
 		model.addAttribute("selectedPageNum", pageNumber);
 		model.addAttribute("soldItems", soldItems);
@@ -68,11 +68,11 @@ public class ViewUserProfilePageController {
 	 * @return viewUserProfile
 	 */
 	@RequestMapping("/viewUserProfile/{userId}")
-	public String openUserProfile(@PathVariable("userId") long userId, Model model) {
-		User user = userController.getCurrently_Logged_In();
+	public String openUserProfile(@PathVariable("userId") long userId, Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
 		model.addAttribute("user", user);
 		this.pageNumber = 1;
-		this.selectedUser = userController.getUser(userId, null);
+		this.selectedUser = userService.getUserById(userId);
 		this.soldItems = listingController.getListingbyUser(selectedUser);
 		this.soldItems = Arrays.stream(this.soldItems).filter(item -> !item.isDeleted()).toArray(MarketListing[]::new);
 		this.rating = selectedUser.getSellerRating();
@@ -93,8 +93,8 @@ public class ViewUserProfilePageController {
 				currItemOnPage = (currItemOnPage + 1) % NUM_LISTINGS_PER_PAGE;
 			}
 		}
-		reloadPageModel(model);
-		model.addAttribute("user", userController.getCurrently_Logged_In());
+		reloadPageModel(model,user);
+		model.addAttribute("user", user);
 		return "viewUserProfile";
 	}
 	
@@ -105,16 +105,16 @@ public class ViewUserProfilePageController {
 	 * @return viewUserProfile
 	 */
 	@RequestMapping("/viewUserProfile/changePage/{pageNumber}")
-	public String changePageNumber(@PathVariable("pageNumber") int pageNumber, Model model) {
+	public String changePageNumber(@PathVariable("pageNumber") int pageNumber, Model model, Principal principal) {
 		// pageNumber is not read from page as zero indexed for user readability reasons
-		User user = userController.getCurrently_Logged_In();
+		User user = userService.getUserByUsername(principal.getName());
 		model.addAttribute("user", user);
 		if (pageNumber <= 0 || pageNumber > itemsEachPage.size()) {
 			throw new IllegalArgumentException("Invalid page number for viewUserProfilePage");
 		}
 		// Load updated model
 		this.pageNumber = pageNumber;
-		reloadPageModel(model);
+		reloadPageModel(model, user);
 		return "viewUserProfile";
 	}
 	
@@ -125,8 +125,8 @@ public class ViewUserProfilePageController {
 	 * @return /viewMarketListing/{listingId}
 	 */
 	@RequestMapping("/viewUserProfile/openListing/{listingId}")
-	public String openListing(@PathVariable("listingId") long listingId, Model model) {
-		User user = userController.getCurrently_Logged_In();
+	public String openListing(@PathVariable("listingId") long listingId, Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
 		model.addAttribute("user", user);
 		return "redirect:/viewMarketListing/" + listingId;
 	}
@@ -137,12 +137,12 @@ public class ViewUserProfilePageController {
 	 * @return viewUserProfile
 	 */
 	@RequestMapping("/viewUserProfile/openMessagePane")
-	public String openMessagePane(Model model) {
-		User user = userController.getCurrently_Logged_In();
+	public String openMessagePane(Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
 		model.addAttribute("user", user);
 		System.out.println("open message pane");
 		this.messagePaneOpen = true;
-		reloadPageModel(model);
+		reloadPageModel(model, user);
 		return "viewUserProfile";
 	}
 	
@@ -152,11 +152,11 @@ public class ViewUserProfilePageController {
 	 * @return viewUserProfile
 	 */
 	@RequestMapping("/viewUserProfile/closeMessagePane")
-	public String closeMessagePane(Model model) {
-		User user = userController.getCurrently_Logged_In();
+	public String closeMessagePane(Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
 		model.addAttribute("user", user);
 		this.messagePaneOpen = false;
-		reloadPageModel(model);
+		reloadPageModel(model, user);
 		return "viewUserProfile";
 	}
 	
@@ -168,17 +168,17 @@ public class ViewUserProfilePageController {
 	 * @return viewUserProfile
 	 */
 	@RequestMapping("/viewUserProfile/sendMessage")
-	public String sendMessage(@RequestParam("message") String content, @RequestParam("subject") String subject, Model model)
+	public String sendMessage(@RequestParam("message") String content, @RequestParam("subject") String subject, Model model, Principal principal)
 	{
-		User user = userController.getCurrently_Logged_In();
+		User user = userService.getUserByUsername(principal.getName());
 		model.addAttribute("user", user);
 		if (content.isBlank() || subject.isBlank()) { 
-			reloadPageModel(model);
+			reloadPageModel(model, user);
 		}
 		else {
 			Message message = new Message();
-			message.setOwner(userController.getCurrently_Logged_In());
-			message.setSender(userController.getCurrently_Logged_In().getUsername());
+			message.setOwner(user);
+			message.setSender(user.getUsername());
 			message.setContent(content);
 			message.setSubject(subject);
 			message.setMsgDate();
@@ -186,8 +186,8 @@ public class ViewUserProfilePageController {
 			message.setReceiver(selectedUser);
 			this.messagePaneOpen = false;
 			messageController.addMessage(message);
-			emailController.messageEmail(selectedUser, userController.getCurrently_Logged_In(), message);
-			reloadPageModel(model);
+			emailController.messageEmail(selectedUser, user, message);
+			reloadPageModel(model, user);
 		}
 		return "viewUserProfile";
 	}

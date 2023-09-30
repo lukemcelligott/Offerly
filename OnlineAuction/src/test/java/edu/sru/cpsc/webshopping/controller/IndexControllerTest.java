@@ -1,9 +1,17 @@
 package edu.sru.cpsc.webshopping.controller;
 
-import edu.sru.cpsc.webshopping.domain.user.Applicant;
-import edu.sru.cpsc.webshopping.domain.user.User;
-import edu.sru.cpsc.webshopping.repository.applicant.ApplicantRepository;
-import edu.sru.cpsc.webshopping.repository.user.UserRepository;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -11,11 +19,11 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.*;
+import edu.sru.cpsc.webshopping.domain.user.Applicant;
+import edu.sru.cpsc.webshopping.domain.user.User;
+import edu.sru.cpsc.webshopping.repository.applicant.ApplicantRepository;
+import edu.sru.cpsc.webshopping.repository.user.UserRepository;
+import edu.sru.cpsc.webshopping.service.UserService;
 
 class IndexControllerTest {
     @Mock
@@ -33,12 +41,15 @@ class IndexControllerTest {
     @Mock
     private BindingResult bindingResult;
 
+    @Mock
+    private UserService userService;
+
     private IndexController indexController;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        indexController = new IndexController(userRepository, userController, appRepo);
+        indexController = new IndexController();
     }
 
     @Test
@@ -49,10 +60,14 @@ class IndexControllerTest {
         users.add(new User());
 		User singleUser = new User();
         when(userRepository.findAll()).thenReturn(users);
-        when(userController.getCurrently_Logged_In()).thenReturn(singleUser);
+        Principal principal = mock(Principal.class);
+        when(principal.getName()).thenReturn("testuser");
+        User user = new User();
+        user.setUsername("testuser");
+        when(userService.getUserByUsername("testuser")).thenReturn(user);
 
         // Act
-        String viewName = indexController.showUserList(model);
+        String viewName = indexController.showUserList(model, principal);
 
         // Assert
         assertEquals("index", viewName);
@@ -63,11 +78,14 @@ class IndexControllerTest {
     @Test
     void testShowIndex() {
         // Arrange
-		User user = new User();
-        when(userController.getCurrently_Logged_In()).thenReturn(user);
+		Principal principal = mock(Principal.class);
+        when(principal.getName()).thenReturn("testuser");
+        User user = new User();
+        user.setUsername("testuser");
+        when(userService.getUserByUsername("testuser")).thenReturn(user);
 
         // Act
-        String viewName = indexController.showIndex(model);
+        String viewName = indexController.showIndex(model, principal);
 
         // Assert
         assertEquals("index", viewName);

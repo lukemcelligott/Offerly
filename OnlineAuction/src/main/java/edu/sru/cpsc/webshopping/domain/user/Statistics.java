@@ -1,7 +1,6 @@
 package edu.sru.cpsc.webshopping.domain.user;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

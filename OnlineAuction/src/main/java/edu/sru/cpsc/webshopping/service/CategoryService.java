@@ -2,6 +2,7 @@ package edu.sru.cpsc.webshopping.service;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import edu.sru.cpsc.webshopping.domain.widgets.Attribute;

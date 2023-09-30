@@ -1,22 +1,21 @@
 package edu.sru.cpsc.webshopping.util;
 
-import edu.sru.cpsc.webshopping.domain.widgets.Category;
-import edu.sru.cpsc.webshopping.repository.widgets.CategoryRepository;
-
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import edu.sru.cpsc.webshopping.domain.widgets.Category;
+import edu.sru.cpsc.webshopping.repository.widgets.CategoryRepository;
 
 @Component
 public class PreLoad {

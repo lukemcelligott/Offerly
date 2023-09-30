@@ -8,7 +8,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
-import edu.sru.cpsc.webshopping.controller.misc.FriendStatus;
 import edu.sru.cpsc.webshopping.domain.user.User;
 
 @Entity

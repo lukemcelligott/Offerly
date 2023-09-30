@@ -1,19 +1,10 @@
 package edu.sru.cpsc.webshopping.domain.user;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.OrderColumn;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 
 @Entity
 public class UserList {

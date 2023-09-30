@@ -1,5 +1,7 @@
 package edu.sru.cpsc.webshopping.service;
 
+import java.security.Principal;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -9,15 +11,17 @@ import org.springframework.validation.annotation.Validated;
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.controller.UserController;
+import edu.sru.cpsc.webshopping.service.UserService;
 
 @Service
 public class WatchlistService {
 	UserController userController;
+	UserService userService;
 	@PersistenceContext
 	private EntityManager entityManager;
 	
-	WatchlistService() {
-
+	WatchlistService(UserService userService) {
+		this.userService = userService;
 	}
 	
 	/*
@@ -27,12 +31,13 @@ public class WatchlistService {
 	 */
 	public void watchlistAdd(@Validated MarketListing marketListing, User user) {
 		MarketListing addedWidget = entityManager.find(MarketListing.class, marketListing.getId());
+		
 		// check if the widget is null
 		if (addedWidget == null) {
 			throw new IllegalArgumentException("Widget pass to addToWishlist not found in database.");
 		}
 		
-		user.getWishlistedWidgets().add(marketListing);
+		user.getWishlistedWidgets().add(addedWidget);
 		
 	}
 	
@@ -43,6 +48,7 @@ public class WatchlistService {
 	 */
 	public void watchlistRemove(@Validated MarketListing marketListing, User user) {
 		MarketListing delWidget = entityManager.find(MarketListing.class, marketListing.getId());
+		
 		// check if the widget is null
 		if (delWidget == null) {
 			throw new IllegalArgumentException("Widget pass to removeFromWishlist not found in database.");

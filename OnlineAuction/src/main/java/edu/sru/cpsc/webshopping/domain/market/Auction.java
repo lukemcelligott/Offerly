@@ -1,17 +1,14 @@
 package edu.sru.cpsc.webshopping.domain.market;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.Future;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 /**
  * Auction attributes that will be dynamically changed when users bid

@@ -1,8 +1,8 @@
 package edu.sru.cpsc.webshopping.secure;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class WebshoppingSecureSpringTest {
 	 
 	        @Bean
 	        public UserDetailsService userDetailsService() {
-	            return new UserDetailsServiceImpl(null, null, null);
+	            return new UserDetailsServiceImpl();
 	        }
 	    }
 	
@@ -42,7 +42,7 @@ public class WebshoppingSecureSpringTest {
 	@Test
 	void UserDetailsServiceImplTest() {
 		
-		UserDetailsServiceImpl impl = new UserDetailsServiceImpl(null, null, null);
+		UserDetailsServiceImpl impl = new UserDetailsServiceImpl();
 		UserDetails user = impl.loadUserByUsername("userName");
 		
 		assertEquals("userName", user.getUsername());
@@ -50,7 +50,7 @@ public class WebshoppingSecureSpringTest {
 	
 	@Test
 	void UserDetailsServiceImplExceptionTest() {
-		UserDetailsServiceImpl impl = new UserDetailsServiceImpl(null, null, null);
+		UserDetailsServiceImpl impl = new UserDetailsServiceImpl();
 		
 		try {
 		UserDetails user = impl.loadUserByUsername("thisUserDoesntExist");

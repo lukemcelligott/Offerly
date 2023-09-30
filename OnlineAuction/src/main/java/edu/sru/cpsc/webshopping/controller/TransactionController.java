@@ -20,7 +20,6 @@ import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.market.Shipping;
 import edu.sru.cpsc.webshopping.domain.market.Transaction;
 import edu.sru.cpsc.webshopping.domain.user.User;
-import edu.sru.cpsc.webshopping.repository.market.MarketListingRepository;
 import edu.sru.cpsc.webshopping.repository.market.ShippingRepository;
 import edu.sru.cpsc.webshopping.repository.market.TransactionRepository;
 

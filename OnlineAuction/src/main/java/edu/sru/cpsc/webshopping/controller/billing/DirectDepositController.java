@@ -6,7 +6,6 @@ import javax.persistence.PersistenceContext;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.sru.cpsc.webshopping.domain.billing.DirectDepositDetails;
-import edu.sru.cpsc.webshopping.domain.billing.PaymentDetails;
 import edu.sru.cpsc.webshopping.repository.billing.DirectDepositDetailsRepository;
 
 

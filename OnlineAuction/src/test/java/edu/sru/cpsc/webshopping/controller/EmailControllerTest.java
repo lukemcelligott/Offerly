@@ -1,11 +1,11 @@
 package edu.sru.cpsc.webshopping.controller;
 import org.jboss.logging.Logger;
+import org.junit.Test;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.Test;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import edu.sru.cpsc.webshopping.domain.user.Message;

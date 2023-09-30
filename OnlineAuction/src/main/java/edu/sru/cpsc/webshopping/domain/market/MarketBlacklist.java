@@ -1,16 +1,12 @@
 package edu.sru.cpsc.webshopping.domain.market;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
-//import edu.sru.cpsc.webshopping.controller.AddWidgetController;
-import edu.sru.cpsc.webshopping.controller.LandingPageController;
 
 
 //Takes input from a new product and checks if it contains blacklisted terms | Josh Malone

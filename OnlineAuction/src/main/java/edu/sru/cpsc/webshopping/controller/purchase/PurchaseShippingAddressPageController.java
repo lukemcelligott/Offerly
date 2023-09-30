@@ -1,19 +1,12 @@
 package edu.sru.cpsc.webshopping.controller.purchase;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,7 +22,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
 import com.smartystreets.api.exceptions.SmartyException;
@@ -46,8 +37,6 @@ import com.google.maps.errors.ApiException;
 import com.google.maps.model.AutocompletePrediction;
 
 import edu.sru.cpsc.webshopping.controller.ShippingAddressDomainController;
-import edu.sru.cpsc.webshopping.controller.ShippingDomainController;
-import edu.sru.cpsc.webshopping.controller.TransactionController;
 import edu.sru.cpsc.webshopping.controller.UserController;
 import edu.sru.cpsc.webshopping.controller.billing.StateDetailsController;
 import edu.sru.cpsc.webshopping.domain.billing.PaymentDetails;
@@ -55,11 +44,11 @@ import edu.sru.cpsc.webshopping.domain.billing.ShippingAddress;
 import edu.sru.cpsc.webshopping.domain.billing.ShippingAddress_Form;
 import edu.sru.cpsc.webshopping.domain.billing.StateDetails;
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
-import edu.sru.cpsc.webshopping.domain.market.Shipping;
 import edu.sru.cpsc.webshopping.domain.market.Transaction;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.repository.billing.ShippingAddressRepository;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
+import edu.sru.cpsc.webshopping.service.UserService;
 
 /**
  * Manages the functionality of the confirmShipping page
@@ -89,6 +78,9 @@ public class PurchaseShippingAddressPageController {
 	private long updateIdSA = -1;
 	private long id2SA;
 	private ShippingAddressRepository addressRepository;
+
+	@Autowired
+	private UserService userService;
 	
 	public PurchaseShippingAddressPageController(StateDetailsController stateDetailsController,
 												@Lazy ConfirmPurchasePageController purchasePageController,
@@ -114,7 +106,8 @@ public class PurchaseShippingAddressPageController {
 	 * @return the confirmShippingAddressPage page
 	 */
 	@RequestMapping("/confirmShipping")
-	public String openConfirmShippingPage(Boolean relogin, MarketListing prevListing, Transaction purchaseOrder, PaymentDetails details, Model model) {
+	public String openConfirmShippingPage(Boolean relogin, MarketListing prevListing, Transaction purchaseOrder, PaymentDetails details, Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
 		if(relogin != null)
 			this.relogin = relogin;
 		if(details != null && details.getCardNumber() != null && !details.getCardNumber().isEmpty() && !details.getCardNumber().isBlank())
@@ -126,7 +119,6 @@ public class PurchaseShippingAddressPageController {
 		if(prevListing.getPricePerItem() != null)
 			this.prevListing = prevListing;
 		model.addAttribute("shippingAddress", new ShippingAddress_Form());
-		User user = userController.getCurrently_Logged_In();
 		model.addAttribute("user", user);
 		if(this.details != null && this.details.getCardNumber() != null && !this.details.getCardNumber().isEmpty() && !this.details.getCardNumber().isBlank())
 			model.addAttribute("selectedPayment", this.details);
@@ -185,7 +177,8 @@ public class PurchaseShippingAddressPageController {
 	 */
 	@Transactional
 	@RequestMapping(value = "/confirmShipping/submitAddress", method = RequestMethod.POST, params = "submit")
-	public String submitAddress(@Validated @ModelAttribute("shippingAddress") ShippingAddress_Form address, BindingResult result, @RequestParam("stateId") String stateId, Model model) {
+	public String submitAddress(@Validated @ModelAttribute("shippingAddress") ShippingAddress_Form address, BindingResult result, @RequestParam("stateId") String stateId, Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
 		// If there are errors, then refresh the page
 		address.setState(stateDetailsController.getState(stateId));
 		if (result.hasErrors() || shippingAddressConstraintsFailed(address)) {
@@ -194,7 +187,6 @@ public class PurchaseShippingAddressPageController {
 			if(!result.hasErrors() && shippingAddressConstraintsFailed(address))
 				model.addAttribute("shippingError", "Address does not exist");
 			// Add errors to model
-			User user = userController.getCurrently_Logged_In();
 			model.addAttribute("user", user);
 			model.addAttribute("relogin", relogin);
 			model.addAttribute("loginEr", loginEr);
@@ -229,10 +221,10 @@ public class PurchaseShippingAddressPageController {
 		ShippingAddress validatedAddress = new ShippingAddress();
 		validatedAddress.buildFromForm(address);
 		System.out.println(validatedAddress.getId());
-		shippingController.addShippingAddress(validatedAddress);
+		shippingController.addShippingAddress(validatedAddress, user);
 		relogin = false;
-		this.persistAddress(validatedAddress);
-		return this.purchasePageController.openConfirmPurchasePage(validatedAddress, prevListing, purchaseOrder, model);
+		this.persistAddress(validatedAddress, user);
+		return this.purchasePageController.openConfirmPurchasePage(validatedAddress, prevListing, purchaseOrder, model, principal);
 	}
 	
 	/**
@@ -244,7 +236,8 @@ public class PurchaseShippingAddressPageController {
 	 * @return
 	 */
 	@PostMapping(value = "/confirmShipping/submitAddress", params="update")
-	public String updateAddress(@Validated @ModelAttribute("shippingAddress") ShippingAddress_Form address, BindingResult result, @RequestParam("stateId") String stateId, Model model) {
+	public String updateAddress(@Validated @ModelAttribute("shippingAddress") ShippingAddress_Form address, BindingResult result, @RequestParam("stateId") String stateId, Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
 		address.setState(stateDetailsController.getState(stateId));
 		ShippingAddress currDetails = shippingController.getShippingAddressEntry(id2SA);
 		if (result.hasErrors() || shippingAddressConstraintsFailed(address)) {
@@ -253,7 +246,6 @@ public class PurchaseShippingAddressPageController {
 			if(!result.hasErrors() && shippingAddressConstraintsFailed(address))
 				model.addAttribute("shippingError", "Address does not exist");
 			// Add errors to model
-			User user = userController.getCurrently_Logged_In();
 			model.addAttribute("user", user);
 			model.addAttribute("relogin", relogin);
 			model.addAttribute("loginEr", loginEr);
@@ -285,8 +277,7 @@ public class PurchaseShippingAddressPageController {
 		ShippingAddress shipping = new ShippingAddress();
 		address.setState(stateDetailsController.getState(stateId));
 		shipping.buildFromForm(address);
-		shippingController.updateShippingAddress(shipping, currDetails);
-		User user = userController.getCurrently_Logged_In();		
+		shippingController.updateShippingAddress(shipping, currDetails);		
 		Set<ShippingAddress> sAddress = user.getShippingDetails();
 		List<ShippingAddress> SA = new ArrayList<>(sAddress);
 		for(ShippingAddress details : SA)
@@ -301,7 +292,7 @@ public class PurchaseShippingAddressPageController {
 		addNewSA = false;
 		updateSA = false;
 		updateIdSA = -1;
-		return this.purchasePageController.openConfirmPurchasePage(shipping, prevListing, purchaseOrder, model);
+		return this.purchasePageController.openConfirmPurchasePage(shipping, prevListing, purchaseOrder, model, principal);
 	}
 	
 	/**
@@ -314,12 +305,12 @@ public class PurchaseShippingAddressPageController {
 	 */
 	@RequestMapping(value = "/confirmShipping/existingAddress", method = RequestMethod.POST, params = "submit")
 	public String submitExistingAddress(
-			@Validated @ModelAttribute("selected_shipping_details") Long id, BindingResult result, Model model) {
+			@Validated @ModelAttribute("selected_shipping_details") Long id, BindingResult result, Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
 		// If there are errors, then refresh the page
 		if (result.hasErrors()) {
 			model.addAttribute("shippingAddress", new ShippingAddress_Form());
 			model.addAttribute("states", states);	
-			User user = userController.getCurrently_Logged_In();
 			model.addAttribute("user", user);
 			model.addAttribute("allSelected", allSelected);
 			model.addAttribute("relogin", relogin);
@@ -351,7 +342,7 @@ public class PurchaseShippingAddressPageController {
 		}
 		relogin = true;
 		ShippingAddress validatedAddress = shippingController.getShippingAddressEntry(id);
-		return this.purchasePageController.openConfirmPurchasePage(validatedAddress, prevListing, purchaseOrder, model);
+		return this.purchasePageController.openConfirmPurchasePage(validatedAddress, prevListing, purchaseOrder, model, principal);
 	}
 	
 	/**
@@ -402,8 +393,9 @@ public class PurchaseShippingAddressPageController {
 	 * @return
 	 */
 	@PostMapping(value = "/confirmShipping/submitAddress", params="loginInfo")
-	public String relogin(@RequestParam("usernameSA") String username, @RequestParam("passwordSA") String password, Model model) {
-		if(!validateLoginInfo(username, password))
+	public String relogin(@RequestParam("usernameSA") String username, @RequestParam("passwordSA") String password, Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
+		if(!validateLoginInfo(username, password, user))
 		{
 			loginEr = true;
 			model.addAttribute("loginError", "Incorrect Username or Password Entered");
@@ -418,9 +410,9 @@ public class PurchaseShippingAddressPageController {
 	 * persists the passed shipping address
 	 * @param address
 	 */
-	public void persistAddress(ShippingAddress address)
+	public void persistAddress(ShippingAddress address, User user)
 	{
-		address.setUser(userController.getCurrently_Logged_In());
+		address.setUser(user);
 		addressRepository.save(address);
 	}
 	
@@ -430,9 +422,8 @@ public class PurchaseShippingAddressPageController {
 	 * @param password
 	 * @return
 	 */
-	public boolean validateLoginInfo(String username, String password)
+	public boolean validateLoginInfo(String username, String password, User user)
 	{
-		User user = userController.getCurrently_Logged_In();
 		System.out.println(username.equals(user.getUsername()));
 		System.out.println(passwordEncoder.matches(password, user.getPassword()));
 		if(username.equals(user.getUsername()) && passwordEncoder.matches(password, user.getPassword()))

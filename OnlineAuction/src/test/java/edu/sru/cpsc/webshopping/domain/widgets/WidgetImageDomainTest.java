@@ -3,6 +3,7 @@ package edu.sru.cpsc.webshopping.domain.widgets;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.jupiter.api.Test;
+
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 
 public class WidgetImageDomainTest {
