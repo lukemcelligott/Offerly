@@ -1,57 +1,30 @@
 package edu.sru.cpsc.webshopping.controller;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
-import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import cn.apiclub.captcha.Captcha;
-import edu.sru.cpsc.webshopping.controller.billing.DirectDepositController;
-import edu.sru.cpsc.webshopping.controller.billing.PaymentDetailsController;
-import edu.sru.cpsc.webshopping.controller.billing.PaypalController;
-import edu.sru.cpsc.webshopping.controller.billing.SellerRatingController;
 import edu.sru.cpsc.webshopping.controller.misc.Friendship;
 import edu.sru.cpsc.webshopping.controller.misc.SocialFriendRequest;
 import edu.sru.cpsc.webshopping.controller.misc.SocialMessage;
-import edu.sru.cpsc.webshopping.domain.billing.DirectDepositDetails;
-import edu.sru.cpsc.webshopping.domain.billing.PaymentDetails;
-import edu.sru.cpsc.webshopping.domain.billing.Paypal;
-import edu.sru.cpsc.webshopping.domain.market.MarketListing;
-import edu.sru.cpsc.webshopping.domain.user.Message;
-import edu.sru.cpsc.webshopping.domain.user.SellerRating;
-import edu.sru.cpsc.webshopping.domain.user.Statistics;
-import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
 import edu.sru.cpsc.webshopping.domain.user.User;
-import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 import edu.sru.cpsc.webshopping.repository.misc.FriendSocialRequestRepository;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
-import edu.sru.cpsc.webshopping.secure.CaptchaUtil;
 import edu.sru.cpsc.webshopping.service.FriendshipService;
 import edu.sru.cpsc.webshopping.service.MessageService;
+import edu.sru.cpsc.webshopping.service.UserService;
 
 
 @Controller
@@ -64,17 +37,17 @@ public class FriendsController {
     private MessageService messageService;
     
     @Autowired
-    private UserController userController;
-    
-    @Autowired
     private UserRepository userRepository;
     
     @Autowired
     private FriendSocialRequestRepository friendSocialRequestRepository;
+
+    @Autowired
+    private UserService userService;
     
     @GetMapping("/addFriends")
-    public String getSocialPage(Model model) {
-    	User user = userController.getCurrently_Logged_In();
+    public String getSocialPage(Model model, Principal principal) {
+    	User user = userService.getUserByUsername(principal.getName());
     	model.addAttribute("user", user);
 		model.addAttribute("page", "addFriends");
        
@@ -89,8 +62,8 @@ public class FriendsController {
     }
     
     @PostMapping({"/add"})
-    public String addFriend(@RequestParam("userName") String userName, Model model, RedirectAttributes redirectAttributes) {
-        User currentUser = userController.getCurrently_Logged_In();
+    public String addFriend(@RequestParam("userName") String userName, Model model, RedirectAttributes redirectAttributes, Principal principal) {
+        User currentUser = userService.getUserByUsername(principal.getName());
         
         if(currentUser.getUsername().equals(userName)) {
             redirectAttributes.addFlashAttribute("errorMessage", "You cannot send a friend request to yourself!");
@@ -113,8 +86,8 @@ public class FriendsController {
     }
     
     @PostMapping("/remove")
-    public String removeFriend(@RequestParam("friendId") Long friendId, Model model) {
-        User currentUser = userController.getCurrently_Logged_In();
+    public String removeFriend(@RequestParam("friendId") Long friendId, Model model, Principal principal) {
+        User currentUser = userService.getUserByUsername(principal.getName());
         Friendship friendship = friendshipService.getFriendshipBetweenUsers(currentUser, friendId);
         if(friendship != null) {
             friendshipService.removeFriendship(friendship);
@@ -126,8 +99,8 @@ public class FriendsController {
     
     
     @GetMapping("inbox")
-    public String displayInboxPage(Model model) {
-    	User user = userController.getCurrently_Logged_In();
+    public String displayInboxPage(Model model, Principal principal) {
+    	User user = userService.getUserByUsername(principal.getName());
     	model.addAttribute("user", user);
 		model.addAttribute("page", "inbox");
        
@@ -140,8 +113,8 @@ public class FriendsController {
     }
     
     @GetMapping("/api/conversations/{friendId}")
-    public ResponseEntity<Map<String, Object>> getConversation(@PathVariable Long friendId) {
-        User currentUser = userController.getCurrently_Logged_In();
+    public ResponseEntity<Map<String, Object>> getConversation(@PathVariable Long friendId, Principal principal) {
+        User currentUser = userService.getUserByUsername(principal.getName());
         User friend = userRepository.findById(friendId).orElse(null);
 
         if (friend == null) {
@@ -158,8 +131,8 @@ public class FriendsController {
     }
     
     @PostMapping("/messages/send")
-    public ResponseEntity<?> sendMessage(@RequestParam String content, @RequestParam Long receiver) {
-        User sender = userController.getCurrently_Logged_In();
+    public ResponseEntity<?> sendMessage(@RequestParam String content, @RequestParam Long receiver, Principal principal) {
+        User sender = userService.getUserByUsername(principal.getName());
         User receiverUser = userRepository.findById(receiver).orElse(null);
         
         if (receiverUser == null) {

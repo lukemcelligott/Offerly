@@ -11,32 +11,27 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import edu.sru.cpsc.webshopping.domain.billing.PaymentDetails;
 import edu.sru.cpsc.webshopping.domain.billing.ShippingAddress;
-import edu.sru.cpsc.webshopping.domain.market.Shipping;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.repository.billing.ShippingAddressRepository;
-import edu.sru.cpsc.webshopping.repository.market.ShippingRepository;
 
 @RestController
 public class ShippingAddressDomainController {
 		
-		private UserController userController;
+
 		private ShippingAddressRepository shippingAddressRepository;
 		@PersistenceContext
 		private EntityManager entityManager;
 		
-		public ShippingAddressDomainController(ShippingAddressRepository shippingAddressRepository,
-												UserController userController) {
+		public ShippingAddressDomainController(ShippingAddressRepository shippingAddressRepository) {
 			this.shippingAddressRepository = shippingAddressRepository;
-			this.userController = userController;
 		}
 		
 		@Transactional
-		public void addShippingAddress(@Validated ShippingAddress details) {
+		public void addShippingAddress(@Validated ShippingAddress details, User user) {
 			System.out.println("add shipping details database function called");
-				if(userController.getCurrently_Logged_In().getDefaultShipping() == null)
-					userController.getCurrently_Logged_In().setDefaultShipping(details);
+				if(user.getDefaultShipping() == null)
+					user.setDefaultShipping(details);
 				shippingAddressRepository.save(details);
 				entityManager.persist(details);
 			

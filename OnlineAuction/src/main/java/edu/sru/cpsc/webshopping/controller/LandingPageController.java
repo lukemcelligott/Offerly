@@ -1,5 +1,20 @@
 package edu.sru.cpsc.webshopping.controller;
 
+import java.math.BigDecimal;
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.market.Transaction;
 import edu.sru.cpsc.webshopping.domain.user.Message;
@@ -7,19 +22,7 @@ import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.user.UserList;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import edu.sru.cpsc.webshopping.service.UserService;
 
 /**
  * Controller for Home page and searching. Interacts with the widget database and its inheriting
@@ -29,6 +32,9 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @Controller
 public class LandingPageController {
+
+	@Autowired
+	private UserService userService;
 
 	UserRepository userRepository;
 	WidgetController widgetController;
@@ -67,41 +73,45 @@ public class LandingPageController {
 	
 	  
 	  @GetMapping("/refund")
-	  public String showRefundPage(Model model, Model widgetModel,Model listingModel, String tempSearch) {
-		  User user = userController.getCurrently_Logged_In();
-		  model.addAttribute("user", user);
-		  model.addAttribute("page", "refund");
-		  widgetModel.addAttribute("widgets", widgetController.getAllWidgets());
-		  listingModel.addAttribute("listings", marketController.getAllListings());
-		  Iterable<Transaction> purchases =
-				  transController.getUserPurchases(userController.getCurrently_Logged_In());
-		  listingModel.addAttribute("purchases", purchases);
-		  
-	      return "refund";
+	  public String showRefundPage(Model model, Model widgetModel,Model listingModel, String tempSearch, Principal principal) {
+		String username = principal.getName();
+		User user = userService.getUserByUsername(username);
+		model.addAttribute("user", user);
+		model.addAttribute("page", "refund");
+		widgetModel.addAttribute("widgets", widgetController.getAllWidgets());
+		listingModel.addAttribute("listings", marketController.getAllListings());
+		Iterable<Transaction> purchases =
+				transController.getUserPurchases(user);
+		listingModel.addAttribute("purchases", purchases);
+		
+		return "refund";
 	  }
 	  
 
 	@GetMapping({"/friendsOff"})
-	public String friendsOff(Model model) {
+	public String friendsOff(Model model, Principal principal) {
 		setPage("friendOff");
-
+		String username = principal.getName();
+		User user = userService.getUserByUsername(username);
 		model.addAttribute("widgets", widgetController.getAllWidgets());
 		model.addAttribute("listings", marketController.getAllListings());
 		Iterable<Transaction> purchases =
-				transController.getUserPurchases(userController.getCurrently_Logged_In());
+				transController.getUserPurchases(user);
 		model.addAttribute("purchases", purchases);
 		Iterable<Transaction> soldTrans =
-				transController.getUserSoldItems(userController.getCurrently_Logged_In());
+				transController.getUserSoldItems(user);
 		model.addAttribute("soldTrans", soldTrans);
-		model.addAttribute("sellerRating", userController.getSellerRating());
+		model.addAttribute("sellerRating", user.getSellerRating());
 		model.addAttribute("page", getPage());
-		model.addAttribute("user", userController.getCurrently_Logged_In());
+		model.addAttribute("user", user);
 
 		return "homePage";
 	}
 
 	@GetMapping({"/blockList"})
-	public String blockList(Model model) {
+	public String blockList(Model model, Principal principal) {
+		String username = principal.getName();
+		User user = userService.getUserByUsername(username);
 		setPage("friends");
 		setPage3("blockList");
 		getAllUsers().clear();
@@ -113,27 +123,28 @@ public class LandingPageController {
 		}
 
 		model.addAttribute("names", allusernames);
-		User user = userController.getCurrently_Logged_In();
 		List<UserList> blocked = userListController.getBlocked(user);
 		model.addAttribute("myBlocked", blocked);
 		model.addAttribute("widgets", widgetController.getAllWidgets());
 		model.addAttribute("listings", marketController.getAllListings());
 		Iterable<Transaction> purchases =
-				transController.getUserPurchases(userController.getCurrently_Logged_In());
+				transController.getUserPurchases(user);
 		model.addAttribute("purchases", purchases);
 		Iterable<Transaction> soldTrans =
-				transController.getUserSoldItems(userController.getCurrently_Logged_In());
+				transController.getUserSoldItems(user);
 		model.addAttribute("soldTrans", soldTrans);
-		model.addAttribute("sellerRating", userController.getSellerRating());
+		model.addAttribute("sellerRating", user.getSellerRating());
 		model.addAttribute("page", getPage());
 		model.addAttribute("page3", getPage3());
-		model.addAttribute("user", userController.getCurrently_Logged_In());
+		model.addAttribute("user", user);
 
 		return "homePage";
 	}
 
 	@GetMapping({"/friends"})
-	public String friends(Model model) {
+	public String friends(Model model, Principal principal) {
+		String username = principal.getName();
+		User user = userService.getUserByUsername(username);
 		setPage("friends");
 		setPage3("friendList");
 		getAllUsers().clear();
@@ -145,28 +156,28 @@ public class LandingPageController {
 		}
 
 		model.addAttribute("names", allusernames);
-
-		User user = userController.getCurrently_Logged_In();
 		List<UserList> friends = userListController.getFriends(user);
 		model.addAttribute("myFriends", friends);
 		model.addAttribute("widgets", widgetController.getAllWidgets());
 		model.addAttribute("listings", marketController.getAllListings());
 		Iterable<Transaction> purchases =
-				transController.getUserPurchases(userController.getCurrently_Logged_In());
+				transController.getUserPurchases(user);
 		model.addAttribute("purchases", purchases);
 		Iterable<Transaction> soldTrans =
-				transController.getUserSoldItems(userController.getCurrently_Logged_In());
+				transController.getUserSoldItems(user);
 		model.addAttribute("soldTrans", soldTrans);
-		model.addAttribute("sellerRating", userController.getSellerRating());
+		model.addAttribute("sellerRating", user.getSellerRating());
 		model.addAttribute("page", getPage());
 		model.addAttribute("page3", getPage3());
-		model.addAttribute("user", userController.getCurrently_Logged_In());
+		model.addAttribute("user", user);
 
 		return "homePage";
 	}
 
 	@GetMapping({"/suggested"})
-	public String suggested(Model model) {
+	public String suggested(Model model, Principal principal) {
+		String username = principal.getName();
+		User user = userService.getUserByUsername(username);
 		setPage("friends");
 		setPage3("suggestedList");
 		getAllUsers().clear();
@@ -178,28 +189,28 @@ public class LandingPageController {
 		}
 
 		model.addAttribute("names", allusernames);
-
-		User user = userController.getCurrently_Logged_In();
 		model.addAttribute("widgets", widgetController.getAllWidgets());
 		Iterable<MarketListing> listings =
 				marketController.getAllListings();
 		model.addAttribute("listings", listings);
 		Iterable<Transaction> purchases =
-				transController.getUserPurchases(userController.getCurrently_Logged_In());
+				transController.getUserPurchases(user);
 		model.addAttribute("purchases", purchases);
 		Iterable<Transaction> soldTrans =
-				transController.getUserSoldItems(userController.getCurrently_Logged_In());
+				transController.getUserSoldItems(user);
 		model.addAttribute("soldTrans", soldTrans);
-		model.addAttribute("sellerRating", userController.getSellerRating());
+		model.addAttribute("sellerRating", user.getSellerRating());
 		model.addAttribute("page", getPage());
 		model.addAttribute("page3", getPage3());
-		model.addAttribute("user", userController.getCurrently_Logged_In());
+		model.addAttribute("user", user);
 
 		return "homePage";
 	}
 
 	@RequestMapping({"/friend"})
-	public String friend(@RequestParam("friend") String friendName, Model model) {
+	public String friend(@RequestParam("friend") String friendName, Model model, Principal principal) {
+		String username = principal.getName();
+		User user = userService.getUserByUsername(username);
 		setPage2("null");
 		getAllUsers().clear();
 		Iterable<User> allUsersIterator = userController.getAllUsers();
@@ -210,7 +221,6 @@ public class LandingPageController {
 		}
 
 		model.addAttribute("names", allusernames);
-		User user = userController.getCurrently_Logged_In();
 		UserList myList = new UserList();
 		myList.setOwner(user);
 		List<UserList> friends = userListController.getFriends(user);
@@ -238,14 +248,14 @@ public class LandingPageController {
 		model.addAttribute("widgets", widgetController.getAllWidgets());
 		model.addAttribute("listings", marketController.getAllListings());
 		Iterable<Transaction> purchases =
-				transController.getUserPurchases(userController.getCurrently_Logged_In());
+				transController.getUserPurchases(user);
 		model.addAttribute("purchases", purchases);
 		Iterable<Transaction> soldTrans =
-				transController.getUserSoldItems(userController.getCurrently_Logged_In());
+				transController.getUserSoldItems(user);
 		model.addAttribute("soldTrans", soldTrans);
-		model.addAttribute("sellerRating", userController.getSellerRating());
+		model.addAttribute("sellerRating", user.getSellerRating());
 		model.addAttribute("page", getPage());
-		model.addAttribute("user", userController.getCurrently_Logged_In());
+		model.addAttribute("user", user);
 		return "homePage";
 	}
 
@@ -254,10 +264,12 @@ public class LandingPageController {
 			@RequestParam("recipient") String name,
 			@RequestParam("message") String content,
 			@RequestParam("subject") String subject,
-			Model model) {
+			Model model,
+			Principal principal) {
 
-		User user = userController.getCurrently_Logged_In();
-		User receiver = userController.getUserByUsername(name);
+		String username = principal.getName();
+		User user = userService.getUserByUsername(username);
+		User receiver = userService.getUserByUsername(name);
 
 		model.addAttribute("page", getPage());
 		model.addAttribute("user", user);
@@ -284,7 +296,6 @@ public class LandingPageController {
 		message.setReceiverName(name);
 		message.setReceiver(receiver);
 		msgcontrol.addMessage(message);
-		user = userController.getCurrently_Logged_In();
 		emailController.messageEmail(receiver, user, message);
 
 		setPage2("sent");
@@ -306,19 +317,21 @@ public class LandingPageController {
 		model.addAttribute("widgets", widgetController.getAllWidgets());
 		model.addAttribute("listings", marketController.getAllListings());
 		Iterable<Transaction> purchases =
-				transController.getUserPurchases(userController.getCurrently_Logged_In());
+				transController.getUserPurchases(user);
 		model.addAttribute("purchases", purchases);
 		Iterable<Transaction> soldTrans =
-				transController.getUserSoldItems(userController.getCurrently_Logged_In());
+				transController.getUserSoldItems(user);
 		model.addAttribute("soldTrans", soldTrans);
-		model.addAttribute("sellerRating", userController.getSellerRating());
+		model.addAttribute("sellerRating", user.getSellerRating());
 		model.addAttribute("page", getPage());
-		model.addAttribute("user", userController.getCurrently_Logged_In());
+		model.addAttribute("user", user);
 		return "homePage";
 	}
 
 	@RequestMapping({"/addFriend/{id}"})
-	public String addAFriend(@PathVariable("id") int id, Model model) {
+	public String addAFriend(@PathVariable("id") int id, Model model, Principal principal) {
+		String username = principal.getName();
+		User user = userService.getUserByUsername(username);
 		setPage2("null");
 		User friend = userController.getUser(id, model);
 		getAllUsers().clear();
@@ -330,7 +343,6 @@ public class LandingPageController {
 		}
 
 		model.addAttribute("names", allusernames);
-		User user = userController.getCurrently_Logged_In();
 		UserList myList = new UserList();
 		myList.setOwner(user);
 		List<UserList> friends = userListController.getFriends(user);
@@ -357,19 +369,21 @@ public class LandingPageController {
 		model.addAttribute("widgets", widgetController.getAllWidgets());
 		model.addAttribute("listings", marketController.getAllListings());
 		Iterable<Transaction> purchases =
-				transController.getUserPurchases(userController.getCurrently_Logged_In());
+				transController.getUserPurchases(user);
 		model.addAttribute("purchases", purchases);
 		Iterable<Transaction> soldTrans =
-				transController.getUserSoldItems(userController.getCurrently_Logged_In());
+				transController.getUserSoldItems(user);
 		model.addAttribute("soldTrans", soldTrans);
-		model.addAttribute("sellerRating", userController.getSellerRating());
+		model.addAttribute("sellerRating", user.getSellerRating());
 		model.addAttribute("page", getPage());
-		model.addAttribute("user", userController.getCurrently_Logged_In());
+		model.addAttribute("user", user);
 		return "homePage";
 	}
 
 	@RequestMapping({"/sendMessageToFriend/{id}"})
-	public String sendMessageToFriend(@PathVariable("id") int id, Model model) {
+	public String sendMessageToFriend(@PathVariable("id") int id, Model model, Principal principal) {
+		String username = principal.getName();
+		User user = userService.getUserByUsername(username);
 		if (getPage2() == null || !(getPage2().equals("sendPrep"))) {
 			setPage2("sendPrep");
 		} else {
@@ -387,7 +401,6 @@ public class LandingPageController {
 
 		model.addAttribute("names", allusernames);
 		model.addAttribute("friend", friend);
-		User user = userController.getCurrently_Logged_In();
 
 		List<UserList> friends = userListController.getFriends(user);
 		List<UserList> blocked = userListController.getBlocked(user);
@@ -403,19 +416,21 @@ public class LandingPageController {
 		model.addAttribute("widgets", widgetController.getAllWidgets());
 		model.addAttribute("listings", marketController.getAllListings());
 		Iterable<Transaction> purchases =
-				transController.getUserPurchases(userController.getCurrently_Logged_In());
+				transController.getUserPurchases(user);
 		model.addAttribute("purchases", purchases);
 		Iterable<Transaction> soldTrans =
-				transController.getUserSoldItems(userController.getCurrently_Logged_In());
+				transController.getUserSoldItems(user);
 		model.addAttribute("soldTrans", soldTrans);
-		model.addAttribute("sellerRating", userController.getSellerRating());
+		model.addAttribute("sellerRating", user.getSellerRating());
 		model.addAttribute("page", getPage());
-		model.addAttribute("user", userController.getCurrently_Logged_In());
+		model.addAttribute("user", user);
 		return "homePage";
 	}
 
 	@RequestMapping({"/removeFriend/{id}"})
-	public String removeFriend(@PathVariable("id") int id, Model model) {
+	public String removeFriend(@PathVariable("id") int id, Model model, Principal principal) {
+		String username = principal.getName();
+		User user = userService.getUserByUsername(username);
 		setPage2("removeFriend");
 		User friend = userController.getUser(id, model);
 		getAllUsers().clear();
@@ -425,7 +440,6 @@ public class LandingPageController {
 		for (int i = 0; i < allusernames.length; i++) {
 			allusernames[i] = getAllUsers().get(i).getUsername();
 		}
-		User user = userController.getCurrently_Logged_In();
 		if (getPage3().equals("blockList")) {
 			setPage2("removeBlock");
 			userListController.removeBlock(user, friend);
@@ -444,19 +458,21 @@ public class LandingPageController {
 		model.addAttribute("widgets", widgetController.getAllWidgets());
 		model.addAttribute("listings", marketController.getAllListings());
 		Iterable<Transaction> purchases =
-				transController.getUserPurchases(userController.getCurrently_Logged_In());
+				transController.getUserPurchases(user);
 		model.addAttribute("purchases", purchases);
 		Iterable<Transaction> soldTrans =
-				transController.getUserSoldItems(userController.getCurrently_Logged_In());
+				transController.getUserSoldItems(user);
 		model.addAttribute("soldTrans", soldTrans);
-		model.addAttribute("sellerRating", userController.getSellerRating());
+		model.addAttribute("sellerRating", user.getSellerRating());
 		model.addAttribute("page", getPage());
-		model.addAttribute("user", userController.getCurrently_Logged_In());
+		model.addAttribute("user", user);
 		return "homePage";
 	}
 
 	@RequestMapping({"/block"})
-	public String block(@RequestParam("block") String blockName, Model model) {
+	public String block(@RequestParam("block") String blockName, Model model, Principal principal) {
+		String username = principal.getName();
+		User user = userService.getUserByUsername(username);
 		setPage2("null");
 		getAllUsers().clear();
 		Iterable<User> allUsersIterator = userController.getAllUsers();
@@ -468,7 +484,6 @@ public class LandingPageController {
 
 		model.addAttribute("names", allusernames);
 		UserList myList = new UserList();
-		User user = userController.getCurrently_Logged_In();
 		myList.setOwner(user);
 		List<UserList> blocked = userListController.getBlocked(user);
 		if (userController.getUserByUsername(blockName) != null) {
@@ -494,20 +509,21 @@ public class LandingPageController {
 		model.addAttribute("widgets", widgetController.getAllWidgets());
 		model.addAttribute("listings", marketController.getAllListings());
 		Iterable<Transaction> purchases =
-				transController.getUserPurchases(userController.getCurrently_Logged_In());
+				transController.getUserPurchases(user);
 		model.addAttribute("purchases", purchases);
 		Iterable<Transaction> soldTrans =
-				transController.getUserSoldItems(userController.getCurrently_Logged_In());
+				transController.getUserSoldItems(user);
 		model.addAttribute("soldTrans", soldTrans);
-		model.addAttribute("sellerRating", userController.getSellerRating());
+		model.addAttribute("sellerRating", user.getSellerRating());
 		model.addAttribute("page", getPage());
-		model.addAttribute("user", userController.getCurrently_Logged_In());
+		model.addAttribute("user", user);
 		return "homePage";
 	}
 
 	@RequestMapping("homePage")
-	public String homePage(Model widgetModel, Model listingModel, String tempSearch) {
-		User user = userController.getCurrently_Logged_In();
+	public String homePage(Model widgetModel, Model listingModel, String tempSearch, Principal principal) {
+		String username = principal.getName();
+		User user = userService.getUserByUsername(username);
 		if (user.getRole().equals("ROLE_ADMIN")
 				|| user.getRole().equals("ROLE_TECHNICALSERVICE")
 				|| user.getRole().equals("ROLE_CUSTOMERSERVICE")
@@ -523,12 +539,12 @@ public class LandingPageController {
 		widgetModel.addAttribute("widgets", widgetController.getAllWidgets());
 		listingModel.addAttribute("listings", marketController.getAllListings());
 		Iterable<Transaction> purchases =
-				transController.getUserPurchases(userController.getCurrently_Logged_In());
+				transController.getUserPurchases(user);
 		listingModel.addAttribute("purchases", purchases);
 		Iterable<Transaction> soldTrans =
-				transController.getUserSoldItems(userController.getCurrently_Logged_In());
+				transController.getUserSoldItems(user);
 		listingModel.addAttribute("soldTrans", soldTrans);
-		listingModel.addAttribute("sellerRating", userController.getSellerRating());
+		listingModel.addAttribute("sellerRating", user.getSellerRating());
 		setPage("home");
 		listingModel.addAttribute("page", getPage());
 		widgetModel.addAttribute("page", getPage());
@@ -575,10 +591,12 @@ public class LandingPageController {
 			Model listingModel,
 			Widget tempWidget,
 			Model searchModel,
-			MarketListing tempListing) {
+			MarketListing tempListing,
+			Principal principal) {
 
-		User user = userController.getCurrently_Logged_In();
-		listingModel.addAttribute("sellerRating", userController.getSellerRating());
+		String username = principal.getName();
+		User user = userService.getUserByUsername(username);
+		listingModel.addAttribute("sellerRating", user.getSellerRating());
 		listingModel.addAttribute("user", user);
 		List<Widget> widgets = new ArrayList<Widget>();
 		List<MarketListing> listings = new ArrayList<MarketListing>();
@@ -596,7 +614,7 @@ public class LandingPageController {
 		// - Loop through and add filter categories from category tree 
 		// Add filter categories
 
-		model.addAttribute("user", userController.getCurrently_Logged_In());
+		model.addAttribute("user", user);
 		model.addAttribute("widgets", widgetController.getAllWidgets());
 		listingModel.addAttribute("listings", marketController.getAllListings());
 		BigDecimal bigPrice = new BigDecimal("0.00");

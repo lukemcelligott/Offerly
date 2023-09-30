@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import edu.sru.cpsc.webshopping.controller.misc.Friendship;
 import edu.sru.cpsc.webshopping.controller.misc.SocialMessage;
 import edu.sru.cpsc.webshopping.domain.user.User;
 

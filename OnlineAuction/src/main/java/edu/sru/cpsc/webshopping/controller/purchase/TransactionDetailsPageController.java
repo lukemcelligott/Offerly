@@ -1,10 +1,11 @@
 package edu.sru.cpsc.webshopping.controller.purchase;
+import java.security.Principal;
 import java.time.LocalDate;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,7 +17,9 @@ import edu.sru.cpsc.webshopping.controller.UserController;
 import edu.sru.cpsc.webshopping.controller.WidgetController;
 import edu.sru.cpsc.webshopping.domain.market.Shipping;
 import edu.sru.cpsc.webshopping.domain.market.Transaction;
+import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
+import edu.sru.cpsc.webshopping.service.UserService;
 
 /**
  * Manages the transactionDetails page
@@ -31,6 +34,9 @@ public class TransactionDetailsPageController {
 	private ShippingDomainController shippingController;
 	private Shipping origEntry;
 	private Transaction trans;
+
+	@Autowired
+	private UserService userService;
 	
 	TransactionDetailsPageController(UserController userController, TransactionController transController,
 			ShippingDomainController shippingController, WidgetController widgetController) {
@@ -47,24 +53,25 @@ public class TransactionDetailsPageController {
 	 * @return the transactionDetails page string
 	 */
 	@RequestMapping({"/viewTransactionDetails/{transId}"})
-	public String purchaseDetails(@PathVariable("transId") long transId, Model model) {
+	public String purchaseDetails(@PathVariable("transId") long transId, Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
 		trans = transController.getTransaction(transId);
 		// Check that user is valid
-		if (userController.getCurrently_Logged_In() == null ||
-			(userController.getCurrently_Logged_In().getId() != trans.getSeller().getId() &&
-			userController.getCurrently_Logged_In().getId() != trans.getBuyer().getId()))
+		if (user == null ||
+			(user.getId() != trans.getSeller().getId() &&
+			user.getId() != trans.getBuyer().getId()))
 			throw new IllegalStateException("Invalid user.");
 		origEntry = shippingController.getShippingEntry(trans.getShippingEntry().getId());
-		reloadModel(model);
+		reloadModel(model, user);
 		return "transactionDetails";
 	}
 	
-	private void reloadModel(Model model) {
+	private void reloadModel(Model model, User user) {
 		Widget tempWidget = trans.getMarketListing().getWidgetSold();
 		model.addAttribute("category", tempWidget.getCategory());
 		model.addAttribute("widget", tempWidget);
 		model.addAttribute("trans", trans);
-		model.addAttribute("user", userController.getCurrently_Logged_In());
+		model.addAttribute("user", user);
 		model.addAttribute("shipping", new Shipping());
 		model.addAttribute("currentDate", LocalDate.now());
 		model.addAttribute("canDelete", canDeleteTransaction());
@@ -84,14 +91,15 @@ public class TransactionDetailsPageController {
 	 * @return redirection string to homePage
 	 */
 	@RequestMapping({"/viewTransactionDetails/submitShippingUpdate"})
-	public String submitShippingUpdate(@Validated @ModelAttribute("shipping") Shipping form, BindingResult result, Model model) {
+	public String submitShippingUpdate(@Validated @ModelAttribute("shipping") Shipping form, BindingResult result, Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
 		// Form error or server-side validation error found
 		if (result.hasErrors() || ShippingConstraintsInvalid(form)) {
 			System.out.println(form.getCarrier());
 			System.out.println(form.getShippingDate());
 			System.out.println(form.getArrivalDate());
 			model.addAttribute("trans", trans);
-			model.addAttribute("user", userController.getCurrently_Logged_In());
+			model.addAttribute("user", user);
 			model.addAttribute("shipping", new Shipping());
 			// Produce error messages
 			System.out.println(form.getCarrier().length());
@@ -108,7 +116,7 @@ public class TransactionDetailsPageController {
 			else if (form.getArrivalDate().compareTo(form.getShippingDate()) < 0) {
 				model.addAttribute("errMessage", "Arrival Date must be after the Shipping Date.");
 			}
-			reloadModel(model);
+			reloadModel(model, user);
 			return "transactionDetails";
 		}
 		// Add items to form that the seller cannot modify
@@ -145,7 +153,8 @@ public class TransactionDetailsPageController {
 	 * @return returns true if the Transaction is deleted, false otherwise
 	 */
 	@RequestMapping({"/viewTransactionDetails/deleteTransaction"})
-	public String deleteTransaction(Model model) {
+	public String deleteTransaction(Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
 		if (canDeleteTransaction()) {
 			boolean cancelSuccess = transController.cancelTransaction(trans);
 			if (cancelSuccess)
@@ -154,11 +163,11 @@ public class TransactionDetailsPageController {
 		// Failed, so we reload the page
 		model.addAttribute("errMessage", "Failed to cancel transaction.");
 		model.addAttribute("trans", trans);
-		model.addAttribute("user", userController.getCurrently_Logged_In());
+		model.addAttribute("user", user);
 		model.addAttribute("shipping", new Shipping());
 		model.addAttribute("currentDate", LocalDate.now());
 		model.addAttribute("canDelete", canDeleteTransaction());
-		reloadModel(model);
+		reloadModel(model, user);
 		return "transactionDetails";
 	}
 }

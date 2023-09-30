@@ -2,9 +2,12 @@ package edu.sru.cpsc.webshopping.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-import org.junit.Test;
+import java.security.Principal;
+
 import org.h2.engine.Database;
+import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mock;
@@ -21,12 +24,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.context.WebApplicationContext;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.sru.cpsc.webshopping.domain.user.Message;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.repository.message.MessageRepository;
+import edu.sru.cpsc.webshopping.service.UserService;
 
 
 @SpringBootTest
@@ -52,25 +55,16 @@ public class MessageControllerTest {
 	private MessageDomainController msgcontrol;
 	@Autowired
 	private MessageRepository msgrepo;
+	@Mock
+	private UserService userService;
 	
 	  @BeforeEach
 	  public void setUp() {
 			this.mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-	
-			// Initializes User
-			User user = new User();
-			user.setUsername("timMock");
-			user.setPassword("");
-			user.setEmail("tmd1021@sru.edu");
-			userController.addUser(user, result);
-			userController.setCurrently_Logged_In(user);
-
-
 	  }
 	  @AfterEach
 	  public void breakDown() {
 		  
-		  userController.deleteUser(userController.getCurrently_Logged_In().getId(), model);
 	  }
 	  
 	@Test
@@ -100,8 +94,11 @@ public class MessageControllerTest {
 	@Test
 	public void messageIntegrationTestSendToTrashandRecover() throws Exception {
 
-		User user = userController.getCurrently_Logged_In();
-		System.out.println(userController.getCurrently_Logged_In().getUsername());
+		Principal principal = mock(Principal.class);
+        when(principal.getName()).thenReturn("testuser");
+        User user = new User();
+        user.setUsername("testuser");
+        when(userService.getUserByUsername("testuser")).thenReturn(user);
 		MvcResult res = mvc.perform(MockMvcRequestBuilders.post("/sendmail")
 				.secure( true ) 
 				.param("recipient", "timMock")
@@ -147,8 +144,11 @@ public class MessageControllerTest {
 	@Test
 	public void messageIntegrationTestSendToTrashandDelete() throws Exception {
 
-		User user = userController.getCurrently_Logged_In();
-		System.out.println(userController.getCurrently_Logged_In().getUsername());
+		Principal principal = mock(Principal.class);
+        when(principal.getName()).thenReturn("testuser");
+        User user = new User();
+        user.setUsername("testuser");
+        when(userService.getUserByUsername("testuser")).thenReturn(user);
 		MvcResult res4 = mvc.perform(MockMvcRequestBuilders.post("/sendmail")
 				.secure( true ) 
 				.param("recipient", "timMock")
@@ -193,8 +193,11 @@ public class MessageControllerTest {
 	@Test
 	public void messageIntegrationTestSendToSpamandRecover() throws Exception {
 
-		User user = userController.getCurrently_Logged_In();
-		System.out.println(userController.getCurrently_Logged_In().getUsername());
+		Principal principal = mock(Principal.class);
+        when(principal.getName()).thenReturn("testuser");
+        User user = new User();
+        user.setUsername("testuser");
+        when(userService.getUserByUsername("testuser")).thenReturn(user);
 		MvcResult res = mvc.perform(MockMvcRequestBuilders.post("/sendmail")
 				.secure( true ) 
 				.param("recipient", "timMock")
@@ -240,8 +243,11 @@ public class MessageControllerTest {
 	@Test
 	public void messageIntegrationTestSendToSpamandDelete() throws Exception {
 
-		User user = userController.getCurrently_Logged_In();
-		System.out.println(userController.getCurrently_Logged_In().getUsername());
+		Principal principal = mock(Principal.class);
+        when(principal.getName()).thenReturn("testuser");
+        User user = new User();
+        user.setUsername("testuser");
+        when(userService.getUserByUsername("testuser")).thenReturn(user);
 		MvcResult res4 = mvc.perform(MockMvcRequestBuilders.post("/sendmail")
 				.secure( true ) 
 				.param("recipient", "timMock")

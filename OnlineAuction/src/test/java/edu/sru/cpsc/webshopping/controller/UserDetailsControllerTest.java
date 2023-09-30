@@ -1,10 +1,13 @@
 package edu.sru.cpsc.webshopping.controller;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import java.security.Principal;
+
+import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +23,7 @@ import org.springframework.web.context.WebApplicationContext;
 import edu.sru.cpsc.webshopping.domain.billing.DirectDepositDetails_Form;
 import edu.sru.cpsc.webshopping.domain.billing.PaymentDetails_Form;
 import edu.sru.cpsc.webshopping.domain.user.User;
+import edu.sru.cpsc.webshopping.service.UserService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -32,6 +36,8 @@ public class UserDetailsControllerTest {
 	private WebApplicationContext webApplicationContext;
 	@Autowired
 	private UserController userController;
+	@Autowired
+	private UserService userService;
 	
 	private User currUser;
 	
@@ -46,7 +52,11 @@ public class UserDetailsControllerTest {
 		currUser = new User();
 		currUser.setPassword("");
 		currUser = userController.addUser(currUser, mock(BindingResult.class));
-		userController.setCurrently_Logged_In(currUser);
+		Principal principal = mock(Principal.class);
+        when(principal.getName()).thenReturn("testuser");
+        User user = new User();
+        user.setUsername("testuser");
+        when(userService.getUserByUsername("testuser")).thenReturn(user);
 	}
 	
 	/**

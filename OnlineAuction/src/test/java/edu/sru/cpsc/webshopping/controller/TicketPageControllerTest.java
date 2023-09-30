@@ -1,6 +1,9 @@
 package edu.sru.cpsc.webshopping.controller;
 
-import edu.sru.cpsc.webshopping.domain.user.Ticket;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.security.Principal;
 
 import org.jboss.logging.Logger;
 import org.junit.jupiter.api.AfterAll;
@@ -11,6 +14,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.ui.Model;
+
+import edu.sru.cpsc.webshopping.domain.user.Ticket;
 public class TicketPageControllerTest {
 	private Logger log= Logger.getLogger(getClass());
 	
@@ -29,12 +34,15 @@ void init() {
 public void getTicketsPage() {
 	try {
 		log.info("Starting execution");
+
+		Principal principal = mock(Principal.class);
+        when(principal.getName()).thenReturn("testuser");
 		
 		String expectedValue="";
 		Model model= null;
 		
-		TicketPageController ticketpagecontroller= new TicketPageController(null, null, null);
-		String actualValue= ticketpagecontroller.getTicketsPage(model);
+		TicketPageController ticketpagecontroller= new TicketPageController(null, null);
+		String actualValue= ticketpagecontroller.getTicketsPage(model, principal);
 		log.info(actualValue);
 		System.out.println("actualValue");
 		//Assertions.assertEquals(null, null);
@@ -52,9 +60,12 @@ public void getTicketDetailsPage() {
 	try {
 		log.info("Starting execution");
 		String expectedValue="";
+
+		Principal principal = mock(Principal.class);
+        when(principal.getName()).thenReturn("testuser");
 		
-		TicketPageController ticketpagecontroller= new TicketPageController(null, null, null);
-		String actualValue= ticketpagecontroller.getTicketDetailsPage(null, null);
+		TicketPageController ticketpagecontroller= new TicketPageController(null, null);
+		String actualValue= ticketpagecontroller.getTicketDetailsPage(null, null, principal);
 		log.info("actualValue");
 		System.out.println("actualValue");
 	}
@@ -70,9 +81,12 @@ public void getTicketDetailsPage() {
 public void getTicketDetailsPageException() {
 	try {
 		log.info("Starting execution");
+
+		Principal principal = mock(Principal.class);
+        when(principal.getName()).thenReturn("testuser");
 		
-		TicketPageController ticketpagecontroller= new TicketPageController(null, null, null);
-		ticketpagecontroller.getTicketDetailsPage(null, null);
+		TicketPageController ticketpagecontroller= new TicketPageController(null, null);
+		ticketpagecontroller.getTicketDetailsPage(null, null, principal);
 		Assertions.assertTrue(false);
 	}
 	catch(Exception exception) {
@@ -88,9 +102,12 @@ public void reopenTicket() {
 	try {
 		log.info("Starting execution");
 		String expectedValue="";
+
+		Principal principal = mock(Principal.class);
+        when(principal.getName()).thenReturn("testuser");
 		
-		TicketPageController ticketpagecontroller= new TicketPageController(null, null, null);
-		String actualValue= ticketpagecontroller.reopenTicket(null, null);
+		TicketPageController ticketpagecontroller= new TicketPageController(null, null);
+		String actualValue= ticketpagecontroller.reopenTicket(null, null, principal);
 		log.info("actualValue");
 		System.out.println("actualValue");
 		//Assertions.assertEquals(null, null);
@@ -106,9 +123,12 @@ public void reopenTicket() {
 public void reopenTicketException() {
 	try {
 		log.info("Starting execution");
+
+		Principal principal = mock(Principal.class);
+        when(principal.getName()).thenReturn("testuser");
 		
-		TicketPageController ticketpagecontroller= new TicketPageController(null, null, null);
-		ticketpagecontroller.reopenTicket(null, null);
+		TicketPageController ticketpagecontroller= new TicketPageController(null, null);
+		ticketpagecontroller.reopenTicket(null, null, principal);
 		Assertions.assertTrue(false);
 	}
 	catch(Exception exception) {
@@ -146,9 +166,12 @@ public void createTickets() {
 		String expectedValue="";
 		Model model= null;
 		Ticket ticket= null;
+
+		Principal principal = mock(Principal.class);
+        when(principal.getName()).thenReturn("testuser");
 		
-		TicketPageController ticketpagecontroller= new TicketPageController(null, null, null);
-		String actualValue= ticketpagecontroller.createTickets(model, ticket);
+		TicketPageController ticketpagecontroller= new TicketPageController(null, null);
+		String actualValue= ticketpagecontroller.createTickets(model, ticket, principal);
 		log.info("actualValue");
 		System.out.println("actualValue");
 		//Assertions.assertEquals(null, null);
@@ -167,9 +190,12 @@ public void getTicketsPage1() {
 		log.info("Starting execution");
 		String expectedValue="";
 		Model model= null;
+
+		Principal principal = mock(Principal.class);
+        when(principal.getName()).thenReturn("testuser");
 		
-		TicketPageController ticketpagecontroller= new TicketPageController(null, null, null);
-		String actualValue= ticketpagecontroller.getTicketsPage(model);
+		TicketPageController ticketpagecontroller= new TicketPageController(null, null);
+		String actualValue= ticketpagecontroller.getTicketsPage(model, principal);
 		log.info("actualValue");
 		System.out.println("actualValue");
 		//Assertions.assertEquals(null, null);

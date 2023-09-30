@@ -3,7 +3,6 @@ package edu.sru.cpsc.webshopping.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import edu.sru.cpsc.webshopping.domain.user.SellerRating;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
 
@@ -44,6 +43,15 @@ public class UserService {
                 .orElseThrow(() -> new IllegalStateException(
                         "User with id " + userId + " does not exist"
                 ));
+        return user;
+    }
+
+    //Get user by username
+    public User getUserByUsername(String username) {
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new IllegalStateException("User with username " + username + " does not exist");
+        }
         return user;
     }
 

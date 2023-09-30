@@ -1,37 +1,47 @@
 package edu.sru.cpsc.webshopping.controller;
 
-import edu.sru.cpsc.webshopping.domain.user.Applicant;
-import edu.sru.cpsc.webshopping.domain.user.User;
-import edu.sru.cpsc.webshopping.repository.applicant.ApplicantRepository;
-import edu.sru.cpsc.webshopping.repository.user.UserRepository;
+import java.security.Principal;
+
 import javax.validation.Valid;
-import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import edu.sru.cpsc.webshopping.domain.user.Applicant;
+import edu.sru.cpsc.webshopping.domain.user.User;
+import edu.sru.cpsc.webshopping.repository.applicant.ApplicantRepository;
+import edu.sru.cpsc.webshopping.repository.user.UserRepository;
+import edu.sru.cpsc.webshopping.service.UserService;
+import lombok.RequiredArgsConstructor;
+
 @Controller
 @RequiredArgsConstructor
 public class IndexController {
-  private final UserRepository userRepository;
-  private final UserController userController;
-  private final ApplicantRepository appRepo;
+  @Autowired
+  private UserService userService;
+  
+  @Autowired
+  private UserRepository userRepository;
+
+  @Autowired
+  private ApplicantRepository appRepo;
 
   // Mapping for the /index URL when initiated through Tomcat
   @RequestMapping({"/index"})
-  public String showUserList(Model model) {
-    User user = userController.getCurrently_Logged_In();
+  public String showUserList(Model model, Principal principal) {
+    User user = userService.getUserByUsername(principal.getName());
     model.addAttribute("users", userRepository.findAll());
     model.addAttribute("user", user);
-
     return "index";
   }
 
   @RequestMapping({"/"})
-  public String showIndex(Model model) {
-    User user = userController.getCurrently_Logged_In();
+  public String showIndex(Model model, Principal principal) {
+    User user = userService.getUserByUsername(principal.getName());
     model.addAttribute("user", user);
 
     return "index";

@@ -1,6 +1,5 @@
 package edu.sru.cpsc.webshopping.controller;
 
-import edu.sru.cpsc.webshopping.util.enums.MessageType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,9 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import edu.sru.cpsc.webshopping.domain.user.Message;
 import edu.sru.cpsc.webshopping.domain.user.Statistics;
-import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
+import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.repository.message.MessageRepository;
+import edu.sru.cpsc.webshopping.util.enums.MessageType;
 
 
 

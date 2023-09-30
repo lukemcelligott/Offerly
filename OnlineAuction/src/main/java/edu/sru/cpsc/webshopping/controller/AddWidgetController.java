@@ -1,32 +1,12 @@
 package edu.sru.cpsc.webshopping.controller;
 
-import com.opencsv.bean.CsvToBean;
-import com.opencsv.bean.CsvToBeanBuilder;
-
-import edu.sru.cpsc.webshopping.domain.market.Auction;
-import edu.sru.cpsc.webshopping.domain.market.MarketListing;
-import edu.sru.cpsc.webshopping.domain.widgets.WidgetImage;
-import edu.sru.cpsc.webshopping.domain.market.MarketListingCSVModel;
-import edu.sru.cpsc.webshopping.domain.user.User;
-import edu.sru.cpsc.webshopping.domain.widgets.Attribute;
-import edu.sru.cpsc.webshopping.domain.widgets.Category;
-import edu.sru.cpsc.webshopping.domain.widgets.Widget;
-import edu.sru.cpsc.webshopping.domain.widgets.WidgetAttribute;
-import edu.sru.cpsc.webshopping.repository.market.MarketListingRepository;
-import edu.sru.cpsc.webshopping.repository.user.UserRepository;
-import edu.sru.cpsc.webshopping.repository.widgets.CategoryRepository;
-import edu.sru.cpsc.webshopping.repository.widgets.WidgetRepository;
-import edu.sru.cpsc.webshopping.service.AttributeService;
-import edu.sru.cpsc.webshopping.service.CategoryService;
-import edu.sru.cpsc.webshopping.service.WidgetService;
-import edu.sru.cpsc.webshopping.repository.widgets.WidgetImageRepository;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -35,6 +15,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Controller;
@@ -51,11 +32,33 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;
+
+import edu.sru.cpsc.webshopping.domain.market.Auction;
+import edu.sru.cpsc.webshopping.domain.market.MarketListing;
+import edu.sru.cpsc.webshopping.domain.market.MarketListingCSVModel;
+import edu.sru.cpsc.webshopping.domain.user.User;
+import edu.sru.cpsc.webshopping.domain.widgets.Attribute;
+import edu.sru.cpsc.webshopping.domain.widgets.Category;
+import edu.sru.cpsc.webshopping.domain.widgets.Widget;
+import edu.sru.cpsc.webshopping.domain.widgets.WidgetAttribute;
+import edu.sru.cpsc.webshopping.domain.widgets.WidgetImage;
+import edu.sru.cpsc.webshopping.repository.market.MarketListingRepository;
+import edu.sru.cpsc.webshopping.repository.user.UserRepository;
+import edu.sru.cpsc.webshopping.repository.widgets.CategoryRepository;
+import edu.sru.cpsc.webshopping.repository.widgets.WidgetImageRepository;
+import edu.sru.cpsc.webshopping.repository.widgets.WidgetRepository;
+import edu.sru.cpsc.webshopping.service.AttributeService;
+import edu.sru.cpsc.webshopping.service.CategoryService;
+import edu.sru.cpsc.webshopping.service.UserService;
+import edu.sru.cpsc.webshopping.service.WidgetService;
+
 
 /**
  * Controller for creating widgets and listings.
  * @author NICK
- *
+ * 
  */
 @Controller
 public class AddWidgetController
@@ -69,12 +72,14 @@ public class AddWidgetController
 	@Autowired
 	private AttributeService attributeService;
 
+	@Autowired
+	private UserService userService;
+
 	WidgetRepository widgetRepository;
 	CategoryRepository categoryRepository;
 	WidgetImageRepository widgetImageRepository;
 	MarketListingRepository marketListingRepos;
 	WidgetController widgetController;
-	UserController userController;
 	MarketListingDomainController marketListingController;
 	WidgetImageController widgetImageController;
 	UserRepository userRepo;
@@ -103,7 +108,7 @@ public class AddWidgetController
 
 	public AddWidgetController(WidgetRepository widgetRepository, CategoryRepository categoryRepository, CategoryController categories,
 	 		AttributeController attributeController, WidgetImageRepository widgetImageRepository, WidgetImageController widgetImageController,
-			MarketListingRepository marketListingRepos, WidgetController widgetController, UserController userController, MarketListingDomainController marketListingController, UserRepository userRepo)
+			MarketListingRepository marketListingRepos, WidgetController widgetController, MarketListingDomainController marketListingController, UserRepository userRepo)
 	{
 		this.categories = categories;
 		this.attributeController = attributeController;
@@ -111,7 +116,6 @@ public class AddWidgetController
 		this.categoryRepository = categoryRepository;
 		this.marketListingRepos = marketListingRepos;
 		this.widgetController = widgetController;
-		this.userController = userController;
 		this.marketListingController = marketListingController;
 		this.userRepo = userRepo;
 		this.widgetImageRepository = widgetImageRepository;
@@ -119,17 +123,19 @@ public class AddWidgetController
 	}
 
 	@RequestMapping("/addWidget")
-	public String addWidget(Model model)
+	public String addWidget(Model model, Principal principal)
 	{
-		if (userController.getCurrently_Logged_In() == null)
+		if (principal  == null)
 		{
 			throw new IllegalStateException("Not logged in.");
 		}
+
+		String username = principal.getName();
+		User user = userService.getUserByUsername(username);
 		
 		setPage("widgets");
-		
 		model.addAttribute("categories", categories.getAllCategories());
-		model.addAttribute("user", userController.getCurrently_Logged_In());
+		model.addAttribute("user", user);
 		model.addAttribute("page", "addWidget");
 		return "addWidget";
 	}
@@ -191,7 +197,7 @@ public class AddWidgetController
 	}	
 	
 	@RequestMapping("/createWidget")
-	public String createWidget(@RequestParam("category") Long categoryId, Model model)
+	public String createWidget(@RequestParam("category") Long categoryId, Model model, Principal principal)
 	{
 		Category category = categoryRepository.findById(categoryId)
 		        .orElseThrow(() -> new IllegalArgumentException("Invalid category ID"));
@@ -205,16 +211,20 @@ public class AddWidgetController
 			widgetForm.getEntries().add(new WidgetForm.AttributeFormEntry(attribute, widgetAttribute));
 		}
 
+		String username = principal.getName();
+		User user = userService.getUserByUsername(username);
 
 		model.addAttribute("category", category);
 		model.addAttribute("entries", widgetForm.getEntries());
-		model.addAttribute("user", userController.getCurrently_Logged_In());
+		model.addAttribute("user", user);
 		
 		return "createWidgetTemplate";
 	}
 		
 	@RequestMapping("/createWidgetListing") 
-	public String createWidgetListing(Model model, @ModelAttribute WidgetForm widgetForm, BindingResult result) {
+	public String createWidgetListing(Model model, @ModelAttribute WidgetForm widgetForm, BindingResult result, Principal principal) {
+		String username = principal.getName();
+		User user = userService.getUserByUsername(username);
 
 		if (result == null) {
 			result = new BeanPropertyBindingResult(widgetForm, "widgetForm");
@@ -252,7 +262,7 @@ public class AddWidgetController
 		this.widget = widget;
 	
 		model.addAttribute("Widget", widget);
-		model.addAttribute("user", userController.getCurrently_Logged_In());
+		model.addAttribute("user", user);
 	
 		widgetService.addWidget(widget);
 	
@@ -260,13 +270,15 @@ public class AddWidgetController
 	}
 
 	@RequestMapping("/createListing")
-	public String createListing(Model model)
+	public String createListing(Model model, Principal principal)
 	{
+		String username = principal.getName();
+		User user = userService.getUserByUsername(username);
 		marketListing = new MarketListing();
 		marketListing.setAuction(new Auction());
 		model.addAttribute("listing", marketListing);
 		model.addAttribute("Category", category);
-		model.addAttribute("user", userController.getCurrently_Logged_In());
+		model.addAttribute("user", user);
 		
 		return "createListing";
 	}
@@ -284,9 +296,11 @@ public class AddWidgetController
 	 * @return
 	 */
 	@RequestMapping("/addListing")
-	public String addListing(Model model, @RequestParam("listingCoverImage") MultipartFile coverImage, @RequestParam("imageUpload") MultipartFile[] files, RedirectAttributes attributes, @Valid @ModelAttribute MarketListing marketListing, BindingResult result) {
+	public String addListing(Model model, @RequestParam("listingCoverImage") MultipartFile coverImage, @RequestParam("imageUpload") MultipartFile[] files, RedirectAttributes attributes, @Valid @ModelAttribute MarketListing marketListing, BindingResult result, Principal principal) {
+		String username = principal.getName();
+		User user = userService.getUserByUsername(username);
 		marketListing.getAuction().setCurrentBid(marketListing.getAuction().getStartingBid());
-		marketListing.setSeller(userController.getCurrently_Logged_In());
+		marketListing.setSeller(user);
 		marketListing.setWidgetSold(widget);
 		marketListing.setDeleted(false);
 		
@@ -320,7 +334,7 @@ public class AddWidgetController
 			setWidgetStorage(widget);
 			widgetController.deleteWidget(getWidgetStorage().getId());
 			model.addAttribute("Category", category);
-			model.addAttribute("user", userController.getCurrently_Logged_In());
+			model.addAttribute("user", user);
 			model.addAttribute("listing", marketListing);
 			return "createListing";
 		}
@@ -330,7 +344,7 @@ public class AddWidgetController
 		}
 		marketListing.setImages(listingImages);
 
-		model.addAttribute("user", userController.getCurrently_Logged_In());
+		model.addAttribute("user", user);
 		return "redirect:homePage";
 	}
 	
@@ -384,16 +398,15 @@ public class AddWidgetController
 	}
 
 	@PostMapping({"/uploadComputerDataFile"})
-	public String uploadComputerDataFile(
-			@RequestParam("file") MultipartFile file) throws IOException {
+	public String uploadComputerDataFile(@RequestParam("file") MultipartFile file) throws IOException {
 		this.saveWidgetFromCSV(file, "computer");
 		return "redirect:addComputer";
 	}
 
 	@PostMapping({"/uploadMarketListingDataFile"})
-	public String uploadMarketListingDataFile(
-			@RequestParam("file") MultipartFile file) throws IOException {
-		User user = userController.getCurrently_Logged_In();
+	public String uploadMarketListingDataFile(@RequestParam("file") MultipartFile file, Principal principal) throws IOException {
+		String username = principal.getName();
+		User user = userService.getUserByUsername(username);
 		this.saveMarketListingFromCSV(file, user);
 		return "redirect:homePage";
 	}
@@ -447,15 +460,5 @@ public class AddWidgetController
 	public void setWidgetStorage(Widget widgetStorage)
 	{
 		this.widgetStorage = widgetStorage;
-	}
-
-	public void setUserController(UserController userController)
-	{
-		this.userController = userController;
-	}
-
-	public UserController getUserController()
-	{
-		return this.userController;
 	}
 }

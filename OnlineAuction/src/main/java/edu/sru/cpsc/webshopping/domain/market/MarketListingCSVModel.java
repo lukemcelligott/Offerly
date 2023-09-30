@@ -1,6 +1,7 @@
 package edu.sru.cpsc.webshopping.domain.market;
 
 import java.math.BigDecimal;
+
 import lombok.Data;
 
 @Data

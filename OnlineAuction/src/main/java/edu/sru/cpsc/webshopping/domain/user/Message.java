@@ -1,9 +1,9 @@
 package edu.sru.cpsc.webshopping.domain.user;
 
-import edu.sru.cpsc.webshopping.util.enums.MessageType;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -16,6 +16,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+
+import edu.sru.cpsc.webshopping.util.enums.MessageType;
 import lombok.Data;
 
 @Entity
