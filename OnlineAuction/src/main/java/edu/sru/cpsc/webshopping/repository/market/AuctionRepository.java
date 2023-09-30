@@ -1,6 +1,6 @@
 package edu.sru.cpsc.webshopping.repository.market;
-import java.util.List;
 import org.springframework.data.repository.CrudRepository;
+
 import edu.sru.cpsc.webshopping.domain.market.Auction;
 
 public interface AuctionRepository extends CrudRepository<Auction, Long> {

@@ -1,7 +1,7 @@
 package edu.sru.cpsc.webshopping.controller;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
 
 import edu.sru.cpsc.webshopping.domain.market.Transaction;
 

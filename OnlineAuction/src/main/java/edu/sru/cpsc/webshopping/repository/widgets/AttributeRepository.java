@@ -1,11 +1,10 @@
 package edu.sru.cpsc.webshopping.repository.widgets;
 
-import edu.sru.cpsc.webshopping.domain.widgets.Attribute;
-import edu.sru.cpsc.webshopping.domain.widgets.Category;
-
 import java.util.Optional;
 
 import org.springframework.data.repository.CrudRepository;
+
+import edu.sru.cpsc.webshopping.domain.widgets.Attribute;
 
 // Generic WidgetRepository that is to be used by Widget subtypes
 // Work in progress, using as reference:

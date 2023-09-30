@@ -2,26 +2,17 @@ package edu.sru.cpsc.webshopping.controller;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import edu.sru.cpsc.webshopping.domain.market.Transaction;
-import edu.sru.cpsc.webshopping.domain.user.Applicant;
-import edu.sru.cpsc.webshopping.domain.user.Message;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.user.UserList;
-import edu.sru.cpsc.webshopping.repository.message.MessageRepository;
 import edu.sru.cpsc.webshopping.repository.user.UserListRepository;
 
 

@@ -1,12 +1,13 @@
 package edu.sru.cpsc.webshopping.service;
 
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+
 import edu.sru.cpsc.webshopping.domain.user.Ticket;
 import edu.sru.cpsc.webshopping.repository.ticket.TicketRepository;
-import java.util.Map;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j

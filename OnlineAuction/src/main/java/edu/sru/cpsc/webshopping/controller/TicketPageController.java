@@ -1,20 +1,7 @@
 package edu.sru.cpsc.webshopping.controller;
 
-import edu.sru.cpsc.webshopping.domain.user.Message;
-import edu.sru.cpsc.webshopping.domain.user.Ticket;
-import edu.sru.cpsc.webshopping.domain.user.User;
-import edu.sru.cpsc.webshopping.repository.ticket.TicketRepository;
-import edu.sru.cpsc.webshopping.service.UserService;
-import edu.sru.cpsc.webshopping.util.constants.TimeConstants;
-import edu.sru.cpsc.webshopping.util.enums.MessageType;
-import edu.sru.cpsc.webshopping.util.enums.TicketState;
-
-import java.time.LocalDateTime;
-
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
-
 import java.security.Principal;
+import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,6 +10,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import edu.sru.cpsc.webshopping.domain.user.Message;
+import edu.sru.cpsc.webshopping.domain.user.Ticket;
+import edu.sru.cpsc.webshopping.domain.user.User;
+import edu.sru.cpsc.webshopping.repository.ticket.TicketRepository;
+import edu.sru.cpsc.webshopping.service.UserService;
+import edu.sru.cpsc.webshopping.util.constants.TimeConstants;
+import edu.sru.cpsc.webshopping.util.enums.MessageType;
+import edu.sru.cpsc.webshopping.util.enums.TicketState;
+import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 @Controller
 @Data

@@ -1,45 +1,20 @@
 package edu.sru.cpsc.webshopping.controller;
 
-import com.opencsv.CSVWriter;
-import com.opencsv.bean.StatefulBeanToCsv;
-import com.opencsv.bean.StatefulBeanToCsvBuilder;
-import com.opencsv.exceptions.CsvDataTypeMismatchException;
-import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
-import edu.sru.cpsc.webshopping.domain.market.MarketListing;
-import edu.sru.cpsc.webshopping.domain.user.Applicant;
-import edu.sru.cpsc.webshopping.domain.user.Message;
-import edu.sru.cpsc.webshopping.domain.user.Statistics;
-import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
-import edu.sru.cpsc.webshopping.domain.user.Ticket;
-import edu.sru.cpsc.webshopping.domain.user.User;
-import edu.sru.cpsc.webshopping.domain.widgets.Widget;
-import edu.sru.cpsc.webshopping.domain.widgets.Category;
-import edu.sru.cpsc.webshopping.repository.applicant.ApplicantRepository;
-import edu.sru.cpsc.webshopping.repository.user.UserRepository;
-import edu.sru.cpsc.webshopping.repository.widgets.WidgetRepository;
-import edu.sru.cpsc.webshopping.service.TicketService;
-import edu.sru.cpsc.webshopping.service.UserService;
-import edu.sru.cpsc.webshopping.util.PreLoad;
-import edu.sru.cpsc.webshopping.util.constants.TimeConstants;
-import edu.sru.cpsc.webshopping.util.enums.MessageType;
-import edu.sru.cpsc.webshopping.util.enums.Role;
-import edu.sru.cpsc.webshopping.util.enums.TicketState;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import java.security.Principal;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -50,10 +25,34 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.opencsv.CSVWriter;
+import com.opencsv.bean.StatefulBeanToCsv;
+import com.opencsv.bean.StatefulBeanToCsvBuilder;
+import com.opencsv.exceptions.CsvDataTypeMismatchException;
+import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
+
+import edu.sru.cpsc.webshopping.domain.market.MarketListing;
+import edu.sru.cpsc.webshopping.domain.user.Applicant;
+import edu.sru.cpsc.webshopping.domain.user.Message;
+import edu.sru.cpsc.webshopping.domain.user.Statistics;
+import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
+import edu.sru.cpsc.webshopping.domain.user.Ticket;
+import edu.sru.cpsc.webshopping.domain.user.User;
+import edu.sru.cpsc.webshopping.domain.widgets.Category;
+import edu.sru.cpsc.webshopping.domain.widgets.Widget;
+import edu.sru.cpsc.webshopping.repository.applicant.ApplicantRepository;
+import edu.sru.cpsc.webshopping.repository.user.UserRepository;
+import edu.sru.cpsc.webshopping.repository.widgets.WidgetRepository;
+import edu.sru.cpsc.webshopping.service.TicketService;
+import edu.sru.cpsc.webshopping.service.UserService;
+import edu.sru.cpsc.webshopping.util.constants.TimeConstants;
+import edu.sru.cpsc.webshopping.util.enums.MessageType;
+import edu.sru.cpsc.webshopping.util.enums.Role;
+import edu.sru.cpsc.webshopping.util.enums.TicketState;
+import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor

@@ -1,26 +1,10 @@
 package edu.sru.cpsc.webshopping.controller;
 
-import edu.sru.cpsc.webshopping.domain.market.Auction;
-import edu.sru.cpsc.webshopping.domain.market.MarketListing;
-import edu.sru.cpsc.webshopping.domain.market.Transaction;
-import edu.sru.cpsc.webshopping.domain.user.Statistics;
-import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
-import edu.sru.cpsc.webshopping.domain.user.User;
-import edu.sru.cpsc.webshopping.domain.widgets.Widget;
-import edu.sru.cpsc.webshopping.domain.widgets.WidgetImage;
-import edu.sru.cpsc.webshopping.repository.market.MarketListingRepository;
-import edu.sru.cpsc.webshopping.repository.user.UserRepository;
-import edu.sru.cpsc.webshopping.repository.widgets.WidgetRepository;
-import edu.sru.cpsc.webshopping.util.PreLoad;
-import edu.sru.cpsc.webshopping.service.AuctionService;
-import edu.sru.cpsc.webshopping.service.UserService;
-
 import java.math.BigDecimal;
 import java.net.URI;
-import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.stream.StreamSupport;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
@@ -37,6 +21,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import edu.sru.cpsc.webshopping.domain.market.Auction;
+import edu.sru.cpsc.webshopping.domain.market.MarketListing;
+import edu.sru.cpsc.webshopping.domain.market.Transaction;
+import edu.sru.cpsc.webshopping.domain.user.Statistics;
+import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
+import edu.sru.cpsc.webshopping.domain.user.User;
+import edu.sru.cpsc.webshopping.domain.widgets.Widget;
+import edu.sru.cpsc.webshopping.domain.widgets.WidgetImage;
+import edu.sru.cpsc.webshopping.repository.market.MarketListingRepository;
+import edu.sru.cpsc.webshopping.repository.widgets.WidgetRepository;
+import edu.sru.cpsc.webshopping.service.AuctionService;
+import edu.sru.cpsc.webshopping.service.UserService;
 
 /** A class for interacting with MarketListing items from the database */
 @RestController

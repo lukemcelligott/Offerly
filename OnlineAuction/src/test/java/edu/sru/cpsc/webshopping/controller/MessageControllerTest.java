@@ -6,8 +6,8 @@ import static org.mockito.Mockito.when;
 
 import java.security.Principal;
 
-import org.junit.Test;
 import org.h2.engine.Database;
+import org.junit.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mock;
@@ -23,7 +23,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.context.WebApplicationContext;
-
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 

@@ -1,56 +1,27 @@
 package edu.sru.cpsc.webshopping.controller;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import java.security.Principal;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import cn.apiclub.captcha.Captcha;
-import edu.sru.cpsc.webshopping.controller.billing.DirectDepositController;
-import edu.sru.cpsc.webshopping.controller.billing.PaymentDetailsController;
-import edu.sru.cpsc.webshopping.controller.billing.PaypalController;
-import edu.sru.cpsc.webshopping.controller.billing.SellerRatingController;
 import edu.sru.cpsc.webshopping.controller.misc.Friendship;
 import edu.sru.cpsc.webshopping.controller.misc.SocialFriendRequest;
 import edu.sru.cpsc.webshopping.controller.misc.SocialMessage;
-import edu.sru.cpsc.webshopping.domain.billing.DirectDepositDetails;
-import edu.sru.cpsc.webshopping.domain.billing.PaymentDetails;
-import edu.sru.cpsc.webshopping.domain.billing.Paypal;
-import edu.sru.cpsc.webshopping.domain.market.MarketListing;
-import edu.sru.cpsc.webshopping.domain.user.Message;
-import edu.sru.cpsc.webshopping.domain.user.SellerRating;
-import edu.sru.cpsc.webshopping.domain.user.Statistics;
-import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
 import edu.sru.cpsc.webshopping.domain.user.User;
-import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 import edu.sru.cpsc.webshopping.repository.misc.FriendSocialRequestRepository;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
-import edu.sru.cpsc.webshopping.secure.CaptchaUtil;
 import edu.sru.cpsc.webshopping.service.FriendshipService;
 import edu.sru.cpsc.webshopping.service.MessageService;
 import edu.sru.cpsc.webshopping.service.UserService;

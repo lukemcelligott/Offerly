@@ -7,9 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import org.springframework.security.core.GrantedAuthority;
 
-import org.springframework.lang.NonNull;
+import org.springframework.security.core.GrantedAuthority;
 
 // This Entity is for holding a representation of what website features a user has access to
 // This is used to distinguish from a regular user, from an administrator, where the latter should be able

@@ -1,7 +1,8 @@
 package edu.sru.cpsc.webshopping.domain.widgets;
 
-import com.opencsv.bean.CsvIgnore;
 import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -12,12 +13,12 @@ import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.CascadeType;
 
 import org.springframework.lang.NonNull;
 
+import com.opencsv.bean.CsvIgnore;
+
 import edu.sru.cpsc.webshopping.domain.user.User;
-import lombok.extern.slf4j.Slf4j;
 /**
  * Widget class stores basic information such as name, description, and the category of the widget. Other widget classes inherit these from it.
  * @author NICK

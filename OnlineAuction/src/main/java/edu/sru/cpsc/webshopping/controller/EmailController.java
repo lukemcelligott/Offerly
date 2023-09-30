@@ -1,12 +1,9 @@
 package edu.sru.cpsc.webshopping.controller;
 
-import edu.sru.cpsc.webshopping.domain.user.Message;
-import edu.sru.cpsc.webshopping.domain.user.Ticket;
-import edu.sru.cpsc.webshopping.domain.user.User;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Properties;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.mail.SimpleMailMessage;
@@ -14,6 +11,11 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.RestController;
+
+import edu.sru.cpsc.webshopping.domain.user.Message;
+import edu.sru.cpsc.webshopping.domain.user.Ticket;
+import edu.sru.cpsc.webshopping.domain.user.User;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor

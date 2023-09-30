@@ -1,8 +1,8 @@
 package edu.sru.cpsc.webshopping.domain.user;
 
-import edu.sru.cpsc.webshopping.util.enums.TicketState;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -15,9 +15,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import lombok.Data;
+
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+
+import edu.sru.cpsc.webshopping.util.enums.TicketState;
+import lombok.Data;
 
 @Entity
 @Data

@@ -1,7 +1,5 @@
 package edu.sru.cpsc.webshopping.controller;
 
-import edu.sru.cpsc.webshopping.domain.user.Ticket;
-
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -16,6 +14,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.ui.Model;
+
+import edu.sru.cpsc.webshopping.domain.user.Ticket;
 public class TicketPageControllerTest {
 	private Logger log= Logger.getLogger(getClass());
 	

@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import org.springframework.data.repository.CrudRepository;
 
-
 import edu.sru.cpsc.webshopping.domain.user.Statistics;
 import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
 

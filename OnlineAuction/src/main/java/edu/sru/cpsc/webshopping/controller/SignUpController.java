@@ -1,31 +1,11 @@
 package edu.sru.cpsc.webshopping.controller;
 
-import com.google.i18n.phonenumbers.PhoneNumberUtil;
-import com.google.i18n.phonenumbers.PhoneNumberUtil.PhoneNumberType;
-import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber;
-
-import edu.sru.cpsc.webshopping.controller.billing.CardTypeController;
-import edu.sru.cpsc.webshopping.controller.billing.PaymentDetailsController;
-import edu.sru.cpsc.webshopping.controller.billing.StateDetailsController;
-import edu.sru.cpsc.webshopping.controller.purchase.ConfirmPurchasePageController;
-import edu.sru.cpsc.webshopping.domain.billing.PaymentDetails;
-import edu.sru.cpsc.webshopping.domain.billing.PaymentDetails_Form;
-import edu.sru.cpsc.webshopping.domain.billing.Paypal_Form;
-import edu.sru.cpsc.webshopping.domain.billing.ShippingAddress;
-import edu.sru.cpsc.webshopping.domain.billing.ShippingAddress_Form;
-import edu.sru.cpsc.webshopping.domain.market.MarketListing;
-import edu.sru.cpsc.webshopping.domain.market.Transaction;
-import edu.sru.cpsc.webshopping.domain.user.User;
-import edu.sru.cpsc.webshopping.domain.widgets.Widget;
-import edu.sru.cpsc.webshopping.repository.billing.PaymentDetailsRepository;
-import edu.sru.cpsc.webshopping.repository.user.UserRepository;
-import edu.sru.cpsc.webshopping.service.UserService;
-import edu.sru.cpsc.webshopping.util.PreLoad;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -41,9 +21,9 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
+
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
-import java.security.Principal;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -57,10 +37,30 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.PhoneNumberUtil.PhoneNumberType;
+import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber;
+
+import edu.sru.cpsc.webshopping.controller.billing.CardTypeController;
+import edu.sru.cpsc.webshopping.controller.billing.PaymentDetailsController;
+import edu.sru.cpsc.webshopping.controller.billing.StateDetailsController;
+import edu.sru.cpsc.webshopping.domain.billing.PaymentDetails;
+import edu.sru.cpsc.webshopping.domain.billing.PaymentDetails_Form;
+import edu.sru.cpsc.webshopping.domain.billing.Paypal_Form;
+import edu.sru.cpsc.webshopping.domain.billing.ShippingAddress;
+import edu.sru.cpsc.webshopping.domain.billing.ShippingAddress_Form;
+import edu.sru.cpsc.webshopping.domain.market.MarketListing;
+import edu.sru.cpsc.webshopping.domain.market.Transaction;
+import edu.sru.cpsc.webshopping.domain.user.User;
+import edu.sru.cpsc.webshopping.domain.widgets.Widget;
+import edu.sru.cpsc.webshopping.repository.billing.PaymentDetailsRepository;
+import edu.sru.cpsc.webshopping.repository.user.UserRepository;
+import edu.sru.cpsc.webshopping.service.UserService;
+import edu.sru.cpsc.webshopping.util.PreLoad;
 
 @Controller
 // @RequestMapping(value = "/user")
