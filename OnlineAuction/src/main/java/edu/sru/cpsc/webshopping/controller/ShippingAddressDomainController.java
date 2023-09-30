@@ -21,15 +21,13 @@ import edu.sru.cpsc.webshopping.repository.market.ShippingRepository;
 @RestController
 public class ShippingAddressDomainController {
 		
-		private UserController userController;
+
 		private ShippingAddressRepository shippingAddressRepository;
 		@PersistenceContext
 		private EntityManager entityManager;
 		
-		public ShippingAddressDomainController(ShippingAddressRepository shippingAddressRepository,
-												UserController userController) {
+		public ShippingAddressDomainController(ShippingAddressRepository shippingAddressRepository) {
 			this.shippingAddressRepository = shippingAddressRepository;
-			this.userController = userController;
 		}
 		
 		@Transactional

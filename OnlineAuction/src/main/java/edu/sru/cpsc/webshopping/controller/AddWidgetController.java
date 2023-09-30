@@ -1,27 +1,5 @@
 package edu.sru.cpsc.webshopping.controller;
 
-import com.opencsv.bean.CsvToBean;
-import com.opencsv.bean.CsvToBeanBuilder;
-
-import edu.sru.cpsc.webshopping.domain.market.Auction;
-import edu.sru.cpsc.webshopping.domain.market.MarketListing;
-import edu.sru.cpsc.webshopping.domain.widgets.WidgetImage;
-import edu.sru.cpsc.webshopping.domain.market.MarketListingCSVModel;
-import edu.sru.cpsc.webshopping.domain.user.User;
-import edu.sru.cpsc.webshopping.domain.widgets.Attribute;
-import edu.sru.cpsc.webshopping.domain.widgets.Category;
-import edu.sru.cpsc.webshopping.domain.widgets.Widget;
-import edu.sru.cpsc.webshopping.domain.widgets.WidgetAttribute;
-import edu.sru.cpsc.webshopping.repository.market.MarketListingRepository;
-import edu.sru.cpsc.webshopping.repository.user.UserRepository;
-import edu.sru.cpsc.webshopping.repository.widgets.CategoryRepository;
-import edu.sru.cpsc.webshopping.repository.widgets.WidgetRepository;
-import edu.sru.cpsc.webshopping.service.AttributeService;
-import edu.sru.cpsc.webshopping.service.CategoryService;
-import edu.sru.cpsc.webshopping.service.UserService;
-import edu.sru.cpsc.webshopping.service.WidgetService;
-import edu.sru.cpsc.webshopping.repository.widgets.WidgetImageRepository;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -37,9 +15,9 @@ import java.util.Optional;
 import java.util.Set;
 
 import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -54,11 +32,33 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.opencsv.bean.CsvToBean;
+import com.opencsv.bean.CsvToBeanBuilder;
+
+import edu.sru.cpsc.webshopping.domain.market.Auction;
+import edu.sru.cpsc.webshopping.domain.market.MarketListing;
+import edu.sru.cpsc.webshopping.domain.market.MarketListingCSVModel;
+import edu.sru.cpsc.webshopping.domain.user.User;
+import edu.sru.cpsc.webshopping.domain.widgets.Attribute;
+import edu.sru.cpsc.webshopping.domain.widgets.Category;
+import edu.sru.cpsc.webshopping.domain.widgets.Widget;
+import edu.sru.cpsc.webshopping.domain.widgets.WidgetAttribute;
+import edu.sru.cpsc.webshopping.domain.widgets.WidgetImage;
+import edu.sru.cpsc.webshopping.repository.market.MarketListingRepository;
+import edu.sru.cpsc.webshopping.repository.user.UserRepository;
+import edu.sru.cpsc.webshopping.repository.widgets.CategoryRepository;
+import edu.sru.cpsc.webshopping.repository.widgets.WidgetImageRepository;
+import edu.sru.cpsc.webshopping.repository.widgets.WidgetRepository;
+import edu.sru.cpsc.webshopping.service.AttributeService;
+import edu.sru.cpsc.webshopping.service.CategoryService;
+import edu.sru.cpsc.webshopping.service.UserService;
+import edu.sru.cpsc.webshopping.service.WidgetService;
+
 
 /**
  * Controller for creating widgets and listings.
  * @author NICK
- *
+ * 
  */
 @Controller
 public class AddWidgetController
@@ -80,7 +80,6 @@ public class AddWidgetController
 	WidgetImageRepository widgetImageRepository;
 	MarketListingRepository marketListingRepos;
 	WidgetController widgetController;
-	UserController userController;
 	MarketListingDomainController marketListingController;
 	WidgetImageController widgetImageController;
 	UserRepository userRepo;
@@ -109,7 +108,7 @@ public class AddWidgetController
 
 	public AddWidgetController(WidgetRepository widgetRepository, CategoryRepository categoryRepository, CategoryController categories,
 	 		AttributeController attributeController, WidgetImageRepository widgetImageRepository, WidgetImageController widgetImageController,
-			MarketListingRepository marketListingRepos, WidgetController widgetController, UserController userController, MarketListingDomainController marketListingController, UserRepository userRepo)
+			MarketListingRepository marketListingRepos, WidgetController widgetController, MarketListingDomainController marketListingController, UserRepository userRepo)
 	{
 		this.categories = categories;
 		this.attributeController = attributeController;
@@ -117,7 +116,6 @@ public class AddWidgetController
 		this.categoryRepository = categoryRepository;
 		this.marketListingRepos = marketListingRepos;
 		this.widgetController = widgetController;
-		this.userController = userController;
 		this.marketListingController = marketListingController;
 		this.userRepo = userRepo;
 		this.widgetImageRepository = widgetImageRepository;
@@ -462,15 +460,5 @@ public class AddWidgetController
 	public void setWidgetStorage(Widget widgetStorage)
 	{
 		this.widgetStorage = widgetStorage;
-	}
-
-	public void setUserController(UserController userController)
-	{
-		this.userController = userController;
-	}
-
-	public UserController getUserController()
-	{
-		return this.userController;
 	}
 }

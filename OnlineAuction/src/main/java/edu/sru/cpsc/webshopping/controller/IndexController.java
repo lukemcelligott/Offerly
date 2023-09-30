@@ -27,9 +27,6 @@ public class IndexController {
   private UserRepository userRepository;
 
   @Autowired
-  private UserController userController;
-
-  @Autowired
   private ApplicantRepository appRepo;
 
   // Mapping for the /index URL when initiated through Tomcat

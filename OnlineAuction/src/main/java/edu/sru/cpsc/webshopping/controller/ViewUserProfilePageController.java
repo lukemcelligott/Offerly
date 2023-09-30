@@ -2,7 +2,6 @@ package edu.sru.cpsc.webshopping.controller;
 
 import java.security.Principal;
 import java.util.Arrays;
-import java.util.Set;
 import java.util.Vector;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import edu.sru.cpsc.webshopping.controller.billing.SellerRatingController;
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.user.Message;
 import edu.sru.cpsc.webshopping.domain.user.SellerRating;
@@ -25,9 +23,7 @@ import edu.sru.cpsc.webshopping.service.UserService;
 @Controller
 public class ViewUserProfilePageController {
 	// Database controllers
-	private UserController userController;
 	private MarketListingDomainController listingController;
-	private SellerRatingController ratingController;
 	private MessageDomainController messageController;
 	private EmailController emailController;
 
@@ -44,11 +40,8 @@ public class ViewUserProfilePageController {
 	// Configuration constant
 	private final int NUM_LISTINGS_PER_PAGE = 4;
 	
-	ViewUserProfilePageController(UserController userController, MarketListingDomainController listingController,
-			SellerRatingController ratingController, MessageDomainController messageController, EmailController emailController) {
-		this.userController = userController;
+	ViewUserProfilePageController(MarketListingDomainController listingController, MessageDomainController messageController, EmailController emailController) {
 		this.listingController = listingController;
-		this.ratingController = ratingController;
 		this.messageController = messageController;
 		this.emailController = emailController;
 	}
@@ -79,7 +72,7 @@ public class ViewUserProfilePageController {
 		User user = userService.getUserByUsername(principal.getName());
 		model.addAttribute("user", user);
 		this.pageNumber = 1;
-		this.selectedUser = userController.getUser(userId, null);
+		this.selectedUser = userService.getUserById(userId);
 		this.soldItems = listingController.getListingbyUser(selectedUser);
 		this.soldItems = Arrays.stream(this.soldItems).filter(item -> !item.isDeleted()).toArray(MarketListing[]::new);
 		this.rating = selectedUser.getSellerRating();

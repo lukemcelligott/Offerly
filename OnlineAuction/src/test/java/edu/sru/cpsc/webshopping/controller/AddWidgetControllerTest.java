@@ -23,15 +23,18 @@ import edu.sru.cpsc.webshopping.domain.widgets.WidgetImage;
 import edu.sru.cpsc.webshopping.repository.widgets.CategoryRepository;
 import edu.sru.cpsc.webshopping.service.AttributeService;
 import edu.sru.cpsc.webshopping.service.CategoryService;
+import edu.sru.cpsc.webshopping.service.UserService;
 import edu.sru.cpsc.webshopping.service.WidgetService;
 import edu.sru.cpsc.webshopping.util.enums.AttributeDataType;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -55,6 +58,9 @@ public class AddWidgetControllerTest {
 
     @Mock
     private WidgetService widgetService;
+
+    @Mock
+    private UserService userService;
 
 	@Mock
     private CategoryRepository categoryRepository;
@@ -116,10 +122,14 @@ public class AddWidgetControllerTest {
     @Test
 	// This test should add a widget
     public void testAddWidget() {
-        when(userController.getCurrently_Logged_In()).thenReturn(new User());
+        Principal principal = mock(Principal.class);
+        when(principal.getName()).thenReturn("testuser");
+        User user = new User();
+        user.setUsername("testuser");
+        when(userService.getUserByUsername("testuser")).thenReturn(user);
         when(categoryController.getAllCategories()).thenReturn(new ArrayList<Category>());
 
-        String result = addWidgetController.addWidget(model);
+        String result = addWidgetController.addWidget(model, principal);
 
         assertEquals("addWidget", result);
         assertEquals("widgets", addWidgetController.getPage());
@@ -128,10 +138,14 @@ public class AddWidgetControllerTest {
     @Test
 	// This test is expects an IllegalStateException to be thrown
     public void testAddWidgetNotLoggedIn() {
-        when(userController.getCurrently_Logged_In()).thenReturn(null);
+        Principal principal = mock(Principal.class);
+        when(principal.getName()).thenReturn(null);
+        User user = new User();
+        user.setUsername("testuser");
+        when(userService.getUserByUsername("testuser")).thenReturn(user);
 
         assertThrows(IllegalStateException.class, () -> {
-            addWidgetController.addWidget(model);
+            addWidgetController.addWidget(model, principal);
         });
     }
 
@@ -146,10 +160,15 @@ public class AddWidgetControllerTest {
         WidgetForm widgetForm = addWidgetController.new WidgetForm();
         when(model.addAttribute("category", category)).thenReturn(model);
         when(model.addAttribute("entries", widgetForm.getEntries())).thenReturn(model);
-        when(userController.getCurrently_Logged_In()).thenReturn(new User());
+        
+        Principal principal = mock(Principal.class);
+        when(principal.getName()).thenReturn("testuser");
+        User user = new User();
+        user.setUsername("testuser");
+        when(userService.getUserByUsername("testuser")).thenReturn(user);
 
 		// Act
-        String result = addWidgetController.createWidget(categoryId, model);
+        String result = addWidgetController.createWidget(categoryId, model, principal);
 
         // Assert
         assertEquals("createWidgetTemplate", result);
@@ -174,10 +193,15 @@ public class AddWidgetControllerTest {
         entries.add(entry);
         widgetForm.setEntries(entries);
         when(category.getId()).thenReturn(1L);
-        when(userController.getCurrently_Logged_In()).thenReturn(new User());
+        
+        Principal principal = mock(Principal.class);
+        when(principal.getName()).thenReturn("testuser");
+        User user = new User();
+        user.setUsername("testuser");
+        when(userService.getUserByUsername("testuser")).thenReturn(user);
 
         // Act
-        String result = addWidgetController.createWidgetListing(model, widgetForm, null);
+        String result = addWidgetController.createWidgetListing(model, widgetForm, null, principal);
 
         // Assert
         assertEquals("redirect:createListing", result);
@@ -189,12 +213,16 @@ public class AddWidgetControllerTest {
         // Arrange
         MarketListing marketListing = new MarketListing();
         Category category = new Category();
-        when(userController.getCurrently_Logged_In()).thenReturn(new User());
+        Principal principal = mock(Principal.class);
+        when(principal.getName()).thenReturn("testuser");
+        User user = new User();
+        user.setUsername("testuser");
+        when(userService.getUserByUsername("testuser")).thenReturn(user);
         when(model.addAttribute("listing", marketListing)).thenReturn(model);
         when(model.addAttribute("Category", category)).thenReturn(model);
 
         // Act
-        String result = addWidgetController.createListing(model);
+        String result = addWidgetController.createListing(model, principal);
 
         // Assert
         assertEquals("createListing", result);

@@ -1,8 +1,10 @@
 package edu.sru.cpsc.webshopping.controller.purchase;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.time.LocalDate;
 import java.sql.Date;
 
@@ -37,6 +39,7 @@ import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.widgets.Category;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 import edu.sru.cpsc.webshopping.repository.billing.StateDetailsRepository;
+import edu.sru.cpsc.webshopping.service.UserService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -64,6 +67,10 @@ public class TransactionDetailsPageControllerTest {
 	private BindingResult result;
 	@Autowired
 	private ObjectMapper mapper;
+	@Mock
+	private Principal principal;
+	@Mock
+	private UserService userService;
 	
 	private User buyer;
 	private User seller;
@@ -119,11 +126,9 @@ public class TransactionDetailsPageControllerTest {
 	 */
 	@Test
 	void openPage() throws Exception {
-		userController.setCurrently_Logged_In(buyer);
-		String result = transPageController.purchaseDetails(trans.getId(), model);
+		String result = transPageController.purchaseDetails(trans.getId(), model, principal);
 		Assertions.assertEquals("transactionDetails", result);
-		userController.setCurrently_Logged_In(seller);
-		result = transPageController.purchaseDetails(trans.getId(), model);
+		result = transPageController.purchaseDetails(trans.getId(), model, principal);
 		Assertions.assertEquals("transactionDetails", result);
 	}
 	
@@ -134,8 +139,7 @@ public class TransactionDetailsPageControllerTest {
 	 */
 	@Test
 	void submitShippingUpdateSuccess() throws Exception {
-		userController.setCurrently_Logged_In(seller);
-		transPageController.purchaseDetails(trans.getId(), model);
+		transPageController.purchaseDetails(trans.getId(), model, principal);
 		Shipping form = trans.getShippingEntry();
 		form.setCarrier("USPS");
 		form.setShippingDate(Date.valueOf(LocalDate.now()));
@@ -161,8 +165,7 @@ public class TransactionDetailsPageControllerTest {
 	 */
 	@Test
 	void submitShippingUpdateFailure() throws Exception {
-		userController.setCurrently_Logged_In(seller);
-		transPageController.purchaseDetails(trans.getId(), model);
+		transPageController.purchaseDetails(trans.getId(), model, principal);
 		Shipping form = trans.getShippingEntry();
 		RequestBuilder request = MockMvcRequestBuilders.post("/viewTransactionDetails/submitShippingUpdate")
 				.flashAttr("shipping", form);
@@ -191,8 +194,7 @@ public class TransactionDetailsPageControllerTest {
 	 */
 	@Test
 	void deleteTransactionSuccessful() throws Exception {
-		userController.setCurrently_Logged_In(buyer);
-		transPageController.purchaseDetails(trans.getId(), model);
+		transPageController.purchaseDetails(trans.getId(), model, principal);
 		RequestBuilder request = MockMvcRequestBuilders.post("/viewTransactionDetails/deleteTransaction");
 		mvc.perform(request)
 			.andExpect(MockMvcResultMatchers.view().name("redirect:/homePage"))
@@ -212,8 +214,7 @@ public class TransactionDetailsPageControllerTest {
 	@Test
 	void deleteTransactionFailure() throws Exception {
 		// Update with shipping information
-		userController.setCurrently_Logged_In(seller);
-		transPageController.purchaseDetails(trans.getId(), model);
+		transPageController.purchaseDetails(trans.getId(), model, principal);
 		Shipping form = trans.getShippingEntry();
 		form.setCarrier("USPS");
 		form.setShippingDate(Date.valueOf(LocalDate.now()));
@@ -222,8 +223,7 @@ public class TransactionDetailsPageControllerTest {
 				.flashAttr("shipping", form);
 		mvc.perform(request);
 		// Run delete request
-		userController.setCurrently_Logged_In(buyer);
-		transPageController.purchaseDetails(trans.getId(), model);
+		transPageController.purchaseDetails(trans.getId(), model, principal);
 		request = MockMvcRequestBuilders.post("/viewTransactionDetails/deleteTransaction");
 		mvc.perform(request)
 			.andExpect(MockMvcResultMatchers.view().name("transactionDetails"))

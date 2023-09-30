@@ -1,24 +1,15 @@
 package edu.sru.cpsc.webshopping.controller;
 
-import edu.sru.cpsc.webshopping.domain.market.MarketListing;
-import edu.sru.cpsc.webshopping.domain.market.Transaction;
 import edu.sru.cpsc.webshopping.domain.user.Message;
 import edu.sru.cpsc.webshopping.domain.user.Ticket;
 import edu.sru.cpsc.webshopping.domain.user.User;
-import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 import edu.sru.cpsc.webshopping.repository.ticket.TicketRepository;
-import edu.sru.cpsc.webshopping.repository.user.UserRepository;
 import edu.sru.cpsc.webshopping.service.UserService;
 import edu.sru.cpsc.webshopping.util.constants.TimeConstants;
 import edu.sru.cpsc.webshopping.util.enums.MessageType;
 import edu.sru.cpsc.webshopping.util.enums.TicketState;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -32,8 +23,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @Data
@@ -41,7 +30,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class TicketPageController {
 
   private String page;
-  private final UserController userController;
   private final TicketRepository ticketRepository;
   private final EmailController emailController;
 

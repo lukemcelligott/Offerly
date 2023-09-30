@@ -24,7 +24,7 @@ public class WebshoppingSecureSpringTest {
 	 
 	        @Bean
 	        public UserDetailsService userDetailsService() {
-	            return new UserDetailsServiceImpl(null, null, null);
+	            return new UserDetailsServiceImpl();
 	        }
 	    }
 	
@@ -42,7 +42,7 @@ public class WebshoppingSecureSpringTest {
 	@Test
 	void UserDetailsServiceImplTest() {
 		
-		UserDetailsServiceImpl impl = new UserDetailsServiceImpl(null, null, null);
+		UserDetailsServiceImpl impl = new UserDetailsServiceImpl();
 		UserDetails user = impl.loadUserByUsername("userName");
 		
 		assertEquals("userName", user.getUsername());
@@ -50,7 +50,7 @@ public class WebshoppingSecureSpringTest {
 	
 	@Test
 	void UserDetailsServiceImplExceptionTest() {
-		UserDetailsServiceImpl impl = new UserDetailsServiceImpl(null, null, null);
+		UserDetailsServiceImpl impl = new UserDetailsServiceImpl();
 		
 		try {
 		UserDetails user = impl.loadUserByUsername("thisUserDoesntExist");

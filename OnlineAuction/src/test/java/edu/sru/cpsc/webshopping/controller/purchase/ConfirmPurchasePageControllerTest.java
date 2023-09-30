@@ -1,8 +1,10 @@
 package edu.sru.cpsc.webshopping.controller.purchase;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.time.LocalDate;
 
 import org.junit.jupiter.api.Assertions;
@@ -37,6 +39,7 @@ import edu.sru.cpsc.webshopping.domain.market.Transaction;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 import edu.sru.cpsc.webshopping.repository.billing.StateDetailsRepository;
+import edu.sru.cpsc.webshopping.service.UserService;
 
 /**
  * jUnit code for testing the ConfirmPurchasePage
@@ -68,9 +71,12 @@ public class ConfirmPurchasePageControllerTest {
 	@Autowired
 	private StateDetailsRepository stateRepository;
 	private PaymentDetails validDetailsForm;
+	@Autowired
+	private UserService userService;
 	
 	private User buyer;
 	private User seller;
+	private Principal principal;
 	
 	/**
 	 * Setups data to use for tests
@@ -86,7 +92,13 @@ public class ConfirmPurchasePageControllerTest {
 		buyer = new User();
 		buyer.setPassword("");
 		buyer = userController.addUser(buyer, mock(BindingResult.class));
-		userController.setCurrently_Logged_In(buyer);
+
+		principal = mock(Principal.class);
+        when(principal.getName()).thenReturn("testuser");
+        User user = new User();
+        user.setUsername("testuser");
+        when(userService.getUserByUsername("testuser")).thenReturn(user);
+
 		// Add payment details to user
 		validDetailsForm = new PaymentDetails();
 		validDetailsForm.setCardholderName("TestName");
@@ -99,7 +111,7 @@ public class ConfirmPurchasePageControllerTest {
 		Paypal validPaypal = new Paypal();
 		validPaypal.setPaypalLogin("testemail@test.com");
 		validPaypal.setPaypalPassword("passwd");
-		userController.updatePaypalDetails(validPaypal);
+		userController.updatePaypalDetails(validPaypal, principal);
 		// Initializes Widget and MarketListing
 		newListing.setDeleted(false);
 		newListing.setPricePerItem(new BigDecimal(50.05));
@@ -132,7 +144,7 @@ public class ConfirmPurchasePageControllerTest {
 	 */
 	@Test
 	void OpenPage() throws Exception {
-		String result = pageController.openConfirmPurchasePage(address, newListing, trans, model);
+		String result = pageController.openConfirmPurchasePage(address, newListing, trans, model, principal);
 		Assertions.assertEquals("confirmPurchase", result);
 	}
 	
@@ -150,7 +162,7 @@ public class ConfirmPurchasePageControllerTest {
 		validDetails.setPostalCode("44525");
 		validDetails.setSecurityCode("1234");
 		
-		pageController.openConfirmPurchasePage(address, newListing, trans, model);
+		pageController.openConfirmPurchasePage(address, newListing, trans, model, principal);
 		
 		RequestBuilder request = MockMvcRequestBuilders.post("/confirmPurchase/submitPurchase")
 				.flashAttr("paymentDetails", validDetails)
@@ -159,7 +171,7 @@ public class ConfirmPurchasePageControllerTest {
 			.andExpect(MockMvcResultMatchers.view().name("redirect:/index"))
 			.andExpect(MockMvcResultMatchers.status().is3xxRedirection());
 		// Check that both buyer and seller have a new transaction from purchase
-		Iterable<Transaction> transactions = transController.getUserPurchases(userController.getCurrently_Logged_In());
+		Iterable<Transaction> transactions = transController.getUserPurchases(buyer);
 		Assertions.assertEquals(1, transactions.spliterator().getExactSizeIfKnown());
 		transactions = transController.getUserSoldItems(seller);
 		Assertions.assertEquals(1, transactions.spliterator().getExactSizeIfKnown());
@@ -179,7 +191,7 @@ public class ConfirmPurchasePageControllerTest {
 		details.setPostalCode("44525");
 		details.setSecurityCode("1234");
 		
-		pageController.openConfirmPurchasePage(address, newListing, trans, model);
+		pageController.openConfirmPurchasePage(address, newListing, trans, model, principal);
 		
 		RequestBuilder request = MockMvcRequestBuilders.post("/confirmPurchase/submitPurchase")
 				.flashAttr("paymentDetails", details)
@@ -255,7 +267,7 @@ public class ConfirmPurchasePageControllerTest {
 		details.setSecurityCode("1234");
 		
 		// Check that no transactions were added
-		Iterable<Transaction> transactions = transController.getUserPurchases(userController.getCurrently_Logged_In());
+		Iterable<Transaction> transactions = transController.getUserPurchases(buyer);
 		Assertions.assertEquals(0, transactions.spliterator().getExactSizeIfKnown());
 		transactions = transController.getUserSoldItems(seller);
 		Assertions.assertEquals(0, transactions.spliterator().getExactSizeIfKnown());
@@ -271,7 +283,7 @@ public class ConfirmPurchasePageControllerTest {
 		validDetails.setPaypalLogin("testemail@test.com");
 		validDetails.setPaypalPassword("passwd");
 		
-		pageController.openConfirmPurchasePage(address, newListing, trans, model);
+		pageController.openConfirmPurchasePage(address, newListing, trans, model, principal);
 		
 		RequestBuilder request = MockMvcRequestBuilders.post("/confirmPurchase/submitPurchasePaypal")
 				.flashAttr("paypal", validDetails)
@@ -280,7 +292,7 @@ public class ConfirmPurchasePageControllerTest {
 			.andExpect(MockMvcResultMatchers.view().name("redirect:/homePage"))
 			.andExpect(MockMvcResultMatchers.status().is3xxRedirection());
 		// Check that both buyer and seller have a new transaction from purchase
-		Iterable<Transaction> transactions = transController.getUserPurchases(userController.getCurrently_Logged_In());
+		Iterable<Transaction> transactions = transController.getUserPurchases(buyer);
 		Assertions.assertEquals(1, transactions.spliterator().getExactSizeIfKnown());
 		transactions = transController.getUserSoldItems(seller);
 		Assertions.assertEquals(1, transactions.spliterator().getExactSizeIfKnown());
@@ -296,7 +308,7 @@ public class ConfirmPurchasePageControllerTest {
 		validDetails.setPaypalLogin("testemail@test.com");
 		validDetails.setPaypalPassword("passwd");
 		
-		pageController.openConfirmPurchasePage(address, newListing, trans, model);
+		pageController.openConfirmPurchasePage(address, newListing, trans, model, principal);
 		
 		RequestBuilder request = MockMvcRequestBuilders.post("/confirmPurchase/submitPurchasePaypal")
 				.flashAttr("paypal", validDetails)
@@ -315,7 +327,7 @@ public class ConfirmPurchasePageControllerTest {
 		validDetails.setPaypalPassword("passwd");
 		
 		// Check that no transactions were added
-		Iterable<Transaction> transactions = transController.getUserPurchases(userController.getCurrently_Logged_In());
+		Iterable<Transaction> transactions = transController.getUserPurchases(buyer);
 		Assertions.assertEquals(0, transactions.spliterator().getExactSizeIfKnown());
 		transactions = transController.getUserSoldItems(seller);
 		Assertions.assertEquals(0, transactions.spliterator().getExactSizeIfKnown());
@@ -327,14 +339,14 @@ public class ConfirmPurchasePageControllerTest {
 	 */
 	@Test
 	public void CancelPurchase() throws Exception {
-		pageController.openConfirmPurchasePage(address, newListing, trans, model);
+		pageController.openConfirmPurchasePage(address, newListing, trans, model, principal);
 		RequestBuilder request = MockMvcRequestBuilders.post("/confirmPurchase/submitPurchase")
 				.param("cancel", "true");
 		mvc.perform(request)
 			.andExpect(MockMvcResultMatchers.view().name("redirect:/viewMarketListing/" + newListing.getId()))
 			.andExpect(MockMvcResultMatchers.status().is3xxRedirection());
 		
-		pageController.openConfirmPurchasePage(address, newListing, trans, model);
+		pageController.openConfirmPurchasePage(address, newListing, trans, model, principal);
 		request = MockMvcRequestBuilders.post("/confirmPurchase/submitPurchasePaypal")
 				.param("cancel", "true");
 		mvc.perform(request)
