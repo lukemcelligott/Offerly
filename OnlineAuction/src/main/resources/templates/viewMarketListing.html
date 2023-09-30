@@ -42,7 +42,7 @@
         <div id="page">
             <div class="card mx-auto h-70 w-100" style="height: 90%;">
    
-                <nav aria-label="breadcrumb" class="custom-breadcrumb">
+                <nav aria-label="breadcrumb" class="custom-breadcrumb" style="height: 30px;">
                     <ol class="breadcrumb">
                         <li th:each="cat, iterStat : ${categories}" class="breadcrumb-item" th:classappend="${iterStat.last} ? 'active' : ''">
                             <span th:if="${!iterStat.last}">
@@ -56,7 +56,7 @@
                 <div class="card-body">
                     <div class="row mb-4">
                         <!-- Left Column: Image -->
-                        <div class="col-lg-5">
+                        <div class="col-lg-7">
                             <div class="card h-60" th:if="${currListing.coverImage != null && !currListing.coverImage.isEmpty()}">
                                 <div class="img-container">
                                     <button style="height:40px; position: absolute; left: 10px; top: 50%; transform: translateY(-50%);" onclick="changeImageBackward()">&#8592;</button>
@@ -104,40 +104,41 @@
                   
                         <!-- Right Column: Seller Details and Action Buttons -->
                         <div class="col-lg-5">
-                            <div class="seller-display d-flex align-items-center mb-1">
-                                <!-- Seller Avatar -->
-                                <img th:if="${seller.userImage == null}" th:src="@{/images/userImages/default_user_icon.png}" alt="Seller Avatar" class="rounded-circle me-3" style="width:50px; height:50px;"></img>
-								<img th:if="${seller.userImage != null}" th:src="@{/images/userImages/{icon}(icon = ${seller.userImage})}" alt="Seller Avatar" class="rounded-circle me-3" style="width:50px; height:50px;"></img>
                             
-                                <!-- Seller Details -->
-                                <div>
-                                    <!-- Seller Name -->
-                                    <h5 th:text="${seller.username}" class="mb-1"></h5>
-                            
-                                    <!-- Seller Rating -->
-                                    <div class="d-flex align-items-center">
-                                        <!-- Filled Stars -->
-                                        <th:block th:each="star : ${#numbers.sequence(1, sellerRating.rating)}">
-                                            <span class="text-warning">★</span>
-                                        </th:block>
-                                        
-                                        <!-- Unfilled Stars -->
-                                        <th:block th:each="star : ${#numbers.sequence(sellerRating.rating + 1, 5)}">
-                                            <span class="text-muted">★</span>
-                                        </th:block>
 
-                                        <!-- Rating Value -->
-                                        <span th:text="${sellerRating.rating}" class="me-2"></span>
-
-                                        <!-- Number of Ratings -->
-                                        <span class="ms-2 text-muted" th:text=" ${sellerRating.numRatings} + ' rating(s)'"></span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Widget Description -->
-                            <div class="mb-4 mt-4 text-center">
-                                <h2 class="display-4" th:text="${widget.name}"></h2> 
+                            <!-- Widget Title -->
+                            <div class="mb-4 mt-4">
+                                <h2 class="display-4" style="font-size: 30px;" th:text="${widget.name}"></h2> 
+                                <div class="seller-display d-flex align-items-center mb-1">
+	                                <!-- Seller Avatar -->
+	                                <img th:if="${seller.userImage == null}" th:src="@{/images/userImages/default_user_icon.png}" alt="Seller Avatar" class="rounded-circle me-3" style="width:50px; height:50px;"></img>
+									<img th:if="${seller.userImage != null}" th:src="@{/images/userImages/{icon}(icon = ${seller.userImage})}" alt="Seller Avatar" class="rounded-circle me-3" style="width:50px; height:50px;"></img>
+	                            
+	                                <!-- Seller Details -->
+	                                <div>
+	                                    <!-- Seller Name -->
+	                                    <h5 th:text="${seller.username}" class="mb-1"></h5>
+	                            
+	                                    <!-- Seller Rating -->
+	                                    <div class="d-flex align-items-center">
+	                                        <!-- Filled Stars -->
+	                                        <th:block th:each="star : ${#numbers.sequence(1, sellerRating.rating)}">
+	                                            <span class="text-warning">★</span>
+	                                        </th:block>
+	                                        
+	                                        <!-- Unfilled Stars -->
+	                                        <th:block th:each="star : ${#numbers.sequence(sellerRating.rating + 1, 5)}">
+	                                            <span class="text-muted">★</span>
+	                                        </th:block>
+	
+	                                        <!-- Rating Value -->
+	                                        <span th:text="${sellerRating.rating}" class="me-2"></span>
+	
+	                                        <!-- Number of Ratings -->
+	                                        <span class="ms-2 text-muted" th:text=" ${sellerRating.numRatings} + ' rating(s)'"></span>
+	                                    </div>
+	                                </div>
+	                            </div>
                                 <p class="lead" th:text="${widget.description}"></p>
                             </div>
                       
@@ -147,48 +148,55 @@
 
                             <!-- Action Buttons -->
 							<div th:if="${isBuyer}" class="mt-4">
-							
 							    <!-- Buy Now Form -->
-							    <form th:if="${isBuyer}" id="buy-product" class="row g-3 d-flex justify-content-center my-2" action="#" th:action="@{/viewMarketListing/attemptPurchase}" th:object=${newTransaction} method="post">
-							        <div class="col-auto">
-							            <label for="qtyBought" class="col-form-label"> Number to Buy: </label>
+							    <form th:if="${isBuyer}" id="buy-product" class="row g-3 d-flex my-2" action="#" th:action="@{/viewMarketListing/attemptPurchase}" th:object=${newTransaction} method="post">
+							        <div class="col-auto" style="justify-content: left;">
+							            <label for="qtyBought" class="col-form-label"> Quantity: </label>
 							        </div>
-							        <div class="col-auto">
+							        <div class="col-auto" style="justify-content: left;">
 							            <input id="qtyBought" class="form-control" name="qtyBought" type="number" th:field="*{qtyBought}" placeholder="Number to Buy" min="1" th:max="${currListing.qtyAvailable}" value="0" required></input>
 							        </div>
-							        <div class="col-auto">
+							        <div class="col-auto text-end">
 							            <input class="btn btn-success" id="purchaseButton" name="buyProduct" type="submit" th:value="'Buy Now for $' + ${currListing.pricePerItem}" />
 							        </div>
 							    </form>
 							
 							    <!-- Other Buttons and Actions -->
-							    <div class="row g-3 d-flex justify-content-center my-2">
-							        <!-- Add to Watchlist Button -->                                	
-									    <div class="col-auto">
-                                    	<form id="addToWatchlistForm" th:action="@{/viewMarketListing/wishlistItem/{id}(id = ${currListing.getId()})}" method="post" th:if="${!foundInWatchlist}">
-                                          	<button class="btn btn-success" id="addToWatchlistButton" data-toggle="modal" data-target="#watchlistModal">
-												                             Add to Watchlist
+							    
+							    <!-- Add to Watchlist Button -->
+							    <div class="row g-3 d-flex my-2" style="justify-content: right;">							                                        	
+									    <div class="col-auto" th:if="${!foundInWatchlist}">
+                                    	<form id="addToWatchlistForm" th:action="@{/viewMarketListing/wishlistItem/{id}(id = ${currListing.getId()})}" method="post">
+                                          	<button style="width: 200px;" class="btn btn-success" id="addToWatchlistButton" data-toggle="modal" data-target="#watchlistModal">
+												Add to Watchlist
                                           	</button>
                                       	</form>                                      	
                                   	</div>
-                                  	<!-- Remove from Watchlist Button -->
-                                  	<div class="col-auto">
-                                    	<form id="removeFromWatchlistForm" th:action="@{/viewMarketListing/delWishlistItem/{id}(id = ${currListing.getId()})}" method="post" th:if="${foundInWatchlist}">
-                                          	<button class="btn btn-success" id="addToWatchlistButton" data-toggle="modal" data-target="#watchlistModal">
-												                        Remove from Watchlist
+							    </div>
+							    <!-- Remove from Watchlist Button -->
+							    <div class="row g-3 d-flex my-2" style="justify-content: right;">
+                                  	<div class="col-auto" th:if="${foundInWatchlist}">
+                                    	<form id="removeFromWatchlistForm" th:action="@{/viewMarketListing/delWishlistItem/{id}(id = ${currListing.getId()})}" method="post">
+                                          	<button style="width: 200px;" class="btn btn-success" id="addToWatchlistButton" data-toggle="modal" data-target="#watchlistModal">
+												Remove from Watchlist
                                           	</button>
                                       	</form>
-                                      	
                                   	</div>
-							            <div class="col-auto">
+							    </div>
+							    <!-- Bid Now button -->
+							    <div class="row g-3 d-flex my-2" style="justify-content: right;">
+						            <div class="col-auto">
 							            <input type="hidden" name="listingId" th:value="${currListing.id}"/>  
-							            <input class="btn btn-success" id="bidButton" name="placeBid" type="button" value="Bid Now" data-bs-toggle="modal" data-bs-target="#bidModal"/>
-							        </div>
-							        
-							        <div class="col-auto">
-							            <a class="btn btn-danger" href="/BrowseWidgetsButton">Back</a>
+							            <input style="width: 200px;" class="btn btn-success" id="bidButton" name="placeBid" type="button" value="Bid Now" data-bs-toggle="modal" data-bs-target="#bidModal"/>
 							        </div>
 							    </div>
+							    <!-- back button 
+							    <div class="row g-3 d-flex my-2" style="justify-content: right;">
+							        <div class="col-auto">
+							            <a class="btn btn-danger" href="/BrowseWidgetsButton" style="width: 200px;">Back</a>
+							        </div>
+							    </div>-->
+							    
 							</div>
 
                             <!-- For Sellers -->
@@ -197,39 +205,43 @@
                                     <div class="d-flex justify-content-center mb-3">
                                         <input class="btn btn-primary" id="update-listing" name="update-listing" type="button" value="Update" data-bs-toggle="modal" data-bs-target="#updateModal" />
                                     </div>
+                                    <br>
                                     <div class="d-flex justify-content-center mb-3">
                                         <a class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deletePopup"> Delete Listing </a>
                                     </div>
+                                    <br>
                                     <div class="d-flex justify-content-center mb-3">
                                         <a class="btn btn-danger" href="/BrowseWidgetsButton"> Back </a>
                                     </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Widget Attributes Table -->
-                <div>
-	                <div class="d-flex justify-content-center mb-2">
-	                    <h2>Product Information</h2>
-	                </div>
-	                <div class="col-lg-6 mx-auto">
-	                    <table class="table table-striped">
-	                        <thead>
-	                            <tr>
-	                                <th>Specification</th>
-	                                <th>Value</th>
-	                            </tr>
-	                        </thead>
-	                        <tbody>
-	                            <tr th:each="attribute : ${attributes}">
-	                                <td th:text="${attribute.attributeKey}"></td>
-	                                <td th:text="${attribute.value}"></td>
-	                            </tr>
-	                        </tbody>
-	                    </table>
-	                </div>
+                        
+                        	<br>
+			                <!-- Widget Attributes Table -->
+			                <div>
+				                <div class="d-flex justify-content-center mb-2">
+				                    <h2>Product Information</h2>
+				                </div>
+				                <div class="col-lg-6 mx-auto">
+				                    <table class="table table-striped">
+				                        <thead>
+				                            <tr>
+				                                <th>Specification</th>
+				                                <th>Value</th>
+				                            </tr>
+				                        </thead>
+				                        <tbody>
+				                            <tr th:each="attribute : ${attributes}">
+				                                <td th:text="${attribute.attributeKey}"></td>
+				                                <td th:text="${attribute.value}"></td>
+				                            </tr>
+				                        </tbody>
+				                    </table>
+				                </div>
+							</div>
+							
+						</div>
+					</div>
 				</div>
-				
             </div>
         </div>
 
