@@ -290,7 +290,6 @@ public class MarketListingDomainController {
 			
 			// save user to the user repository
 			userService.addUser(user);
-
 		}
 		
 		// redirect

@@ -39,6 +39,7 @@ import edu.sru.cpsc.webshopping.domain.widgets.WidgetAttribute;
 import edu.sru.cpsc.webshopping.domain.widgets.WidgetImage;
 import edu.sru.cpsc.webshopping.service.CategoryService;
 import edu.sru.cpsc.webshopping.service.UserService;
+import edu.sru.cpsc.webshopping.service.WatchlistService;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -58,6 +59,7 @@ public class MarketListingPageController {
   ConfirmPurchasePageController purchaseController;
   SellerRatingController ratingController;
   UserListDomainController userListController;
+  WatchlistService watchlistService;
   // Repositories passed to ConfirmPurchasePage
   TransactionController transController;
   WidgetController widgetController;
@@ -83,7 +85,8 @@ public class MarketListingPageController {
       WidgetImageController widgetImageController,
       SellerRatingController ratingController,
       UserListDomainController userListController,
-      ConfirmPurchasePageController purchaseController) {
+      ConfirmPurchasePageController purchaseController,
+      WatchlistService watchlistService) {
 	  this.marketListingController = marketListingController;
 	  this.transController = transController;
 	  this.userController = userController;
@@ -95,6 +98,7 @@ public class MarketListingPageController {
 	  this.widgetController = widgetController;
 	  this.ratingController = ratingController;
 	  this.userListController = userListController;
+	  this.watchlistService = watchlistService;
   }
 
   /** Reloads the page model data */
@@ -170,12 +174,15 @@ public class MarketListingPageController {
     	}
     }
 
+    // get how many people are watching the item
+    Long userCount = watchlistService.countUsersWithMarketListingInWatchlist(marketListingId);
 
     model.addAttribute("categories", categoryStack);
     model.addAttribute("images", widgetNames);
     model.addAttribute("attributes", widgetAttributes);
     model.addAttribute("foundInWatchlist", foundInWatchlist);
     model.addAttribute("currentUser", user);
+    model.addAttribute("userCount", userCount);
     reloadModel(model, user);
     return "viewMarketListing";
   }

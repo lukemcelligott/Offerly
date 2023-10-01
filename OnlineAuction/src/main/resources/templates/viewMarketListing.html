@@ -21,20 +21,6 @@
         <link th:href="@{/styles/employee_page.css}" rel="stylesheet"/>
 		<link th:href="@{/styles/viewMarketListing.css}" rel="stylesheet"/>		
 		
-        <style>
-        	div.auction-price-container{
-	            text-align: center;
-	            margin-top: 10px;
-	            font-weight: bold;
-	            border-radius: 12px; /* Rounded corners */
-	            padding: 10px; /* Padding around text */
-	            width: fit-content; /* Shrink to fit the content */
-	            margin-left: auto; /* Centering */
-	            margin-right: auto; /* Centering */
-	            font-family: 'Poppins', sans-serif; /* Using imported Poppins font */
-	            color: #333; /* Text color */
-          }
-        </style>
     </head>
     <body>
         <div th:insert="header :: header"></div>
@@ -85,6 +71,14 @@
 							        <span>Auction Ends In: </span>
 							        <span id="countdown"></span>
 							    </div>
+							</div>
+							
+							<!-- Number of users watching this item -->
+							<div class="d-flex justify-content-center" style="margin-top: 5px !important;">
+								<div class="auction-price-container">
+									<span>Number of users watching this item: </span>
+									<span th:text="${userCount}"></span>
+								</div>
 							</div>
 							
 							<!-- Purchase Auction Div -->							
