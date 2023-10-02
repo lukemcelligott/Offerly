@@ -169,6 +169,7 @@
                                       	</form>                                      	
                                   	</div>
 							    </div>
+							    
 							    <!-- Remove from Watchlist Button -->
 							    <div class="row g-3 d-flex my-2" style="justify-content: right;">
                                   	<div class="col-auto" th:if="${foundInWatchlist}">
@@ -179,16 +180,18 @@
                                       	</form>
                                   	</div>
 							    </div>
+							    
 							    <!-- Bid Now button -->
-							    <div class="row g-3 d-flex my-2" style="justify-content: right;">
+							    <div class="row g-3 my-2" style="justify-content: right;" id="bidButton">
 						            <div class="col-auto">
 							            <input type="hidden" name="listingId" th:value="${currListing.id}"/>  
-							            <input style="width: 250px;" class="btn btn-outline-success" id="bidButton" name="placeBid" type="button" value="Bid Now" data-bs-toggle="modal" data-bs-target="#bidModal"/>
+							            <input style="width: 250px;" class="btn btn-outline-success" name="placeBid" type="button" value="Bid Now" data-bs-toggle="modal" data-bs-target="#bidModal"/>
+							        	<!--<input style="width: 250px;" class="btn btn-outline-success" id="bidButton" name="placeBid" type="button" value="Bid Now" data-bs-toggle="modal" data-bs-target="#bidModal"/>-->
 							        </div>
 							    </div>
 							    
 							    <!-- Purchase Auction Div -->							
-								<div id="purchaseAuctionDiv" class="row g-3 d-flex my-2" style="display: none; justify-content: right;">
+								<div id="purchaseAuctionDiv" class="row g-3" style="display: none; justify-content: right;">
 								    <form style="justify-content: right;" id="purchaseAuctionForm" class="row g-3 d-flex my-2" th:action="@{/viewMarketListing/attemptPurchase}" th:object="${newTransaction}" method="post">
 								        <!-- Hidden input for the auction current bid price -->
 								        <input type="hidden" name="pricePerItem" th:value="${currListing.auction.currentBid}" />
@@ -225,7 +228,7 @@
                                     </div> -->
                             </div>
                         
-                        	<br>
+                        	<hr>
 			                <!-- Widget Attributes Table -->
 			                <div>
 				                <div class="d-flex justify-content-center mb-2">
@@ -282,26 +285,26 @@
         <!-- Bid Modal -->
 		<div class="modal fade" id="bidModal" tabindex="-1" aria-labelledby="bidModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="bidModalLabel">Place a Bid</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <form th:action="@{/updateBid}" method="post">
-                    <div class="mb-3">
-								      <span th:text="'Auction Price: $' + ${currListing.auction.currentBid}"></span>
-                      <label for="bidAmount" class="form-label">Bid Amount</label>
-                      <input type="number" class="form-control" id="bidAmount" name="bidAmount" max="20" min="0.01" step="0.01" data-auction-price="${currListing.auction.currentBid}">
-                    </div>
-                    <input type="hidden" name="bidderId" th:value="${currentUser.id}"/>
-                    <input type="hidden" name="listingId" th:value="${currListing.id}"/>
-                    <input class="btn btn-success" id="bidButton" name="placeBid" type="submit" value="Bid Now" onclick="return confirmBid();"/>
-                  </form>
-                </div>
-              </div>
+            	<div class="modal-content">
+                	<div class="modal-header">
+                  		<h5 class="modal-title" id="bidModalLabel">Place a Bid</h5>
+                  		<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                	</div>
+                	<div class="modal-body">
+                  		<form th:action="@{/updateBid}" method="post">
+                    		<div class="mb-3">
+								<span th:text="'Auction Price: $' + ${currListing.auction.currentBid}"></span>
+                      			<label for="bidAmount" class="form-label">Bid Amount</label>
+                      			<input type="number" class="form-control" id="bidAmount" name="bidAmount" max="20" min="0.01" step="0.01" data-auction-price="${currListing.auction.currentBid}">
+                    		</div>
+                    		<input type="hidden" name="bidderId" th:value="${currentUser.id}"/>
+                    		<input type="hidden" name="listingId" th:value="${currListing.id}"/>
+                    		<input class="btn btn-success" id="bidButton" name="placeBid" type="submit" value="Bid Now" onclick="return confirmBid();"/>
+                  		</form>
+                	</div>
+              	</div>
             </div>
-          </div>
+        </div>
 
         <!-- Update Listing Modal -->
         <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
@@ -382,46 +385,46 @@
             }
             
         	document.addEventListener('DOMContentLoaded', function() {
-	        // Get the endAuctionDate from Thymeleaf variable
-	        var endAuctionDateStr = /*[[${currListing.auction.endAuctionDate}]]*/ '2023-08-27T19:55';
-	        var endAuctionDate = new Date(endAuctionDateStr);
-	        
-	        // Get reference to the "Bid Now" button
-    		var bidButton = document.getElementById('bidButton');
-    		
-    		// Get reference to the "Purchase Auction" div
-			var purchaseAuctionDiv = document.getElementById('purchaseAuctionDiv');
+		        // Get the endAuctionDate from Thymeleaf variable
+		        var endAuctionDateStr = /* [[${currListing.auction.endAuctionDate}]]*/ '2023-10-27T19:55';
+		        var endAuctionDate = new Date(endAuctionDateStr);
 		        
-	        // Update the countdown every 1 second
-	        var x = setInterval(function() {
-	            var now = new Date().getTime();
-	            var distance = endAuctionDate - now;		        
-	            
-	            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-	            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-	            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-	            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-	            
-	            document.getElementById("countdown").innerHTML = days + "d " + hours + "h "
-	            + minutes + "m " + seconds + "s ";
-	            
-			    // If the countdown is over, write some text and hide the "Bid Now" button
-		        if (distance < 0) {
-		            clearInterval(x);
-		            document.getElementById("countdown").innerHTML = "EXPIRED";
+		        // Get reference to the "Bid Now" button
+	    		var bidButton = document.getElementById('bidButton');
+	    		
+	    		// Get reference to the "Purchase Auction" div
+				var purchaseAuctionDiv = document.getElementById('purchaseAuctionDiv');
+			        
+		        // Update the countdown every 1 second
+		        var x = setInterval(function() {
+		            var now = new Date().getTime();
+		            var distance = endAuctionDate - now;		        
 		            
-		            // Hide the "Bid Now" button
-		            if (bidButton) {
-		                bidButton.style.display = 'none';
-		            }
-		
-		            // Show the "Purchase Auction" button
-		            if (purchaseAuctionDiv) {
-		                purchaseAuctionDiv.style.display = 'block';
-		            }
-		        }
-		    }, 1000);
-		});
+		            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+		            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+		            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+		            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+		            
+		            document.getElementById("countdown").innerHTML = days + "d " + hours + "h "
+		            + minutes + "m " + seconds + "s ";
+		            
+				    // If the countdown is over, write some text and hide the "Bid Now" button
+			        if (distance < 0) {
+			            clearInterval(x);
+			            document.getElementById("countdown").innerHTML = "EXPIRED";
+			            
+			            // Hide the "Bid Now" button
+			            if (bidButton) {
+			                bidButton.style.display = 'none';
+			            }
+			
+			            // Show the "Purchase Auction" button
+			            if (purchaseAuctionDiv) {
+			                purchaseAuctionDiv.style.display = 'flex';
+			            }
+			        }
+			    }, 1000);
+			});
 		
 		/* Image Magnifier glass https://www.w3schools.com/howto/howto_js_image_magnifier_glass.asp
 		function magnify(imgID, zoom) {
