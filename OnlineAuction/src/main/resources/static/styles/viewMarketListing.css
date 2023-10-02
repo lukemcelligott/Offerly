@@ -24,7 +24,6 @@ body {
 div.auction-price-container{
 	text-align: center;
 	margin-top: 10px;
-	font-weight: bold;
 	border-radius: 12px; /* Rounded corners */
 	padding: 10px; /* Padding around text */
 	width: fit-content; /* Shrink to fit the content */
@@ -139,4 +138,24 @@ div.auction-price-container{
     background-color: rgba(0, 0, 0, 0.6); 
     border: none; 
     cursor: pointer; 
+}
+
+.auction-date-container {
+max-width: 600px;
+align-items: center;   		
+}
+		  
+.container-spacing {
+margin-top: 10px !important;
+}
+
+.details-text {
+font-size: 16px;
+color: #333; 
+}
+
+.details-container {
+padding: 10px;
+border: 1px solid #e0e0e0; /* A light border for differentiation */
+background-color: #f9f9f9; /* A very subtle grey background */
 }

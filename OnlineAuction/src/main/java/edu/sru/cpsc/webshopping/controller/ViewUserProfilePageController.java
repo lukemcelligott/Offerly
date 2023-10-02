@@ -24,7 +24,6 @@ import edu.sru.cpsc.webshopping.service.UserService;
 public class ViewUserProfilePageController {
 	// Database controllers
 	private MarketListingDomainController listingController;
-	private MessageDomainController messageController;
 	private EmailController emailController;
 
 	@Autowired
@@ -40,9 +39,8 @@ public class ViewUserProfilePageController {
 	// Configuration constant
 	private final int NUM_LISTINGS_PER_PAGE = 4;
 	
-	ViewUserProfilePageController(MarketListingDomainController listingController, MessageDomainController messageController, EmailController emailController) {
+	ViewUserProfilePageController(MarketListingDomainController listingController, EmailController emailController) {
 		this.listingController = listingController;
-		this.messageController = messageController;
 		this.emailController = emailController;
 	}
 	
@@ -160,36 +158,5 @@ public class ViewUserProfilePageController {
 		return "viewUserProfile";
 	}
 	
-	/**
-	 * Sends a message to the the owner of the profile page
-	 * @param content The content of the message
-	 * @param subject The subject line
-	 * @param model The page model
-	 * @return viewUserProfile
-	 */
-	@RequestMapping("/viewUserProfile/sendMessage")
-	public String sendMessage(@RequestParam("message") String content, @RequestParam("subject") String subject, Model model, Principal principal)
-	{
-		User user = userService.getUserByUsername(principal.getName());
-		model.addAttribute("user", user);
-		if (content.isBlank() || subject.isBlank()) { 
-			reloadPageModel(model, user);
-		}
-		else {
-			Message message = new Message();
-			message.setOwner(user);
-			message.setSender(user.getUsername());
-			message.setContent(content);
-			message.setSubject(subject);
-			message.setMsgDate();
-			message.setReceiverName(selectedUser.getUsername());
-			message.setReceiver(selectedUser);
-			this.messagePaneOpen = false;
-			messageController.addMessage(message);
-			emailController.messageEmail(selectedUser, user, message);
-			reloadPageModel(model, user);
-		}
-		return "viewUserProfile";
-	}
 	
 }

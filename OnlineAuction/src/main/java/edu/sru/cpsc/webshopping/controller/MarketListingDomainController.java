@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -278,6 +279,32 @@ public class MarketListingDomainController {
 		URI redirectUri = URI.create("/viewMarketListing/" + listingId);
 		return ResponseEntity.status(HttpStatus.SEE_OTHER).location(redirectUri).build();
 	}
-
+	
+	@GetMapping("/uniqueBiddersCount/{id}")
+	public ResponseEntity<String> getUniqueBiddersCount(@PathVariable Long id) {
+	    MarketListing marketListing = marketRepository.findById(id).orElse(null);
+	    if (marketListing == null) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: Listing not found");
+	    }
+	    int uniqueBidderCount = auctionService.countUniqueBiddersForListing(marketListing);
+	    return ResponseEntity.ok(String.valueOf(uniqueBidderCount));
+	}
+	
+	 @GetMapping
+	    public String getAllAuctions(Model model) {
+	        List<Auction> auctions = auctionService.getAllAuctions();
+	        model.addAttribute("auctions", auctions);
+	        return "auctions";
+	    }
+	 
+	 @GetMapping("/totalBidsCount/{id}")
+	 public ResponseEntity<String> getTotalBidsCount(@PathVariable Long id) {
+	     MarketListing marketListing = marketRepository.findById(id).orElse(null);
+	     if (marketListing == null) {
+	         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: Listing not found");
+	     }
+	     int totalBidsCount = auctionService.getTotalBidsForListing(marketListing);
+	     return ResponseEntity.ok(String.valueOf(totalBidsCount));
+	 }
 
 }

@@ -62,7 +62,6 @@ public class EmployeeController {
   private final UserController userController;
   private final ApplicantDomainController appControl;
   private final MarketListingDomainController market;
-  private final MessageDomainController msgcontrol;
   private final WidgetController widgetController;
   private final ApplicantRepository appRepo;
   private final EmailController email;
@@ -751,124 +750,6 @@ public class EmployeeController {
     model.addAttribute("user", user);
     model.addAttribute("users", getAllUsers());
     model.addAttribute("page", page);
-    return "employee";
-  }
-
-  @GetMapping({"/viewSpecificUserInbox/{id}"})
-  public String viewUserInbox(@PathVariable("id") int id, Model model, Principal principal) {
-    User user = userService.getUserByUsername(principal.getName());
-    setMasterPage("result");
-    model.addAttribute("masterPage", getMasterPage());
-    if (user.getRole().equals("ROLE_ADMIN")
-        || user.getRole().equals("ROLE_CUSTOMERSERVICE")
-        || user.getRole().equals("ROLE_TECHNICALSERVICE")
-        || user.getRole().equals("ROLE_SECURITY")
-        || user.getRole().equals("ROLE_SALES")
-        || user.getRole().equals("ROLE_ADMIN_SHADOW")
-        || user.getRole().equals("ROLE_HELPDESK_ADMIN")
-        || user.getRole().equals("ROLE_HELPDESK_REGULAR")) {
-    } else {
-      setPage("notAuthorized");
-      setMasterPage("query");
-      model.addAttribute("masterPage", getMasterPage());
-      model.addAttribute("user", user);
-      model.addAttribute("page", page);
-      return "employee";
-    }
-    User user2 = userController.getUser(id, model);
-    setSearchedUser(user2);
-    Message[] inbox = msgcontrol.getUserInbox(user2);
-
-    setMailboxPage("inboxPage");
-
-    User useradd = new User();
-
-    model.addAttribute("mailpage", getMailboxPage());
-    model.addAttribute("roleList", roleList);
-    model.addAttribute("inbox", inbox);
-    model.addAttribute("user", user);
-    model.addAttribute("useradd", useradd);
-    model.addAttribute("users", getAllUsers());
-    model.addAttribute("page", getPage());
-    model.addAttribute("searchedUser", getSearchedUser());
-    model.addAttribute("myusers", getMyUserSearch());
-
-    return "employee";
-  }
-
-  @GetMapping({"/viewSpecificUserOutbox/{id}"})
-  public String viewUserOutbox(@PathVariable("id") int id, Model model, Principal principal) {
-    User user = userService.getUserByUsername(principal.getName());
-    setMasterPage("result");
-    model.addAttribute("masterPage", getMasterPage());
-    if (user.getRole().equals("ROLE_ADMIN")
-        || user.getRole().equals("ROLE_CUSTOMERSERVICE")
-        || user.getRole().equals("ROLE_TECHNICALSERVICE")
-        || user.getRole().equals("ROLE_SECURITY")
-        || user.getRole().equals("ROLE_SALES")
-        || user.getRole().equals("ROLE_ADMIN_SHADOW")
-        || user.getRole().equals("ROLE_HELPDESK_ADMIN")
-        || user.getRole().equals("ROLE_HELPDESK_REGULAR")) {
-    } else {
-      setPage("notAuthorized");
-      setMasterPage("query");
-      model.addAttribute("masterPage", getMasterPage());
-      model.addAttribute("user", user);
-      model.addAttribute("page", page);
-      return "employee";
-    }
-    User user2 = userController.getUser(id, model);
-    setSearchedUser(user2);
-    Message[] outbox = msgcontrol.getUserOutbox(user2);
-    setMailboxPage("outboxPage");
-    User useradd = new User();
-    model.addAttribute("mailpage", getMailboxPage());
-    model.addAttribute("searchedUser", getSearchedUser());
-    model.addAttribute("roleList", roleList);
-    model.addAttribute("outbox", outbox);
-    model.addAttribute("useradd", useradd);
-    model.addAttribute("users", getAllUsers());
-    model.addAttribute("user", user);
-    model.addAttribute("page", getPage());
-    model.addAttribute("myusers", getMyUserSearch());
-    return "employee";
-  }
-
-  @GetMapping({"/viewSpecificUserTrash/{id}"})
-  public String viewUserTrash(@PathVariable("id") int id, Model model, Principal principal) {
-    User user = userService.getUserByUsername(principal.getName());
-    setMasterPage("result");
-    model.addAttribute("masterPage", getMasterPage());
-    if (user.getRole().equals("ROLE_ADMIN")
-        || user.getRole().equals("ROLE_CUSTOMERSERVICE")
-        || user.getRole().equals("ROLE_TECHNICALSERVICE")
-        || user.getRole().equals("ROLE_SECURITY")
-        || user.getRole().equals("ROLE_SALES")
-        || user.getRole().equals("ROLE_ADMIN_SHADOW")
-        || user.getRole().equals("ROLE_HELPDESK_ADMIN")
-        || user.getRole().equals("ROLE_HELPDESK_REGULAR")) {
-    } else {
-      setPage("notAuthorized");
-      setMasterPage("query");
-      model.addAttribute("masterPage", getMasterPage());
-      model.addAttribute("user", user);
-      model.addAttribute("page", page);
-      return "employee";
-    }
-    User user2 = userController.getUser(id, model);
-    setSearchedUser(user2);
-    Message[] trash = (msgcontrol.getUserTrash(user2));
-    setMailboxPage("trashPage");
-    User useradd = new User();
-    model.addAttribute("mailpage", getMailboxPage());
-    model.addAttribute("searchedUser", getSearchedUser());
-    model.addAttribute("roleList", roleList);
-    model.addAttribute("trash", trash);
-    model.addAttribute("useradd", useradd);
-    model.addAttribute("users", getAllUsers());
-    model.addAttribute("user", user);
-    model.addAttribute("page", getPage());
-    model.addAttribute("myusers", getMyUserSearch());
     return "employee";
   }
 
