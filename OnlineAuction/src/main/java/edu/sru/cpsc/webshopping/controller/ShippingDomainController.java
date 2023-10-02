@@ -1,13 +1,17 @@
 package edu.sru.cpsc.webshopping.controller;
 
+import java.util.Optional;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 
 import edu.sru.cpsc.webshopping.domain.market.Shipping;
 import edu.sru.cpsc.webshopping.repository.market.ShippingRepository;
@@ -64,10 +68,10 @@ public class ShippingDomainController {
 			throw new IllegalArgumentException("Invalid entry passed to editShippingEntry");
 		}
 		currEntry.setAddress(shipping.getAddress());
-		currEntry.setArrivalDate(shipping.getArrivalDate());
 		currEntry.setCarrier(shipping.getCarrier());
-		currEntry.setShippingDate(shipping.getShippingDate());
+		currEntry.setTrackingNumber(shipping.getTrackingNumber());
 		
 		shippingRepository.save(currEntry);
 	}
+
 }

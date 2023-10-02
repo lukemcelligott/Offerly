@@ -123,7 +123,7 @@ public class TransactionController {
 	@GetMapping("cancel-transaction")
 	public boolean cancelTransaction(@Validated Transaction trans) {
 		// Not allowed to cancel a transaction if shipping label created
-		if (trans.getShippingEntry().getShippingDate() != null) 
+		if (trans.getShippingEntry().getTrackingNumber() != null) 
 			return false;
 		else if (getTransaction(trans.getId()) == null)
 			return false;

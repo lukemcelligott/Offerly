@@ -68,12 +68,12 @@
 				<div class="card-body">
 					<div th:if="${errMessage != null}" th:text="${errMessage}" class="alert alert-danger d-flex justify-content-center my-1 h3">
 					</div>
-					<div th:if="${!trans.shippingEntry.hasShipped() && user.id != trans.seller.id}" class="alert alert-info d-flex justify-content-center h3">
+					<!-- <div th:if="${!trans.shippingEntry.hasShipped() && user.id != trans.seller.id}" class="alert alert-info d-flex justify-content-center h3">
 						This purchase has not shipped yet - check back for updates!
 					</div>
 					<div th:if="${trans.shippingEntry.hasArrived() && user.id != trans.seller.id}" class="alert alert-success d-flex justify-content-center h3">
 						This purchase has arrived!
-					</div>
+					</div> -->
 					<div class="my-2">
 						<div class="d-flex justify-content-center">
 							<h2>Purchase Information</h2>
@@ -114,14 +114,15 @@
 									<li class="list-group-item">Postal Code: <span th:text="${trans.shippingEntry.address.postalCode}"></span></li>
 									<li class="list-group-item">State: <span th:text="${trans.shippingEntry.address.state.stateName}"></span></li>
 								</ul>
-								<ul class="list-group col-sm-3">
+								<!-- <ul class="list-group col-sm-3">
 									<li class="list-group-item">Carrier: <span th:text="${trans.shippingEntry.carrier}"></span></li>
 									<li class="list-group-item">Shipping Date: <span th:text="${trans.shippingEntry.shippingDate}"></span></li>
 								</ul>
 								<ul class="list-group col-sm-3">
 									<li class="list-group-item">Arrival Date: <span th:text="${trans.shippingEntry.arrivalDate}"></span></li>
-								</ul>
+								</ul> -->
 							</div>
+							<div id="tracking-status"></div>
 						</div>
 					</div>
 					<!-- If seller, give access to changing shipping information -->
@@ -133,21 +134,20 @@
 						</div>
 						<div class="container">
 							<div class="row">
-							  	<div class="mb-3 col-sm-4">
-					  			  <label for="carrier" class="form-label">Carrier</label>
-								  <input type="text" class="form-control" name="carrier" th:field="*{carrier}">
-								  <p th:if="${carrierErr != null}" th:text="${carrierErr}"></p>
+								<div class="mb-3 col-sm-4">
+									<label for="trackingNumber" class="form-label">Tracking Number</label>
+									<input type="text" class="form-control" name="trackingNumber" th:field="*{trackingNumber}">
+									<p th:if="${trackingNumberErr != null}" th:text="${trackingNumberErr}"></p>
 								</div>
 								<div class="mb-3 col-sm-4">
-								  <label for="shippingDate" class="form-label">Shipping Date</label>
-								  <input type="date" name="shippingDate" class="form-control" th:field="*{shippingDate}">
-								  <p th:if="${shippingDateErr != null}" th:text="${shippingDateErr}"></p>
-								</div>
-								<div class="mb-3 col-sm-4">
-								  <label for="arrivalDate" class="form-label">Arrival Date</label>
-								  <input type="date" class="form-control" name="arrivalDate" th:field="*{arrivalDate}">
-								  <p th:if="${arrivalDateErr != null}" th:text="${arrivalDateErr}"></p>
-								</div>
+									<label for="carrier" class="form-label">Carrier</label>
+									<select class="form-select" name="carrier" th:field="*{carrier}">
+										<option value="fedex">FedEx</option>
+										<option value="ups">UPS</option>
+										<option value="usps">USPS</option>
+										<!-- Add other carriers as needed -->
+									</select>
+								</div>								
 							</div>
 						</div>
 						<div class="d-flex justify-content-evenly">
@@ -171,4 +171,16 @@
 			</div>
 		</div>
 	</body>
+
+	<script>
+
+		const transId = window.location.pathname.split('/').pop(); // Get the order ID from the URL 
+		fetch(`/api/tracking/${transId}`)
+			.then(response => response.json())
+			.then(track => {
+				// Display tracking information on the page
+				document.getElementById('tracking-status').textContent = track.tracking_status.status;
+			});
+
+	</script>
 </html>
