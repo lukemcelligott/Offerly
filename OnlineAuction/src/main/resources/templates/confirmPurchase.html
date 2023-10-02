@@ -62,64 +62,63 @@
       	</script>
 		
 		<style>
-  		.ui-datepicker-calendar {
-        	display: none;
-    	}
-      
-      	.radio-button input[type="radio"]:checked+label {
-        	background-color: #FBD8B4;
-      	}
-		
-		input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-  
-        input[type=number] {
-            -moz-appearance: textfield;
-        }
-        
-		#page {
-			display: flex;
-			height: calc(92vh - 60px);
-		}
+	  		.ui-datepicker-calendar {
+	        	display: none;
+	    	}
+	      
+	      	.radio-button input[type="radio"]:checked+label {
+	        	background-color: #FBD8B4;
+	      	}
 			
-		#website-title {
-			margin-left: 8px;
-			margin-right: 8px;
-			font-size: 12px;
-		}
-			
-		label {
-		display: inline-block;
-		}
+			input::-webkit-outer-spin-button,
+	        input::-webkit-inner-spin-button {
+	            -webkit-appearance: none;
+	            margin: 0;
+	        }
+	  
+	        input[type=number] {
+	            -moz-appearance: textfield;
+	        }
+	        
+			#page {
+				display: flex;
+				/*height: calc(92vh - 60px);*/
+			}
+				
+			#website-title {
+				margin-left: 8px;
+				margin-right: 8px;
+				font-size: 12px;
+			}
+				
+			label {
+				display: inline-block;
+			}
 			
 			/* Use Poppins for entire accordion */
 			#shippingAccordion, #purchaseDetailsAccordion {
-    		font-family: 'Poppins', sans-serif;
+    			font-family: 'Poppins', sans-serif;
 			}
 
 			#shippingHeading .btn-link, #purchaseDetailsAccordion .btn-link  {
-    		color: #0d6efd !important; /* Using !important to ensure our color is applied */
-   			text-decoration: none;  /* To remove the underline */
+    			color: #0d6efd !important; /* Using !important to ensure our color is applied */
+   				text-decoration: none;  /* To remove the underline */
 			}
 
 			/* Change color of accordion header on hover for better UX */
 			#shippingHeading .btn-link:hover, #purchaseDetailsAccordion .btn-link:hover {
-    		color: #0b5cda !important;  /* Slightly darker shade for hover, using !important for override */
+    			color: #0b5cda !important;  /* Slightly darker shade for hover, using !important for override */
 			}
 
 			.custom-font-style{
-    		font-family: 'Poppins', sans-serif;
-    		font-size: 1.5em;
+    			font-family: 'Poppins', sans-serif;
+    			font-size: 1.5em;
 			}
 			
 		</style>
 	</head>
 	
 	<body>
-	
 		<!-- HEADER BAR -->
 		<div th:insert="header :: header"></div>
 		<!-- END HEADER BAR -->
@@ -128,7 +127,7 @@
 		
 		<div id="page">
 			<!-- Confirm Purchase Accordion -->
-			<div style="width:33%;" class="card mx-auto mh-auto mw-30 overflow-auto">
+			<div style="width:45%; margin-top: 1%; margin-bottom: 1%;" class="card mx-auto mh-auto mw-30 overflow-auto">
 				<div class="card-header d-flex justify-content-center">
 					<h1>Confirm Purchase</h1>
 				</div>
@@ -161,13 +160,13 @@
                     			</div>
                     		 </div>
                     	 </div>
-                    	</div>
-                    </div>
+                   	</div>
+                </div>
                     					
-					<hr>
+			<hr>
 					
 				<!-- Shipping Address Accordion -->
-	<div class="accordion" id="shippingAccordion">
+		<div class="accordion" id="shippingAccordion">
     		<div class="card">
         		<div class="card-header bg-white text-center" id="shippingHeading">
            			<div class="d-flex justify-content-center">
@@ -178,7 +177,7 @@
                 		</h2>
             		</div>
        			</div>
-        	<div id="shippingCollapse" class="collapse show" aria-labelledby="shippingHeading" data-parent="#shippingAccordion">
+        	<div id="shippingCollapse" class="collapse" aria-labelledby="shippingHeading" data-parent="#shippingAccordion">
             <div class="card-body">
                 <!-- Content Begins -->
             <div style="margin-bottom: 4px" th:if="${selectedAddress != null and toShipping == false}" class="d-flex justify-content-center">
@@ -194,13 +193,13 @@
                     <th:block th:unless="${selectedAddress == null}">
                         <h2 class="d-flex justify-content-center"><a class="btn btn-lg btn-success" th:href="@{/toShipping}">Change</a></h2>
                     </th:block>
-                	</th:block>
-                	<th:block th:if="${toShipping}">
+                </th:block>
+                <th:block th:if="${toShipping}">
                     <div th:insert="confirmShippingAddressPage :: confirmShippingAddressPage"></div>
-                	</th:block>
+                </th:block>
                 	
-                	<div th:if="${errMessage != null}" th:text="${errMessage}" class="alert alert-danger d-flex justify-content-center my-3">
-                	</div>
+            	<div th:if="${errMessage != null}" th:text="${errMessage}" class="alert alert-danger d-flex justify-content-center my-3">
+            	</div>
                 	<!-- Content Ends -->
             		</div>
         			</div>

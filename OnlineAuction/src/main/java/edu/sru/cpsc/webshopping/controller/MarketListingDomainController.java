@@ -278,9 +278,9 @@ public class MarketListingDomainController {
 			listing.getAuction().setCurrentBid(newBid);
 			marketRepository.save(listing);
 		}
+		
 		URI redirectUri = URI.create("/viewMarketListing/" + listingId);
 		return ResponseEntity.status(HttpStatus.SEE_OTHER).location(redirectUri).build();
 	}
-
 
 }
