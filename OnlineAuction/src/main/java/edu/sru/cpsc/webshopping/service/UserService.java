@@ -5,11 +5,13 @@ import org.springframework.stereotype.Service;
 
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
+import edu.sru.cpsc.webshopping.controller.UserController;
 
 @Service
 public class UserService {
     private final UserRepository userRepository;
-
+    private UserController userController;
+    
     @Autowired
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -65,4 +67,11 @@ public class UserService {
         userToRate.getSellerRating().setRating(rating);
         return userRepository.save(userToRate);
     }
+    
+//    public void refreshUser(User user) {
+//    	userController.setCurrently_Logged_In(user);
+//    	userRepository.save(user);
+//    	
+//    	//return user;
+//    }
 }
