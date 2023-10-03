@@ -151,3 +151,23 @@ div.auction-price-container{
     cursor: pointer;
     opacity: 0.8; 
 }
+
+.auction-date-container {
+max-width: 600px;
+align-items: center;   		
+}
+		  
+.container-spacing {
+margin-top: 10px !important;
+}
+
+.details-text {
+font-size: 16px;
+color: #333; 
+}
+
+.details-container {
+padding: 10px;
+border: 1px solid #e0e0e0; /* A light border for differentiation */
+background-color: #f9f9f9; /* A very subtle grey background */
+}

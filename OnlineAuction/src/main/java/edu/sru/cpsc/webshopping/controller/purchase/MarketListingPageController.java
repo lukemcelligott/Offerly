@@ -2,6 +2,7 @@ package edu.sru.cpsc.webshopping.controller.purchase;
 
 import java.math.BigDecimal;
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 
@@ -14,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import edu.sru.cpsc.webshopping.controller.EmailController;
 import edu.sru.cpsc.webshopping.controller.MarketListingDomainController;
-import edu.sru.cpsc.webshopping.controller.MessageDomainController;
 import edu.sru.cpsc.webshopping.controller.TransactionController;
 import edu.sru.cpsc.webshopping.controller.UserController;
 import edu.sru.cpsc.webshopping.controller.UserListDomainController;
@@ -29,6 +30,8 @@ import edu.sru.cpsc.webshopping.controller.WidgetController;
 import edu.sru.cpsc.webshopping.controller.WidgetImageController;
 import edu.sru.cpsc.webshopping.controller.billing.SellerRatingController;
 import edu.sru.cpsc.webshopping.domain.billing.ShippingAddress;
+import edu.sru.cpsc.webshopping.domain.market.Auction;
+import edu.sru.cpsc.webshopping.domain.market.Bid;
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.market.Transaction;
 import edu.sru.cpsc.webshopping.domain.user.Message;
@@ -37,6 +40,8 @@ import edu.sru.cpsc.webshopping.domain.user.UserList;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 import edu.sru.cpsc.webshopping.domain.widgets.WidgetAttribute;
 import edu.sru.cpsc.webshopping.domain.widgets.WidgetImage;
+import edu.sru.cpsc.webshopping.repository.market.MarketListingRepository;
+import edu.sru.cpsc.webshopping.service.AuctionService;
 import edu.sru.cpsc.webshopping.service.CategoryService;
 import edu.sru.cpsc.webshopping.service.UserService;
 import edu.sru.cpsc.webshopping.service.WatchlistService;
@@ -54,7 +59,6 @@ public class MarketListingPageController {
   MarketListing heldListing;
   UserController userController;
   WidgetImageController widgetImageController;
-  MessageDomainController msgcontrol;
   EmailController emailController;
   ConfirmPurchasePageController purchaseController;
   SellerRatingController ratingController;
@@ -73,13 +77,13 @@ public class MarketListingPageController {
 
   @Autowired
   private UserService userService;
-
+  
+  
   public MarketListingPageController(
       MarketListingDomainController marketListingController,
       TransactionController transController,
       UserController userController,
       PurchaseShippingAddressPageController shippingPage,
-      MessageDomainController msgcontrol,
       EmailController emailController,
       WidgetController widgetController,
       WidgetImageController widgetImageController,
@@ -92,7 +96,6 @@ public class MarketListingPageController {
 	  this.userController = userController;
 	  this.purchaseController = purchaseController;
 	  this.shippingPage = shippingPage;
-	  this.msgcontrol = msgcontrol;
 	  this.widgetImageController = widgetImageController;
 	  this.emailController = emailController;
 	  this.widgetController = widgetController;
@@ -183,6 +186,7 @@ public class MarketListingPageController {
     model.addAttribute("foundInWatchlist", foundInWatchlist);
     model.addAttribute("currentUser", user);
     model.addAttribute("userCount", userCount);
+
     reloadModel(model, user);
     return "viewMarketListing";
   }
@@ -325,56 +329,7 @@ public class MarketListingPageController {
     // this code could potentially be improved to track where the user deleted it from and return
     // to that page specifically. look into doing that after overall site is more functional?
   }
-
-  @RequestMapping({"/viewMarketListing/openMessage"})
-  public String openMessagePane(Model model, Principal principal) {
-    User user = userService.getUserByUsername(principal.getName());
-    setPage("openMessage");
-    reloadModel(model, user);
-    model.addAttribute("page", page);
-    return "viewMarketListing";
-  }
-
-  @RequestMapping({"/viewMarketListing/closeMessage"})
-  public String closeMessagePane(Model model, Principal principal) {
-    User user = userService.getUserByUsername(principal.getName());
-    setPage("fail");
-    reloadModel(model, user);
-    model.addAttribute("page", page);
-    return "viewMarketListing";
-  }
-
-  @RequestMapping({"/marketSendMail"})
-  public String marketSendMessage(
-      @RequestParam("message") String content2,
-      @RequestParam("subject") String subject2,
-      Model model, Principal principal) {
-    User user = userService.getUserByUsername(principal.getName());
-    User receiver = heldListing.getSeller();
-    setPage("Success");
-    model.addAttribute("page", page);
-
-    if (subject2.length() == 0 || content2.length() == 0) {
-      setPage("fail");
-      reloadModel(model, user);
-      model.addAttribute("page", page);
-      return "viewMarketListing";
-    }
-
-    Message message = new Message();
-    message.setOwner(user);
-    message.setSender(user.getUsername());
-    message.setContent(content2);
-    message.setSubject(subject2);
-    message.setMsgDate();
-    message.setReceiverName(receiver.getUsername());
-    message.setReceiver(receiver);
-    msgcontrol.addMessage(message);
-    emailController.messageEmail(receiver, user, message);
-    reloadModel(model, user);
-    model.addAttribute("page", page);
-    return "viewMarketListing";
-  }
+  
 
   public String getPage() {
     return page;
