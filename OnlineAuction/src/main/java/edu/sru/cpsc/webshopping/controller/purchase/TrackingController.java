@@ -27,6 +27,10 @@ public class TrackingController {
 	public TrackDTO getTrackingInformation(@PathVariable("transId") long transId) {
 		Shipping order = transController.getTransaction(transId).getShippingEntry();
 		if (order != null) {
+			if(order.getTrackingNumber() == null || order.getCarrier() == null) {
+				//return empty json
+				return new TrackDTO();
+			}
 			return shippoTrackingService.getTrackingInformation(order.getCarrier(), order.getTrackingNumber());
 		} else {
 			throw new IllegalArgumentException("Invalid order ID passed to getTrackingInformation");

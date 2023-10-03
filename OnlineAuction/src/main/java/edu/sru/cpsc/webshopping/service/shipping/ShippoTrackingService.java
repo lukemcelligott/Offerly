@@ -22,8 +22,6 @@ public class ShippoTrackingService {
         Shippo.setApiKey(shippoApiKey);
 
         //test values: carrier = "shippo", trackingNumber = "SHIPPO_TRANSIT"
-        carrier = "shippo";
-        trackingNumber = "SHIPPO_TRANSIT"; 
         try {
             Track track = Track.getTrackingInfo(carrier, trackingNumber, shippoApiKey);
             //print tracking 
