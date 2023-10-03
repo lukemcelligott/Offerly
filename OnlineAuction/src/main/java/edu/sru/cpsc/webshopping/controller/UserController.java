@@ -1,7 +1,7 @@
 package edu.sru.cpsc.webshopping.controller;
 
-
 import java.security.Principal;
+
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -34,7 +34,10 @@ import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
 import edu.sru.cpsc.webshopping.secure.CaptchaUtil;
+import edu.sru.cpsc.webshopping.service.WatchlistService;
+
 import edu.sru.cpsc.webshopping.service.UserService;
+
 
 @RestController
 public class UserController {
@@ -46,6 +49,7 @@ public class UserController {
 	private DirectDepositController directDepositDetailsController;
 	private SellerRatingController sellerRatingController;
 	private UtilityController util;
+	private WatchlistService watchlistService;
 	@PersistenceContext
 	private EntityManager entityManager;
 	@Autowired
@@ -53,7 +57,8 @@ public class UserController {
 		
 	UserController(UserRepository userRepository,StatisticsDomainController statControl,
 			PaymentDetailsController paymentDetailsController, DirectDepositController directDepositDetailsController,
-			SellerRatingController sellerRatingController,UtilityController util, PaypalController paypalController) {
+			SellerRatingController sellerRatingController,UtilityController util, PaypalController paypalController,
+			WatchlistService watchlistService) {
 		this.userRepository = userRepository;
 		this.statControl = statControl;
 		this.paymentDetailsController = paymentDetailsController;
@@ -61,6 +66,7 @@ public class UserController {
 		this.sellerRatingController = sellerRatingController;
 		this.util = util;
 		this.paypalController = paypalController;
+		this.watchlistService = watchlistService;
 	}
 	
 	
@@ -79,12 +85,11 @@ public class UserController {
 			throw new IllegalStateException("User not logged in when attempting to add new Widget to wishlist.");
 		}
 		MarketListing addedWidget = entityManager.find(MarketListing.class, marketListing.getId());
-		// check if the widget is null
-		if (addedWidget == null) {
-			throw new IllegalArgumentException("Widget pass to addToWishlist not found in database.");
-		}
+
+		// add product to user's watchlist
+		watchlistService.watchlistAdd(addedWidget, user);
 		
-		user.getWishlistedWidgets().add(addedWidget);
+		//update the user
 		userRepository.save(user);
 	}
 	
@@ -96,18 +101,18 @@ public class UserController {
 	 */
 	@PostMapping("/remove-from-wishlist")
 	@Transactional
+
 	public void removeFromWishlist(@Validated MarketListing marketListing, Principal principal) {
 		User user = userService.getUserByUsername(principal.getName());
 		if (user == null) {
 			throw new IllegalStateException("User not logged in when attempting to remove Widget from wishlist.");
 		}
 		MarketListing delWidget = entityManager.find(MarketListing.class, marketListing.getId());
-		// check if the widget is null
-		if (delWidget == null) {
-			throw new IllegalArgumentException("Widget pass to removeFromWishlist not found in database.");
-		}
 		
-		user.getWishlistedWidgets().remove(delWidget);
+		// remove product from user's watchlist
+		watchlistService.watchlistRemove(delWidget, user);
+		
+		// update the user
 		userRepository.save(user);
 	}
 	

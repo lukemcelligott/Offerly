@@ -39,6 +39,7 @@ import edu.sru.cpsc.webshopping.domain.widgets.WidgetAttribute;
 import edu.sru.cpsc.webshopping.domain.widgets.WidgetImage;
 import edu.sru.cpsc.webshopping.service.CategoryService;
 import edu.sru.cpsc.webshopping.service.UserService;
+import edu.sru.cpsc.webshopping.service.WatchlistService;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -58,6 +59,7 @@ public class MarketListingPageController {
   ConfirmPurchasePageController purchaseController;
   SellerRatingController ratingController;
   UserListDomainController userListController;
+  WatchlistService watchlistService;
   // Repositories passed to ConfirmPurchasePage
   TransactionController transController;
   WidgetController widgetController;
@@ -83,7 +85,8 @@ public class MarketListingPageController {
       WidgetImageController widgetImageController,
       SellerRatingController ratingController,
       UserListDomainController userListController,
-      ConfirmPurchasePageController purchaseController) {
+      ConfirmPurchasePageController purchaseController,
+      WatchlistService watchlistService) {
 	  this.marketListingController = marketListingController;
 	  this.transController = transController;
 	  this.userController = userController;
@@ -95,6 +98,7 @@ public class MarketListingPageController {
 	  this.widgetController = widgetController;
 	  this.ratingController = ratingController;
 	  this.userListController = userListController;
+	  this.watchlistService = watchlistService;
   }
 
   /** Reloads the page model data */
@@ -170,12 +174,15 @@ public class MarketListingPageController {
     	}
     }
 
+    // get how many people are watching the item
+    Long userCount = watchlistService.countUsersWithMarketListingInWatchlist(marketListingId);
 
     model.addAttribute("categories", categoryStack);
     model.addAttribute("images", widgetNames);
     model.addAttribute("attributes", widgetAttributes);
     model.addAttribute("foundInWatchlist", foundInWatchlist);
     model.addAttribute("currentUser", user);
+    model.addAttribute("userCount", userCount);
     reloadModel(model, user);
     return "viewMarketListing";
   }
@@ -230,9 +237,9 @@ public class MarketListingPageController {
 	  // define held listing as the targeted listing bby passing in the market listing ID
 	  heldListing = marketListingController.getMarketListing(marketListingId);
 	  // call addToWishlist in UserController.java and pass in the widget assigned to heldListing
+
 	  userController.addToWishlist(heldListing, principal);
-	  // redirect attributes
-	  model.addAttribute("successMessage", "Item added to watchlist.");
+
 	  // redirect the user to the listing for the widget
 	  return "redirect:/viewMarketListing/" + heldListing.getId();
   }
@@ -261,15 +268,10 @@ public class MarketListingPageController {
    */
   @RequestMapping({"/viewWishlist"})
   public String getWishlist(Principal principal) {
-	  // define held listing as the targeted listing bby passing in the market listing ID
-	  //heldListing = marketListingController.getMarketListing(marketListingId);
-	  
 	  // get the currently logged in user
 	  User user = userService.getUserByUsername(principal.getName());
 	  
 	  user.getWishlistedWidgets();
-
-	  // call addToWishlist in UserController.java and pass in the widget assigned to heldListing
 	  
 	  // redirect the user to the watchlist.html page
 	  return "watchlist";
