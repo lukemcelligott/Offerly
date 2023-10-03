@@ -45,3 +45,57 @@
 	padding-left: 10px;
 	padding-right: 10px;
 }
+
+ul.timeline {
+    list-style-type: none;
+    position: relative;
+}
+
+ul.timeline:before {
+    content: ' ';
+    background: #d4d9df;
+    display: inline-block;
+    position: absolute;
+    left: 29px;
+    width: 2px;
+    height: 100%;
+    z-index: 400;
+}
+
+li.step {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+li.step:before {
+    content: ' ';
+    background: #d4d9df;
+    display: inline-block;
+    position: absolute;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    top: 10px;
+    left: 20px;
+    width: 20px;
+    height: 20px;
+    z-index: 400;
+}
+
+li.step .step-inner {
+    background: #dee2e6;
+    border-radius: 0.25rem;
+    display: inline-block;
+    margin-left: 60px;
+    padding: 10px;
+    position: relative;
+    vertical-align: top;
+}
+
+li.step.active:before {
+    background: #3498db;
+}
+
+li.step.active .step-inner {
+    background: #3498db;
+    color: white;
+}

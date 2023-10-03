@@ -6,6 +6,8 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/magnify/2.3.3/js/jquery.magnify.min.js" integrity="sha512-YKxHqn7D0M5knQJO2xKHZpCfZ+/Ta7qpEHgADN+AkY2U2Y4JJtlCEHzKWV5ZE87vZR3ipdzNJ4U/sfjIaoHMfw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        
         <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
         
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
@@ -16,24 +18,23 @@
         
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-        
+                
         <link th:href="@{/styles/button.css}" rel="stylesheet"/>
         <link th:href="@{/styles/landing.css}" rel="stylesheet"/>
         <link th:href="@{/styles/browse.css}" rel="stylesheet"/>
         <link th:href="@{/styles/employee_page.css}" rel="stylesheet"/>
-		<link th:href="@{/styles/viewMarketListing.css}" rel="stylesheet"/>		
+		    <link th:href="@{/styles/viewMarketListing.css}" rel="stylesheet"/>		
 		
         <style>
         </style>
-        
     </head>
     <body>
         <div th:insert="header :: header"></div>
         
         <div id="page">
-            <div class="card mx-auto h-70 w-100" style="height: 90%;">
+            <div class="card mx-auto h-70 w-100" style="height: fit-content;">
    
-                <nav aria-label="breadcrumb" class="custom-breadcrumb">
+                <nav aria-label="breadcrumb" class="custom-breadcrumb" style="height: 30px;">
                     <ol class="breadcrumb">
                         <li th:each="cat, iterStat : ${categories}" class="breadcrumb-item" th:classappend="${iterStat.last} ? 'active' : ''">
                             <span th:if="${!iterStat.last}">
@@ -47,11 +48,11 @@
                 <div class="card-body">
                     <div class="row mb-4">
                         <!-- Left Column: Image -->
-                        <div class="col-lg-5">
+                        <div class="col-lg-7">
                             <div class="card h-60" th:if="${currListing.coverImage != null && !currListing.coverImage.isEmpty()}">
                                 <div class="img-container">
                                     <button style="height:40px; position: absolute; left: 10px; top: 50%; transform: translateY(-50%);" onclick="changeImageBackward()">&#8592;</button>
-                                    <img class="card-img-bottom" id="showWidget" th:src="@{/listingImages/{image}(image = ${currListing.coverImage})}" />
+                                    <img class="card-img-bottom" id="showWidget" th:src="@{/listingImages/{image}(image = ${currListing.coverImage})}" data-magnify-src="/listingImages/{image}(image = ${currListing.coverImage})"/>
                                     <button style="height:40px; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);" onclick="changeImageForward()">&#8594;</button>
                                 </div>
                             </div>
@@ -106,56 +107,85 @@
 																				
 							<!-- Purchase Auction Div -->							
 							<div th:if="${isHighestBidder}" id="purchaseAuctionDiv" class="col-auto" style="display:none; margin-top: 5px !important;"> <!-- Adjusted margin-top -->
+             
+     <!--
+                        	<!-- Listing: Current Bid -->                       	
+							<div class="d-flex justify-content-center" style="margin-top: 5px !important;"> <!-- Adjusted margin-top -->
+							    <div class="auction-price-container">
+							        <span>Current Bid: </span>
+							        <span th:text="'$' + ${currListing.auction.currentBid}"></span>
+							    </div>
+							</div>
+							
+							<!-- Auction End Date -->														
+							<div class="d-flex justify-content-center" style="margin-top: 5px !important;"> <!-- Adjusted margin-top -->
+							    <div class="auction-price-container">
+							        <span>Auction Ends In: </span>
+							        <span id="countdown"></span>
+							    </div>
+							</div>
+							
+							<!-- Number of users watching this item -->
+							<div class="d-flex justify-content-center" style="margin-top: 5px !important;">
+								<div class="auction-price-container">
+									<span>Number of users watching this item: </span>
+									<span th:text="${userCount}"></span>
+								</div>
+							</div>
+							
+							<!-- Purchase Auction Div						
+							<div id="purchaseAuctionDiv" class="col-auto" style="display:none; margin-top: 5px !important;"> 
+-->
+
 							    <form id="purchaseAuctionForm" class="row g-3 d-flex justify-content-center my-2" th:action="@{/viewMarketListing/attemptPurchase}" th:object="${newTransaction}" method="post">
-							        <!-- Hidden input for the auction current bid price -->
 							        <input type="hidden" name="pricePerItem" th:value="${currListing.auction.currentBid}" />
-							        <!-- Hidden input for the quantity bought, set to 1 -->
 							        <input type="hidden" name="qtyBought" th:value="1" />
 							        <div class="col-auto">
 							            <input class="btn btn-success" id="purchaseAuctionButton" name="buyProduct" type="submit" th:value="'Purchase Auction for $' + ${currListing.auction.currentBid}" />
 							        </div>
 							    </form>
-							</div>
+							</div> -->
 						</div>
 					</div>
                         
                   
                         <!-- Right Column: Seller Details and Action Buttons -->
                         <div class="col-lg-5">
-                            <div class="seller-display d-flex align-items-center mb-1">
-                                <!-- Seller Avatar -->
-                                <img th:if="${seller.userImage == null}" th:src="@{/images/userImages/default_user_icon.png}" alt="Seller Avatar" class="rounded-circle me-3" style="width:50px; height:50px;"></img>
-								<img th:if="${seller.userImage != null}" th:src="@{/images/userImages/{icon}(icon = ${seller.userImage})}" alt="Seller Avatar" class="rounded-circle me-3" style="width:50px; height:50px;"></img>
                             
-                                <!-- Seller Details -->
-                                <div>
-                                    <!-- Seller Name -->
-                                    <h5 th:text="${seller.username}" class="mb-1"></h5>
-                            
-                                    <!-- Seller Rating -->
-                                    <div class="d-flex align-items-center">
-                                        <!-- Filled Stars -->
-                                        <th:block th:each="star : ${#numbers.sequence(1, sellerRating.rating)}">
-                                            <span class="text-warning">★</span>
-                                        </th:block>
-                                        
-                                        <!-- Unfilled Stars -->
-                                        <th:block th:each="star : ${#numbers.sequence(sellerRating.rating + 1, 5)}">
-                                            <span class="text-muted">★</span>
-                                        </th:block>
-
-                                        <!-- Rating Value -->
-                                        <span th:text="${sellerRating.rating}" class="me-2"></span>
-
-                                        <!-- Number of Ratings -->
-                                        <span class="ms-2 text-muted" th:text=" ${sellerRating.numRatings} + ' rating(s)'"></span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Widget Description -->
-                            <div class="mb-4 mt-4 text-center">
-                                <h2 class="display-4" th:text="${widget.name}"></h2> 
+                            <!-- Widget Title -->
+                            <div class="mb-4 mt-4">
+                                <h2 class="display-4" style="font-size: 30px;" th:text="${widget.name}"></h2> 
+                                <div class="seller-display d-flex align-items-center mb-1">
+	                                <!-- Seller Avatar -->
+	                                <img th:if="${seller.userImage == null}" th:src="@{/images/userImages/default_user_icon.png}" alt="Seller Avatar" class="rounded-circle me-3" style="width:50px; height:50px;"></img>
+									<img th:if="${seller.userImage != null}" th:src="@{/images/userImages/{icon}(icon = ${seller.userImage})}" alt="Seller Avatar" class="rounded-circle me-3" style="width:50px; height:50px;"></img>
+	                            
+	                                <!-- Seller Details -->
+	                                <div>
+	                                    <!-- Seller Name -->
+	                                    <h5 th:text="${seller.username}" class="mb-1"></h5>
+	                            
+	                                    <!-- Seller Rating -->
+	                                    <div class="d-flex align-items-center">
+	                                        <!-- Filled Stars -->
+	                                        <th:block th:each="star : ${#numbers.sequence(1, sellerRating.rating)}">
+	                                            <span class="text-warning">★</span>
+	                                        </th:block>
+	                                        
+	                                        <!-- Unfilled Stars -->
+	                                        <th:block th:each="star : ${#numbers.sequence(sellerRating.rating + 1, 5)}">
+	                                            <span class="text-muted">★</span>
+	                                        </th:block>
+	
+	                                        <!-- Rating Value -->
+	                                        <span th:text="${sellerRating.rating}" class="me-2"></span>
+	
+	                                        <!-- Number of Ratings -->
+	                                        <span class="ms-2 text-muted" th:text=" ${sellerRating.numRatings} + ' rating(s)'"></span>
+	                                    </div>
+	                                </div>
+	                            </div>
+	                            <hr>
                                 <p class="lead" th:text="${widget.description}"></p>
                             </div>
                       
@@ -165,89 +195,120 @@
 
                             <!-- Action Buttons -->
 							<div th:if="${isBuyer}" class="mt-4">
-							
 							    <!-- Buy Now Form -->
-							    <form th:if="${isBuyer && currListing.setAutomatically }" id="buy-product" class="row g-3 d-flex justify-content-center my-2" action="#" th:action="@{/viewMarketListing/attemptPurchase}" th:object=${newTransaction} method="post">
-							        <div class="col-auto">
-							            <label for="qtyBought" class="col-form-label"> Number to Buy: </label>
-							        </div>
-							        <div class="col-auto">
-							            <input id="qtyBought" class="form-control" name="qtyBought" type="number" th:field="*{qtyBought}" placeholder="Number to Buy" min="1" th:max="${currListing.qtyAvailable}" value="0" required></input>
-							        </div>
-							        <div class="col-auto">
-							            <input class="btn btn-success" id="purchaseButton" name="buyProduct" type="submit" th:value="'Buy Now for $' + ${currListing.pricePerItem}" />
+							    <form th:if="${isBuyer && currListing.setAutomatically}" id="buy-product" class="row g-3 d-flex my-2" action="#" th:action="@{/viewMarketListing/attemptPurchase}" th:object=${newTransaction} method="post">
+							        <div class="row align-items-center">
+								        <div class="col-auto">
+								            <label for="qtyBought" class="col-form-label"> Quantity: </label>
+								        </div>
+								        <div class="col">
+								            <input style="width: 100px;" id="qtyBought" class="form-control" name="qtyBought" type="number" th:field="*{qtyBought}" placeholder="Number to Buy" min="1" th:max="${currListing.qtyAvailable}" value="0" required></input>
+								        </div>							   
+								        <div class="col-auto" style="margin-right: -28px;">
+								            <input style="width: 250px;" class="btn btn-outline-success" id="purchaseButton" name="buyProduct" type="submit" th:value="'Buy Now for $' + ${currListing.pricePerItem}" />
+								        </div>
 							        </div>
 							    </form>
 							
 							    <!-- Other Buttons and Actions -->
-							    <div class="row g-3 d-flex justify-content-center my-2">
-							        <!-- Add to Watchlist Button -->                                	
-									    <div class="col-auto">
-                                    	<form id="addToWatchlistForm" th:action="@{/viewMarketListing/wishlistItem/{id}(id = ${currListing.getId()})}" method="post" th:if="${!foundInWatchlist}">
-                                          	<button class="btn btn-success" id="addToWatchlistButton" data-toggle="modal" data-target="#watchlistModal">
-												                             Add to Watchlist
+							    
+							    <!-- Add to Watchlist Button -->
+							    <div class="row g-3 d-flex my-2" style="justify-content: right;">							                                        	
+									<div class="col-auto" th:if="${!foundInWatchlist}">
+                                    	<form id="addToWatchlistForm" th:action="@{/viewMarketListing/wishlistItem/{id}(id = ${currListing.getId()})}" method="post">
+                                          	<button style="width: 250px;" class="btn btn-outline-success" id="addToWatchlistButton" data-toggle="modal" data-target="#watchlistModal">
+												Add to Watchlist
                                           	</button>
                                       	</form>                                      	
                                   	</div>
-                                  	<!-- Remove from Watchlist Button -->
-                                  	<div class="col-auto">
-                                    	<form id="removeFromWatchlistForm" th:action="@{/viewMarketListing/delWishlistItem/{id}(id = ${currListing.getId()})}" method="post" th:if="${foundInWatchlist}">
-                                          	<button class="btn btn-success" id="addToWatchlistButton" data-toggle="modal" data-target="#watchlistModal">
-												                        Remove from Watchlist
+							    </div>
+							    
+							    <!-- Remove from Watchlist Button -->
+							    <div class="row g-3 d-flex my-2" style="justify-content: right;">
+                                  	<div class="col-auto" th:if="${foundInWatchlist}">
+                                    	<form id="removeFromWatchlistForm" th:action="@{/viewMarketListing/delWishlistItem/{id}(id = ${currListing.getId()})}" method="post">
+                                          	<button style="width: 250px;" class="btn btn-outline-danger" id="addToWatchlistButton" data-toggle="modal" data-target="#watchlistModal">
+												Remove from Watchlist
                                           	</button>
                                       	</form>
-                                      	
                                   	</div>
-							            <div class="col-auto">
+							    </div>
+							    
+							    <!-- Bid Now button -->
+							    <div class="row g-3 my-2" style="justify-content: right;" id="bidButton">
+						            <div class="col-auto">
 							            <input type="hidden" name="listingId" th:value="${currListing.id}"/>  
-							            <input class="btn btn-success" id="bidButton" name="placeBid" type="button" value="Bid Now" data-bs-toggle="modal" data-bs-target="#bidModal"/>
-							        </div>
-							        
-							        <div class="col-auto">
-							            <a class="btn btn-danger" href="/BrowseWidgetsButton">Back</a>
+							            <input style="width: 250px;" class="btn btn-outline-success" name="placeBid" type="button" value="Bid Now" data-bs-toggle="modal" data-bs-target="#bidModal"/>
+							        	<!--<input style="width: 250px;" class="btn btn-outline-success" id="bidButton" name="placeBid" type="button" value="Bid Now" data-bs-toggle="modal" data-bs-target="#bidModal"/>-->
 							        </div>
 							    </div>
+							    
+							    <!-- Purchase Auction Div -->							
+								<div id="purchaseAuctionDiv" class="row g-3" style="display: none; justify-content: right;">
+								    <form style="justify-content: right;" id="purchaseAuctionForm" class="row g-3 d-flex my-2" th:action="@{/viewMarketListing/attemptPurchase}" th:object="${newTransaction}" method="post">
+								        <!-- Hidden input for the auction current bid price -->
+								        <input type="hidden" name="pricePerItem" th:value="${currListing.auction.currentBid}" />
+								        <!-- Hidden input for the quantity bought, set to 1 -->
+								        <input type="hidden" name="qtyBought" th:value="1" />
+								        <div class="col-auto">
+								            <input style="width: 250px;" class="btn btn-outline-success" id="purchaseAuctionButton" name="buyProduct" type="submit" th:value="'Purchase Auction for $' + ${currListing.auction.currentBid}" />
+								        </div>
+								    </form>
+								</div>
+							    <!-- back button 
+							    <div class="row g-3 d-flex my-2" style="justify-content: right;">
+							        <div class="col-auto">
+							            <a class="btn btn-danger" href="/BrowseWidgetsButton" style="width: 200px;">Back</a>
+							        </div>
+							    </div>-->
 							</div>
 
                             <!-- For Sellers -->
                             <div th:if="${!isBuyer}" class="mt-4" style="display: flex; justify-content: center; gap: 5%;">
-                                    <!-- Update Listing and Delete Listing -->
+                                    <!-- Update Listing -->
                                     <div class="d-flex justify-content-center mb-3">
-                                        <input class="btn btn-primary" id="update-listing" name="update-listing" type="button" value="Update" data-bs-toggle="modal" data-bs-target="#updateModal" />
+                                        <input class="btn btn-outline-primary" id="update-listing" name="update-listing" type="button" value="Update" data-bs-toggle="modal" data-bs-target="#updateModal" />
                                     </div>
+                                    <br>
+                                    <!-- Delete Listing -->
                                     <div class="d-flex justify-content-center mb-3">
-                                        <a class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deletePopup"> Delete Listing </a>
+                                        <a class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deletePopup"> Delete Listing </a>
                                     </div>
+                                    <br>
+                                    <!-- Back 
                                     <div class="d-flex justify-content-center mb-3">
                                         <a class="btn btn-danger" href="/BrowseWidgetsButton"> Back </a>
-                                    </div>
+                                    </div> -->
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Widget Attributes Table -->
-                <div>
-	                <div class="d-flex justify-content-center mb-2">
-	                    <h2>Product Information</h2>
-	                </div>
-	                <div class="col-lg-6 mx-auto">
-	                    <table class="table table-striped">
-	                        <thead>
-	                            <tr>
-	                                <th>Specification</th>
-	                                <th>Value</th>
-	                            </tr>
-	                        </thead>
-	                        <tbody>
-	                            <tr th:each="attribute : ${attributes}">
-	                                <td th:text="${attribute.attributeKey}"></td>
-	                                <td th:text="${attribute.value}"></td>
-	                            </tr>
-	                        </tbody>
-	                    </table>
-	                </div>
+                        
+                        	<hr>
+			                <!-- Widget Attributes Table -->
+			                <div>
+				                <div class="d-flex justify-content-center mb-2">
+				                    <h2 style="font-size: 30px; font-weight: 100;">Product Information</h2>
+				                </div>
+				                <div class="col-lg-10 mx-auto">
+				                    <table class="table table-striped">
+				                        <thead>
+				                            <tr>
+				                                <th>Specification</th>
+				                                <th>Value</th>
+				                            </tr>
+				                        </thead>
+				                        <tbody>
+				                            <tr th:each="attribute : ${attributes}">
+				                                <td th:text="${attribute.attributeKey}"></td>
+				                                <td th:text="${attribute.value}"></td>
+				                            </tr>
+				                        </tbody>
+				                    </table>
+				                </div>
+							</div>
+							
+						</div>
+					</div>
+					
 				</div>
-				
             </div>
         </div>
 
@@ -275,86 +336,69 @@
 
 
         <!-- Bid Modal -->
-        <div class="modal fade" id="bidModal" tabindex="-1" aria-labelledby="bidModalLabel" aria-hidden="true">
+		<div class="modal fade" id="bidModal" tabindex="-1" aria-labelledby="bidModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="bidModalLabel">Place a Bid</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <form th:action="@{/updateBid}" method="post">
-                    <div class="mb-3">
-								      <span th:text="'Auction Price: $' + ${currListing.auction.currentBid}"></span>
-                      <label for="bidAmount" class="form-label">(Bid Amount: $00.01 - $20)</label>
-                      <input type="number" class="form-control" id="bidAmount" name="bidAmount" max="20" min="0.01" step="0.01" data-auction-price="${currListing.auction.currentBid}">
-                    </div>
-                    <input type="hidden" name="bidderId" th:value="${currentUser.id}"/>
-                    <input type="hidden" name="listingId" th:value="${currListing.id}"/>
-                    <input class="btn btn-success" id="bidButton" name="placeBid" type="submit" value="Bid Now" onclick="return confirmBid();"/>
-                  </form>
-                </div>
-              </div>
+            	<div class="modal-content">
+                	<div class="modal-header">
+                  		<h5 class="modal-title" id="bidModalLabel">Place a Bid</h5>
+                  		<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                	</div>
+                	<div class="modal-body">
+                  		<form th:action="@{/updateBid}" method="post">
+                    		<div class="mb-3">
+								<span th:text="'Auction Price: $' + ${currListing.auction.currentBid}"></span>
+                      			<label for="bidAmount" class="form-label">(Bid Amount: $00.01 - $20)</label>
+                      			<input type="number" class="form-control" id="bidAmount" name="bidAmount" max="20" min="0.01" step="0.01" data-auction-price="${currListing.auction.currentBid}">
+                    		</div>
+                    		<input type="hidden" name="bidderId" th:value="${currentUser.id}"/>
+                    		<input type="hidden" name="listingId" th:value="${currListing.id}"/>
+                    		<input class="btn btn-success" id="bidButton" name="placeBid" type="submit" value="Bid Now" onclick="return confirmBid();"/>
+                  		</form>
+                	</div>
+              	</div>
             </div>
-          </div>
-          
-        <!-- Watchlist Modal - need to add functionality -->
-    	<div class="modal fade" id="watchlistModal" tabindex="-1" aria-labelledby="watchlistModalLabel" aria-hidden="true">
-        	<div class="modal-dialog modal-dialog-centered">
-         		<div class="modal-content">
-            		<div class="modal-header">
-              			<h5 class="modal-title" id="watchlistModalLabel">Watchlist</h5>
-              			<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            		</div>
-            		<div class="modal-body">						
-                		<div class="mb-3">
-							<p>Item added to watchlist</p>
-                		</div>
-            		</div>
-          		</div>
-        	</div>
-      	</div>
+        </div>
 
         <!-- Update Listing Modal -->
         <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="updateModalLabel">Update Listing</h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <form action="#" method="post" id="update-listing" th:action="@{/viewMarketListing/editListing}" th:object="${currListing}">
-                    <input type="hidden" th:field="*{id}">
-                    <div class="mb-3">
-                      <p class="form-label" th:text="'Current Price: $' + ${currListing.pricePerItem}"></p>
-                      <label for="pricePerItem" class="form-label" >New Price</label>
-                      <input type="number" class="form-control" id="pricePerItem" name="pricePerItem" placeholder="${currListing.pricePerItem}" th:field="*{pricePerItem}" min="0.0" value="0.0" step="0.01" required>
-                      <label for="qtyAvailable" class="form-label" >New Quantity</label>
-                      <input type="number" class="form-control" id="qtyAvailable" name="qtyAvailable" placeholder="${currListing.qtyAvailable}" th:field="*{qtyAvailable}" min="0" value="0" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Update Listing</button>
-                  </form>
-                </div>
-              </div>
+        	<div class="modal-dialog modal-dialog-centered">
+              	<div class="modal-content">
+                	<div class="modal-header">
+                  		<h5 class="modal-title" id="updateModalLabel">Update Listing</h5>
+                  		<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                	</div>
+                	<div class="modal-body">
+                  		<form action="#" method="post" id="update-listing" th:action="@{/viewMarketListing/editListing}" th:object="${currListing}">
+                    		<input type="hidden" th:field="*{id}">
+                    		<div class="mb-3">
+                      			<p class="form-label" th:text="'Current Price: $' + ${currListing.pricePerItem}"></p>
+                      			<label for="pricePerItem" class="form-label" >New Price</label>
+                      			<input type="number" class="form-control" id="pricePerItem" name="pricePerItem" placeholder="${currListing.pricePerItem}" th:field="*{pricePerItem}" min="0.0" value="0.0" step="0.01" required>
+                      			<label for="qtyAvailable" class="form-label" >New Quantity</label>
+                      			<input type="number" class="form-control" id="qtyAvailable" name="qtyAvailable" placeholder="${currListing.qtyAvailable}" th:field="*{qtyAvailable}" min="0" value="0" required>
+                    		</div>
+                    		<button type="submit" class="btn btn-primary">Update Listing</button>
+                  		</form>
+               		</div>
+              	</div>
             </div>
-          </div>
+        </div>
           
         
-          <script th:inline="javascript">
-            // Price update logic
-            const basePrice = /*[[${currListing.pricePerItem}]]*/ 0.0;
-            const qtyBoughtElement = document.getElementById('qtyBought');
-            const purchaseButtonElement = document.getElementById('purchaseButton');
-        
-            function updatePrice() {
-                if (qtyBoughtElement && purchaseButtonElement) {
+		<script th:inline="javascript">
+      		// Price update logic
+        	const basePrice = /*[[${currListing.pricePerItem}]]*/ 0.0;
+        	const qtyBoughtElement = document.getElementById('qtyBought');
+        	const purchaseButtonElement = document.getElementById('purchaseButton');
+    
+        	function updatePrice() {
+            	if (qtyBoughtElement && purchaseButtonElement) {
                     const qty = parseInt(qtyBoughtElement.value);
                     const totalPrice = (qty * basePrice).toFixed(2);
                     purchaseButtonElement.value = 'Buy Now for $' + totalPrice;
-                }
-            }
-        
+            	}
+        	}
+    
             if (qtyBoughtElement) {
                 qtyBoughtElement.addEventListener('change', updatePrice);
             }
@@ -363,7 +407,7 @@
             function confirmBid() {
               return confirm("Are you sure you want to place this bid?");
             }
-        
+	        
             // Image change logic
             const image = document.querySelector('#showWidget');
             const images = /*[[${images}]]*/ [];
@@ -393,23 +437,17 @@
                 }
             }
             
-            function addWatchlist() { // alert the user when they add an item to their watchlist
-              var message = 'The item has been added to your watchlist.';
-              // Display the alert
-              alert(message);
-            }
-       
-            document.addEventListener('DOMContentLoaded', function() {
+        	document.addEventListener('DOMContentLoaded', function() {
 		        // Get the endAuctionDate from Thymeleaf variable
-		        var endAuctionDateStr = /*[[${currListing.auction.endAuctionDate}]]*/ '2023-08-27T19:55';
+		        var endAuctionDateStr = /* [[${currListing.auction.endAuctionDate}]]*/ '2023-10-27T19:55';
 		        var endAuctionDate = new Date(endAuctionDateStr);
 		        
 		        // Get reference to the "Bid Now" button
 	    		var bidButton = document.getElementById('bidButton');
 	    		
 	    		// Get reference to the "Purchase Auction" div
-    			var purchaseAuctionDiv = document.getElementById('purchaseAuctionDiv');
-		        
+				var purchaseAuctionDiv = document.getElementById('purchaseAuctionDiv');
+			        
 		        // Update the countdown every 1 second
 		        var x = setInterval(function() {
 		            var now = new Date().getTime();
@@ -435,7 +473,7 @@
 			
 			            // Show the "Purchase Auction" button
 			            if (purchaseAuctionDiv) {
-			                purchaseAuctionDiv.style.display = 'block';
+			                purchaseAuctionDiv.style.display = 'flex';
 			            }
 			        }
 			    }, 1000);
@@ -471,6 +509,57 @@
 		            }
 		        });
 		    });
+		
+		/* Image Magnifier glass https://www.w3schools.com/howto/howto_js_image_magnifier_glass.asp
+		function magnify(imgID, zoom) {
+		  	var img, glass, w, h, bw;
+		  	img = document.getElementById(imgID);
+		
+		  	glass = document.createElement("DIV");
+		  	glass.setAttribute("class", "img-magnifier-glass");
+		
+		  	img.parentElement.insertBefore(glass, img);
+		
+		  	glass.style.backgroundImage = "url('" + img.src + "')";
+		  	glass.style.backgroundRepeat = "no-repeat";
+		  	glass.style.backgroundSize = (img.width * zoom) + "px " + (img.height * zoom) + "px";
+		  	bw = 3;
+		  	w = glass.offsetWidth / 2;
+		  	h = glass.offsetHeight / 2;
+		
+		  	glass.addEventListener("mousemove", moveMagnifier);
+		  	img.addEventListener("mousemove", moveMagnifier);
+		
+		  	glass.addEventListener("touchmove", moveMagnifier);
+		  	img.addEventListener("touchmove", moveMagnifier);
+		  	function moveMagnifier(e) {
+			    var pos, x, y;
+			    e.preventDefault();
+			    pos = getCursorPos(e);
+			    x = pos.x;
+			    y = pos.y;
+			    if (x > img.width - (w / zoom)) {x = img.width - (w / zoom);}
+			    if (x < w / zoom) {x = w / zoom;}
+			    if (y > img.height - (h / zoom)) {y = img.height - (h / zoom);}
+			    if (y < h / zoom) {y = h / zoom;}
+			    glass.style.left = (x - w) + "px";
+			    glass.style.top = (y - h) + "px";
+			    glass.style.backgroundPosition = "-" + ((x * zoom) - w + bw) + "px -" + ((y * zoom) - h + bw) + "px";
+		 	}
+		
+		  	function getCursorPos(e) {
+			    var a, x = 0, y = 0;
+			    e = e || window.event;
+			    a = img.getBoundingClientRect();
+			    x = e.pageX - a.left;
+			    y = e.pageY - a.top;
+			    x = x - window.pageXOffset;
+			    y = y - window.pageYOffset;
+			    return {x : x, y : y};
+		  	}
+		}
+		
+		magnify("showWidget", 3); */    
         </script>        
     </body>
 </html>

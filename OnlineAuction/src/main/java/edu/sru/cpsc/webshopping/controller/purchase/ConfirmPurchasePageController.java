@@ -24,9 +24,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.taxjar.Taxjar;
-import com.taxjar.exception.TaxjarException;
-import com.taxjar.model.rates.RateResponse;
 
 import edu.sru.cpsc.webshopping.controller.MarketListingDomainController;
 import edu.sru.cpsc.webshopping.controller.TransactionController;
@@ -39,6 +36,7 @@ import edu.sru.cpsc.webshopping.domain.billing.PaymentDetails_Form;
 import edu.sru.cpsc.webshopping.domain.billing.Paypal;
 import edu.sru.cpsc.webshopping.domain.billing.Paypal_Form;
 import edu.sru.cpsc.webshopping.domain.billing.ShippingAddress;
+import edu.sru.cpsc.webshopping.domain.billing.StateDetails;
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.market.Shipping;
 import edu.sru.cpsc.webshopping.domain.market.Transaction;
@@ -79,7 +77,7 @@ public class ConfirmPurchasePageController {
 	private boolean loginEr = false;
 	private PaymentDetails validatedDetails;
 	private boolean toShipping = false;
-	private Taxjar client = new Taxjar("639588118ed6ccfd8af4d3a26ad50970");
+	//private Taxjar client = new Taxjar("639588118ed6ccfd8af4d3a26ad50970");
 
 	ConfirmPurchasePageController(MarketListingDomainController marketListingController, UserController userController,
 			TransactionController transController, UserDetailsController userDetController,
@@ -125,17 +123,19 @@ public class ConfirmPurchasePageController {
 	    	address = user.getDefaultShipping();
 	    else
 	    	address = null;
-		
+
 		if(this.address != null) //use the taxjar api to get the state and local sales tax information (if there is an address than tax information can be calculated)
 		{
 			try
 			{
-				RateResponse res = client.ratesForLocation(this.address.getPostalCode());
-				
-				purchase.setTotalPriceAfterTaxes(purchase.getTotalPriceBeforeTaxes().add(purchase.getTotalPriceBeforeTaxes().multiply(new BigDecimal(res.rate.getCombinedRate().toString())).setScale(2, RoundingMode.UP)));
-				purchase.setSellerProfit(purchase.getTotalPriceAfterTaxes().subtract(purchase.getTotalPriceAfterTaxes().multiply(Transaction.WEBSITE_CUT_PERCENTAGE)));
+				//RateResponse res = client.ratesForLocation(this.address.getPostalCode());
+				StateDetails state = address.getState();
+				BigDecimal taxRate = state.getSalesTaxRate();
+
+				purchase.setTotalPriceAfterTaxes(purchase.getTotalPriceBeforeTaxes().multiply(BigDecimal.ONE.add(taxRate)));
+				purchase.setSellerProfit(purchase.getTotalPriceAfterTaxes().multiply(BigDecimal.ONE.subtract(Transaction.WEBSITE_CUT_PERCENTAGE)));
 			}
-			catch(TaxjarException e)
+			catch(Exception e)
 			{
 				e.printStackTrace();
 			}

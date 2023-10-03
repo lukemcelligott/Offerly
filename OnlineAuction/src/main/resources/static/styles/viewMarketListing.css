@@ -23,9 +23,10 @@ body {
 }
 div.auction-price-container{
 	text-align: center;
-	margin-top: 10px;
+	/*margin-top: 10px;*/
+	font-weight: bold;
 	border-radius: 12px; /* Rounded corners */
-	padding: 10px; /* Padding around text */
+	/* padding: 10px; Padding around text */
 	width: fit-content; /* Shrink to fit the content */
 	margin-left: auto; /* Centering */
 	margin-right: auto; /* Centering */
@@ -47,7 +48,7 @@ div.auction-price-container{
 }
 
 .custom-breadcrumb {
-	margin: 20px; 
+	margin: 5px; 
     padding: 10px; 
 }
 
@@ -123,21 +124,32 @@ div.auction-price-container{
 .img-container {
     position: relative;
 	width: 100%; 
-    height: 400px; 
+    height: 70vh; 
     overflow: hidden; 
+}
+
+/* https://www.w3schools.com/howto/howto_js_image_magnifier_glass.asp */
+.img-magnifier-glass {
+  	position: absolute;
+  	border: 2px solid #000;
+  	cursor: none;
+  	/*Set the size of the magnifier glass:*/
+  	width: 300px;
+  	height: 300px;
 }
 
 .img-container img {
     width: 100%;  
     height: 100%; 
-    object-fit: cover; 
+    object-fit: contain; 
     object-position: center center; 
 }
 
 .img-container button {
-    background-color: rgba(0, 0, 0, 0.6); 
-    border: none; 
-    cursor: pointer; 
+    background-color: #f1f1f1;
+    border: 1px solid; 
+    cursor: pointer;
+    opacity: 0.8; 
 }
 
 .auction-date-container {

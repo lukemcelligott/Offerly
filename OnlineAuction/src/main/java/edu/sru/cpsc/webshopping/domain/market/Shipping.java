@@ -1,8 +1,5 @@
 package edu.sru.cpsc.webshopping.domain.market;
 
-import java.sql.Date;
-import java.time.LocalDate;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,9 +22,7 @@ public class Shipping {
 	
 	private String carrier;
 	
-	private Date shippingDate;
-	
-	private Date arrivalDate;
+	private String trackingNumber;
   
 	@OneToOne
 	@NonNull
@@ -52,22 +47,6 @@ public class Shipping {
 		this.carrier = carrier;
 	}
 
-	public Date getShippingDate() {
-		return shippingDate;
-	}
-
-	public void setShippingDate(Date shippingDate) {
-		this.shippingDate = shippingDate;
-	}
-
-	public Date getArrivalDate() {
-		return arrivalDate;
-	}
-
-	public void setArrivalDate(Date arrivalDate) {
-		this.arrivalDate = arrivalDate;
-	}
-
 	public ShippingAddress getAddress() {
 		return address;
 	}
@@ -83,22 +62,12 @@ public class Shipping {
 	public void setTransaction(Transaction transaction) {
 		this.transaction = transaction;
 	}
-	
 
-	/**
-	 * Checks if the Shipping label says that the item has been shipped
-	 * @return true if the item is shipped, false otherwise
-	 */
-	public boolean hasShipped() {
-		// A shipped item must have both a shipping date and an arrival date
-		return shippingDate != null && arrivalDate != null;
+	public void setTrackingNumber(String trackingNumber) {
+		this.trackingNumber = trackingNumber;
 	}
-	
-	/**
-	 * Checks if the Shipping label says that the item has arrived
-	 * @return true if the item has arrived, false otherwise
-	 */
-	public boolean hasArrived() {
-		return hasShipped() && (LocalDate.now().compareTo(arrivalDate.toLocalDate()) >= 0);
+
+	public String getTrackingNumber() {
+		return trackingNumber;
 	}
 }

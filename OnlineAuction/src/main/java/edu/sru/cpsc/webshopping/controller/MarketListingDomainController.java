@@ -2,6 +2,7 @@ package edu.sru.cpsc.webshopping.controller;
 
 import java.math.BigDecimal;
 import java.net.URI;
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.HashMap;
@@ -41,32 +42,40 @@ import edu.sru.cpsc.webshopping.repository.market.MarketListingRepository;
 import edu.sru.cpsc.webshopping.repository.widgets.WidgetRepository;
 import edu.sru.cpsc.webshopping.service.AuctionService;
 import edu.sru.cpsc.webshopping.service.UserService;
+import edu.sru.cpsc.webshopping.service.WatchlistService;
 
 /** A class for interacting with MarketListing items from the database */
 @RestController
 public class MarketListingDomainController {
+	private User currentlyLoggedIn;
 	private MarketListingRepository marketRepository;
 	@Autowired
 	private WidgetRepository widgetRepository;
 	private StatisticsDomainController statControl;
 	private WidgetImageController imageController;
+	private UserController userController;
+	private WatchlistService watchlistService;
 	@Autowired
 	private AuctionService auctionService;
 	@Autowired
 	private UserService userService;
 	@PersistenceContext private EntityManager entityManager;
 	
-	
-
-	
 	MarketListingDomainController(
 			MarketListingRepository marketRepository,
 			StatisticsDomainController statControl,
-			WidgetImageController imageController) {
-		this.marketRepository = marketRepository;
-		this.statControl = statControl;
-		this.imageController = imageController;
-	}
+			WidgetImageController imageController,
+			WatchlistService watchlistService
+			//UserController userController
+			) {
+			this.marketRepository = marketRepository;
+			this.widgetRepository = widgetRepository;
+			this.statControl = statControl;
+			this.imageController = imageController;
+			this.watchlistService = watchlistService;
+			//this.userController = userController;
+		}
+
 
 	/**
 	 * Gets the MarketListing with an id matching the passed id
@@ -213,8 +222,7 @@ public class MarketListingDomainController {
 	@Transactional
 	@PostMapping("undo-market-listing-purchase")
 	public void undoPurchase(@Validated Transaction trans) {
-		MarketListing currListing =
-				entityManager.find(MarketListing.class, trans.getMarketListing().getId());
+		MarketListing currListing = entityManager.find(MarketListing.class, trans.getMarketListing().getId());
 		currListing.setQtyAvailable(currListing.getQtyAvailable() + trans.getQtyBought());
 		marketRepository.save(currListing);
 	}
@@ -272,16 +280,26 @@ public class MarketListingDomainController {
 		}
 
 	@PostMapping("/updateBid")
-	public ResponseEntity<Object> updateBid(@RequestParam BigDecimal bidAmount, @RequestParam Long listingId, @RequestParam Long bidderId, Model model, RedirectAttributes redirectAttributes) {
+	public ResponseEntity<Object> updateBid(@RequestParam BigDecimal bidAmount, @RequestParam Long listingId, @RequestParam Long bidderId, Model model, RedirectAttributes redirectAttributes, Principal principal) {
 		User bidder = userService.getUserById(bidderId);
+		User user = userService.getUserByUsername(principal.getName());
 		MarketListing listing = marketRepository.findById(listingId).orElse(null);
+
 		// Ensure that listing.getAuctionPrice() also returns a BigDecimal. Bid amount should be less than 20
 		if (listing != null && bidAmount.compareTo(new BigDecimal(20)) <= 0 && listing.getAuction().getCurrentBid().add(bidAmount).compareTo(listing.getAuction().getStartingBid()) >= 0){
 			BigDecimal newBid = listing.getAuction().getCurrentBid().add(bidAmount);
 			auctionService.bid(listing.getAuction(), bidder, bidAmount);
 			listing.getAuction().setCurrentBid(newBid);
 			marketRepository.save(listing);
+			
+			// add listing to bidder's watchlist
+			watchlistService.watchlistAdd(listing, user);
+			
+			// save user to the user repository
+			userService.addUser(user);
 		}
+		
+		// redirect
 		URI redirectUri = URI.create("/viewMarketListing/" + listingId);
 		return ResponseEntity.status(HttpStatus.SEE_OTHER).location(redirectUri).build();
 	}
@@ -333,6 +351,4 @@ public class MarketListingDomainController {
 	     response.put("isHighestBidder", isHighestBidder);
 	     return response;
 	 }
-	 
-
 }

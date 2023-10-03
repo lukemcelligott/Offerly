@@ -1,15 +1,20 @@
 package edu.sru.cpsc.webshopping.controller.purchase;
 import java.security.Principal;
 import java.time.LocalDate;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.shippo.model.Track;
 
 import edu.sru.cpsc.webshopping.controller.ShippingDomainController;
 import edu.sru.cpsc.webshopping.controller.TransactionController;
@@ -20,6 +25,7 @@ import edu.sru.cpsc.webshopping.domain.market.Transaction;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 import edu.sru.cpsc.webshopping.service.UserService;
+import edu.sru.cpsc.webshopping.service.shipping.ShippoTrackingService;
 
 /**
  * Manages the transactionDetails page
@@ -34,6 +40,9 @@ public class TransactionDetailsPageController {
 	private ShippingDomainController shippingController;
 	private Shipping origEntry;
 	private Transaction trans;
+
+	@Autowired 
+	private ShippoTrackingService shippoTrackingService;
 
 	@Autowired
 	private UserService userService;
@@ -96,8 +105,8 @@ public class TransactionDetailsPageController {
 		// Form error or server-side validation error found
 		if (result.hasErrors() || ShippingConstraintsInvalid(form)) {
 			System.out.println(form.getCarrier());
-			System.out.println(form.getShippingDate());
-			System.out.println(form.getArrivalDate());
+			//System.out.println(form.getShippingDate());
+			//System.out.println(form.getArrivalDate());
 			model.addAttribute("trans", trans);
 			model.addAttribute("user", user);
 			model.addAttribute("shipping", new Shipping());
@@ -107,15 +116,15 @@ public class TransactionDetailsPageController {
 				model.addAttribute("errMessage", "Form must be fully filled out before submission.");
 				if (form.getCarrier() == null || form.getCarrier().length() == 0) 
 					model.addAttribute("carrierErr", "Carrier field cannot be empty.");
-				if (form.getShippingDate() == null)
+				/* if (form.getShippingDate() == null)
 					model.addAttribute("shippingDateErr", "Shipping Date cannot be empty.");
 				if (form.getArrivalDate() == null)
-					model.addAttribute("arrivalDateErr", "Arrival Date cannot be empty.");
+					model.addAttribute("arrivalDateErr", "Arrival Date cannot be empty."); */
 				model.addAttribute("canDelete", canDeleteTransaction());
 			}
-			else if (form.getArrivalDate().compareTo(form.getShippingDate()) < 0) {
+			/* else if (form.getArrivalDate().compareTo(form.getShippingDate()) < 0) {
 				model.addAttribute("errMessage", "Arrival Date must be after the Shipping Date.");
-			}
+			} */
 			reloadModel(model, user);
 			return "transactionDetails";
 		}
@@ -133,9 +142,8 @@ public class TransactionDetailsPageController {
 	 */
 	public boolean ShippingConstraintsInvalid(Shipping form) {
 
-		return (form.getArrivalDate().compareTo(form.getShippingDate()) < 0) //arrival must be after shipping date
-				 || form.getArrivalDate() == null || form.getShippingDate() == null //needs an arrival and shipping date
-				 || form.getCarrier() == null || form.getCarrier().length() == 0; //must have a carrier
+		return (form.getTrackingNumber() == null || form.getTrackingNumber().length() == 0
+				 || form.getCarrier() == null || form.getCarrier().length() == 0); //must have a carrier
 	}
 	
 	/**
@@ -143,7 +151,7 @@ public class TransactionDetailsPageController {
 	 * @return true if the loaded Transaction can be cancelled, false otherwise
 	 */
 	public boolean canDeleteTransaction() {
-		if (trans.getShippingEntry().hasShipped())
+		if (trans.getShippingEntry().getTrackingNumber() != null) // Not allowed to cancel a transaction if shipping label created
 			return false;
 		return true;
 	}

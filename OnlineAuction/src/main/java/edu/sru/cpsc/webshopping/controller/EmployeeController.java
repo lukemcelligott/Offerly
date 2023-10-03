@@ -629,9 +629,12 @@ public class EmployeeController {
   
   @RequestMapping({"/BrowseWidgetsButton"})
   public String browseWidgetsButton(Model model, Principal principal) {
-
-    User user = userService.getUserByUsername(principal.getName());
-    model.addAttribute("user", user);
+    User user;
+    if(principal == null) {
+      user = null;
+    } else {
+      user = userService.getUserByUsername(principal.getName());
+    }
 
     setPage("searchWidgetSellerMarketListing");
     setMasterPage("query");
