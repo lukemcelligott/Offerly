@@ -89,12 +89,12 @@
 						    </div>
 						
 						    <!-- Listing: Unique Bidders & Total Bid -->
-						  <div class="d-flex justify-content-center details-container">
+						  	<div class="d-flex justify-content-center details-container">
 					           <span class="details-text">Unique Bidders: </span>
 							   <strong><span id="uniqueBidderCountSpan" style="margin-left: 5px;"></span></strong>
 							   <span class="details-text" style="margin-left: 15px;">Total Bids: </span>
 							   <strong><span id="totalBidsCountSpan" style="margin-left: 5px;"></span></strong>
-						  </div>
+						  	</div>
 
 						
 						    <!-- Auction End Date Countdown -->
@@ -107,8 +107,7 @@
 																				
 							<!-- Purchase Auction Div -->							
 							<div th:if="${isHighestBidder}" id="purchaseAuctionDiv" class="col-auto" style="display:none; margin-top: 5px !important;"> <!-- Adjusted margin-top -->
-             
-     <!--
+
                         	<!-- Listing: Current Bid -->                       	
 							<div class="d-flex justify-content-center" style="margin-top: 5px !important;"> <!-- Adjusted margin-top -->
 							    <div class="auction-price-container">
@@ -125,17 +124,8 @@
 							    </div>
 							</div>
 							
-							<!-- Number of users watching this item -->
-							<div class="d-flex justify-content-center" style="margin-top: 5px !important;">
-								<div class="auction-price-container">
-									<span>Number of users watching this item: </span>
-									<span th:text="${userCount}"></span>
-								</div>
-							</div>
-							
 							<!-- Purchase Auction Div						
-							<div id="purchaseAuctionDiv" class="col-auto" style="display:none; margin-top: 5px !important;"> 
--->
+							<div id="purchaseAuctionDiv" class="col-auto" style="display:none; margin-top: 5px !important;"> -->
 
 							    <form id="purchaseAuctionForm" class="row g-3 d-flex justify-content-center my-2" th:action="@{/viewMarketListing/attemptPurchase}" th:object="${newTransaction}" method="post">
 							        <input type="hidden" name="pricePerItem" th:value="${currListing.auction.currentBid}" />
@@ -144,7 +134,7 @@
 							            <input class="btn btn-success" id="purchaseAuctionButton" name="buyProduct" type="submit" th:value="'Purchase Auction for $' + ${currListing.auction.currentBid}" />
 							        </div>
 							    </form>
-							</div> -->
+							</div>
 						</div>
 					</div>
                         
@@ -185,7 +175,23 @@
 	                                    </div>
 	                                </div>
 	                            </div>
+	                            
+	                            <!-- Number of users watching this item -->
+								<div class="row g-3 d-flex my-2" style="justify-content: right;">
+									<!-- 1 user watching the item -->
+									<div th:if="${userCount} == 1">
+										<span th:text="${userCount}"></span>
+										<span> user watching this item</span>
+									</div>
+									<!-- !1 user watching the item -->
+									<div th:if="${userCount} != 1">
+										<span th:text="${userCount}"></span>
+										<span> users watching this item</span>
+									</div>
+								</div>
+	                            
 	                            <hr>
+	                            <!-- product description -->
                                 <p class="lead" th:text="${widget.description}"></p>
                             </div>
                       
@@ -198,22 +204,36 @@
 							    <!-- Buy Now Form -->
 							    <form th:if="${isBuyer && currListing.setAutomatically}" id="buy-product" class="row g-3 d-flex my-2" action="#" th:action="@{/viewMarketListing/attemptPurchase}" th:object=${newTransaction} method="post">
 							        <div class="row align-items-center">
-								        <div class="col-auto">
+								        <!--<div class="col-auto">
 								            <label for="qtyBought" class="col-form-label"> Quantity: </label>
 								        </div>
 								        <div class="col">
-								            <input style="width: 100px;" id="qtyBought" class="form-control" name="qtyBought" type="number" th:field="*{qtyBought}" placeholder="Number to Buy" min="1" th:max="${currListing.qtyAvailable}" value="0" required></input>
-								        </div>							   
+								            <input style="width: 100px;" id="qtyBought" class="form-control" name="qtyBought" type="number" th:field="*{qtyBought}" placeholder="Number to Buy" min="1" th:max="${currListing.qtyAvailable}" value="1" required></input>
+								        </div>-->	
+								        <div class="col-auto" style="margin-left: -5px;">
+											<span>Price: $</span>
+											<span th:text="${currListing.pricePerItem}"></span>
+										</div>
+								       	<div class="col"></div>			   
 								        <div class="col-auto" style="margin-right: -28px;">
-								            <input style="width: 250px;" class="btn btn-outline-success" id="purchaseButton" name="buyProduct" type="submit" th:value="'Buy Now for $' + ${currListing.pricePerItem}" />
+								            <input style="width: 250px;" class="btn btn-outline-success" id="purchaseButton" name="buyProduct" type="submit" th:value="'Buy Now'" /> <!-- for $' + ${currListing.pricePerItem}" />-->
 								        </div>
 							        </div>
 							    </form>
 							
 							    <!-- Other Buttons and Actions -->
 							    
-							    <!-- Add to Watchlist Button -->
-							    <div class="row g-3 d-flex my-2" style="justify-content: right;">							                                        	
+							    <div class="row g-3 d-flex">
+									<!-- Quantity -->
+							    	<form action="#" th:action="@{/viewMarketListing/attemptPurchase}" th:object=${newTransaction} method="post"></form>
+										<div class="col-auto">
+								            <label for="qtyBought" class="col-form-label"> Quantity: </label>
+								        </div>
+								        <div class="col">
+								            <input style="width: 100px;" id="qtyBought" class="form-control" name="qtyBought" type="number" field="*{qtyBought}" placeholder="Number to Buy" min="1" th:max="${currListing.qtyAvailable}" value="1" required></input>
+								        </div>
+							        </form>
+									<!-- Add to Watchlist Button -->							                                        	
 									<div class="col-auto" th:if="${!foundInWatchlist}">
                                     	<form id="addToWatchlistForm" th:action="@{/viewMarketListing/wishlistItem/{id}(id = ${currListing.getId()})}" method="post">
                                           	<button style="width: 250px;" class="btn btn-outline-success" id="addToWatchlistButton" data-toggle="modal" data-target="#watchlistModal">
@@ -221,10 +241,7 @@
                                           	</button>
                                       	</form>                                      	
                                   	</div>
-							    </div>
-							    
-							    <!-- Remove from Watchlist Button -->
-							    <div class="row g-3 d-flex my-2" style="justify-content: right;">
+                                  	<!-- Remove from Watchlist button -->
                                   	<div class="col-auto" th:if="${foundInWatchlist}">
                                     	<form id="removeFromWatchlistForm" th:action="@{/viewMarketListing/delWishlistItem/{id}(id = ${currListing.getId()})}" method="post">
                                           	<button style="width: 250px;" class="btn btn-outline-danger" id="addToWatchlistButton" data-toggle="modal" data-target="#watchlistModal">

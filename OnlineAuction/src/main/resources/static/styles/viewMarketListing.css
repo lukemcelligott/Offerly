@@ -24,7 +24,7 @@ body {
 div.auction-price-container{
 	text-align: center;
 	/*margin-top: 10px;*/
-	font-weight: bold;
+	/* font-weight: bold; */
 	border-radius: 12px; /* Rounded corners */
 	/* padding: 10px; Padding around text */
 	width: fit-content; /* Shrink to fit the content */
