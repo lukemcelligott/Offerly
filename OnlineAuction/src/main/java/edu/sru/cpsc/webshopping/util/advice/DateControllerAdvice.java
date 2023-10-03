@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import edu.sru.cpsc.webshopping.controller.AddWidgetController;
 
 @ControllerAdvice(basePackageClasses = AddWidgetController.class)
-public class GlobalControllerAdvice {
+public class DateControllerAdvice {
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {

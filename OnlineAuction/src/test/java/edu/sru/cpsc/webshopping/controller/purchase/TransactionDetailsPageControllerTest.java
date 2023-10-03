@@ -141,8 +141,6 @@ public class TransactionDetailsPageControllerTest {
 		transPageController.purchaseDetails(trans.getId(), model, principal);
 		Shipping form = trans.getShippingEntry();
 		form.setCarrier("USPS");
-		form.setShippingDate(Date.valueOf(LocalDate.now()));
-		form.setArrivalDate(Date.valueOf(LocalDate.of(2030, 1, 1)));
 		RequestBuilder request = MockMvcRequestBuilders.post("/viewTransactionDetails/submitShippingUpdate")
 				.flashAttr("shipping", form);
 		mvc.perform(request)
@@ -151,8 +149,6 @@ public class TransactionDetailsPageControllerTest {
 		
 		// Test that the database updated successfully
 		Transaction updatedTrans = transController.getTransaction(trans.getId());
-		Assertions.assertEquals(form.getArrivalDate(), updatedTrans.getShippingEntry().getArrivalDate());
-		Assertions.assertEquals(form.getShippingDate(), updatedTrans.getShippingEntry().getShippingDate());
 		Assertions.assertEquals(form.getCarrier(), updatedTrans.getShippingEntry().getCarrier());
 	}
 	
@@ -171,16 +167,12 @@ public class TransactionDetailsPageControllerTest {
 		
 		// Tests null input restrictions
 		form.setCarrier("");
-		form.setShippingDate(Date.valueOf(LocalDate.now()));
-		form.setArrivalDate(Date.valueOf(LocalDate.of(2030, 1, 1)));
 		mvc.perform(request)
 			.andExpect(MockMvcResultMatchers.view().name("transactionDetails"))
 			.andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
 		// Tests date restrictions
 		// Ensures that arrival date is always on or after shipping date
 		form.setCarrier("USPS");
-		form.setShippingDate(Date.valueOf(LocalDate.of(2030, 1, 1)));
-		form.setArrivalDate(Date.valueOf(LocalDate.now()));
 		mvc.perform(request)
 			.andExpect(MockMvcResultMatchers.view().name("transactionDetails"))
 			.andExpect(MockMvcResultMatchers.status().is2xxSuccessful());
@@ -216,8 +208,6 @@ public class TransactionDetailsPageControllerTest {
 		transPageController.purchaseDetails(trans.getId(), model, principal);
 		Shipping form = trans.getShippingEntry();
 		form.setCarrier("USPS");
-		form.setShippingDate(Date.valueOf(LocalDate.now()));
-		form.setArrivalDate(Date.valueOf(LocalDate.of(2030, 1, 1)));
 		RequestBuilder request = MockMvcRequestBuilders.post("/viewTransactionDetails/submitShippingUpdate")
 				.flashAttr("shipping", form);
 		mvc.perform(request);

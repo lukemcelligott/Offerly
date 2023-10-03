@@ -45,17 +45,13 @@ public class DomainMarketSpringTest {
 		ShippingAddress SA = new ShippingAddress();
 		
 		shipping.setAddress(SA);
-		shipping.setArrivalDate(date);
 		shipping.setCarrier("Jeff");
 		shipping.setId(0);
-		shipping.setShippingDate(date);
 		shipping.setTransaction(trans);
 		
 		assertEquals(shipping.getId(), 0);
-		assertEquals(shipping.getArrivalDate(), date);
 		assertEquals(shipping.getCarrier(), "Jeff");
 		assertEquals(shipping.getAddress(), SA);
-		assertEquals(shipping.getShippingDate(), date);
 		assertEquals(shipping.getTransaction(), trans);
 	}
 	

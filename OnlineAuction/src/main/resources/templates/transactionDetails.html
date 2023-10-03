@@ -12,10 +12,13 @@
 		<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
 		
 		<link th:href="@{/styles/employee_page.css}" rel="stylesheet"/>
+		<link th:href="@{/styles/transactionDetails.css}" rel="stylesheet"/>
 	  	
 	  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	  	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 	  	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 	  	
 		
 		<style>
@@ -68,12 +71,12 @@
 				<div class="card-body">
 					<div th:if="${errMessage != null}" th:text="${errMessage}" class="alert alert-danger d-flex justify-content-center my-1 h3">
 					</div>
-					<div th:if="${!trans.shippingEntry.hasShipped() && user.id != trans.seller.id}" class="alert alert-info d-flex justify-content-center h3">
+					<!-- <div th:if="${!trans.shippingEntry.hasShipped() && user.id != trans.seller.id}" class="alert alert-info d-flex justify-content-center h3">
 						This purchase has not shipped yet - check back for updates!
 					</div>
 					<div th:if="${trans.shippingEntry.hasArrived() && user.id != trans.seller.id}" class="alert alert-success d-flex justify-content-center h3">
 						This purchase has arrived!
-					</div>
+					</div> -->
 					<div class="my-2">
 						<div class="d-flex justify-content-center">
 							<h2>Purchase Information</h2>
@@ -114,14 +117,30 @@
 									<li class="list-group-item">Postal Code: <span th:text="${trans.shippingEntry.address.postalCode}"></span></li>
 									<li class="list-group-item">State: <span th:text="${trans.shippingEntry.address.state.stateName}"></span></li>
 								</ul>
-								<ul class="list-group col-sm-3">
-									<li class="list-group-item">Carrier: <span th:text="${trans.shippingEntry.carrier}"></span></li>
-									<li class="list-group-item">Shipping Date: <span th:text="${trans.shippingEntry.shippingDate}"></span></li>
-								</ul>
-								<ul class="list-group col-sm-3">
-									<li class="list-group-item">Arrival Date: <span th:text="${trans.shippingEntry.arrivalDate}"></span></li>
-								</ul>
 							</div>
+
+							<div class="d-flex justify-content-center">
+								<h2>Tracking Details</h2>
+							</div>
+							<div class="container my-5">
+								<div class="row">
+									<!-- First Column: Tracking Status -->
+									<div class="col-md-6">
+										<div id="tracking-status"></div>
+									</div>
+							
+									<!-- Second Column: Timeline -->
+									<div class="col-md-6">
+										<ul class="timeline">
+											<li class="step step01 active"><div class="step-inner">Purchased</div></li>
+											<li class="step step02"><div class="step-inner">Shipped</div></li>
+											<li class="step step03"><div class="step-inner">In Transit</div></li>
+											<li class="step step04"><div class="step-inner">Delivered</div></li>
+											<span id="eta">Estimated Arrival: </span>
+										</ul>
+									</div>
+								</div>
+							</div>							
 						</div>
 					</div>
 					<!-- If seller, give access to changing shipping information -->
@@ -133,21 +152,21 @@
 						</div>
 						<div class="container">
 							<div class="row">
-							  	<div class="mb-3 col-sm-4">
-					  			  <label for="carrier" class="form-label">Carrier</label>
-								  <input type="text" class="form-control" name="carrier" th:field="*{carrier}">
-								  <p th:if="${carrierErr != null}" th:text="${carrierErr}"></p>
+								<div class="mb-3 col-sm-4">
+									<label for="trackingNumber" class="form-label">Tracking Number</label>
+									<input type="text" class="form-control" name="trackingNumber" th:field="*{trackingNumber}">
+									<p th:if="${trackingNumberErr != null}" th:text="${trackingNumberErr}"></p>
 								</div>
 								<div class="mb-3 col-sm-4">
-								  <label for="shippingDate" class="form-label">Shipping Date</label>
-								  <input type="date" name="shippingDate" class="form-control" th:field="*{shippingDate}">
-								  <p th:if="${shippingDateErr != null}" th:text="${shippingDateErr}"></p>
-								</div>
-								<div class="mb-3 col-sm-4">
-								  <label for="arrivalDate" class="form-label">Arrival Date</label>
-								  <input type="date" class="form-control" name="arrivalDate" th:field="*{arrivalDate}">
-								  <p th:if="${arrivalDateErr != null}" th:text="${arrivalDateErr}"></p>
-								</div>
+									<label for="carrier" class="form-label">Carrier</label>
+									<select class="form-select" name="carrier" th:field="*{carrier}">
+										<option value="fedex">FedEx</option>
+										<option value="ups">UPS</option>
+										<option value="usps">USPS</option>
+										<option value="shippo">Shippo (Test)</option>
+										<!-- Add other carriers as needed -->
+									</select>
+								</div>								
 							</div>
 						</div>
 						<div class="d-flex justify-content-evenly">
@@ -171,4 +190,90 @@
 			</div>
 		</div>
 	</body>
+
+	<script>
+
+		async function fetchTrackingInfo() {
+			const transId = window.location.pathname.split('/').pop(); // Get the order ID from the URL 
+			try {
+				const response = await fetch(`/api/tracking/${transId}`);
+				if (!response.ok) {
+					throw new Error(`Network response was not ok ${response.statusText}`);
+				}
+				const track = await response.json();
+				displayTrackingInfo(track);
+			} catch (error) {
+				console.error('There has been a problem with your fetch operation:', error);
+			}
+			
+		}
+
+		function displayTrackingInfo(track) {
+			const trackingHtml = generateTrackingHtml(track);
+			document.getElementById('tracking-status').innerHTML = trackingHtml;
+			document.getElementById('eta').textContent = `Estimated Arrival: ${new Date(track.eta).toLocaleDateString("en-US")}`;
+			updateTrackingUI(track);
+		}
+
+		function generateTrackingHtml(track) {
+			if (!track.trackingStatus) {
+				return `
+					<div class="row">
+						<h5>Tracking information is not available yet.</h5>
+						<p>Please contact the seller and request them to upload their shipping label for tracking.</p>
+					</div>
+				`;
+			}
+
+			const eta = new Date(track.eta).toLocaleDateString("en-US", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+			const statusDate = new Date(track.trackingStatus.statusDate).toLocaleString("en-US");
+
+			return `
+				<div class="row">
+					<ul class="list-group">
+						<li class="list-group-item">Carrier: ${track.carrier}</li>
+						<li class="list-group-item">Tracking Number: ${track.trackingNumber}</li>
+						<li class="list-group-item">Status: ${track.trackingStatus.status}</li>
+						<li class="list-group-item">Estimated Arrival: ${eta}</li>
+						<li class="list-group-item">
+							Latest Status: ${track.trackingStatus.statusDetails}
+							on ${statusDate} 
+							at ${track.trackingStatus.location.city}, ${track.trackingStatus.location.state}
+						</li>
+					</ul>
+				</div>
+			`;
+		}
+
+		function updateTrackingUI(trackingInfo) {
+			const status = trackingInfo.trackingStatus.status;
+			
+			// Reset all steps to inactive
+			document.querySelectorAll('.step').forEach(step => {
+				step.classList.remove('active');
+			});
+			
+			// Set the appropriate step(s) to active based on the status
+			switch (status) {
+				case 'UNKNOWN':
+					document.querySelector('.step01').classList.add('active');
+					break;
+				case 'PRE_TRANSIT':
+					document.querySelector('.step02').classList.add('active');
+					break;
+				case 'TRANSIT':
+					document.querySelector('.step03').classList.add('active');
+					break;
+				case 'DELIVERED':
+					document.querySelector('.step04').classList.add('active');
+					break;
+				default:
+					document.querySelector('.step01').classList.add('active');
+					break;
+			}
+		}
+
+		fetchTrackingInfo();
+
+	</script>
 </html>
