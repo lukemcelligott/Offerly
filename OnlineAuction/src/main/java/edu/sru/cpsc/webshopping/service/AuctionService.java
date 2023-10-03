@@ -61,4 +61,19 @@ public class AuctionService {
         return auctionRepository.findAll();
     
     }
+    
+    public Bid findHighestBidForAuction(Auction auction) {
+
+        List<Bid> bids = bidRepository.findByAuctionOrderByBidAmountDesc(auction);     
+        
+        if (bids.isEmpty()) {
+            System.out.println("No bids found for the auction with ID: " + auction.getId());
+            return null;
+        } else {
+            Bid highestBid = bids.get(0);
+            System.out.println("The highest bid for the auction with ID " + auction.getId() + " is: " + highestBid.getBidAmount() + " by user: " + highestBid.getBidder().getUsername());
+            return highestBid;
+        }
+    }
+    
 }

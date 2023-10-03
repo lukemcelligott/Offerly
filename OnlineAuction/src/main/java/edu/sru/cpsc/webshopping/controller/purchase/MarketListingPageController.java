@@ -31,6 +31,7 @@ import edu.sru.cpsc.webshopping.controller.WidgetImageController;
 import edu.sru.cpsc.webshopping.controller.billing.SellerRatingController;
 import edu.sru.cpsc.webshopping.domain.billing.ShippingAddress;
 import edu.sru.cpsc.webshopping.domain.market.Auction;
+import edu.sru.cpsc.webshopping.domain.market.Bid;
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.market.Transaction;
 import edu.sru.cpsc.webshopping.domain.user.Message;
@@ -40,6 +41,7 @@ import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 import edu.sru.cpsc.webshopping.domain.widgets.WidgetAttribute;
 import edu.sru.cpsc.webshopping.domain.widgets.WidgetImage;
 import edu.sru.cpsc.webshopping.repository.market.MarketListingRepository;
+import edu.sru.cpsc.webshopping.service.AuctionService;
 import edu.sru.cpsc.webshopping.service.CategoryService;
 import edu.sru.cpsc.webshopping.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -73,6 +75,7 @@ public class MarketListingPageController {
 
   @Autowired
   private UserService userService;
+  
   
   public MarketListingPageController(
       MarketListingDomainController marketListingController,
@@ -175,6 +178,7 @@ public class MarketListingPageController {
     model.addAttribute("attributes", widgetAttributes);
     model.addAttribute("foundInWatchlist", foundInWatchlist);
     model.addAttribute("currentUser", user);
+    
     reloadModel(model, user);
     return "viewMarketListing";
   }
@@ -322,6 +326,7 @@ public class MarketListingPageController {
     // this code could potentially be improved to track where the user deleted it from and return
     // to that page specifically. look into doing that after overall site is more functional?
   }
+  
 
   public String getPage() {
     return page;
