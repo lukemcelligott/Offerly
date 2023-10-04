@@ -13,6 +13,8 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
 		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+		
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
@@ -21,8 +23,10 @@
         <link th:href="@{/styles/landing.css}" rel="stylesheet"/>
         <link th:href="@{/styles/browse.css}" rel="stylesheet"/>
         <link th:href="@{/styles/employee_page.css}" rel="stylesheet"/>
-		<link th:href="@{/styles/viewMarketListing.css}" rel="stylesheet"/>		
+		    <link th:href="@{/styles/viewMarketListing.css}" rel="stylesheet"/>		
 		
+        <style>
+        </style>
     </head>
     <body>
         <div th:insert="header :: header"></div>
@@ -59,32 +63,59 @@
                                 </div>
                             </div>
                             
-                        	<!-- Listing: Current Bid -->                       	
-							<div class="d-flex justify-content-center" style="margin-top: 5px !important;"> <!-- Adjusted margin-top -->
-							    <div class="auction-price-container">
-							        <span>Current Bid: </span>
-							        <span th:text="'$' + ${currListing.auction.currentBid}"></span>
-							    </div>
-							</div>
-							
-							<!-- Auction End Date -->														
-							<div class="d-flex justify-content-center" style="margin-top: 5px !important;"> <!-- Adjusted margin-top -->
-							    <div class="auction-price-container">
-							        <span>Auction Ends In: </span>
-							        <span id="countdown"></span>
-							    </div>
-							</div>
-							
-							<!-- Number of users watching this item -->
+							<div class="container-spacing">
+						    <!-- Auction Date Details -->
+						    <div class="d-flex justify-content-center details-container">
+						        <div class="auction-date-container d-flex justify-content-between align-items-center" style="width: 100%; max-width: 500px;">
+						            <div class="details-text" style="white-space: nowrap; margin-right: 15px;">
+						                <span>Start Date:</span>
+						                <strong><span th:text="${#temporals.format(currListing.auction.startAuctionDate, 'MM/dd/yyyy @ h:mma')}"></span></strong>
+						            </div>
+						            <div class="details-text" style="white-space: nowrap;">
+						                <span>End Date:</span>
+						                <strong><span th:text="${#temporals.format(currListing.auction.endAuctionDate, 'MM/dd/yyyy @ h:mma')}"></span></strong>
+						            </div>
+						        </div>
+						    </div>
+						
+						    <!-- Listing: Current Bid -->
+						    <div class="d-flex justify-content-center details-container">
+						        <div class="auction-details-container d-flex justify-content-between align-items-center" style="width: 100%; max-width: 500px;">
+						            <div class="auction-price-container details-text">
+						                <span>Current Bid:</span>
+						                <strong><span th:text="'$' + ${currListing.auction.currentBid}"></span></strong>
+						            </div>
+						        </div>
+						    </div>
+						
+						    <!-- Listing: Unique Bidders & Total Bid -->
+						  <div class="d-flex justify-content-center details-container auction-details-container">
+					           <span class="details-text">Unique Bidders: </span>
+							   <strong><span id="uniqueBidderCountSpan" style="margin-left: 5px;"></span></strong>
+							   <span class="details-text" style="margin-left: 15px;">Total Bids: </span>
+							   <strong><span id="totalBidsCountSpan" style="margin-left: 5px;"></span></strong>
+						  </div>
+						  
+						  		<!-- Number of users watching this item -->
 							<div class="d-flex justify-content-center" style="margin-top: 5px !important;">
-								<div class="auction-price-container">
+								<div>
 									<span>Number of users watching this item: </span>
-									<span th:text="${userCount}"></span>
+									<strong><span th:text="${userCount}"></span></strong>
 								</div>
 							</div>
-							
-							<!-- Purchase Auction Div						
-							<div id="purchaseAuctionDiv" class="col-auto" style="display:none; margin-top: 5px !important;">
+
+						
+						    <!-- Auction End Date Countdown -->
+						    <div class="d-flex justify-content-center details-container">
+						        <div class="auction-price-container details-text">
+						            <span>Auction Ends In:</span>
+						            <strong><span id="countdown"></span></strong>
+						        </div>
+						    </div>
+						    					    
+																				
+							<!-- Purchase Auction Div -->							
+							<div th:if="${isBuyer}" id="purchaseAuctionDiv" class="col-auto" style="display:none;">
 							    <form id="purchaseAuctionForm" class="row g-3 d-flex justify-content-center my-2" th:action="@{/viewMarketListing/attemptPurchase}" th:object="${newTransaction}" method="post">
 							        <input type="hidden" name="pricePerItem" th:value="${currListing.auction.currentBid}" />
 							        <input type="hidden" name="qtyBought" th:value="1" />
@@ -92,8 +123,9 @@
 							            <input class="btn btn-success" id="purchaseAuctionButton" name="buyProduct" type="submit" th:value="'Purchase Auction for $' + ${currListing.auction.currentBid}" />
 							        </div>
 							    </form>
-							</div> -->
+							</div>
 						</div>
+					</div>
                         
                   
                         <!-- Right Column: Seller Details and Action Buttons -->
@@ -143,7 +175,7 @@
                             <!-- Action Buttons -->
 							<div th:if="${isBuyer}" class="mt-4">
 							    <!-- Buy Now Form -->
-							    <form th:if="${isBuyer}" id="buy-product" class="row g-3 d-flex my-2" action="#" th:action="@{/viewMarketListing/attemptPurchase}" th:object=${newTransaction} method="post">
+							    <form th:if="${isBuyer && currListing.setAutomatically}" id="buy-product" class="row g-3 d-flex my-2" action="#" th:action="@{/viewMarketListing/attemptPurchase}" th:object=${newTransaction} method="post">
 							        <div class="row align-items-center">
 								        <div class="col-auto">
 								            <label for="qtyBought" class="col-form-label"> Quantity: </label>
@@ -190,18 +222,6 @@
 							        </div>
 							    </div>
 							    
-							    <!-- Purchase Auction Div -->							
-								<div id="purchaseAuctionDiv" class="row g-3" style="display: none; justify-content: right;">
-								    <form style="justify-content: right;" id="purchaseAuctionForm" class="row g-3 d-flex my-2" th:action="@{/viewMarketListing/attemptPurchase}" th:object="${newTransaction}" method="post">
-								        <!-- Hidden input for the auction current bid price -->
-								        <input type="hidden" name="pricePerItem" th:value="${currListing.auction.currentBid}" />
-								        <!-- Hidden input for the quantity bought, set to 1 -->
-								        <input type="hidden" name="qtyBought" th:value="1" />
-								        <div class="col-auto">
-								            <input style="width: 250px;" class="btn btn-outline-success" id="purchaseAuctionButton" name="buyProduct" type="submit" th:value="'Purchase Auction for $' + ${currListing.auction.currentBid}" />
-								        </div>
-								    </form>
-								</div>
 							    <!-- back button 
 							    <div class="row g-3 d-flex my-2" style="justify-content: right;">
 							        <div class="col-auto">
@@ -294,7 +314,7 @@
                   		<form th:action="@{/updateBid}" method="post">
                     		<div class="mb-3">
 								<span th:text="'Auction Price: $' + ${currListing.auction.currentBid}"></span>
-                      			<label for="bidAmount" class="form-label">Bid Amount</label>
+                      			<label for="bidAmount" class="form-label">(Bid Amount: $00.01 - $20)</label>
                       			<input type="number" class="form-control" id="bidAmount" name="bidAmount" max="20" min="0.01" step="0.01" data-auction-price="${currListing.auction.currentBid}">
                     		</div>
                     		<input type="hidden" name="bidderId" th:value="${currentUser.id}"/>
@@ -386,7 +406,9 @@
             
         	document.addEventListener('DOMContentLoaded', function() {
 		        // Get the endAuctionDate from Thymeleaf variable
-		        var endAuctionDateStr = /* [[${currListing.auction.endAuctionDate}]]*/ '2023-10-27T19:55';
+		           /*<![CDATA[*/
+        		var endAuctionDateStr = /*[[${currListing.auction.endAuctionDate}]]*/ 'START Date';
+    			/*]]>*/
 		        var endAuctionDate = new Date(endAuctionDateStr);
 		        
 		        // Get reference to the "Bid Now" button
@@ -424,7 +446,38 @@
 			            }
 			        }
 			    }, 1000);
-			});
+			});		
+			
+			// Extract the listingId from the current URL
+		    var pathParts = window.location.pathname.split('/');
+		    var listingId = pathParts[pathParts.length - 1];
+		
+		    fetch("/uniqueBiddersCount/" + listingId)
+		    .then(response => response.text())
+		    .then(data => {
+		        document.getElementById("uniqueBidderCountSpan").textContent = data;
+		    })
+		    .catch(error => console.error('Error fetching unique bidders:', error));            
+			
+			// Fetch total bids count
+			fetch("/totalBidsCount/" + listingId)
+			    .then(response => response.text())
+			    .then(data => {
+			        document.getElementById("totalBidsCountSpan").textContent = data;
+			    })
+			    .catch(error => console.error('Error fetching total bids:', error));
+			    
+			$(document).ready(function() {
+		        let marketListingId = window.location.pathname.split("/").pop();
+		
+		        $.get("/isHighestBidder/" + marketListingId, function(response) {
+		            if(response.isHighestBidder) {
+		                $("#purchaseAuctionDiv").show();
+		            } else {
+		                $("#purchaseAuctionDiv").hide();
+		            }
+		        });
+		    });
 		
 		/* Image Magnifier glass https://www.w3schools.com/howto/howto_js_image_magnifier_glass.asp
 		function magnify(imgID, zoom) {
@@ -476,7 +529,6 @@
 		}
 		
 		magnify("showWidget", 3); */    
-
         </script>        
     </body>
 </html>

@@ -126,7 +126,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `market_listing` WRITE;
 /*!40000 ALTER TABLE `market_listing` DISABLE KEYS */;
-INSERT INTO `market_listing` VALUES (5607,'2000jetta-muffler1.jpg',_binary '\0',143.00,1,5608,2000,5601),(5622,'2000autographedbaseball1.jpg',_binary '\0',7.99,1,5623,2000,5617),(5632,'19chevydoor1.jpg',_binary '\0',39.94,1,5633,19,5627),(5641,'19harris1png.png',_binary '\0',99.99,1,5642,19,5636);
+INSERT INTO `market_listing` VALUES (5607,'2000jetta-muffler1.jpg',_binary '\0',143.00,1,1,5608,2000,5601),(5622,'2000autographedbaseball1.jpg',_binary '\0',7.99,1,1,5623,2000,5617),(5632,'19chevydoor1.jpg',_binary '\0',39.94,1,1,5633,19,5627),(5641,'19harris1png.png',_binary '\0',99.99,1,0,5642,19,5636);
 /*!40000 ALTER TABLE `market_listing` ENABLE KEYS */;
 UNLOCK TABLES;
 

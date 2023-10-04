@@ -40,7 +40,7 @@ public class LandingPageController {
 	WidgetController widgetController;
 	MarketListingDomainController marketController;
 	UserListDomainController userListController;
-	MessageDomainController msgcontrol;
+	
 	EmailController emailController;
 	private List<User> allUsers = new ArrayList<>();
 	private TransactionController transController;
@@ -59,7 +59,6 @@ public class LandingPageController {
 			TransactionController transController,
 			UserController userController,
 			UserListDomainController userListController,
-			MessageDomainController msgcontrol,
 			EmailController emailController) {
 		this.userRepository = userRepository;
 		this.widgetController = widgetController;
@@ -67,7 +66,6 @@ public class LandingPageController {
 		this.transController = transController;
 		this.userController = userController;
 		this.userListController = userListController;
-		this.msgcontrol = msgcontrol;
 		this.emailController = emailController;
 	}
 	
@@ -295,7 +293,6 @@ public class LandingPageController {
 		message.setMsgDate();
 		message.setReceiverName(name);
 		message.setReceiver(receiver);
-		msgcontrol.addMessage(message);
 		emailController.messageEmail(receiver, user, message);
 
 		setPage2("sent");

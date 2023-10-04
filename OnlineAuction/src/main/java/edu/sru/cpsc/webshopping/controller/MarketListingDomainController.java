@@ -5,6 +5,10 @@ import java.net.URI;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.security.Principal;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -20,10 +24,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.sru.cpsc.webshopping.domain.market.Auction;
+import edu.sru.cpsc.webshopping.domain.market.Bid;
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.market.Transaction;
 import edu.sru.cpsc.webshopping.domain.user.Statistics;
@@ -296,5 +303,52 @@ public class MarketListingDomainController {
 		URI redirectUri = URI.create("/viewMarketListing/" + listingId);
 		return ResponseEntity.status(HttpStatus.SEE_OTHER).location(redirectUri).build();
 	}
+	
+	@GetMapping("/uniqueBiddersCount/{id}")
+	public ResponseEntity<String> getUniqueBiddersCount(@PathVariable Long id) {
+	    MarketListing marketListing = marketRepository.findById(id).orElse(null);
+	    if (marketListing == null) {
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: Listing not found");
+	    }
+	    int uniqueBidderCount = auctionService.countUniqueBiddersForListing(marketListing);
+	    return ResponseEntity.ok(String.valueOf(uniqueBidderCount));
+	}
+	
+	 @GetMapping
+	    public String getAllAuctions(Model model) {
+	        List<Auction> auctions = auctionService.getAllAuctions();
+	        model.addAttribute("auctions", auctions);
+	        return "auctions";
+	    }
+	 
+	 @GetMapping("/totalBidsCount/{id}")
+	 public ResponseEntity<String> getTotalBidsCount(@PathVariable Long id) {
+	     MarketListing marketListing = marketRepository.findById(id).orElse(null);
+	     if (marketListing == null) {
+	         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error: Listing not found");
+	     }
+	     int totalBidsCount = auctionService.getTotalBidsForListing(marketListing);
+	     return ResponseEntity.ok(String.valueOf(totalBidsCount));
+	 }
+	 
+	 @GetMapping("/isHighestBidder/{id}")
+	 @ResponseBody
+	 public Map<String, Boolean> isCurrentUserHighestBidder(@PathVariable Long id, Principal principal) {
+	     MarketListing marketListing = marketRepository.findById(id).orElse(null);
+	     if (marketListing == null) {
+	         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Listing not found");
+	     }
 
+	     User currentUser = userService.getUserByUsername(principal.getName());
+	     Bid highestBid = auctionService.findHighestBidForAuction(marketListing.getAuction());
+
+	     boolean isHighestBidder = false;
+	     if (highestBid != null && highestBid.getBidder().getId() == currentUser.getId()) {
+	         isHighestBidder = true;
+	     }
+
+	     Map<String, Boolean> response = new HashMap<>();
+	     response.put("isHighestBidder", isHighestBidder);
+	     return response;
+	 }
 }

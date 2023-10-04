@@ -35,6 +35,8 @@ public class MarketListing {
 	@Column(precision = 10, scale = 2, columnDefinition="DECIMAL(10, 2)")
 	private BigDecimal pricePerItem;
 	
+	private boolean setAutomatically;
+	
 	// removing auctionPrice because we are using the Auction class to hold the auction price
 /* 	@NonNull
 	@Column(precision = 10, scale = 2, columnDefinition="DECIMAL(10, 2)")
@@ -155,6 +157,14 @@ public class MarketListing {
 	public void setAuction(Auction auction) {
 	    this.auction = auction;
     }
+
+	public boolean getSetAutomatically() {
+		return setAutomatically;
+	}
+
+	public void setSetAutomatically(boolean setAutomatically) {
+		this.setAutomatically = setAutomatically;
+	}
 
 
 }
