@@ -24,18 +24,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 import edu.sru.cpsc.webshopping.controller.MarketListingDomainController;
+import edu.sru.cpsc.webshopping.controller.ShippingAddressDomainController;
 import edu.sru.cpsc.webshopping.controller.TransactionController;
 import edu.sru.cpsc.webshopping.controller.UserController;
 import edu.sru.cpsc.webshopping.controller.UserDetailsController;
 import edu.sru.cpsc.webshopping.controller.billing.CardTypeController;
 import edu.sru.cpsc.webshopping.controller.billing.PaymentDetailsController;
+import edu.sru.cpsc.webshopping.controller.billing.StateDetailsController;
 import edu.sru.cpsc.webshopping.domain.billing.PaymentDetails;
 import edu.sru.cpsc.webshopping.domain.billing.PaymentDetails_Form;
 import edu.sru.cpsc.webshopping.domain.billing.Paypal;
 import edu.sru.cpsc.webshopping.domain.billing.Paypal_Form;
 import edu.sru.cpsc.webshopping.domain.billing.ShippingAddress;
+import edu.sru.cpsc.webshopping.domain.billing.ShippingAddress_Form;
 import edu.sru.cpsc.webshopping.domain.billing.StateDetails;
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.market.Shipping;
@@ -60,6 +62,10 @@ public class ConfirmPurchasePageController {
 
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private StateDetailsController stateDetailsController;
+	@Autowired
+	private ShippingAddressDomainController shippingAddressController;
 	
 	@Lazy
 	private PurchaseShippingAddressPageController shippingController;
@@ -149,6 +155,8 @@ public class ConfirmPurchasePageController {
 			model.addAttribute("selectedAddress", null);
 		else
 			model.addAttribute("selectedAddress", this.address);
+
+		model.addAttribute("shippingDetails", new ShippingAddress_Form());
 		model.addAttribute("purchase", purchase);
 		model.addAttribute("marketListing", this.prevListing);
 		model.addAttribute("widget", this.prevListing.getWidgetSold());
@@ -159,6 +167,7 @@ public class ConfirmPurchasePageController {
 		model.addAttribute("modifyPayment", modifyPayment);
 		model.addAttribute("selectedPayment", validatedDetails);
 		model.addAttribute("toShipping", toShipping);
+		model.addAttribute("states", stateDetailsController.getAllStates());
 		model.addAttribute("allSelected", allSelected);
 		model.addAttribute("relogin", relogin);
 		model.addAttribute("loginEr", loginEr);
@@ -501,6 +510,49 @@ public class ConfirmPurchasePageController {
 			details = user.getDefaultPaymentDetails();
 		return this.shippingController.openConfirmShippingPage(true, prevListing, purchase, details, model, principal);
 	}
+
+	@PostMapping(value = "/addShipping", params="submit")
+	public String addShippingDetails(@Validated @ModelAttribute("shippingDetails") ShippingAddress_Form details, BindingResult result, @RequestParam("stateId") String stateId, Model model, Principal principal) {
+	
+		//selectedMenu = SUB_MENU.SHIPPING_DETAILS;
+		details.setState(stateDetailsController.getState(stateId));
+		//model.addAttribute("selectedMenu", selectedMenu);
+		if (result.hasErrors()) { // || userDetController.shippingAddressConstraintsFailed(details)) {
+			// Add error messages
+			User user  = userService.getUserByUsername(principal.getName());
+			if(!result.hasErrors() && userDetController.shippingAddressConstraintsFailed(details))
+				model.addAttribute("shippingError", "Address does not exist");
+			model.addAttribute("shippingDetails", new ShippingAddress_Form());
+			model.addAttribute("user", user);
+			model.addAttribute("states", stateDetailsController.getAllStates());
+			if(user.getDefaultShipping() != null)
+				model.addAttribute("defaultShippingDetails", user.getDefaultShipping());
+			else
+				model.addAttribute("defaultShippingDetails", null);
+			if(user.getShippingDetails() != null && user.getShippingDetails().isEmpty())
+				model.addAttribute("savedShippingDetails", null);
+			else
+				model.addAttribute("savedShippingDetails", shippingAddressController.getShippingDetailsByUser(user));
+			for (FieldError error : result.getFieldErrors()) {
+				model.addAttribute(error.getField() + "Err", error.getDefaultMessage());
+			}
+					
+			return "confirmPurchase";
+		}
+		ShippingAddress shipping = new ShippingAddress();
+		User user = userService.getUserByUsername(principal.getName());
+		details.setState(stateDetailsController.getState(stateId));
+		shipping.buildFromForm(details);
+		shipping.setUser(user);
+		Set<ShippingAddress> SA = user.getShippingDetails();
+		if(SA == null)
+			SA = new HashSet<ShippingAddress>();
+		SA.add(shipping);
+		user.setShippingDetails(SA);
+		shippingAddressController.addShippingAddress(shipping, user);
+		userService.updateUserProfile(user.getId(), user);
+		return initializePurchasePage(prevListing, purchase, model, principal);
+	}
 	
 	/**
 	 * prepares the page for a user modifying their payment details
@@ -524,7 +576,7 @@ public class ConfirmPurchasePageController {
 	 */
 	@Transactional
 	@RequestMapping(value = "/attemptPurchase")
-	public String attemptPurchase(Model model, Principal principal) {
+	public String attemptPurchase(@RequestParam("deliveryOption") String deliveryOption, Model model, Principal principal) {
 		User user = userService.getUserByUsername(principal.getName());
 		if ((address != null && validatedDetails != null) || (address != null && depositPicked == true)) {
 			BigDecimal salesTaxPercentage = this.address.getState().getSalesTaxRate().divide(new BigDecimal(100));
@@ -538,10 +590,15 @@ public class ConfirmPurchasePageController {
 			marketListingController.marketListingPurchaseUpdate(prevListing, purchase.getQtyBought());
 			// Creates an unfinished shipping label, to be filled out later by the seller
 			// Preparing the transaction for posting to the database
-			Shipping shipping = new Shipping();
-			shipping.setTransaction(purchase);
-			shipping.setAddress(address);
-			purchase.setShippingEntry(shipping);
+			if ("shipping".equals(deliveryOption)) {
+				Shipping shipping = new Shipping();
+				shipping.setTransaction(purchase);
+				shipping.setAddress(address);
+				purchase.setShippingEntry(shipping);
+			} else if ("pickup".equals(deliveryOption)) {
+				purchase.setLocalPickup(purchase.getMarketListing().getLocalPickup());
+			}
+			
 			if(depositPicked == false)
 				purchase.setPaymentDetails(validatedDetails);
 			else

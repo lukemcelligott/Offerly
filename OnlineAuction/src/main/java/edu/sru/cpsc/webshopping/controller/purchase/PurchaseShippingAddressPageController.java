@@ -177,7 +177,7 @@ public class PurchaseShippingAddressPageController {
 	 * @return the confirmPurchasePage
 	 */
 	@Transactional
-	@RequestMapping(value = "/confirmShipping/submitAddress", method = RequestMethod.POST, params = "submit")
+	@RequestMapping(value = "/submitAddress", method = RequestMethod.POST, params = "submit")
 	public String submitAddress(@Validated @ModelAttribute("shippingAddress") ShippingAddress_Form address, BindingResult result, @RequestParam("stateId") String stateId, Model model, Principal principal) {
 		User user = userService.getUserByUsername(principal.getName());
 		// If there are errors, then refresh the page

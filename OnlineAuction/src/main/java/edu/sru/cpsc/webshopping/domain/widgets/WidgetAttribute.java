@@ -59,6 +59,15 @@ public class WidgetAttribute {
 	public void setAttributeKey(String attributeKey) {
 		this.attributeKey = attributeKey;
 	}
+
+	public Attribute getAttribute() {
+		return attribute;
+	}
+
+	public void setAttribute(Attribute attribute) {
+		this.attribute = attribute;
+		this.attributeKey = attribute.getAttributeKey(); //set key to attribute key
+	}
 	
 	public String getValue() {
 		return value;

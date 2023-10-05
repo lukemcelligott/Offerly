@@ -35,6 +35,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 
+import edu.sru.cpsc.webshopping.controller.billing.StateDetailsController;
+import edu.sru.cpsc.webshopping.domain.billing.StateDetails;
 import edu.sru.cpsc.webshopping.domain.market.Auction;
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.market.MarketListingCSVModel;
@@ -74,6 +76,9 @@ public class AddWidgetController
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private StateDetailsController stateDetailsController;
 
 	WidgetRepository widgetRepository;
 	CategoryRepository categoryRepository;
@@ -253,6 +258,7 @@ public class AddWidgetController
 			WidgetAttribute widgetAttribute = entry.getWidgetAttribute();
 			System.out.println(attribute.getAttributeKey() + " - " + attribute.getDataType() + " - " + widgetAttribute.getValue());
 			widgetAttribute.setWidget(widget);
+			//widgetAttribute.setAttribute(attribute);
 			widgetAttributes.add(widgetAttribute);
 			attributes.add(attribute);
 		}
@@ -276,6 +282,7 @@ public class AddWidgetController
 		User user = userService.getUserByUsername(username);
 		marketListing = new MarketListing();
 		marketListing.setAuction(new Auction());
+		model.addAttribute("states", stateDetailsController.getAllStates());
 		model.addAttribute("listing", marketListing);
 		model.addAttribute("Category", category);
 		model.addAttribute("user", user);
@@ -296,13 +303,15 @@ public class AddWidgetController
 	 * @return
 	 */
 	@RequestMapping("/addListing")
-	public String addListing(Model model, @RequestParam("listingCoverImage") MultipartFile coverImage, @RequestParam("imageUpload") MultipartFile[] files, RedirectAttributes attributes, @Valid @ModelAttribute MarketListing marketListing, BindingResult result, Principal principal) {
+	public String addListing(Model model, @RequestParam("listingCoverImage") MultipartFile coverImage, @RequestParam("imageUpload") MultipartFile[] files, RedirectAttributes attributes, @Valid @ModelAttribute MarketListing marketListing, @RequestParam("stateId") String stateId, BindingResult result, Principal principal) {
 		String username = principal.getName();
 		User user = userService.getUserByUsername(username);
 		marketListing.getAuction().setCurrentBid(marketListing.getAuction().getStartingBid());
 		marketListing.setSeller(user);
 		marketListing.setWidgetSold(widget);
 		marketListing.setDeleted(false);
+		marketListing.getLocalPickup().getLocation().setState(stateDetailsController.getState(stateId));
+		marketListing.getLocalPickup().setListing(marketListing);
 		
 		String coverImagePath = marketListing.getSeller().getId() + StringUtils.cleanPath(coverImage.getOriginalFilename());
 		marketListing.setCoverImage(coverImagePath);

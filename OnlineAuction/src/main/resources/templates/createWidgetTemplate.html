@@ -309,6 +309,7 @@
 						}
 					});
 				});
+				checkFields();
 			}
 
 			//Function to remove an attribute row
@@ -349,26 +350,23 @@
 					.catch(error => console.error(error));
 			}
 
-			document.addEventListener("DOMContentLoaded", function () {
-				// Get all input fields within the form
-				const inputs = document.querySelectorAll('.form-input');
-
-				// Get the "Next" button
-				const nextButton = document.getElementById('nextButton');
-
-				// Function to check if all fields are filled
-				const checkFields = () => {
-					let allFilled = true;
-					for (let i = 0; i < inputs.length; i++) {
-						if (inputs[i].value === '') {
-							allFilled = false;
-							break;
-						}
+			const checkFields = () => {
+				let allFilled = true;
+				const inputs = document.querySelectorAll('.form-input:not(#attributeModal *), .table input:not(#attributeModal *), .table select:not(#attributeModal *), .table textarea:not(#attributeModal *)');
+				for (let i = 0; i < inputs.length; i++) {
+					if (inputs[i].value === '') {
+						allFilled = false;
+						break;
 					}
-					nextButton.disabled = !allFilled;
-				};
+				}
+				const nextButton = document.getElementById('nextButton');  
+				nextButton.disabled = !allFilled;
+			};
+
+			document.addEventListener("DOMContentLoaded", function () {
 
 				// Attach event listeners to input fields
+				const inputs = document.querySelectorAll('.form-input'); 
 				inputs.forEach(input => {
 					input.addEventListener('input', checkFields);
 				});
@@ -381,7 +379,7 @@
 				const inputs = document.querySelectorAll('.custom-form-input');
 				const addButton = document.getElementById('addCustomAttributeButton');
 
-				const checkFields = () => {
+				const checkModalFields = () => {
 					for (let i = 0; i < inputs.length; i++) {
 						if (inputs[i].value === '') {
 							addButton.disabled = true;
@@ -392,11 +390,11 @@
 				};
 
 				inputs.forEach(input => {
-					input.addEventListener('input', checkFields);
+					input.addEventListener('input', checkModalFields);
 				});
 
 				// Initial check
-				checkFields();
+				checkModalFields();
 			});
 			
 			document.addEventListener("DOMContentLoaded", function() {

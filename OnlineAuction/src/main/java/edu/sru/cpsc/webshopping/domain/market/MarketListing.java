@@ -58,6 +58,11 @@ public class MarketListing {
 	private Widget widgetSold;
 	
 	private String coverImage;
+
+	private boolean isLocalPickupOnly;
+
+	@OneToOne(cascade = CascadeType.ALL)
+	private Pickup localPickup;
 	
 	@OneToMany(mappedBy = "marketListing", cascade = CascadeType.MERGE)
 	private Set<WidgetImage> images;
@@ -164,6 +169,22 @@ public class MarketListing {
 
 	public void setSetAutomatically(boolean setAutomatically) {
 		this.setAutomatically = setAutomatically;
+	}
+
+	public Pickup getLocalPickup() {
+		return localPickup;
+	}
+
+	public void setLocalPickup(Pickup localPickup) {
+		this.localPickup = localPickup;
+	}
+
+	public boolean getIsLocalPickupOnly() {
+		return isLocalPickupOnly;
+	}
+
+	public void setIsLocalPickupOnly(boolean isLocalPickupOnly) {
+		this.isLocalPickupOnly = isLocalPickupOnly;
 	}
 
 

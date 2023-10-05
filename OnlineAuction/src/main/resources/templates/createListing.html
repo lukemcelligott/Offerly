@@ -57,7 +57,7 @@
 						<p th:if="${#fields.hasErrors('pricePerItem')}" th:errors="*{pricePerItem}"></p>
 						<div class="form-group" style="padding-bottom: 15px;">
 						    <input type="checkbox" id="setAutomatically" name="setAutomatically" checked>
-						    <label for="setAutomatically">Add Buy Now Feature</label>
+						    <label for="setAutomatically">Set listing for sale</label>
 						</div>
 						<div class="form-group" style="padding-bottom: 15px;">
 							<label for="startingBid">Starting Auction Price:</label>
@@ -81,6 +81,44 @@
 							</div>
 							</th:block>
 						</div>
+						<!-- Button to add a pickup location -->
+						<div class="form-group" style="padding-bottom: 15px;">
+							<button type="button" class="btn btn-primary" onclick="showPickupAddressFields()">Add Pickup Location</button>
+						</div>
+
+						<!-- Hidden div containing pickup address fields -->
+						<div id="pickupAddressFields" style="display: none;">
+							<div class="form-group">
+								<label for="streetAddress">Street Address:</label>
+								<input type="text" class="form-control" id="streetAddress" name="localPickup.location.streetAddress" th:field="*{localPickup.location.streetAddress}">
+								<p th:if="${streetAddressErr != null}" th:text="${streetAddressErr}"></p>
+	
+								<label for="extraLocationInfo">Extra Location Info:</label>
+								<input type="text" class="form-control" id="extraLocationInfo" name="localPickup.location.extraLocationInfo" th:field="*{localPickup.location.extraLocationInfo}">
+			
+								<label for="postalCode">Postal Code:</label>
+								<input type="text" class="form-control" id="postalCode" name="localPickup.location.postalCode" th:field="*{localPickup.location.postalCode}">
+								<p th:if="${postalCodeErr != null}" th:text="${postalCodeErr}"></p>
+
+								<label for="city">City:</label>
+								<input type="text" class="form-control" id="city" name="localPickup.location.city" th:field="*{localPickup.location.city}">
+								<p th:if="${cityErr != null}" th:text="${cityErr}"></p>
+
+								<label for="state">State:</label>
+								<select class="form-select" id="stateId" name="stateId">
+									<option th:each="state : ${states}" th:value="${state.stateName}" th:text="${state.stateName}"></option>
+								</select>
+								<p th:if="${stateIdErr}" th:text="${stateId}"></p>
+							</div>
+						</div>
+
+						<!-- Checkbox for local pickup only -->
+						<div class="form-group" style="padding-bottom: 15px;">
+							<input type="checkbox" id="isLocalPickupOnly" name="isLocalPickupOnly" th:field="*{isLocalPickupOnly}">
+							<label for="isLocalPickupOnly">List item for local pickup only</label>
+						</div>
+						
+
 						<p th:if="${#fields.hasErrors('qtyAvailable')}" th:errors="*{qtyAvailable}"></p>
 						<div class="form-group w-35" style="padding-bottom: 15px;">
 							<label for="coverImage"> Choose the Cover Image (Add File to next Upload as Well): </label>
@@ -129,6 +167,10 @@
 					var f = files[i];
 					selDiv.innerHTML += f.name + "<br/>";
 				}
+			}
+
+			function showPickupAddressFields() {
+				document.getElementById('pickupAddressFields').style.display = 'block';
 			}
 		</script>
 	</body>
