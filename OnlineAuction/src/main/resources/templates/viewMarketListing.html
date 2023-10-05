@@ -201,20 +201,17 @@
 
                             <!-- Action Buttons -->
 							<div th:if="${isBuyer}" class="mt-4">
-							    <!-- Buy Now Form -->
 							    <form th:if="${isBuyer && currListing.setAutomatically}" id="buy-product" class="row g-3 d-flex my-2" action="#" th:action="@{/viewMarketListing/attemptPurchase}" th:object=${newTransaction} method="post">
 							        <div class="row align-items-center">
-								        <!--<div class="col-auto">
+								        <!-- quantity -->
+								        <div class="col-auto">
 								            <label for="qtyBought" class="col-form-label"> Quantity: </label>
 								        </div>
 								        <div class="col">
 								            <input style="width: 100px;" id="qtyBought" class="form-control" name="qtyBought" type="number" th:field="*{qtyBought}" placeholder="Number to Buy" min="1" th:max="${currListing.qtyAvailable}" value="1" required></input>
-								        </div>-->	
-								        <div class="col-auto" style="margin-left: -5px;">
-											<span>Price: $</span>
-											<span th:text="${currListing.pricePerItem}"></span>
-										</div>
-								       	<div class="col"></div>			   
+								        </div>
+								       	<div class="col"></div>		
+								       	<!-- buy now -->	   
 								        <div class="col-auto" style="margin-right: -28px;">
 								            <input style="width: 250px;" class="btn btn-outline-success" id="purchaseButton" name="buyProduct" type="submit" th:value="'Buy Now'" /> <!-- for $' + ${currListing.pricePerItem}" />-->
 								        </div>
@@ -223,16 +220,15 @@
 							
 							    <!-- Other Buttons and Actions -->
 							    
-							    <div class="row g-3 d-flex">
-									<!-- Quantity -->
-							    	<form action="#" th:action="@{/viewMarketListing/attemptPurchase}" th:object=${newTransaction} method="post"></form>
-										<div class="col-auto">
-								            <label for="qtyBought" class="col-form-label"> Quantity: </label>
-								        </div>
-								        <div class="col">
-								            <input style="width: 100px;" id="qtyBought" class="form-control" name="qtyBought" type="number" field="*{qtyBought}" placeholder="Number to Buy" min="1" th:max="${currListing.qtyAvailable}" value="1" required></input>
-								        </div>
-							        </form>
+							    <div class="row g-3 d-flex my-2">
+									<!-- price -->
+							        <div class="col-auto">
+										<span>Price: $</span>
+										<span th:text="${currListing.pricePerItem}"></span>
+									</div>
+									
+									<div class="col"></div>
+							        
 									<!-- Add to Watchlist Button -->							                                        	
 									<div class="col-auto" th:if="${!foundInWatchlist}">
                                     	<form id="addToWatchlistForm" th:action="@{/viewMarketListing/wishlistItem/{id}(id = ${currListing.getId()})}" method="post">
