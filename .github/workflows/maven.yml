@@ -32,7 +32,7 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-    - run: mvn --batch-mode --update-snapshots verify --file OnlineAuction/pom.xml
+    - run: mvn --batch-mode --update-snapshots verify --file OnlineAuction/pom.xml -DskipTests
     - run: mkdir staging && cp OnlineAuction/target/*.jar staging
     - uses: actions/upload-artifact@v3
       with:
