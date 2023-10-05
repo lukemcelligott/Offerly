@@ -115,16 +115,14 @@
 																				
 							<!-- Purchase Auction Div -->
 							<div id="purchaseAuctionDiv" class="col-auto d-flex justify-content-center" style="display:none;">
-									<div th:if="${isBuyer}">
-									    <form id="purchaseAuctionForm" class="row g-3 my-2" th:action="@{/viewMarketListing/attemptPurchase}" th:object="${newTransaction}" method="post">
-									        <input type="hidden" name="pricePerItem" th:value="${currListing.auction.currentBid}" />
-									        <input type="hidden" name="qtyBought" th:value="1" />
-									        <div class="col-auto">
-									            <input class="btn btn-success" id="purchaseAuctionButton" name="buyProduct" type="submit" th:value="'Purchase Auction for $' + ${currListing.auction.currentBid}" />
-									        </div>
-									    </form>
-									</div>
-								</div>
+							    <form id="purchaseAuctionForm" class="row g-3 my-2" th:action="@{/viewMarketListing/attemptPurchase}" th:object="${newTransaction}" method="post">
+							        <input type="hidden" name="pricePerItem" th:value="${currListing.auction.currentBid}" />
+							        <input type="hidden" name="qtyBought" th:value="1" />
+							        <div class="col-auto">
+							            <input class="btn btn-success" id="purchaseAuctionButton" name="buyProduct" type="submit" th:value="'Purchase Auction for $' + ${currListing.auction.currentBid}" />
+							        </div>
+							    </form>	
+							</div>
 							</div>
 						</div>
                         
@@ -359,8 +357,6 @@
         	const qtyBoughtElement = document.getElementById('qtyBought');
         	const purchaseButtonElement = document.getElementById('purchaseButton');
        
-			var purchaseAuctionDiv = document.getElementById('purchaseAuctionDiv');
-    
         	function updatePrice() {
             	if (qtyBoughtElement && purchaseButtonElement) {
                     const qty = parseInt(qtyBoughtElement.value);
@@ -409,7 +405,7 @@
             
         	document.addEventListener('DOMContentLoaded', function() {
 		        // Get the endAuctionDate from Thymeleaf variable
-		           /*<![CDATA[*/
+		        /*<![CDATA[*/
         		var endAuctionDateStr = /*[[${currListing.auction.endAuctionDate}]]*/ 'START Date';
     			/*]]>*/
 		        var endAuctionDate = new Date(endAuctionDateStr);
@@ -434,14 +430,11 @@
 		            + minutes + "m " + seconds + "s ";
 		            
 				    // If the countdown is over, write some text and hide the "Bid Now" button
+				    				    
 			        if (distance < 0) {
+						bidButton.style.display = 'none';
 			            clearInterval(x);
 			            document.getElementById("countdown").innerHTML = "EXPIRED";
-			            
-			            // Hide the "Bid Now" button
-			            if (bidButton) {
-			                bidButton.style.display = 'none';
-			            }
 			        }
 			    }, 1000);
 			});		
@@ -468,13 +461,13 @@
 			// Show button to highest bidder    
 			$(document).ready(function() {
 			    let marketListingId = window.location.pathname.split("/").pop();
-				var purchaseAuctionDiv = document.getElementById('purchaseAuctionDiv');
+				var purchaseAuctionDiv = document.getElementById('purchaseAuctionButton');
 			    
 			    $.get("/isHighestBidder/" + marketListingId, function(response) {
-			        if (response.isHighestBidder && new Date().getTime() > new Date(/*[[${currListing.auction.endAuctionDate}]]*/ 'START Date')) {
-			            document.getElementById("purchaseAuctionDiv").style.display = "block";
+			        if (response.isHighestBidder && new Date().getTime() > new Date(/*[[${currListing.auction.endAuctionDate}]]*/ 'START Date')) {								
+						purchaseAuctionDiv.style.display = 'block';
 					} else {
-					    document.getElementById("purchaseAuctionDiv").style.display = "none";
+					  	purchaseAuctionDiv.style.display = 'none';
 					}
 			    });
 			});
