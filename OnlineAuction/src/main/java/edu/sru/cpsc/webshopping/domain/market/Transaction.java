@@ -64,9 +64,14 @@ public class Transaction {
 	@NonNull
 	@ManyToOne(cascade = CascadeType.MERGE)
 	private MarketListing marketListing;
+
+	private boolean isLocalPickup;
 	
 	@OneToOne
 	private Shipping shippingEntry;
+
+	@OneToOne
+	private Pickup localPickup;
 	
 	@NonNull
 	@ManyToOne(cascade = CascadeType.MERGE)
@@ -171,5 +176,21 @@ public class Transaction {
 
 	public void setDepositDetails(DirectDepositDetails depositDetails) {
 		this.depositDetails = depositDetails;
+	}
+	
+	public Pickup getLocalPickup() {
+		return localPickup;
+	}
+
+	public void setLocalPickup(Pickup localPickup) {
+		this.localPickup = localPickup;
+	}
+
+	public boolean isLocalPickup() {
+		return isLocalPickup;
+	}
+
+	public void setLocalPickup(boolean isLocalPickup) {
+		this.isLocalPickup = isLocalPickup;
 	}
 }

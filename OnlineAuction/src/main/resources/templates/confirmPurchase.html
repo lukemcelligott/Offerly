@@ -22,7 +22,7 @@
 		<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
-		<spt src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 	  	
 	  	<link th:href="@{/styles/employee_page.css}" rel="stylesheet"/>
@@ -146,7 +146,7 @@
 							<div class="card-body">	
 						 		<div class="row">
 									<ul class="col-sm-4 list-group mb-3">	 
-								 		 <liclass="list-group-item">Total Ordered: <span th:text="${purchase.qtyBought}"></span></li>
+								 		 <li class="list-group-item">Total Ordered: <span th:text="${purchase.qtyBought}"></span></li>
                         				 <li class="list-group-item">Price per Item: $<span th:text="${marketListing.pricePerItem}"></span></li>
                         			 </ul> 
                         			 <ul class="col-sm-4 list-group mb-3">
@@ -164,47 +164,88 @@
                 </div>
                     					
 			<hr>
+
+			<!--select shipping or pickup-->
+			<div class="d-flex justify-content-center my-3">
+				<div class="form-check form-check-inline">
+					<input class="form-check-input" type="radio" name="deliveryOption" id="shippingOption" value="shipping" th:disabled="${marketListing.isLocalPickupOnly}" th:checked="${!marketListing.isLocalPickupOnly}">
+					<label class="form-check-label" for="shippingOption">Shipping</label>
+				</div>
+				<div class="form-check form-check-inline">
+					<input class="form-check-input" type="radio" name="deliveryOption" id="pickupOption" value="pickup" th:disabled="${marketListing.localPickup == null}" th:checked="${marketListing.isLocalPickupOnly}">
+					<label class="form-check-label" for="pickupOption">Local Pickup</label>
+				</div>
+			</div>			
 					
-				<!-- Shipping Address Accordion -->
-		<div class="accordion" id="shippingAccordion">
-    		<div class="card">
-        		<div class="card-header bg-white text-center" id="shippingHeading">
-           			<div class="d-flex justify-content-center">
-                		<h2 class="mb-0">
-                    		<button class="btn btn-link text-dark font-weight-bold text-uppercase" data-toggle="collapse" data-target="#shippingCollapse" aria-expanded="false" aria-controls="shippingCollapse" style="text-decoration: none;">
-                        	Shipping Address
-                    		</button>
-                		</h2>
-            		</div>
-       			</div>
-        	<div id="shippingCollapse" class="collapse" aria-labelledby="shippingHeading" data-parent="#shippingAccordion">
-            <div class="card-body">
-                <!-- Content Begins -->
-            <div style="margin-bottom: 4px" th:if="${selectedAddress != null and toShipping == false}" class="d-flex justify-content-center">
-            	<p class="custom-font-style" th:inline="text">Address:&nbsp[[${selectedAddress.streetAddress}]],&nbsp[[${selectedAddress.city}]],&nbsp[[${selectedAddress.state.stateName}]],&nbsp[[${selectedAddress.postalCode}]]</p>
-            </div>
-            <div th:if="${selectedAddress == null and toShipping == false}" class="d-flex justify-content-center">
-            	<h3 style="color:red;">A Shipping Address Must Be Added</h3>
-            </div>
-                <th:block th:if="${toShipping == false}">
-                    <th:block th:if="${selectedAddress == null}">
-                        <h2 class="d-flex justify-content-center"><a class="btn btn-lg btn-success" th:href="@{/toShipping}">Add</a></h2>
-                    </th:block>
-                    <th:block th:unless="${selectedAddress == null}">
-                        <h2 class="d-flex justify-content-center"><a class="btn btn-lg btn-success" th:href="@{/toShipping}">Change</a></h2>
-                    </th:block>
-                </th:block>
-                <th:block th:if="${toShipping}">
-                    <div th:insert="confirmShippingAddressPage :: confirmShippingAddressPage"></div>
-                </th:block>
-                	
-            	<div th:if="${errMessage != null}" th:text="${errMessage}" class="alert alert-danger d-flex justify-content-center my-3">
-            	</div>
-                	<!-- Content Ends -->
-            		</div>
-        			</div>
-    			</div>
-			</div>
+			<!-- Shipping Address Accordion -->
+			<div class="accordion" id="shippingAccordion">
+				<div class="card">
+					<div class="card-header bg-white text-center" id="shippingHeading">
+						<div class="d-flex justify-content-center">
+							<h2 class="mb-0">
+								<button class="btn btn-link text-dark font-weight-bold text-uppercase" data-toggle="collapse" data-target="#shippingCollapse" aria-expanded="false" aria-controls="shippingCollapse" style="text-decoration: none;">
+								Shipping Address
+								</button>
+							</h2>
+						</div>
+					</div>
+				<div id="shippingCollapse" class="collapse" aria-labelledby="shippingHeading" data-parent="#shippingAccordion">
+				<div class="card-body">
+					<!-- Content Begins -->
+				<div style="margin-bottom: 4px" th:if="${selectedAddress != null and toShipping == false}" class="d-flex justify-content-center">
+					<p class="custom-font-style" th:inline="text">Address:&nbsp[[${selectedAddress.streetAddress}]],&nbsp[[${selectedAddress.city}]],&nbsp[[${selectedAddress.state.stateName}]],&nbsp[[${selectedAddress.postalCode}]]</p>
+				</div>
+				<div th:if="${selectedAddress == null and toShipping == false}" class="d-flex justify-content-center">
+					<h3 style="color:red;">A Shipping Address Must Be Added</h3>
+				</div>
+					<th:block th:if="${toShipping == false}">
+						<th:block th:if="${selectedAddress == null}">
+							<h2 class="d-flex justify-content-center"><a class="btn btn-lg btn-success" th:href="@{/toShipping}">Add</a></h2>
+						</th:block>
+						<th:block th:unless="${selectedAddress == null}">
+							<h2 class="d-flex justify-content-center"><a class="btn btn-lg btn-success" th:href="@{/toShipping}">Change</a></h2>
+						</th:block>
+					</th:block>
+					<th:block th:if="${toShipping}">
+						<div th:insert="confirmShippingAddressPage :: confirmShippingAddressPage"></div>
+					</th:block>
+						
+					<div th:if="${errMessage != null}" th:text="${errMessage}" class="alert alert-danger d-flex justify-content-center my-3">
+					</div>
+						<!-- Content Ends -->	
+						</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Local Pickup Accordion -->
+				<div class="accordion" id="pickupAccordion" style="display:none;">
+					<div class="card">
+						<div class="card-header bg-white text-center" id="shippingHeading">
+							<div class="d-flex justify-content-center">
+								<h2 class="mb-0">
+									<button class="btn btn-link text-dark font-weight-bold text-uppercase" data-toggle="collapse"
+										data-target="#shippingCollapse" aria-expanded="false" aria-controls="shippingCollapse"
+										style="text-decoration: none;">
+										Pickup Details
+									</button>
+								</h2>
+							</div>
+						</div>
+						<div id="shippingCollapse" class="collapse" aria-labelledby="shippingHeading" data-parent="#shippingAccordion">
+							<div class="card-body">
+
+								<p class="custom-font-style">
+									<span th:text="${marketListing.localPickup.location.city}"></span>, 
+									<span th:text="${marketListing.localPickup.location.state.stateName}"></span>
+								</p>
+								<p>An email will be sent after purchase with the full pickup address.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				</div>
+
 			
 			<hr>
 	
@@ -563,4 +604,22 @@
 			</div>
 		</div>
 	</body>
+	<script>
+		$(document).ready(function () {
+			toggleAccordion();
+			$('input[name="deliveryOption"]').on('change', function () {
+				toggleAccordion();
+			});
+
+			function toggleAccordion() {
+				if ($('#shippingOption').is(':checked')) {
+					$('#shippingAccordion').show();
+					$('#pickupAccordion').hide();
+				} else {
+					$('#pickupAccordion').show();
+					$('#shippingAccordion').hide();
+				}
+			}
+		});
+	</script>
 </html>

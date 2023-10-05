@@ -524,7 +524,7 @@ public class ConfirmPurchasePageController {
 	 */
 	@Transactional
 	@RequestMapping(value = "/attemptPurchase")
-	public String attemptPurchase(Model model, Principal principal) {
+	public String attemptPurchase(@RequestParam("deliveryOption") String deliveryOption, Model model, Principal principal) {
 		User user = userService.getUserByUsername(principal.getName());
 		if ((address != null && validatedDetails != null) || (address != null && depositPicked == true)) {
 			BigDecimal salesTaxPercentage = this.address.getState().getSalesTaxRate().divide(new BigDecimal(100));
@@ -538,10 +538,15 @@ public class ConfirmPurchasePageController {
 			marketListingController.marketListingPurchaseUpdate(prevListing, purchase.getQtyBought());
 			// Creates an unfinished shipping label, to be filled out later by the seller
 			// Preparing the transaction for posting to the database
-			Shipping shipping = new Shipping();
-			shipping.setTransaction(purchase);
-			shipping.setAddress(address);
-			purchase.setShippingEntry(shipping);
+			if ("shipping".equals(deliveryOption)) {
+				Shipping shipping = new Shipping();
+				shipping.setTransaction(purchase);
+				shipping.setAddress(address);
+				purchase.setShippingEntry(shipping);
+			} else if ("pickup".equals(deliveryOption)) {
+				purchase.setLocalPickup(purchase.getMarketListing().getLocalPickup());
+			}
+			
 			if(depositPicked == false)
 				purchase.setPaymentDetails(validatedDetails);
 			else

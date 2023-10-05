@@ -1,5 +1,6 @@
 package edu.sru.cpsc.webshopping.domain.market;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -8,7 +9,6 @@ import javax.persistence.OneToOne;
 
 import org.springframework.lang.NonNull;
 
-import edu.sru.cpsc.webshopping.domain.billing.ShippingAddress;
 
 @Entity
 public class Pickup {
@@ -20,9 +20,9 @@ public class Pickup {
     @NonNull
     private MarketListing listing;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @NonNull
-    private ShippingAddress location;
+    private PickupAddress location;
 
     @OneToOne
 	private Transaction transaction;
@@ -35,12 +35,19 @@ public class Pickup {
         this.id = id;
     }
 
-    public ShippingAddress getLocation() {
+    public PickupAddress getLocation() {
         return location;
     }
 
-    public void setLocation(ShippingAddress location) {
+    public void setLocation(PickupAddress location) {
         this.location = location;
+    }
+
+    public MarketListing getListing() {
+        return listing;
+    }
+    public void setListing(MarketListing listing) {
+        this.listing = listing;
     }
 
     public Transaction getTransaction() {
