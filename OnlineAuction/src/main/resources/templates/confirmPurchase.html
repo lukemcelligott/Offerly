@@ -2,218 +2,250 @@
 <!-- Expiration date does not work as attended and can lead to problems.
 	 Security code, card number, postal code all needs to be verified. -->
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-	<head>
-		<meta charset="ISO-8859-1">
-		<title>Confirm Purchase</title>
-		
-		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-	  	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-	  	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
-	  	<!-- https://developer.paypal.com/sdk/js/configuration/ information on configuring the url correctly with the option you want -->
-	  	<script src="https://www.paypal.com/sdk/js?client-id=AZOZjx8hradMWSN5ahMJQgGJEcRi5oXSIz9vSaduY2dr5fVVwshgyjlrnTMr48ytuQ45QJB9lnM1mnNn&components=buttons&disable-funding=card"></script>
-	  	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-	  	<!-- used a solution from https://stackoverflow.com/questions/9894339/disallow-twitter-bootstrap-modal-window-from-closing by AymKdn and edited by Peter Mortensen which stops users from clicking out of the modal after having entered their login information -->
-	  	
-	  	<!-- font import -->
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-	  	
-	  	<link th:href="@{/styles/employee_page.css}" rel="stylesheet"/>
-	  	
-	  	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
-	  	<!-- Accordion Function -->
-	  	
-	  	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
-	  	<!-- https://developer.paypal.com/sdk/js/configuration/ information on configuring the url correctly with the option you want -->
-	  	<script src="https://www.paypal.com/sdk/js?client-id=AZOZjx8hradMWSN5ahMJQgGJEcRi5oXSIz9vSaduY2dr5fVVwshgyjlrnTMr48ytuQ45QJB9lnM1mnNn&components=buttons&disable-funding=card"></script>
-	  	
-	  	<!-- used a solution from https://stackoverflow.com/questions/9894339/disallow-twitter-bootstrap-modal-window-from-closing by AymKdn and edited by Peter Mortensen which stops users from clicking out of the modal after having entered their login information -->
-		<!-- https://teamtreehouse.com/community/keep-a-modal-window-open-after-form-submission helped me figure out that I should load the modal when the page reloads to keep it open after submissions / to show errors -->
-	  	<script th:inline="javascript"> 
-       	/*<![CDATA[*/
-       		var relogin = /*[[${relogin}]]*/'';
-       		var loginEr = /*[[${loginEr}]]*/'';
-       		var toShipping = /*[[${toShipping}]]*/'';
-       		var update = /*[[${update}]]*/'';
-       		var useThis = /*[[${useThis}]]*/ null;
-       		
-    	   if(useThis != null || relogin == false || loginEr == true){
-    		   $(window).on('load', function() {
-    			   $('#paymentModal').removeData("modal").modal({backdrop: 'static', keyboard: false});
-    		        $('#paymentModal').modal('show');
-    		    });
-    		   }
-    	   
-    	   if((relogin == false && toShipping == true)|| (loginEr == true && toShipping == true) || update == true){
-		   $(window).on('load', function() {
-			   $('#shippingModal').removeData("modal").modal({backdrop: 'static', keyboard: false});
-		        $('#shippingModal').modal('show');
-		    });
-		   }
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Confirm Purchase</title>
 
-	  	/*]]>*/
-      	</script>
-		
-		<style>
-	  		.ui-datepicker-calendar {
-	        	display: none;
-	    	}
-	      
-	      	.radio-button input[type="radio"]:checked+label {
-	        	background-color: #FBD8B4;
-	      	}
-			
-			input::-webkit-outer-spin-button,
-	        input::-webkit-inner-spin-button {
-	            -webkit-appearance: none;
-	            margin: 0;
-	        }
-	  
-	        input[type=number] {
-	            -moz-appearance: textfield;
-	        }
-	        
-			#page {
-				display: flex;
-				/*height: calc(92vh - 60px);*/
-			}
-				
-			#website-title {
-				margin-left: 8px;
-				margin-right: 8px;
-				font-size: 12px;
-			}
-				
-			label {
-				display: inline-block;
-			}
-			
-			/* Use Poppins for entire accordion */
-			#shippingAccordion, #purchaseDetailsAccordion {
-    			font-family: 'Poppins', sans-serif;
-			}
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+	<!-- https://developer.paypal.com/sdk/js/configuration/ information on configuring the url correctly with the option you want -->
+	<script
+		src="https://www.paypal.com/sdk/js?client-id=AZOZjx8hradMWSN5ahMJQgGJEcRi5oXSIz9vSaduY2dr5fVVwshgyjlrnTMr48ytuQ45QJB9lnM1mnNn&components=buttons&disable-funding=card"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+	<!-- used a solution from https://stackoverflow.com/questions/9894339/disallow-twitter-bootstrap-modal-window-from-closing by AymKdn and edited by Peter Mortensen which stops users from clicking out of the modal after having entered their login information -->
 
-			#shippingHeading .btn-link, #purchaseDetailsAccordion .btn-link  {
-    			color: #0d6efd !important; /* Using !important to ensure our color is applied */
-   				text-decoration: none;  /* To remove the underline */
-			}
+	<!-- font import -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
-			/* Change color of accordion header on hover for better UX */
-			#shippingHeading .btn-link:hover, #purchaseDetailsAccordion .btn-link:hover {
-    			color: #0b5cda !important;  /* Slightly darker shade for hover, using !important for override */
-			}
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-			.custom-font-style{
-    			font-family: 'Poppins', sans-serif;
-    			font-size: 1.5em;
-			}
-			
-		</style>
-	</head>
-	
-	<body>
-		<!-- HEADER BAR -->
-		<div th:insert="header :: header"></div>
-		<!-- END HEADER BAR -->
-	
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-		
-		<div id="page">
-			<!-- Confirm Purchase Accordion -->
-			<div style="width:45%; margin-top: 1%; margin-bottom: 1%;" class="card mx-auto mh-auto mw-30 overflow-auto">
-				<div class="card-header d-flex justify-content-center">
-					<h1>Confirm Purchase</h1>
-				</div>
-				<div class="card-body">
+	<link th:href="@{/styles/employee_page.css}" rel="stylesheet" />
+
+	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+	<!-- Accordion Function -->
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
+	<!-- https://developer.paypal.com/sdk/js/configuration/ information on configuring the url correctly with the option you want -->
+	<script
+		src="https://www.paypal.com/sdk/js?client-id=AZOZjx8hradMWSN5ahMJQgGJEcRi5oXSIz9vSaduY2dr5fVVwshgyjlrnTMr48ytuQ45QJB9lnM1mnNn&components=buttons&disable-funding=card"></script>
+
+	<!-- used a solution from https://stackoverflow.com/questions/9894339/disallow-twitter-bootstrap-modal-window-from-closing by AymKdn and edited by Peter Mortensen which stops users from clicking out of the modal after having entered their login information -->
+	<!-- https://teamtreehouse.com/community/keep-a-modal-window-open-after-form-submission helped me figure out that I should load the modal when the page reloads to keep it open after submissions / to show errors -->
+	<script th:inline="javascript">
+		/*<![CDATA[*/
+		var relogin = /*[[${relogin}]]*/'';
+		var loginEr = /*[[${loginEr}]]*/'';
+		var toShipping = /*[[${toShipping}]]*/'';
+		var update = /*[[${update}]]*/'';
+		var useThis = /*[[${useThis}]]*/ null;
+
+		if (useThis != null || relogin == false || loginEr == true) {
+			$(window).on('load', function () {
+				$('#paymentModal').removeData("modal").modal({ backdrop: 'static', keyboard: false });
+				$('#paymentModal').modal('show');
+			});
+		}
+
+		if ((relogin == false && toShipping == true) || (loginEr == true && toShipping == true) || update == true) {
+			$(window).on('load', function () {
+				$('#shippingModal').removeData("modal").modal({ backdrop: 'static', keyboard: false });
+				$('#shippingModal').modal('show');
+			});
+		}
+
+		/*]]>*/
+	</script>
+
+	<style>
+		.ui-datepicker-calendar {
+			display: none;
+		}
+
+		.radio-button input[type="radio"]:checked+label {
+			background-color: #FBD8B4;
+		}
+
+		input::-webkit-outer-spin-button,
+		input::-webkit-inner-spin-button {
+			-webkit-appearance: none;
+			margin: 0;
+		}
+
+		input[type=number] {
+			-moz-appearance: textfield;
+		}
+
+		#page {
+			display: flex;
+			/*height: calc(92vh - 60px);*/
+		}
+
+		#website-title {
+			margin-left: 8px;
+			margin-right: 8px;
+			font-size: 12px;
+		}
+
+		label {
+			display: inline-block;
+		}
+
+		/* Use Poppins for entire accordion */
+		#shippingAccordion,
+		#purchaseDetailsAccordion {
+			font-family: 'Poppins', sans-serif;
+		}
+
+		#shippingHeading .btn-link,
+		#purchaseDetailsAccordion .btn-link {
+			color: #0d6efd !important;
+			/* Using !important to ensure our color is applied */
+			text-decoration: none;
+			/* To remove the underline */
+		}
+
+		/* Change color of accordion header on hover for better UX */
+		#shippingHeading .btn-link:hover,
+		#purchaseDetailsAccordion .btn-link:hover {
+			color: #0b5cda !important;
+			/* Slightly darker shade for hover, using !important for override */
+		}
+
+		.custom-font-style {
+			font-family: 'Poppins', sans-serif;
+			font-size: 1.5em;
+		}
+	</style>
+</head>
+
+<body>
+	<!-- HEADER BAR -->
+	<div th:insert="header :: header"></div>
+	<!-- END HEADER BAR -->
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+		crossorigin="anonymous"></script>
+
+	<div id="page">
+		<!-- Confirm Purchase Accordion -->
+		<div style="width:45%; margin-top: 1%; margin-bottom: 1%;" class="card mx-auto mh-auto mw-30 overflow-auto">
+			<div class="card-header d-flex justify-content-center">
+				<h1>Confirm Purchase</h1>
+			</div>
+			<div class="card-body">
 				<div class="accordion" id="purchaseDetailsAccordion">
 					<div class="card">
 						<div class="card-header bg-white text-center" id="headingOne">
-							 <h2 class="mb-0">
-								<button class="btn btn-link text-dark font-weight-bold text-uppercase" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" style="text-decoration: none;">
-									Purchase Details
-								 </button>
-						  	</h2>
-					   	</div>	
-					   	
-					   	 <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#purchaseDetailsAccordion">
-							<div class="card-body">	
-						 		<div class="row">
-									<ul class="col-sm-4 list-group mb-3">	 
-								 		 <li class="list-group-item">Total Ordered: <span th:text="${purchase.qtyBought}"></span></li>
-                        				 <li class="list-group-item">Price per Item: $<span th:text="${marketListing.pricePerItem}"></span></li>
-                        			 </ul> 
-                        			 <ul class="col-sm-4 list-group mb-3">
-										 <li class="list-group-item">Total Price Before Taxes: $<span th:text="${purchase.totalPriceBeforeTaxes}"></span></li>
-                       					 <li class="list-group-item">Total Price After Taxes: $<span th:text="${purchase.totalPriceAfterTaxes}"></span></li>
-                       				 </ul>
-                       				 <ul class="col-sm-4 list-group mb-3">
-										<li class="list-group-item">Product Name: <span th:text="${widget.name}"></span></li>
-                        				<li class="list-group-item">Product Description: <span th:text="${widget.description}"></span></li>
-                    				</ul>
-                    			</div>
-                    		 </div>
-                    	 </div>
-                   	</div>
-                </div>
-                    					
-			<hr>
-
-			<!--select shipping or pickup-->
-			<div class="d-flex justify-content-center my-3">
-				<div class="form-check form-check-inline">
-					<input class="form-check-input" type="radio" name="deliveryOption" id="shippingOption" value="shipping" th:disabled="${marketListing.isLocalPickupOnly}" th:checked="${!marketListing.isLocalPickupOnly}">
-					<label class="form-check-label" for="shippingOption">Shipping</label>
-				</div>
-				<div class="form-check form-check-inline">
-					<input class="form-check-input" type="radio" name="deliveryOption" id="pickupOption" value="pickup" th:disabled="${marketListing.localPickup == null}" th:checked="${marketListing.isLocalPickupOnly}">
-					<label class="form-check-label" for="pickupOption">Local Pickup</label>
-				</div>
-			</div>			
-					
-			<!-- Shipping Address Accordion -->
-			<div class="accordion" id="shippingAccordion">
-				<div class="card">
-					<div class="card-header bg-white text-center" id="shippingHeading">
-						<div class="d-flex justify-content-center">
 							<h2 class="mb-0">
-								<button class="btn btn-link text-dark font-weight-bold text-uppercase" data-toggle="collapse" data-target="#shippingCollapse" aria-expanded="false" aria-controls="shippingCollapse" style="text-decoration: none;">
-								Shipping Address
+								<button class="btn btn-link text-dark font-weight-bold text-uppercase" type="button"
+									data-toggle="collapse" data-target="#collapseOne" aria-expanded="false"
+									aria-controls="collapseOne" style="text-decoration: none;">
+									Purchase Details
 								</button>
 							</h2>
 						</div>
-					</div>
-				<div id="shippingCollapse" class="collapse" aria-labelledby="shippingHeading" data-parent="#shippingAccordion">
-				<div class="card-body">
-					<!-- Content Begins -->
-				<div style="margin-bottom: 4px" th:if="${selectedAddress != null and toShipping == false}" class="d-flex justify-content-center">
-					<p class="custom-font-style" th:inline="text">Address:&nbsp[[${selectedAddress.streetAddress}]],&nbsp[[${selectedAddress.city}]],&nbsp[[${selectedAddress.state.stateName}]],&nbsp[[${selectedAddress.postalCode}]]</p>
-				</div>
-				<div th:if="${selectedAddress == null and toShipping == false}" class="d-flex justify-content-center">
-					<h3 style="color:red;">A Shipping Address Must Be Added</h3>
-				</div>
-					<th:block th:if="${toShipping == false}">
-						<th:block th:if="${selectedAddress == null}">
-							<h2 class="d-flex justify-content-center"><a class="btn btn-lg btn-success" th:href="@{/toShipping}">Add</a></h2>
-						</th:block>
-						<th:block th:unless="${selectedAddress == null}">
-							<h2 class="d-flex justify-content-center"><a class="btn btn-lg btn-success" th:href="@{/toShipping}">Change</a></h2>
-						</th:block>
-					</th:block>
-					<th:block th:if="${toShipping}">
-						<div th:insert="confirmShippingAddressPage :: confirmShippingAddressPage"></div>
-					</th:block>
-						
-					<div th:if="${errMessage != null}" th:text="${errMessage}" class="alert alert-danger d-flex justify-content-center my-3">
-					</div>
-						<!-- Content Ends -->	
+
+						<div id="collapseOne" class="collapse" aria-labelledby="headingOne"
+							data-parent="#purchaseDetailsAccordion">
+							<div class="card-body">
+								<div class="row">
+									<ul class="col-sm-4 list-group mb-3">
+										<li class="list-group-item">Total Ordered: <span
+												th:text="${purchase.qtyBought}"></span></li>
+										<li class="list-group-item">Price per Item: $<span
+												th:text="${marketListing.pricePerItem}"></span></li>
+									</ul>
+									<ul class="col-sm-4 list-group mb-3">
+										<li class="list-group-item">Total Price Before Taxes: $<span
+												th:text="${purchase.totalPriceBeforeTaxes}"></span></li>
+										<li class="list-group-item">Total Price After Taxes: $<span
+												th:text="${purchase.totalPriceAfterTaxes}"></span></li>
+									</ul>
+									<ul class="col-sm-4 list-group mb-3">
+										<li class="list-group-item">Product Name: <span th:text="${widget.name}"></span>
+										</li>
+										<li class="list-group-item">Product Description: <span
+												th:text="${widget.description}"></span></li>
+									</ul>
+								</div>
+							</div>
 						</div>
+					</div>
+				</div>
+
+				<hr>
+
+				<!--select shipping or pickup-->
+				<div class="d-flex justify-content-center my-3">
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" name="deliveryOption" id="shippingOption"
+							value="shipping" th:disabled="${marketListing.isLocalPickupOnly}"
+							th:checked="${!marketListing.isLocalPickupOnly}">
+						<label class="form-check-label" for="shippingOption">Shipping</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<input class="form-check-input" type="radio" name="deliveryOption" id="pickupOption"
+							value="pickup" th:disabled="${marketListing.localPickup == null}"
+							th:checked="${marketListing.isLocalPickupOnly}">
+						<label class="form-check-label" for="pickupOption">Local Pickup</label>
+					</div>
+				</div>
+
+				<!-- Shipping Address Accordion -->
+				<div class="accordion" id="shippingAccordion">
+					<div class="card">
+						<div class="card-header bg-white text-center" id="shippingHeading">
+							<div class="d-flex justify-content-center">
+								<h2 class="mb-0">
+									<button class="btn btn-link text-dark font-weight-bold text-uppercase"
+										data-toggle="collapse" data-target="#shippingCollapse" aria-expanded="false"
+										aria-controls="shippingCollapse" style="text-decoration: none;">
+										Shipping Address
+									</button>
+								</h2>
+							</div>
+						</div>
+						<div id="shippingCollapse" class="collapse" aria-labelledby="shippingHeading"
+							data-parent="#shippingAccordion">
+							<div class="card-body">
+								<!-- Content Begins -->
+								<div style="margin-bottom: 4px"
+									th:if="${selectedAddress != null}"
+									class="d-flex justify-content-center">
+									<p class="custom-font-style" th:inline="text">
+										Address:&nbsp[[${selectedAddress.streetAddress}]],&nbsp[[${selectedAddress.city}]],&nbsp[[${selectedAddress.state.stateName}]],&nbsp[[${selectedAddress.postalCode}]]
+									</p>
+								</div>
+								<div th:if="${selectedAddress == null}"
+									class="d-flex justify-content-center">
+									<h3 style="color:red;">A Shipping Address Must Be Selected</h3>
+								</div>
+									<button type="button" class="btn btn-lg btn-success" data-toggle="modal" data-target="#shippingModal">Add</button>
+									<!-- <th:block th:if="${selectedAddress == null}">
+										<h2 class="d-flex justify-content-center"><a class="btn btn-lg btn-success" th:href="@{/toShipping}">Add</a></h2>
+									</th:block> -->
+									<th:block th:unless="${selectedAddress == null}">
+										<h2 class="d-flex justify-content-center"><a class="btn btn-lg btn-success"
+												th:href="@{/toShipping}">Change</a></h2>
+									</th:block>
+						
+									<!-- <div th:insert="confirmShippingAddressPage :: confirmShippingAddressPage"></div> -->
+
+								<div th:if="${errMessage != null}" th:text="${errMessage}"
+									class="alert alert-danger d-flex justify-content-center my-3">
+								</div>
+								<!-- Content Ends -->
+							</div>
 						</div>
 					</div>
 				</div>
@@ -224,19 +256,20 @@
 						<div class="card-header bg-white text-center" id="shippingHeading">
 							<div class="d-flex justify-content-center">
 								<h2 class="mb-0">
-									<button class="btn btn-link text-dark font-weight-bold text-uppercase" data-toggle="collapse"
-										data-target="#shippingCollapse" aria-expanded="false" aria-controls="shippingCollapse"
-										style="text-decoration: none;">
+									<button class="btn btn-link text-dark font-weight-bold text-uppercase"
+										data-toggle="collapse" data-target="#shippingCollapse" aria-expanded="false"
+										aria-controls="shippingCollapse" style="text-decoration: none;">
 										Pickup Details
 									</button>
 								</h2>
 							</div>
 						</div>
-						<div id="shippingCollapse" class="collapse" aria-labelledby="shippingHeading" data-parent="#shippingAccordion">
+						<div id="shippingCollapse" class="collapse" aria-labelledby="shippingHeading"
+							data-parent="#shippingAccordion">
 							<div class="card-body">
 
 								<p class="custom-font-style">
-									<span th:text="${marketListing.localPickup.location.city}"></span>, 
+									<span th:text="${marketListing.localPickup.location.city}"></span>,
 									<span th:text="${marketListing.localPickup.location.state.stateName}"></span>
 								</p>
 								<p>An email will be sent after purchase with the full pickup address.</p>
@@ -244,315 +277,381 @@
 						</div>
 					</div>
 				</div>
-				</div>
+			</div>
 
-			
+
 			<hr>
-	
-				<div class="d-flex justify-content-center">
-					<h2>Payment Details</h2>
-				</div>
-				<div th:if="${modifyPayment and allDetails == null and depositPicked == false or toShipping == false and allDetails == null and depositPicked == false}" class="d-flex justify-content-center">
-					<h3>No Payment Details to Display</h3>
-				</div>
-				
-				<div th:if="${toShipping and !modifyPayment  or allSelected and !modifyPayment}">
-					<div th:if="${!depositPicked}">
-						<div style="margin-bottom: 4px" th:if="${selectedPayment != null}" class="d-flex justify-content-center">
-							<h3 th:inline="text">&nbsp[[${selectedPayment.cardType}]]&nbspEnding In:&nbsp[[${selectedPayment.last4Digits}]]</h3>
-						</div>
-						<div th:unless="${selectedPayment != null}">
-							<h3 class="d-flex justify-content-center" style="text-align:center;">No Payment Details to Display</h3>
-						</div>
-						<th:block th:if="${selectedPayment == null}">
-							<h2 class="d-flex justify-content-center"><a class="btn btn-lg btn-success" th:href="@{/modifyPayment}">Add</a></h2>
-						</th:block>
-						<th:block th:unless="${selectedPayment == null}">
-							<h2 class="d-flex justify-content-center"><a class="btn btn-lg btn-success" th:href="@{/modifyPayment}">Change</a></h2>
-						</th:block>
+
+			<div class="d-flex justify-content-center">
+				<h2>Payment Details</h2>
+			</div>
+			<div th:if="${modifyPayment and allDetails == null and depositPicked == false or toShipping == false and allDetails == null and depositPicked == false}"
+				class="d-flex justify-content-center">
+				<h3>No Payment Details to Display</h3>
+			</div>
+
+			<div th:if="${toShipping and !modifyPayment  or allSelected and !modifyPayment}">
+				<div th:if="${!depositPicked}">
+					<div style="margin-bottom: 4px" th:if="${selectedPayment != null}"
+						class="d-flex justify-content-center">
+						<h3 th:inline="text">&nbsp[[${selectedPayment.cardType}]]&nbspEnding
+							In:&nbsp[[${selectedPayment.last4Digits}]]</h3>
 					</div>
-					<div th:unless="${!depositPicked}" class="d-flex justify-content-center">
-							<h3>Direct Deposit has been selected</h3>
+					<div th:unless="${selectedPayment != null}">
+						<h3 class="d-flex justify-content-center" style="text-align:center;">No Payment Details to
+							Display</h3>
 					</div>
-					<div th:if="${depositPicked}" class="d-flex justify-content-center">
-						<h2><a class="btn btn-lg btn-success" th:href="@{/modifyPayment}">Change</a></h2>
-					</div>
+					<th:block th:if="${selectedPayment == null}">
+						<h2 class="d-flex justify-content-center"><a class="btn btn-lg btn-success"
+								th:href="@{/modifyPayment}">Add</a></h2>
+					</th:block>
+					<th:block th:unless="${selectedPayment == null}">
+						<h2 class="d-flex justify-content-center"><a class="btn btn-lg btn-success"
+								th:href="@{/modifyPayment}">Change</a></h2>
+					</th:block>
 				</div>
-				
-				<div th:if="${toShipping == false and allSelected == false or modifyPayment}">
-					<!-- used if the user has existing card details and wishes to use them -->
-					<div id="payment-methods">
+				<div th:unless="${!depositPicked}" class="d-flex justify-content-center">
+					<h3>Direct Deposit has been selected</h3>
+				</div>
+				<div th:if="${depositPicked}" class="d-flex justify-content-center">
+					<h2><a class="btn btn-lg btn-success" th:href="@{/modifyPayment}">Change</a></h2>
+				</div>
+			</div>
+
+			<div th:if="${toShipping == false and allSelected == false or modifyPayment}">
+				<!-- used if the user has existing card details and wishes to use them -->
+				<div id="payment-methods">
 					<div th:if="${allDetails != null}">
-									<div class="d-flex justify-content-center">
-									<h2>Current Payment Details</h2>
-								</div>
-								<form method="post" action="#" class="row g-3 d-flex justify-content-center my-2"
-										th:action="@{/confirmPurchase/existingCard}">
-								<ul class="radio-button">
+						<div class="d-flex justify-content-center">
+							<h2>Current Payment Details</h2>
+						</div>
+						<form method="post" action="#" class="row g-3 d-flex justify-content-center my-2"
+							th:action="@{/confirmPurchase/existingCard}">
+							<ul class="radio-button">
 								<li th:if="${defaultDetails != null}" class="d-flex justify-content-center">
-									<input type="radio" th:id="${defaultDetails.id}" name="selected_payment_details" th:value="${defaultDetails.id}" checked>
-									<label style="font-size: 1.17em; font-weight: bolder;" th:for="${defaultDetails.id}" th:inline="text">
-									&nbspDefault:&nbsp[[${defaultDetails.cardType}]]&nbspEnding In:&nbsp[[${defaultDetails.last4Digits}]]							
+									<input type="radio" th:id="${defaultDetails.id}" name="selected_payment_details"
+										th:value="${defaultDetails.id}" checked>
+									<label style="font-size: 1.17em; font-weight: bolder;" th:for="${defaultDetails.id}"
+										th:inline="text">
+										&nbspDefault:&nbsp[[${defaultDetails.cardType}]]&nbspEnding
+										In:&nbsp[[${defaultDetails.last4Digits}]]
 									</label>
 								</li>
 								<th:block th:if="${defaultDetails == null}">
-								<li th:each="detail: ${allDetails}" class="d-flex justify-content-center">
-									<input type="radio" th:id="${detail.id}" name="selected_payment_details" th:value="${detail.id}" th:checked="${defaultDetails == null}"></input>
-									<label style="font-size: 1.17em; font-weight: bolder;" th:for="${detail.id}" th:inline="text">
-									&nbsp[[${detail.cardType}]]&nbspEnding In:&nbsp[[${detail.last4Digits}]]							
-									</label>
-								</li>
+									<li th:each="detail: ${allDetails}" class="d-flex justify-content-center">
+										<input type="radio" th:id="${detail.id}" name="selected_payment_details"
+											th:value="${detail.id}" th:checked="${defaultDetails == null}"></input>
+										<label style="font-size: 1.17em; font-weight: bolder;" th:for="${detail.id}"
+											th:inline="text">
+											&nbsp[[${detail.cardType}]]&nbspEnding In:&nbsp[[${detail.last4Digits}]]
+										</label>
+									</li>
 								</th:block>
-								
+
 								<th:block th:unless="${defaultDetails == null}">
-								<li th:each="detail: ${allDetails}" class="d-flex justify-content-center">
-								<th:block th:if="${detail.id != defaultDetails.id}">
-									<input type="radio" th:id="${detail.id}" name="selected_payment_details" th:value="${detail.id}">
-									<label style="font-size: 1.17em; font-weight: bolder;" th:for="${detail.id}" th:inline="text">
-									&nbsp[[${detail.cardType}]]&nbspEnding In:&nbsp[[${detail.last4Digits}]]							
-									</label>
+									<li th:each="detail: ${allDetails}" class="d-flex justify-content-center">
+										<th:block th:if="${detail.id != defaultDetails.id}">
+											<input type="radio" th:id="${detail.id}" name="selected_payment_details"
+												th:value="${detail.id}">
+											<label style="font-size: 1.17em; font-weight: bolder;" th:for="${detail.id}"
+												th:inline="text">
+												&nbsp[[${detail.cardType}]]&nbspEnding In:&nbsp[[${detail.last4Digits}]]
+											</label>
+										</th:block>
+									</li>
 								</th:block>
-								</li>
-								</th:block>
-								</ul>
-								
-								<h2>
-									<button id="paymentModalButton" style="justify-content:center; margin-left:auto; margin-right:auto;" class="d-flex justify-content-center btn btn-primary" data-backdrop="static" data-keyboard="false" type="button" data-bs-toggle="modal" data-bs-target="#paymentModal">
-										Add New Credit Card
-									</button>
-								</h2>
+							</ul>
 
-											<div id="secCodeEntry" class="mb-3 col-sm-4 justify-content-center">
-												<label for="securityCode" class="form-label ">Security Code for Confirmation of Existing Card (this is unnecessary if the default is selected)</label>
-												<input type="text" class="form-control" name="existingSecurityCode" id="securityCode" th:value="${existingSecurityCode}"></input>
-												<p th:text="${exSecurityCodeErr}" th:if="${exSecurityCodeErr != null}"></p>
-											</div>
+							<h2>
+								<button id="paymentModalButton"
+									style="justify-content:center; margin-left:auto; margin-right:auto;"
+									class="d-flex justify-content-center btn btn-primary" data-backdrop="static"
+									data-keyboard="false" type="button" data-bs-toggle="modal"
+									data-bs-target="#paymentModal">
+									Add New Credit Card
+								</button>
+							</h2>
 
-										<!-- Purchase decisions -->
-										<div class="d-flex justify-content-center mb-3">
-											<button class="btn btn-primary btn-lg"
-												 type="submit" name="submit">Confirm</button>
-											
-										</div>
-									</form>
-									<div style="margin-bottom:20px;" class="justify-content-center d-flex" th:if="${user.directDepositDetails != null}">
-										<a class="btn btn-primary btn-lg" th:href= @{/useDepositDetails}>Pay With Direct Deposit</a>
-									</div>
-									<div class="justify-content-center d-flex" style="margin-top:5px;" id="paypal-button-container"></div>
-									<!-- information to help properly set up the script https://www.freecodecamp.org/news/integrate-paypal-into-html-css-js-product-pages/ -->
-										<script src="https://www.paypal.com/sdk/js?client-id=ELCq5JI7YjiQ7YsoFZLih7R_bCiV4cK41LjUc8PYGj93jpzvN97Wtd0xZl9kwMfu1m6IODqlr03MlqFx&enable-funding=venmo&disable-funding=card&currency=USD" data-sdk-integration-source="button-factory"></script>
-										<script th:inline="javascript">
-										    function initPayPalButton() {
-										        paypal.Buttons({
-										            style: {
-										                shape: 'rect',
-										                color: 'gold',
-										                layout: 'vertical',
-										                label: 'paypal',
-										            },
-										
-										            createOrder: function(data, actions) {
-										                return actions.order.create({
-										                    purchase_units: [{"amount":{"currency_code": "USD", "value": /*[(${purchase.totalPriceBeforeTaxes})]*/''}}]
-										                });
-										            },
-										
-										            onApprove: function(data, actions) {
-										                return actions.order.capture().then(function(orderData) {
-										
-										                    // Full available details
-										                    console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
-										
-										                    // Show a success message within this page, for example:
-										                    const element = document.getElementById('paypal-button-container');
-										                    element.innerHTML = '';
-										                    element.innerHTML = '<h3>Thank you for your payment!</h3>';
-										
-										                    // Or go to another URL:  actions.redirect('thank_you.html');
-										
-										                });
-										            },
-										
-										            onError: function(err) {
-										                console.log(err);
-										            }
-										        }).render('#paypal-button-container');
-										    }
-										    initPayPalButton();
-										</script>
+							<div id="secCodeEntry" class="mb-3 col-sm-4 justify-content-center">
+								<label for="securityCode" class="form-label ">Security Code for Confirmation of Existing
+									Card (this is unnecessary if the default is selected)</label>
+								<input type="text" class="form-control" name="existingSecurityCode" id="securityCode"
+									th:value="${existingSecurityCode}"></input>
+								<p th:text="${exSecurityCodeErr}" th:if="${exSecurityCodeErr != null}"></p>
+							</div>
+
+							<!-- Purchase decisions -->
+							<div class="d-flex justify-content-center mb-3">
+								<button class="btn btn-primary btn-lg" type="submit" name="submit">Confirm</button>
+
+							</div>
+						</form>
+						<div style="margin-bottom:20px;" class="justify-content-center d-flex"
+							th:if="${user.directDepositDetails != null}">
+							<a class="btn btn-primary btn-lg" th:href=@{/useDepositDetails}>Pay With Direct Deposit</a>
 						</div>
-						<div th:unless="${allDetails != null}">
-							<h1>
-									<button id="paymentModalButton" style="justify-content:center; margin-left:auto; margin-right:auto;" class="d-flex justify-content-center btn btn-primary" data-backdrop="static" data-keyboard="false" type="button" data-bs-toggle="modal" data-bs-target="#paymentModal">
-										Add New Credit Card
-									</button>
-								</h1>
-								<div style="margin-bottom:20px;" class="justify-content-center d-flex" th:if="${user.directDepositDetails != null}">
-										<a class="btn btn-primary btn-lg" th:href= @{/useDepositDetails}>Pay With Direct Deposit</a>
-									</div>
-									<div class="justify-content-center d-flex" style="margin-top:5px;" id="paypal-button-container"></div>
-									<!-- information to help properly set up the script https://www.freecodecamp.org/news/integrate-paypal-into-html-css-js-product-pages/ -->
-										<script src="https://www.paypal.com/sdk/js?client-id=ELCq5JI7YjiQ7YsoFZLih7R_bCiV4cK41LjUc8PYGj93jpzvN97Wtd0xZl9kwMfu1m6IODqlr03MlqFx&enable-funding=venmo&disable-funding=card&currency=USD" data-sdk-integration-source="button-factory"></script>
-										<script th:inline="javascript">
-										    function initPayPalButton() {
-										        paypal.Buttons({
-										            style: {
-										                shape: 'rect',
-										                color: 'gold',
-										                layout: 'vertical',
-										                label: 'paypal',
-										            },
-										
-										            createOrder: function(data, actions) {
-										                return actions.order.create({
-										                    purchase_units: [{"amount":{"currency_code": "USD", "value": /*[(${purchase.totalPriceBeforeTaxes})]*/''}}]
-										                });
-										            },
-										
-										            onApprove: function(data, actions) {
-										                return actions.order.capture().then(function(orderData) {
-										
-										                    // Full available details
-										                    console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
-										
-										                    // Show a success message within this page, for example:
-										                    const element = document.getElementById('paypal-button-container');
-										                    element.innerHTML = '';
-										                    element.innerHTML = '<h3>Thank you for your payment!</h3>';
-										
-										                    // Or go to another URL:  actions.redirect('thank_you.html');
-										
-										                });
-										            },
-										
-										            onError: function(err) {
-										                console.log(err);
-										            }
-										        }).render('#paypal-button-container');
-										    }
-										    initPayPalButton();
-										</script>
+						<div class="justify-content-center d-flex" style="margin-top:5px;" id="paypal-button-container">
 						</div>
-						
-						<!-- Modal information and templates https://getbootstrap.com/docs/4.0/components/modal/ -->
-							<div id="paymentModal" class="modal fade" data-bs-parent="#payment-methods" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-							<div style="width:fit-content" class="modal-dialog modal-lg modal-dialog-centered" role="document">
-								<div class="modal-content">
+						<!-- information to help properly set up the script https://www.freecodecamp.org/news/integrate-paypal-into-html-css-js-product-pages/ -->
+						<script
+							src="https://www.paypal.com/sdk/js?client-id=ELCq5JI7YjiQ7YsoFZLih7R_bCiV4cK41LjUc8PYGj93jpzvN97Wtd0xZl9kwMfu1m6IODqlr03MlqFx&enable-funding=venmo&disable-funding=card&currency=USD"
+							data-sdk-integration-source="button-factory"></script>
+						<script th:inline="javascript">
+							function initPayPalButton() {
+								paypal.Buttons({
+									style: {
+										shape: 'rect',
+										color: 'gold',
+										layout: 'vertical',
+										label: 'paypal',
+									},
+
+									createOrder: function (data, actions) {
+										return actions.order.create({
+											purchase_units: [{ "amount": { "currency_code": "USD", "value": /*[(${purchase.totalPriceBeforeTaxes})]*/'' } }]
+										});
+									},
+
+									onApprove: function (data, actions) {
+										return actions.order.capture().then(function (orderData) {
+
+											// Full available details
+											console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+
+											// Show a success message within this page, for example:
+											const element = document.getElementById('paypal-button-container');
+											element.innerHTML = '';
+											element.innerHTML = '<h3>Thank you for your payment!</h3>';
+
+											// Or go to another URL:  actions.redirect('thank_you.html');
+
+										});
+									},
+
+									onError: function (err) {
+										console.log(err);
+									}
+								}).render('#paypal-button-container');
+							}
+							initPayPalButton();
+						</script>
+					</div>
+					<div th:unless="${allDetails != null}">
+						<h1>
+							<button id="paymentModalButton"
+								style="justify-content:center; margin-left:auto; margin-right:auto;"
+								class="d-flex justify-content-center btn btn-primary" data-backdrop="static"
+								data-keyboard="false" type="button" data-bs-toggle="modal"
+								data-bs-target="#paymentModal">
+								Add New Credit Card
+							</button>
+						</h1>
+						<div style="margin-bottom:20px;" class="justify-content-center d-flex"
+							th:if="${user.directDepositDetails != null}">
+							<a class="btn btn-primary btn-lg" th:href=@{/useDepositDetails}>Pay With Direct Deposit</a>
+						</div>
+						<div class="justify-content-center d-flex" style="margin-top:5px;" id="paypal-button-container">
+						</div>
+						<!-- information to help properly set up the script https://www.freecodecamp.org/news/integrate-paypal-into-html-css-js-product-pages/ -->
+						<script
+							src="https://www.paypal.com/sdk/js?client-id=ELCq5JI7YjiQ7YsoFZLih7R_bCiV4cK41LjUc8PYGj93jpzvN97Wtd0xZl9kwMfu1m6IODqlr03MlqFx&enable-funding=venmo&disable-funding=card&currency=USD"
+							data-sdk-integration-source="button-factory"></script>
+						<script th:inline="javascript">
+							function initPayPalButton() {
+								paypal.Buttons({
+									style: {
+										shape: 'rect',
+										color: 'gold',
+										layout: 'vertical',
+										label: 'paypal',
+									},
+
+									createOrder: function (data, actions) {
+										return actions.order.create({
+											purchase_units: [{ "amount": { "currency_code": "USD", "value": /*[(${purchase.totalPriceBeforeTaxes})]*/'' } }]
+										});
+									},
+
+									onApprove: function (data, actions) {
+										return actions.order.capture().then(function (orderData) {
+
+											// Full available details
+											console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+
+											// Show a success message within this page, for example:
+											const element = document.getElementById('paypal-button-container');
+											element.innerHTML = '';
+											element.innerHTML = '<h3>Thank you for your payment!</h3>';
+
+											// Or go to another URL:  actions.redirect('thank_you.html');
+
+										});
+									},
+
+									onError: function (err) {
+										console.log(err);
+									}
+								}).render('#paypal-button-container');
+							}
+							initPayPalButton();
+						</script>
+					</div>
+
+					<!-- Modal information and templates https://getbootstrap.com/docs/4.0/components/modal/ -->
+					<div id="paymentModal" class="modal fade" data-bs-parent="#payment-methods" tabindex="-1"
+						role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+						<div style="width:fit-content" class="modal-dialog modal-lg modal-dialog-centered"
+							role="document">
+							<div class="modal-content">
 								<div class="modal-header">
 									<h2>Use New Credit Card</h2>
 								</div>
-									<form method="post" action="#" class="row g-3 d-flex justify-content-center my-2"
-										th:action="@{/confirmPurchase/submitPurchase}"  th:object="${paymentDetails}">
-										<div th:if="${relogin == false}">
+								<form method="post" action="#" class="row g-3 d-flex justify-content-center my-2"
+									th:action="@{/confirmPurchase/submitPurchase}" th:object="${paymentDetails}">
+									<div th:if="${relogin == false}">
 										<div class="modal-body">
-									<table style="width:20vw; justify-content:center; margin-left:auto; margin-right:auto;" class="uniTableForm">
-										<thead>
-											<tr>
-												<td colspan="3" style="background-color: #D3D3D3;"><h2>Payment Method</h2></td>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td colspan="3" style="background-color: #89CFF0"><label for="cardType" class="form-label">Card Type</label></td>
-											</tr>
-											<tr>
-												<td colspan="3"><select class="form-select" id="cardType" name="cardType">
-													<option th:each="type : ${cardTypes}"
-														th:value="${type.cardType}" th:text="${type.cardType}">
-													</option>
-												</select></td>
-											</tr>
-											<tr>
-												<td colspan="3" style="background-color: #89CFF0"><label for="cardholderName" class="form-label">Cardholder Name</label></td>
-											</tr>
-											<tr>
-												<td colspan="3"><input type="text" class="form-control" th:field="*{cardholderName}"></input>
-											</td>
-											</tr>
-											<tr>
-												<td colspan="3" style="background-color: #89CFF0"><label for="cardNumber" class="form-label">Card Number</label></td>
-											</tr>
-											<tr>
-												<td colspan="3"><input type="number" class="form-control" th:field="*{cardNumber}"></input>
-												<p th:text="${cardNumberErr}" th:if="${cardNumberErr != null}"></p>
-											</td>
-											</tr>
-											<tr>
-												<td style="background-color: #89CFF0"><label for="expirationDate" class="form-label">Expiration Date</label></td>
-												<td style="background-color: #89CFF0"><label for="securityCode" class="form-label">Security Code</label></td>
-												<td style="background-color: #89CFF0"><label for="postalCode" class="form-label">Postal Code</label></td>
-											</tr>
-											<tr>
-												<td><input style="display:none" type="month" name="pleaseWork">
-												<input th:field="*{expirationDate}" name="expirationDate" class="form-control date-picker" autocomplete="do-not-autofill"/> 
-												<script type="text/javascript"> <!--used for learning how to use jQuery to get month and year since input type="month" doesn't work on firefox https://stackoverflow.com/questions/2208480/jquery-ui-datepicker-to-show-month-year-only -->
-											        $(function() {
-											            $('.date-picker').datepicker( {
-											            changeMonth: true,
-											            changeYear: true,
-											            showButtonPanel: true,
-											            dateFormat: 'M yy',
-											            onClose: function(dateText, inst) { 
-											                $(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
-											            }
-											            });
-											        });
-											    </script>
-												<p th:if="${#fields.hasErrors('expirationDate')}" th:errors="*{expirationDate}">
-												</p>
-												<p th:if="${cardError}" th:text="${cardError}"></p></td>
-												<td><input type="text" class="form-control" name="securityCode" id="securityCode" th:field="*{securityCode}"></input>
-												<p th:text="${securityCodeErr}" th:if="${securityCodeErr != null}"></p></td>
-												<td><input type="number" class="form-control" name="postalCode" id="postalCode" th:field="*{postalCode}"></input>
-												<p th:text="${postalCodeErr}" th:if="${postalCodeErr != null}"></p>
-												</td>
-											</tr>
-											<!-- <button type="button" class="btn btn-lg btn-danger" disabled
+											<table
+												style="width:20vw; justify-content:center; margin-left:auto; margin-right:auto;"
+												class="uniTableForm">
+												<thead>
+													<tr>
+														<td colspan="3" style="background-color: #D3D3D3;">
+															<h2>Payment Method</h2>
+														</td>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td colspan="3" style="background-color: #89CFF0"><label
+																for="cardType" class="form-label">Card Type</label></td>
+													</tr>
+													<tr>
+														<td colspan="3"><select class="form-select" id="cardType"
+																name="cardType">
+																<option th:each="type : ${cardTypes}"
+																	th:value="${type.cardType}"
+																	th:text="${type.cardType}">
+																</option>
+															</select></td>
+													</tr>
+													<tr>
+														<td colspan="3" style="background-color: #89CFF0"><label
+																for="cardholderName" class="form-label">Cardholder
+																Name</label></td>
+													</tr>
+													<tr>
+														<td colspan="3"><input type="text" class="form-control"
+																th:field="*{cardholderName}"></input>
+														</td>
+													</tr>
+													<tr>
+														<td colspan="3" style="background-color: #89CFF0"><label
+																for="cardNumber" class="form-label">Card Number</label>
+														</td>
+													</tr>
+													<tr>
+														<td colspan="3"><input type="number" class="form-control"
+																th:field="*{cardNumber}"></input>
+															<p th:text="${cardNumberErr}"
+																th:if="${cardNumberErr != null}"></p>
+														</td>
+													</tr>
+													<tr>
+														<td style="background-color: #89CFF0"><label
+																for="expirationDate" class="form-label">Expiration
+																Date</label></td>
+														<td style="background-color: #89CFF0"><label for="securityCode"
+																class="form-label">Security Code</label></td>
+														<td style="background-color: #89CFF0"><label for="postalCode"
+																class="form-label">Postal Code</label></td>
+													</tr>
+													<tr>
+														<td><input style="display:none" type="month" name="pleaseWork">
+															<input th:field="*{expirationDate}" name="expirationDate"
+																class="form-control date-picker"
+																autocomplete="do-not-autofill" />
+															<script type="text/javascript"> 
+																$(function () {
+																	$('.date-picker').datepicker({
+																		changeMonth: true,
+																		changeYear: true,
+																		showButtonPanel: true,
+																		dateFormat: 'M yy',
+																		onClose: function (dateText, inst) {
+																			$(this).datepicker('setDate', new Date(inst.selectedYear, inst.selectedMonth, 1));
+																		}
+																	});
+																});
+															</script>
+															<p th:if="${#fields.hasErrors('expirationDate')}"
+																th:errors="*{expirationDate}">
+															</p>
+															<p th:if="${cardError}" th:text="${cardError}"></p>
+														</td>
+														<td><input type="text" class="form-control" name="securityCode"
+																id="securityCode" th:field="*{securityCode}"></input>
+															<p th:text="${securityCodeErr}"
+																th:if="${securityCodeErr != null}"></p>
+														</td>
+														<td><input type="number" class="form-control" name="postalCode"
+																id="postalCode" th:field="*{postalCode}"></input>
+															<p th:text="${postalCodeErr}"
+																th:if="${postalCodeErr != null}"></p>
+														</td>
+													</tr>
+													<!-- <button type="button" class="btn btn-lg btn-danger" disabled
 													th:if="${currUser.directDepositDetails == null}">No Deposit Details Added</button></div> -->
-										</tbody>
-									</table>
-									
+												</tbody>
+											</table>
 
-										<!-- Purchase decisions -->
-										<div class="d-flex justify-content-center mb-3">
-											<button style="margin-right:50px;" class="btn btn-danger btn-lg" type="submit" name="cancel">Cancel</button>
-											<button style="margin-left:50px;" class="btn btn-primary btn-lg"
-												 type="submit" name="submit">Confirm</button>
-											
+
+											<!-- Purchase decisions -->
+											<div class="d-flex justify-content-center mb-3">
+												<button style="margin-right:50px;" class="btn btn-danger btn-lg"
+													type="submit" name="cancel">Cancel</button>
+												<button style="margin-left:50px;" class="btn btn-primary btn-lg"
+													type="submit" name="submit">Confirm</button>
+
+											</div>
 										</div>
-										</div>
-										</div>
-										<div th:if="${relogin}">
+									</div>
+									<div th:if="${relogin}">
 										<div class="d-flex justify-content-center">
-												<h2>Please Confirm by Logging In</h2>
+											<h2>Please Confirm by Logging In</h2>
 										</div>
-										<div th:if="${loginEr}" style="text-align: center; justify-content:center; margin-left:auto; margin-right:auto;" class="d-flex justify-content-center">
-												<h3>Incorrect Username or Password Entered</h3>
+										<div th:if="${loginEr}"
+											style="text-align: center; justify-content:center; margin-left:auto; margin-right:auto;"
+											class="d-flex justify-content-center">
+											<h3>Incorrect Username or Password Entered</h3>
 										</div>
 										<div class="d-flex justify-content-center">
-							        	<div class="card w-50 shadow bg-light mt-2 mb-3">
-							       			<div class="card-body d-flex flex-column align-items-center">
-										        <div class="form-floating shadow-sm mb-1 mt-3 w-75">
-										  			<input type="text" id="usernamePD" class="form-control" name="usernamePD">
-										  			<label for="usernamePD">username</label>
+											<div class="card w-50 shadow bg-light mt-2 mb-3">
+												<div class="card-body d-flex flex-column align-items-center">
+													<div class="form-floating shadow-sm mb-1 mt-3 w-75">
+														<input type="text" id="usernamePD" class="form-control"
+															name="usernamePD">
+														<label for="usernamePD">username</label>
+													</div>
+													<div class="form-floating shadow-sm mt-1 mb-1 w-75">
+														<input type="password" id="passwordPD" class="form-control"
+															name="passwordPD">
+														<label for="passwordPD">password</label>
+													</div>
 												</div>
-												<div class="form-floating shadow-sm mt-1 mb-1 w-75">
-										  			<input type="password" id="passwordPD" class="form-control" name="passwordPD">
-										  			<label for="passwordPD">password</label>
+												<div class="d-flex justify-content-evenly mb-3">
+													<button type="submit" name="loginInfo"
+														class="btn btn-lg btn-success">submit</button>
+													<button type="submit" class="btn btn-lg btn-danger"
+														name="cancel">Back</button>
 												</div>
 											</div>
-											<div class="d-flex justify-content-evenly mb-3">
-												<button type="submit" name="loginInfo" class="btn btn-lg btn-success">submit</button>
-												<button type="submit" class="btn btn-lg btn-danger" name="cancel">Back</button>
-											</div>
-										</div>   
-										</div>   
-					    				</div>
-									</form>
-								</div>
+										</div>
+									</div>
+								</form>
 							</div>
 						</div>
-						  <!-- <div class="accordion-item">
+					</div>
+					<!-- <div class="accordion-item">
 							<h2 class="accordion-header">
 								<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#paypalAccordion">
 									Pay via PayPal
@@ -586,41 +685,97 @@
 								</div>
 							</div>
 						</div> -->
-					</div>
-					
 				</div>
-				<div  class="w-40"> <!--th:if="${allSelected and toShipping == false and modifyPayment == false}"-->
-					<hr>
-					<div class="d-flex justify-content-center">
-						<h3 style="word-break:keep-all;">If these details are correct then <br>
+
+			</div>
+			<div class="w-40"> <!--th:if="${allSelected and toShipping == false and modifyPayment == false}"-->
+				<hr>
+				<div class="d-flex justify-content-center">
+					<h3 style="word-break:keep-all;">If these details are correct then <br>
 						please press Purchase to continue</h3>
-						<h3>Total: $<span th:text="${purchase.totalPriceAfterTaxes}"></span></h3>
-					</div>
+				</div>
+				<form method="post" th:action="@{/attemptPurchase}">
+					<input type="hidden" name="deliveryOption" th:value="${deliveryOption}">
 					<div style="margin-bottom: 4px" class="d-flex justify-content-center">
-						<a style="margin-right:25px;" th:href="@{/attemptPurchase}" class="btn btn-primary btn-lg" >Purchase</a>
-						<a class="btn btn-danger btn-lg" th:href=@{/cancel-purchase} style="margin-left:25;">Cancel</a>	
+						<h3>Total: $<span th:text="${purchase.totalPriceAfterTaxes}"></span></h3>
+						<button type="submit" class="btn btn-primary btn-lg">Purchase</button>
+						<a class="btn btn-danger btn-lg" th:href="@{/cancel-purchase}" style="margin-left:25px;">Cancel</a>
 					</div>
-				</div>
-				</div>
+				</form>
 			</div>
 		</div>
-	</body>
-	<script>
-		$(document).ready(function () {
-			toggleAccordion();
-			$('input[name="deliveryOption"]').on('change', function () {
-				toggleAccordion();
-			});
+	</div>
+	</div>
 
-			function toggleAccordion() {
-				if ($('#shippingOption').is(':checked')) {
-					$('#shippingAccordion').show();
-					$('#pickupAccordion').hide();
-				} else {
-					$('#pickupAccordion').show();
-					$('#shippingAccordion').hide();
-				}
-			}
+	<!--Shipping Modal-->
+	<div class="modal fade" id="shippingModal" tabindex="-1" aria-labelledby="shippingModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form method="post" action="#" th:action="@{/addShipping}" object="${shippingDetails}" class="row g-3 d-flex justify-content-center">
+					<div class="card shadow bg-light" style="justify-content: center;">
+						<div class="card-header">
+							<!-- card header -->
+							<b>Shipping Address</b>
+						</div>
+						<div class="card-body">
+							<div class="input-group mb-3">
+								<input type="hidden" name="userId" th:value="${user.id}">
+								<!-- shipping recipient -->
+								<input type="text" field="*{recipient}" name="recipient" class="form-control" placeholder="Recipient"></input> 
+								<p th:if="${recipientErr != null}" th:text="${recipientErr}"></p>
+								<!-- street address -->
+								<input type="text" field="*{streetAddress}" name="streetAddress" class="form-control" placeholder="Street Address"></input>
+								<p th:if="${streetAddressErr != null}" th:text="${streetAddressErr}"></p>
+							</div>
+							<div class="input-group mb-3">
+								<!-- apt, building, etc (optional) -->
+								<input type="text" field="*{extraLocationInfo}" name="extraLocationInfo" class="form-control" placeholder="Apt, suite, unit, building, etc. (optional)"></input>
+								<!-- city -->
+								<input type="text" field="*{city}" name="city" class="form-control" placeholder="City"></input>
+								<p th:if="${cityErr != null}" th:text="${cityErr}"></p>
+							</div>
+							<div class="input-group mb-3">
+								<!-- state -->
+								<select class="form-select" id="stateId" name="stateId">
+									<option th:each="state : ${states}" th:value="${state.stateName}" th:text="${state.stateName}"></option>
+								</select>
+								<p th:if="${stateIdErr}" th:text="${stateId}"></p>
+								<!-- postal code -->
+								<input type="tel" field="*{postalCode}" name="postalCode" class="form-control" maxlength="5" placeholder="Postal Code"></input>
+								<p th:if="${postalCodeErr != null}" th:text="${postalCodeErr}"></p>
+							</div>
+
+						</div>
+						<!-- submit and cancel buttons  -->
+						<div style="margin-top:5px;" class="d-flex justify-content-center mb-3">
+							<!-- back button -->
+							<a style="margin-right:50px;" class="btn btn-outline-danger ms-1" name="cancel">Cancel</a>
+							<!-- add button -->
+							<button style="margin-left:50px;" type="submit" name="submit" class="btn btn-outline-success me-1" id="mysignupbutton">Submit</button>	            
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+<script>
+	$(document).ready(function () {
+		toggleAccordion();
+		$('input[name="deliveryOption"]').on('change', function () {
+			toggleAccordion();
 		});
-	</script>
+
+		function toggleAccordion() {
+			if ($('#shippingOption').is(':checked')) {
+				$('#shippingAccordion').show();
+				$('#pickupAccordion').hide();
+			} else {
+				$('#pickupAccordion').show();
+				$('#shippingAccordion').hide();
+			}
+		}
+	});
+</script>
+
 </html>
