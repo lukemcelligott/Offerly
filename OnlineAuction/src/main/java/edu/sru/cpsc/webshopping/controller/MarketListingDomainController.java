@@ -331,24 +331,27 @@ public class MarketListingDomainController {
 	     return ResponseEntity.ok(String.valueOf(totalBidsCount));
 	 }
 	 
-	 @GetMapping("/isHighestBidder/{id}")
-	 @ResponseBody
-	 public Map<String, Boolean> isCurrentUserHighestBidder(@PathVariable Long id, Principal principal) {
-	     MarketListing marketListing = marketRepository.findById(id).orElse(null);
-	     if (marketListing == null) {
-	         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Listing not found");
-	     }
+	    @GetMapping("/isHighestBidder/{marketListingId}")
+	    @ResponseBody
+	    public Map<String, Boolean> isHighestBidder(@PathVariable Long marketListingId, Principal principal) {
+	        MarketListing marketListing = marketRepository.findById(marketListingId).orElse(null);
 
-	     User currentUser = userService.getUserByUsername(principal.getName());
-	     Bid highestBid = auctionService.findHighestBidForAuction(marketListing.getAuction());
+	        if (marketListing == null) {
+	            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Market listing not found");
+	        }
 
-	     boolean isHighestBidder = false;
-	     if (highestBid != null && highestBid.getBidder().getId() == currentUser.getId()) {
-	         isHighestBidder = true;
-	     }
+	        Auction auction = marketListing.getAuction();
+	        Bid mostRecentBid = auctionService.findHighestBidForAuction(auction);
 
-	     Map<String, Boolean> response = new HashMap<>();
-	     response.put("isHighestBidder", isHighestBidder);
-	     return response;
-	 }
-}
+	        Map<String, Boolean> response = new HashMap<>();
+	        if (mostRecentBid != null && mostRecentBid.getBidder().getUsername().equals(principal.getName())) {
+	            response.put("isHighestBidder", true);
+	            System.out.println("Lake");
+	        } else {
+	            response.put("isHighestBidder", false);
+	            System.out.println("Dog");
+	        } 
+	        System.out.println("Maple");
+	        return response;
+	    }
+	}

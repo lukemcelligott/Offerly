@@ -6,6 +6,7 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/magnify/2.3.3/js/jquery.magnify.min.js" integrity="sha512-YKxHqn7D0M5knQJO2xKHZpCfZ+/Ta7qpEHgADN+AkY2U2Y4JJtlCEHzKWV5ZE87vZR3ipdzNJ4U/sfjIaoHMfw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         
         <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
@@ -13,8 +14,6 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
 		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-		
-		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
@@ -94,15 +93,7 @@
 							   <strong><span id="uniqueBidderCountSpan" style="margin-left: 5px;"></span></strong>
 							   <span class="details-text" style="margin-left: 15px;">Total Bids: </span>
 							   <strong><span id="totalBidsCountSpan" style="margin-left: 5px;"></span></strong>
-						  </div>
-						  
-						  		<!-- Number of users watching this item -->
-							<div class="d-flex justify-content-center" style="margin-top: 5px !important;">
-								<div>
-									<span>Number of users watching this item: </span>
-									<strong><span th:text="${userCount}"></span></strong>
-								</div>
-							</div>
+						  	</div>
 
 						
 						    <!-- Auction End Date Countdown -->
@@ -114,18 +105,18 @@
 						    </div>
 						    					    
 																				
-							<!-- Purchase Auction Div -->							
-							<div th:if="${isBuyer}" id="purchaseAuctionDiv" class="col-auto" style="display:none;">
-							    <form id="purchaseAuctionForm" class="row g-3 d-flex justify-content-center my-2" th:action="@{/viewMarketListing/attemptPurchase}" th:object="${newTransaction}" method="post">
+							<!-- Purchase Auction Div -->
+							<div id="purchaseAuctionDiv" class="col-auto d-flex justify-content-center" style="display:none;">
+							    <form id="purchaseAuctionForm" class="row g-3 my-2" th:action="@{/viewMarketListing/attemptPurchase}" th:object="${newTransaction}" method="post">
 							        <input type="hidden" name="pricePerItem" th:value="${currListing.auction.currentBid}" />
 							        <input type="hidden" name="qtyBought" th:value="1" />
 							        <div class="col-auto">
 							            <input class="btn btn-success" id="purchaseAuctionButton" name="buyProduct" type="submit" th:value="'Purchase Auction for $' + ${currListing.auction.currentBid}" />
 							        </div>
-							    </form>
+							    </form>	
+							</div>
 							</div>
 						</div>
-					</div>
                         
                   
                         <!-- Right Column: Seller Details and Action Buttons -->
@@ -164,7 +155,23 @@
 	                                    </div>
 	                                </div>
 	                            </div>
+	                            
+	                            <!-- Number of users watching this item -->
+								<div class="row g-3 d-flex my-2" style="justify-content: right;">
+									<!-- 1 user watching the item -->
+									<div th:if="${userCount} == 1">
+										<span th:text="${userCount}"></span>
+										<span> user watching this item</span>
+									</div>
+									<!-- !1 user watching the item -->
+									<div th:if="${userCount} != 1">
+										<span th:text="${userCount}"></span>
+										<span> users watching this item</span>
+									</div>
+								</div>
+	                            
 	                            <hr>
+	                            <!-- product description -->
                                 <p class="lead" th:text="${widget.description}"></p>
                             </div>
                       
@@ -187,22 +194,33 @@
 							    <!-- Buy Now Form -->
 							    <form th:if="${isBuyer && currListing.setAutomatically}" id="buy-product" class="row g-3 d-flex my-2" action="#" th:action="@{/viewMarketListing/attemptPurchase}" th:object=${newTransaction} method="post">
 							        <div class="row align-items-center">
+								        <!-- quantity -->
 								        <div class="col-auto">
 								            <label for="qtyBought" class="col-form-label"> Quantity: </label>
 								        </div>
 								        <div class="col">
-								            <input style="width: 100px;" id="qtyBought" class="form-control" name="qtyBought" type="number" th:field="*{qtyBought}" placeholder="Number to Buy" min="1" th:max="${currListing.qtyAvailable}" value="0" required></input>
-								        </div>							   
+								            <input style="width: 100px;" id="qtyBought" class="form-control" name="qtyBought" type="number" th:field="*{qtyBought}" placeholder="Number to Buy" min="1" th:max="${currListing.qtyAvailable}" value="1" required></input>
+								        </div>
+								       	<div class="col"></div>		
+								       	<!-- buy now -->	   
 								        <div class="col-auto" style="margin-right: -28px;">
-								            <input style="width: 250px;" class="btn btn-outline-success" id="purchaseButton" name="buyProduct" type="submit" th:value="'Buy Now for $' + ${currListing.pricePerItem}" />
+								            <input style="width: 250px;" class="btn btn-outline-success" id="purchaseButton" name="buyProduct" type="submit" th:value="'Buy Now'" /> <!-- for $' + ${currListing.pricePerItem}" />-->
 								        </div>
 							        </div>
 							    </form>
 							
 							    <!-- Other Buttons and Actions -->
 							    
-							    <!-- Add to Watchlist Button -->
-							    <div class="row g-3 d-flex my-2" style="justify-content: right;">							                                        	
+							    <div class="row g-3 d-flex my-2">
+									<!-- price -->
+							        <div class="col-auto">
+										<span>Price: $</span>
+										<span th:text="${currListing.pricePerItem}"></span>
+									</div>
+									
+									<div class="col"></div>
+							        
+									<!-- Add to Watchlist Button -->							                                        	
 									<div class="col-auto" th:if="${!foundInWatchlist}">
                                     	<form id="addToWatchlistForm" th:action="@{/viewMarketListing/wishlistItem/{id}(id = ${currListing.getId()})}" method="post">
                                           	<button style="width: 250px;" class="btn btn-outline-success" id="addToWatchlistButton" data-toggle="modal" data-target="#watchlistModal">
@@ -210,10 +228,7 @@
                                           	</button>
                                       	</form>                                      	
                                   	</div>
-							    </div>
-							    
-							    <!-- Remove from Watchlist Button -->
-							    <div class="row g-3 d-flex my-2" style="justify-content: right;">
+                                  	<!-- Remove from Watchlist button -->
                                   	<div class="col-auto" th:if="${foundInWatchlist}">
                                     	<form id="removeFromWatchlistForm" th:action="@{/viewMarketListing/delWishlistItem/{id}(id = ${currListing.getId()})}" method="post">
                                           	<button style="width: 250px;" class="btn btn-outline-danger" id="addToWatchlistButton" data-toggle="modal" data-target="#watchlistModal">
@@ -367,7 +382,7 @@
         	const basePrice = /*[[${currListing.pricePerItem}]]*/ 0.0;
         	const qtyBoughtElement = document.getElementById('qtyBought');
         	const purchaseButtonElement = document.getElementById('purchaseButton');
-    
+       
         	function updatePrice() {
             	if (qtyBoughtElement && purchaseButtonElement) {
                     const qty = parseInt(qtyBoughtElement.value);
@@ -416,7 +431,7 @@
             
         	document.addEventListener('DOMContentLoaded', function() {
 		        // Get the endAuctionDate from Thymeleaf variable
-		           /*<![CDATA[*/
+		        /*<![CDATA[*/
         		var endAuctionDateStr = /*[[${currListing.auction.endAuctionDate}]]*/ 'START Date';
     			/*]]>*/
 		        var endAuctionDate = new Date(endAuctionDateStr);
@@ -441,19 +456,11 @@
 		            + minutes + "m " + seconds + "s ";
 		            
 				    // If the countdown is over, write some text and hide the "Bid Now" button
+				    				    
 			        if (distance < 0) {
+						bidButton.style.display = 'none';
 			            clearInterval(x);
 			            document.getElementById("countdown").innerHTML = "EXPIRED";
-			            
-			            // Hide the "Bid Now" button
-			            if (bidButton) {
-			                bidButton.style.display = 'none';
-			            }
-			
-			            // Show the "Purchase Auction" button
-			            if (purchaseAuctionDiv) {
-			                purchaseAuctionDiv.style.display = 'flex';
-			            }
 			        }
 			    }, 1000);
 			});		
@@ -476,18 +483,20 @@
 			        document.getElementById("totalBidsCountSpan").textContent = data;
 			    })
 			    .catch(error => console.error('Error fetching total bids:', error));
-			    
+			  
+			// Show button to highest bidder    
 			$(document).ready(function() {
-		        let marketListingId = window.location.pathname.split("/").pop();
-		
-		        $.get("/isHighestBidder/" + marketListingId, function(response) {
-		            if(response.isHighestBidder) {
-		                $("#purchaseAuctionDiv").show();
-		            } else {
-		                $("#purchaseAuctionDiv").hide();
-		            }
-		        });
-		    });
+			    let marketListingId = window.location.pathname.split("/").pop();
+				var purchaseAuctionDiv = document.getElementById('purchaseAuctionButton');
+			    
+			    $.get("/isHighestBidder/" + marketListingId, function(response) {
+			        if (response.isHighestBidder && new Date().getTime() > new Date(/*[[${currListing.auction.endAuctionDate}]]*/ 'START Date')) {								
+						purchaseAuctionDiv.style.display = 'block';
+					} else {
+					  	purchaseAuctionDiv.style.display = 'none';
+					}
+			    });
+			});
 		
 		/* Image Magnifier glass https://www.w3schools.com/howto/howto_js_image_magnifier_glass.asp
 		function magnify(imgID, zoom) {
