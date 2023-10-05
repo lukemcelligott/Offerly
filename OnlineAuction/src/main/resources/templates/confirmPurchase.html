@@ -589,13 +589,14 @@
 					</div>
 					
 				</div>
-				<div th:if="${allSelected and toShipping == false and modifyPayment == false}" class="w-40">
+				<div  class="w-40"> <!--th:if="${allSelected and toShipping == false and modifyPayment == false}"-->
 					<hr>
 					<div class="d-flex justify-content-center">
 						<h3 style="word-break:keep-all;">If these details are correct then <br>
 						please press Purchase to continue</h3>
+						<h3>Total: $<span th:text="${purchase.totalPriceAfterTaxes}"></span></h3>
 					</div>
-					<div style="margin-bottom: 4px" th:if="${selectedAddress != null}" class="d-flex justify-content-center">
+					<div style="margin-bottom: 4px" class="d-flex justify-content-center">
 						<a style="margin-right:25px;" th:href="@{/attemptPurchase}" class="btn btn-primary btn-lg" >Purchase</a>
 						<a class="btn btn-danger btn-lg" th:href=@{/cancel-purchase} style="margin-left:25;">Cancel</a>	
 					</div>

@@ -258,7 +258,7 @@ public class AddWidgetController
 			WidgetAttribute widgetAttribute = entry.getWidgetAttribute();
 			System.out.println(attribute.getAttributeKey() + " - " + attribute.getDataType() + " - " + widgetAttribute.getValue());
 			widgetAttribute.setWidget(widget);
-			widgetAttribute.setAttribute(attribute);
+			//widgetAttribute.setAttribute(attribute);
 			widgetAttributes.add(widgetAttribute);
 			attributes.add(attribute);
 		}

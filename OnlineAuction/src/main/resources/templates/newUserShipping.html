@@ -61,6 +61,7 @@
 	            </div>
 	            <div class="card-body">
 	                <div class="input-group mb-3">
+						<input type="hidden" name="userId" th:value="${user.id}">
 						<!-- shipping recipient -->
                         <input type="text" field="*{recipient}" name="recipient" class="form-control" placeholder="Recipient"></input> 
                         <p th:if="${recipientErr != null}" th:text="${recipientErr}"></p>

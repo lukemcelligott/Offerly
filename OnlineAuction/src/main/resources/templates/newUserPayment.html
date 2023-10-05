@@ -56,6 +56,7 @@
         
         <!-- payment method -->
         <form method="post" action="#" class="row g-3 d-flex justify-content-center my-2" th:action="@{/submitPurchaseSignup}" object="${paymentDetails}">
+			<input type="hidden" name="userId" th:value="${user.id}">
             <!--<div th:if="${relogin == false}">-->
             <div class="card shadow bg-light w-50 me-3 ms-5 mb-3">
                 <div class="card-header">

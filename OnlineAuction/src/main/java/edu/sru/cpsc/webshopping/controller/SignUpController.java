@@ -380,13 +380,14 @@ public class SignUpController {
   	/* used by newUserPayment.html */
   	@Transactional
 	@PostMapping("/submitPurchaseSignup")
-  	public String submitPurchaseSignup(@Validated @ModelAttribute("paymentDetails") PaymentDetails_Form paymentDetails,
-			BindingResult result, Model model, Principal principal) {
+  	public String submitPurchaseSignup(@Validated @ModelAttribute("paymentDetails") PaymentDetails_Form paymentDetails, @RequestParam("userId") Long userId,
+			BindingResult result, Model model) {
 	  	System.out.println("got to start of payment");
 		PaymentDetails currDetails = new PaymentDetails();
 		allSelected = false;
 		currDetails.buildFromForm(paymentDetails);
 		model.addAttribute("cardTypes", cardController.getAllCardTypes());
+    System.out.println("userId: " + userId);
 		// Test that payment details are valid
 		if (!paymentDetailsInvalid(paymentDetails) && !result.hasErrors()) {
 			// add the card to the database if it's new
@@ -400,7 +401,7 @@ public class SignUpController {
 			if (address != null) {
 				allSelected = true;
 			}
-			User user = userService.getUserByUsername(principal.getName());
+			User user = userRepository.findById(userId).orElse(null);
 			Set<PaymentDetails> PD = user.getPaymentDetails();
 			if(PD == null)
 				PD = new HashSet<PaymentDetails>();
@@ -414,6 +415,7 @@ public class SignUpController {
 			relogin = true;
 			validatedDetails = currDetails;
 			model.addAttribute("states", stateDetailsController.getAllStates());
+      model.addAttribute("user", user);
 			return "newUserShipping";
 		}
 		// Transaction failed - post error
@@ -433,7 +435,7 @@ public class SignUpController {
 			if (userDetController.cardFarFuture(paymentDetails) && paymentDetails.getExpirationDate() != "") {
 				model.addAttribute("cardError", "The expiration date is an impossible number of years in the future");
 			}
-			User user = userService.getUserByUsername(principal.getName());
+			User user = userRepository.findById(userId).orElse(null);
 			System.out.println(user);
 			if (address == null) {
 				model.addAttribute("noAddress", "Please enter a shipping address");
@@ -470,7 +472,7 @@ public class SignUpController {
 	 * @return
 	 */
 	@PostMapping(value = "/submitShippingAddressSignUp", params="submit")
-	public String createShippingDetails(@Validated @ModelAttribute("shippingDetails") ShippingAddress_Form details, BindingResult result, @RequestParam("stateId") String stateId, Model model, Principal principal) {
+	public String createShippingDetails(@Validated @ModelAttribute("shippingDetails") ShippingAddress_Form details, BindingResult result, @RequestParam("stateId") String stateId, @RequestParam("userId") Long userId, Model model) {
 		/* https://www.geeksforgeeks.org/how-to-call-private-method-from-another-class-in-java-with-help-of-reflection-api/ */
 		/* trying to get loadUser from UserDetailsController */
 		Method m = null;
@@ -490,7 +492,7 @@ public class SignUpController {
 		//model.addAttribute("selectedMenu", selectedMenu);
 		if (result.hasErrors()) { // || userDetController.shippingAddressConstraintsFailed(details)) {
 			// Add error messages
-			User user = userService.getUserByUsername(principal.getName());
+			User user = userRepository.findById(userId).orElse(null);
 			if(!result.hasErrors() && userDetController.shippingAddressConstraintsFailed(details))
 				model.addAttribute("shippingError", "Address does not exist");
 			model.addAttribute("shippingDetails", new ShippingAddress_Form());
@@ -530,7 +532,7 @@ public class SignUpController {
 			return "/newUserShipping";
 		}
 		ShippingAddress shipping = new ShippingAddress();
-    User user = userService.getUserByUsername(principal.getName());
+		User user = userRepository.findById(userId).orElse(null);
 		details.setState(stateDetailsController.getState(stateId));
 		shipping.buildFromForm(details);
 		shipping.setUser(user);
