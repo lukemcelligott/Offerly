@@ -12,6 +12,7 @@
   </parent>
   <groupId>edu.sru.cpsc</groupId>
   <artifactId>OnlineAuction</artifactId>
+  <packaging>war</packaging>
   <version>0.0.1-SNAPSHOT</version>
   <name>OnlineAuction</name>
   <description>Online Auction for selling, buying, and bidding on used items</description>
@@ -206,6 +207,14 @@
               <target>17</target>
           </configuration>
       </plugin>
+      <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-war-plugin</artifactId>
+            <version>3.2.3</version>
+            <configuration>
+                <failOnMissingWebXml>false</failOnMissingWebXml>
+            </configuration>
+        </plugin>
     </plugins>
   </build>
 
