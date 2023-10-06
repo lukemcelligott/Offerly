@@ -33,7 +33,7 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - run: mvn --batch-mode --update-snapshots verify --file OnlineAuction/pom.xml -DskipTests
-    - run: mkdir staging && cp OnlineAuction/target/*.jar staging
+    - run: mkdir staging && cp OnlineAuction/target/*.war staging
     - uses: actions/upload-artifact@v3
       with:
         name: Package
