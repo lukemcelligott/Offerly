@@ -33,24 +33,12 @@ public class IndexController {
 
   // Mapping for the /index URL when initiated through Tomcat
   @RequestMapping({"/index"})
-  public String showUserList(Model model, Principal principal) {
-    if (principal == null) {
-        throw new UnauthenticatedUserException();
-    }
-    User user = userService.getUserByUsername(principal.getName());
-    model.addAttribute("users", userRepository.findAll());
-    model.addAttribute("user", user);
+  public String showUserList(Model model) {
     return "index";
   }
 
   @RequestMapping({"/"})
-  public String showIndex(Model model, Principal principal) {
-    if (principal == null) {
-        throw new UnauthenticatedUserException();
-    }
-    User user = userService.getUserByUsername(principal.getName());
-    model.addAttribute("user", user);
-
+  public String showIndex(Model model) {
     return "index";
   }
 

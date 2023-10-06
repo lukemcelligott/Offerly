@@ -129,6 +129,8 @@ public class ConfirmPurchasePageController {
 	    	address = user.getDefaultShipping();
 	    else
 	    	address = null;
+			purchase.setTotalPriceAfterTaxes(purchase.getTotalPriceBeforeTaxes());
+			purchase.setSellerProfit(purchase.getTotalPriceAfterTaxes().multiply(BigDecimal.ONE.subtract(Transaction.WEBSITE_CUT_PERCENTAGE)));
 
 		if(this.address != null) //use the taxjar api to get the state and local sales tax information (if there is an address than tax information can be calculated)
 		{
@@ -137,6 +139,9 @@ public class ConfirmPurchasePageController {
 				//RateResponse res = client.ratesForLocation(this.address.getPostalCode());
 				StateDetails state = address.getState();
 				BigDecimal taxRate = state.getSalesTaxRate();
+				//divide tax rate by 100 to get the percentage
+				taxRate = taxRate.divide(new BigDecimal(100));
+				System.out.println("Total Price After Taxes: " + purchase.getTotalPriceBeforeTaxes() + "* 1 ("+taxRate+")");
 
 				purchase.setTotalPriceAfterTaxes(purchase.getTotalPriceBeforeTaxes().multiply(BigDecimal.ONE.add(taxRate)));
 				purchase.setSellerProfit(purchase.getTotalPriceAfterTaxes().multiply(BigDecimal.ONE.subtract(Transaction.WEBSITE_CUT_PERCENTAGE)));
