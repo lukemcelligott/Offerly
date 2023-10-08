@@ -161,7 +161,20 @@
 											<li class="list-group-item">Display Name: <span th:text="${displayName}"></span></li>
 											<li class="list-group-item">Email: <span th:text="${email}"></span></li>
 											<li class="list-group-item">Account Created: <span th:text="${creationDate}"></span></li>
-											<li class="list-group-item">Rating: <span th:text="${sellerRating.rating}"></span></li>
+											<li class="list-group-item">Rating: 
+												<!-- Rating Value -->
+												<span th:text="${sellerRating.rating}"></span>
+												<!-- Filled Stars -->
+		                                        <th:block th:each="star : ${#numbers.sequence(1, sellerRating.rating)}">
+		                                            <span class="text-warning">★</span>
+		                                        </th:block>
+		                                        <!-- Unfilled Stars -->
+		                                        <th:block th:each="star : ${#numbers.sequence(sellerRating.rating + 1, 5)}">
+		                                            <span class="text-muted">★</span>
+		                                        </th:block>
+		                                        <!-- Number of Ratings -->
+	                                        	<span class="ms-2 text-muted" th:text=" ${sellerRating.numRatings} + ' rating(s)'"></span>
+											</li>
 										</ul>	
 									</div>
 								</div>
