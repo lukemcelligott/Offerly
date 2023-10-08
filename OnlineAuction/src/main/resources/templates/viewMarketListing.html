@@ -46,12 +46,26 @@
 
                 <div class="card-body">
                     <div class="row mb-4">
-                        <!-- Left Column: Image -->
+                        <!-- Left Column -->
+                        
+                        <!-- Thumbnail images -->
+						<div class="col-lg-1" style="width: 5%;">
+							<table id="imageTable">
+								<tbody>
+									<!-- populated via JS -->
+								</tbody>
+							</table>
+                    	</div>
+                    	
                         <div class="col-lg-7">
+							<!-- Main Image -->
                             <div class="card h-60" th:if="${currListing.coverImage != null && !currListing.coverImage.isEmpty()}">
                                 <div class="img-container">
+									<!-- backward button -->
                                     <button style="height:40px; position: absolute; left: 10px; top: 50%; transform: translateY(-50%);" onclick="changeImageBackward()">&#8592;</button>
+                                    <!-- main image -->
                                     <img class="card-img-bottom" id="showWidget" th:src="@{/listingImages/{image}(image = ${currListing.coverImage})}" data-magnify-src="/listingImages/{image}(image = ${currListing.coverImage})"/>
+                                    <!-- forward button -->
                                     <button style="height:40px; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);" onclick="changeImageForward()">&#8594;</button>
                                 </div>
                             </div>
@@ -67,11 +81,11 @@
 						    <div class="d-flex justify-content-center details-container">
 						        <div class="auction-date-container d-flex justify-content-between align-items-center" style="width: 100%; max-width: 500px;">
 						            <div class="details-text" style="white-space: nowrap; margin-right: 15px;">
-						                <span>Start Date:</span>
+						                <span>Auction Start Date:</span>
 						                <strong><span th:text="${#temporals.format(currListing.auction.startAuctionDate, 'MM/dd/yyyy @ h:mma')}"></span></strong>
 						            </div>
 						            <div class="details-text" style="white-space: nowrap;">
-						                <span>End Date:</span>
+						                <span>Auction End Date:</span>
 						                <strong><span th:text="${#temporals.format(currListing.auction.endAuctionDate, 'MM/dd/yyyy @ h:mma')}"></span></strong>
 						            </div>
 						        </div>
@@ -120,7 +134,7 @@
                         
                   
                         <!-- Right Column: Seller Details and Action Buttons -->
-                        <div class="col-lg-5">
+                        <div class="col-lg-4">
                             
                             <!-- Widget Title -->
                             <div class="mb-4 mt-4">
@@ -204,7 +218,7 @@
 								       	<div class="col"></div>		
 								       	<!-- buy now -->	   
 								        <div class="col-auto" style="margin-right: -28px;">
-								            <input style="width: 250px;" class="btn btn-outline-success" id="purchaseButton" name="buyProduct" type="submit" th:value="'Buy Now'" /> <!-- for $' + ${currListing.pricePerItem}" />-->
+								            <input style="width: 230px;" class="btn btn-outline-success" id="purchaseButton" name="buyProduct" type="submit" th:value="'Buy Now'" /> <!-- for $' + ${currListing.pricePerItem}" />-->
 								        </div>
 							        </div>
 							    </form>
@@ -223,7 +237,7 @@
 									<!-- Add to Watchlist Button -->							                                        	
 									<div class="col-auto" th:if="${!foundInWatchlist}">
                                     	<form id="addToWatchlistForm" th:action="@{/viewMarketListing/wishlistItem/{id}(id = ${currListing.getId()})}" method="post">
-                                          	<button style="width: 250px;" class="btn btn-outline-success" id="addToWatchlistButton" data-toggle="modal" data-target="#watchlistModal">
+                                          	<button style="width: 230px;" class="btn btn-outline-success" id="addToWatchlistButton" data-toggle="modal" data-target="#watchlistModal">
 												Add to Watchlist
                                           	</button>
                                       	</form>                                      	
@@ -231,7 +245,7 @@
                                   	<!-- Remove from Watchlist button -->
                                   	<div class="col-auto" th:if="${foundInWatchlist}">
                                     	<form id="removeFromWatchlistForm" th:action="@{/viewMarketListing/delWishlistItem/{id}(id = ${currListing.getId()})}" method="post">
-                                          	<button style="width: 250px;" class="btn btn-outline-danger" id="addToWatchlistButton" data-toggle="modal" data-target="#watchlistModal">
+                                          	<button style="width: 230px;" class="btn btn-outline-danger" id="addToWatchlistButton" data-toggle="modal" data-target="#watchlistModal">
 												Remove from Watchlist
                                           	</button>
                                       	</form>
@@ -242,7 +256,7 @@
 							    <div class="row g-3 my-2" style="justify-content: right;" id="bidButton">
 						            <div class="col-auto">
 							            <input type="hidden" name="listingId" th:value="${currListing.id}"/>  
-							            <input style="width: 250px;" class="btn btn-outline-success" name="placeBid" type="button" value="Bid Now" data-bs-toggle="modal" data-bs-target="#bidModal"/>
+							            <input style="width: 230px;" class="btn btn-outline-success" name="placeBid" type="button" value="Bid Now" data-bs-toggle="modal" data-bs-target="#bidModal"/>
 							        	<!--<input style="width: 250px;" class="btn btn-outline-success" id="bidButton" name="placeBid" type="button" value="Bid Now" data-bs-toggle="modal" data-bs-target="#bidModal"/>-->
 							        </div>
 							    </div>
@@ -404,8 +418,34 @@
             const image = document.querySelector('#showWidget');
             const images = /*[[${images}]]*/ [];
             let x = images.indexOf(/*[[${currListing.coverImage}]]*/ '');
+            
+            // update which image is being displayed
+            function updateDisplayImg() {
+				image.src = '/listingImages/' + images[x];
+				
+				// Remove the "selected" class from all thumbnail images
+			    /*const thumbnailImages = document.querySelectorAll('.thumbnail');
+			    thumbnailImages.forEach(function (thumbnail) {
+			        thumbnail.classList.remove('selected');
+			    });*/
+			
+			    // Add the "selected" class to the displayed thumbnail image
+			    /*const displayedThumbnail = thumbnailImages[x];
+			    if (displayedThumbnail) {
+			        displayedThumbnail.classList.add('selected');
+			    }*/
+			     const thumbnailImages = document.querySelectorAll('.thumbnail');
+			    thumbnailImages.forEach(function (thumbnail, index) {
+			        if (index === x) {
+			            // Add a class to the displayed thumbnail to adjust its opacity
+			            thumbnail.classList.add('selected');
+			        } else {
+			            thumbnail.classList.remove('selected');
+			        }
+			    });
+			}
         
-            function changeImageForward() {
+            function changeImageForward() { // cycle forward through images array via button
                 if (images.length === 1) {
                     window.alert("Only one image has been uploaded for this item");
                 } else {
@@ -413,11 +453,11 @@
                     if (x >= images.length) {
                         x = 0;
                     }
-                    image.src = '/listingImages/' + images[x];
+                    updateDisplayImg();
                 }
             }
         
-            function changeImageBackward() {
+            function changeImageBackward() { // cycle backware through images array via button
                 if (images.length === 1) {
                     window.alert("Only one image has been uploaded for this item");
                 } else {
@@ -425,10 +465,41 @@
                     if (x < 0) {
                         x = images.length - 1;
                     }
-                    image.src = '/listingImages/' + images[x];
+                    updateDisplayImg();
                 }
             }
             
+            // for thumbnail image table
+            let tableBody = document.querySelector('#imageTable tbody');
+            
+            images.forEach(function(imageUrl, index){ // iterate through images array
+				// create table structure
+				let row = document.createElement('tr');
+				let cell = document.createElement('td');
+				let imageThumbnail = document.createElement('img');
+				
+				imageThumbnail.src = '/listingImages/' + imageUrl;
+				imageThumbnail.classList.add('thumbnail');
+				
+				// styling
+
+				cell.style.height = '70px';
+				
+				imageThumbnail.addEventListener('click', function() { // listen for a click on an image
+					x = index;
+					updateDisplayImg();
+				})
+								
+				cell.appendChild(imageThumbnail);
+				row.appendChild(cell);
+				tableBody.appendChild(row);
+				
+				if (index === 0) { // make the first image the selected one
+			        imageThumbnail.classList.add('selected');
+			    }
+			})
+            
+            // auction timeline population
         	document.addEventListener('DOMContentLoaded', function() {
 		        // Get the endAuctionDate from Thymeleaf variable
 		        /*<![CDATA[*/
