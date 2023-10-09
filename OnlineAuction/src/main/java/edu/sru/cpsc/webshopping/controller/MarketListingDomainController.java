@@ -331,27 +331,29 @@ public class MarketListingDomainController {
 	     return ResponseEntity.ok(String.valueOf(totalBidsCount));
 	 }
 	 
-	    @GetMapping("/isHighestBidder/{marketListingId}")
-	    @ResponseBody
-	    public Map<String, Boolean> isHighestBidder(@PathVariable Long marketListingId, Principal principal) {
-	        MarketListing marketListing = marketRepository.findById(marketListingId).orElse(null);
+     @GetMapping("/isHighestBidder/{marketListingId}")
+     @ResponseBody
+     public Map<String, Boolean> isHighestBidder(@PathVariable Long marketListingId, Principal principal) {
+         MarketListing marketListing = marketRepository.findById(marketListingId).orElse(null);
 
-	        if (marketListing == null) {
-	            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Market listing not found");
-	        }
+         if (marketListing == null) {
+             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Market listing not found");
+         }
 
-	        Auction auction = marketListing.getAuction();
-	        Bid mostRecentBid = auctionService.findHighestBidForAuction(auction);
+         Auction auction = marketListing.getAuction();
+         Bid mostRecentBid = auctionService.findHighestBidForAuction(auction);
 
-	        Map<String, Boolean> response = new HashMap<>();
-	        if (mostRecentBid != null && mostRecentBid.getBidder().getUsername().equals(principal.getName())) {
-	            response.put("isHighestBidder", true);
-	            System.out.println("Lake");
-	        } else {
-	            response.put("isHighestBidder", false);
-	            System.out.println("Dog");
-	        } 
-	        System.out.println("Maple");
-	        return response;
-	    }
-	}
+         Map<String, Boolean> response = new HashMap<>();
+         if (mostRecentBid != null && mostRecentBid.getBidder().getUsername().equals(principal.getName())) {
+             response.put("isHighestBidder", true);
+             System.out.println("Lake");
+         } else {
+             response.put("isHighestBidder", false);
+             System.out.println("Dog");
+         } 
+         System.out.println("Maple");
+         return response;
+     }
+}
+
+

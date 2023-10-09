@@ -92,22 +92,28 @@
 						    </div>
 						
 						    <!-- Listing: Current Bid -->
-						    <div class="d-flex justify-content-center details-container">
-						        <div class="auction-details-container d-flex justify-content-between align-items-center" style="width: 100%; max-width: 500px;">
-						            <div class="auction-price-container details-text">
-						                <span>Current Bid:</span>
-						                <strong><span th:text="'$' + ${currListing.auction.currentBid}"></span></strong>
-						            </div>
-						        </div>
-						    </div>
-						
+							<div class="d-flex justify-content-center details-container">
+							    <div class="auction-details-container d-flex justify-content-between align-items-center" style="width: 100%; max-width: 500px;">
+							        <div class="auction-price-container details-text">
+							            <span>Starting Bid:</span>
+							            <strong><span th:text="'$' + ${currListing.auction.startingBid}"></span></strong>
+							
+							            <!-- Show Current Bid only if it's different from the Starting Bid -->
+							            <span th:if="${currListing.auction.startingBid != currListing.auction.currentBid}">Current Bid:</span>
+							            <strong th:if="${currListing.auction.startingBid != currListing.auction.currentBid}"><span th:text="'$' + ${currListing.auction.currentBid}"></span></strong>
+							        </div>
+							    </div>
+							</div>
+													
 						    <!-- Listing: Unique Bidders & Total Bid -->
-						  <div class="d-flex justify-content-center details-container auction-details-container">
-					           <span class="details-text">Unique Bidders: </span>
-							   <strong><span id="uniqueBidderCountSpan" style="margin-left: 5px;"></span></strong>
-							   <span class="details-text" style="margin-left: 15px;">Total Bids: </span>
-							   <strong><span id="totalBidsCountSpan" style="margin-left: 5px;"></span></strong>
-						  	</div>
+						  	<div class="d-flex justify-content-center details-container auction-details-container">
+							    <button id="biddersButton" style="background: none; border: none; cursor: pointer;">
+							        <span class="details-text">Unique Bidders: </span>
+							        <strong><span id="uniqueBidderCountSpan" style="margin-left: 5px;"></span></strong>
+							        <span class="details-text" style="margin-left: 15px;">Total Bids: </span>
+							        <strong><span id="totalBidsCountSpan" style="margin-left: 5px;"></span></strong>
+							    </button>
+							</div>
 
 						
 						    <!-- Auction End Date Countdown -->
@@ -389,11 +395,18 @@
               	</div>
             </div>
         </div>
+        
+        <!-- Show List of Unique Bidders and Bids -->
+        <div id="biddersModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; padding: 20px; border: 1px solid gray;">
+    		<h3>Unique Bidders</h3>
+    		<ul id="biddersList"></ul>
+		</div>
           
         
 		<script th:inline="javascript">
-      		// Price update logic
-        	const basePrice = /*[[${currListing.pricePerItem}]]*/ 0.0;
+      		// Price update logic   		
+        	//const basePrice = /*[[${currListing.pricePerItem}]]*/ 0.0;
+        	/*
         	const qtyBoughtElement = document.getElementById('qtyBought');
         	const purchaseButtonElement = document.getElementById('purchaseButton');
        
@@ -409,6 +422,7 @@
                 qtyBoughtElement.addEventListener('change', updatePrice);
             }
             updatePrice();
+            */
             
             function confirmBid() {
               return confirm("Are you sure you want to place this bid?");
@@ -619,6 +633,35 @@
 		}
 		
 		magnify("showWidget", 3); */    
-        </script>        
+        </script>     
+        <script th:inline="javascript">
+			document.getElementById("biddersButton").addEventListener("click", function() {
+			    let marketListingId = window.location.pathname.split("/").pop();
+			
+			    // Create a new XMLHttpRequest
+			    let xhr = new XMLHttpRequest();
+			
+			    xhr.open('GET', `/getUniqueBiddersForListing/${listingId}`, true);
+			
+			    xhr.onload = function() {
+			        if (this.status === 200) {
+			            let data = JSON.parse(this.responseText);
+			            let biddersList = document.getElementById("biddersList");
+			            biddersList.innerHTML = ''; // Clear any previous data
+			
+			            data.forEach(bid => {
+			                let li = document.createElement("li");
+			                li.textContent = `${bid.bidder}: $${bid.amount}`;
+			                biddersList.appendChild(li);
+			            });
+			
+			            // Show the modal
+			            document.getElementById("biddersModal").style.display = "block";
+			        }
+			    }
+			
+			    xhr.send();
+			});
+	</script>   
     </body>
 </html>
