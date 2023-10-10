@@ -142,8 +142,11 @@ public class ConfirmPurchasePageController {
 				//divide tax rate by 100 to get the percentage
 				taxRate = taxRate.divide(new BigDecimal(100));
 				System.out.println("Total Price After Taxes: " + purchase.getTotalPriceBeforeTaxes() + "* 1 ("+taxRate+")");
+				BigDecimal totalPriceAfterTaxes = purchase.getTotalPriceBeforeTaxes().multiply(BigDecimal.ONE.add(taxRate));
+				// round to 2 decimal places
+				totalPriceAfterTaxes = totalPriceAfterTaxes.setScale(2, RoundingMode.HALF_UP);
 
-				purchase.setTotalPriceAfterTaxes(purchase.getTotalPriceBeforeTaxes().multiply(BigDecimal.ONE.add(taxRate)));
+				purchase.setTotalPriceAfterTaxes(totalPriceAfterTaxes);
 				purchase.setSellerProfit(purchase.getTotalPriceAfterTaxes().multiply(BigDecimal.ONE.subtract(Transaction.WEBSITE_CUT_PERCENTAGE)));
 			}
 			catch(Exception e)
@@ -161,6 +164,8 @@ public class ConfirmPurchasePageController {
 		else
 			model.addAttribute("selectedAddress", this.address);
 
+		model.addAttribute("defaultAddress", user.getDefaultShipping());
+		model.addAttribute("allAddresses", shippingAddressController.getShippingDetailsByUser(user));
 		model.addAttribute("shippingDetails", new ShippingAddress_Form());
 		model.addAttribute("purchase", purchase);
 		model.addAttribute("marketListing", this.prevListing);
@@ -178,6 +183,7 @@ public class ConfirmPurchasePageController {
 		model.addAttribute("loginEr", loginEr);
 		model.addAttribute("user", user);
 		model.addAttribute("defaultDetails", user.getDefaultPaymentDetails());
+		model.addAttribute("tax", purchase.getTotalPriceAfterTaxes().subtract(purchase.getTotalPriceBeforeTaxes()));
 		if ((user.getPaymentDetails() != null && user.getPaymentDetails().isEmpty()) || user.getPaymentDetails() == null)
 			model.addAttribute("allDetails", null);
 		else
@@ -555,6 +561,45 @@ public class ConfirmPurchasePageController {
 		SA.add(shipping);
 		user.setShippingDetails(SA);
 		shippingAddressController.addShippingAddress(shipping, user);
+		userService.updateUserProfile(user.getId(), user);
+		return initializePurchasePage(prevListing, purchase, model, principal);
+	}
+
+	@PostMapping(value = "/addPayment", params="submit")
+	public String addPaymentDetails(@Validated @ModelAttribute("paymentDetails") PaymentDetails_Form details, BindingResult result, Model model, Principal principal) {
+	
+		User user = userService.getUserByUsername(principal.getName());
+		PaymentDetails currDetails = new PaymentDetails();
+		allSelected = false;
+		currDetails.buildFromForm(details);
+		if (user == null) {
+			throw new IllegalStateException("Cannot purchase an item when not logged in.");
+		}
+		// Test that payment details are valid
+		if (!paymentDetailsInvalid(details) && !result.hasErrors()) {
+			// add the card to the database if it's new
+			if (!payDetController.checkDuplicateCard(currDetails)) {
+				payDetController.addPaymentDetails(currDetails);
+				System.out.println("option 1");
+			} else {
+				currDetails = payDetController.getPaymentDetailsByCardNumberAndExpirationDate(currDetails);
+				System.out.println(currDetails.getId());
+			}
+			if (address != null)
+				allSelected = true;
+			Set<PaymentDetails> PD = user.getPaymentDetails();
+			if(PD == null)
+				PD = new HashSet<PaymentDetails>();
+			PD.add(currDetails);
+			user.setPaymentDetails(PD);
+			if(user.getDefaultPaymentDetails() == null)
+				user.setDefaultPaymentDetails(currDetails);
+			currDetails.setUser(user);
+			payDetController.addPaymentDetails(currDetails);
+			modifyPayment = false;
+			relogin = true;
+			validatedDetails = currDetails;
+		}
 		userService.updateUserProfile(user.getId(), user);
 		return initializePurchasePage(prevListing, purchase, model, principal);
 	}

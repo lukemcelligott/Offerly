@@ -61,7 +61,7 @@ public class PaymentDetailsController {
 		details.setSecurityCode(passwordEncoder.encode(details.getSecurityCode()));
 		// No assigned details - add to user
 		paymentDetailsRepository.save(details);
-			entityManager.persist(details);
+		// entityManager.persist(details);
 		
 	}
 	
