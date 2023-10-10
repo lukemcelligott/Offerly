@@ -95,7 +95,7 @@
 							    <div class="auction-details-container d-flex justify-content-between align-items-center" style="width: 100%; max-width: 500px;">
 							        <div class="auction-price-container details-text">
 							            <span>Starting Bid:</span>
-							            <strong><span th:text="'$' + ${currListing.auction.startingBid}"></span></strong>
+							            <strong><span id="startingBid" th:text="'$' + ${currListing.auction.startingBid}"></span></strong>
 							
 							            <!-- Show Current Bid only if it's different from the Starting Bid -->
 							            <span th:if="${currListing.auction.startingBid != currListing.auction.currentBid}">Current Bid:</span>
@@ -673,31 +673,62 @@
 			    });		        
 		    });
 		    
-			// Fetch and display bids when totalBidsButton is clicked
-			$("#totalBidsButton").click(function() {
-			    // Make a placeholder for the listing ID. Replace '5' with the actual listing ID you want.
-			    let marketListingId = window.location.pathname.split("/").pop();
-			    
-			    // Fetch bids from the backend
-			    $.get('/bidsForListing/' + marketListingId, function(bids) {
-			        // Clear any previous bid content
-			        $("#totalBidsList").empty();
-			        
-			        // Populate the UL with bid data
-			        bids.forEach(bid => {
-			            $("#totalBidsList").append('<li>Username: ' + bid.bidder.username + ', Bid Amount: ' + bid.bidAmount + '</li>');
-			        });
-			        
-			        // Display the modal
-			        $("#totalBidsModal").show();
-			    });
-			});
+			document.getElementById('totalBidsButton').addEventListener('click', function() {
+		    const listingId = window.location.pathname.split("/").pop();
+		    fetchBidsData(listingId)
+		        .then(data => {
+		            populateBidsModal(data);
+		            document.getElementById('totalBidsModal').style.display = 'block';
+		        })
+		        .catch(error => {
+		            console.error("There was a problem with the fetch operation:", error.message);
+		        });
+		});
+		
+			document.getElementById('closeTotalBidsModalButton').addEventListener('click', closeBidsModal);
 			
-			// Close the modal when the close button is clicked
-			$("#closeTotalBidsModalButton").click(function() {
-			    $("#totalBidsModal").hide();
-			});   
-		    
+			function fetchBidsData(id) {
+			    return fetch(`/bidsForListing/${id}`)
+			        .then(response => {
+			            if (!response.ok) {
+			                throw new Error('Network response was not ok');
+			            }
+			            return response.json();
+			        });
+			}
+			
+			function populateBidsModal(data) {
+			    const bidsList = document.getElementById('totalBidsList');
+			    bidsList.innerHTML = ''; // Clear any existing list items
+			
+			    // Get the starting bid from the HTML
+			    let startingBidElement = document.getElementById('startingBid');
+			    let startingBid = parseFloat(startingBidElement.textContent.replace('$', ''));
+			
+			    let currentAuctionPrice = startingBid; // Starting bid now fetched dynamically
+			    let previousAuctionPrice = currentAuctionPrice;
+			
+			    data.forEach(bid => {
+			        const listItem = document.createElement('li');
+			
+			        // Update the auction price
+			        currentAuctionPrice += bid.bidAmount;
+			
+			        // Display the text with the username in bold
+			        listItem.innerHTML = `<strong>${bid.username}</strong> bids $${bid.bidAmount}. New Auction price is $${currentAuctionPrice} from $${previousAuctionPrice}.`;
+			
+			        // Prepend the new list item to the list so that it appears at the top
+			        bidsList.insertBefore(listItem, bidsList.firstChild);
+			
+			        // Update the previous auction price for the next iteration
+			        previousAuctionPrice = currentAuctionPrice;
+			    });
+			}
+			
+			function closeBidsModal() {
+			    document.getElementById('totalBidsModal').style.display = 'none';
+			}  
+				    
 		</script>    
     </body>
 </html>

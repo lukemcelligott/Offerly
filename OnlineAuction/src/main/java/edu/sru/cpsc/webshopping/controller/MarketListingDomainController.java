@@ -374,27 +374,57 @@ public class MarketListingDomainController {
      }
      
      @GetMapping("/bidsForListing/{id}")
-     public ResponseEntity<List<Bid>> getBidsForListing(@PathVariable Long id) {
+     public ResponseEntity<List<BidDTO>> getBidsForListing(@PathVariable Long id) {
          try {
-        	 System.out.println("Ocean Darcy");
+             System.out.println("Ocean Darcy");
              MarketListing marketListing = marketRepository.findById(id).orElse(null);
              if (marketListing == null) {
                  return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
              }
              List<Bid> bids = bidRepository.findByAuction(marketListing.getAuction());
              
+             List<BidDTO> bidDTOs = bids.stream()
+                                     .map(bid -> new BidDTO(bid.getBidder().getUsername(), bid.getBidAmount()))
+                                     .collect(Collectors.toList());
+             
              System.out.println("Number of bids retrieved: " + bids.size());
              for (Bid bid : bids) {
                  System.out.println("Bidder: " + bid.getBidder().getUsername() + ", Amount: " + bid.getBidAmount());
              }
              
-             return ResponseEntity.ok(bids);
+             return ResponseEntity.ok(bidDTOs);
          
          } catch (Exception e) {
              e.printStackTrace(); // log the error
              return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
          }
      }
+     
+     static class BidDTO {
+    	    private String username;
+    	    private BigDecimal bidAmount;
+
+    	    public BidDTO(String username, BigDecimal bigDecimal) {
+    	        this.username = username;
+    	        this.bidAmount = bigDecimal;
+    	    }
+
+    	    public String getUsername() {
+    	        return username;
+    	    }
+
+    	    public void setUsername(String username) {
+    	        this.username = username;
+    	    }
+
+    	    public BigDecimal getBidAmount() {
+    	        return bidAmount;
+    	    }
+
+    	    public void setBidAmount(BigDecimal bidAmount) {
+    	        this.bidAmount = bidAmount;
+    	    }
+    	}
 }
 
 
