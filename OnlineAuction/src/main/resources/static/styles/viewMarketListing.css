@@ -193,7 +193,7 @@ body, button {
     font-family: 'Poppins', sans-serif;
 }
 
-#biddersModal {
+#biddersModal, #totalBidsModal {
     display: none;
     position: fixed;
     top: 50%;
@@ -208,28 +208,28 @@ body, button {
     z-index: 1000;
 }
 
-#biddersModal h3 {
+#biddersModal h3, #totalBidsModal h3 {
     margin-top: 0;
     font-weight: 500;
     color: #333;
 }
 
-#biddersModal ul {
+#biddersModal ul, #totalBidsModal ul {
     margin: 0;
     padding: 0;
     list-style-type: none;
 }
 
-#biddersModal li {
+#biddersModal li, #totalBidsModal li {
     padding: 5px 0;
     border-bottom: 1px solid #eee;
 }
 
-#biddersModal li:last-child {
+#biddersModal li:last-child, #totalBidsModal li:last-child {
     border-bottom: none;
 }
 
-#closeModalButton {
+#closeModalButton, #closeTotalBidsModalButton {
     display: block;
     width: 100%;
     padding: 10px 15px;
@@ -243,29 +243,33 @@ body, button {
     transition: background-color 0.3s ease;
 }
 
-#closeModalButton:hover {
+#closeModalButton:hover, #closeTotalBidsModalButton:hover {
     background-color: #0056b3;
 }
 
-#biddersButton {
+#biddersButton, #totalBidsButton {
     padding: 10px 20px;
-    border: 1px solid #e0e0e0; /* Light border color */
-    background-color: #f7f7f7; /* Light background color */
-    border-radius: 8px; /* Rounded corners */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Subtle shadow for depth */
+    border: 1px solid #e0e0e0;
+    background-color: #f7f7f7;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
-    outline: none; /* Remove default outline */
-    color: #333; /* Text color */
+    outline: none;
+    color: #333;
     font-size: 14px;
 }
 
-#biddersButton:hover {
-    transform: translateY(-2px); /* Slight upward lift on hover */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.08); /* Increased shadow on hover */
+#biddersButton:hover, #totalBidsButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
 }
 
-#biddersButton:active {
-    transform: translateY(0); /* Reset the position when button is active/clicked */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Reset shadow when button is active/clicked */
+#biddersButton:active, #totalBidsButton:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+#biddersButton {
+    margin-right: 10px; /* You can adjust this value to increase/decrease the space between the buttons */
 }

@@ -104,12 +104,14 @@
 							    </div>
 							</div>
 													
-						    <!-- Listing: Unique Bidders & Total Bid -->
-						  	<div class="d-flex justify-content-center details-container auction-details-container">
+							<!-- Listing: Unique Bidders & Total Bid -->
+							<div class="d-flex justify-content-center details-container auction-details-container">
 							    <button id="biddersButton">
 							        <span class="details-text">Unique Bidders: </span>
 							        <strong><span id="uniqueBidderCountSpan" style="margin-left: 5px;"></span></strong>
-							        <span class="details-text" style="margin-left: 15px;">Total Bids: </span>
+							    </button>
+							    <button id="totalBidsButton">
+							        <span class="details-text">Total Bids: </span>
 							        <strong><span id="totalBidsCountSpan" style="margin-left: 5px;"></span></strong>
 							    </button>
 							</div>
@@ -400,7 +402,13 @@
 		    <ul id="biddersList"></ul>
 		    <button id="closeModalButton" style="margin-top: 10px;">Back</button>
 		</div>
-          
+        
+        <div id="totalBidsModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; padding: 20px; border: 1px solid gray;">
+		    <h3>Total Bids</h3>
+		    <ul id="totalBidsList"></ul>
+		    <button id="closeTotalBidsModalButton" style="margin-top: 10px;">Back</button>
+		</div>
+        
         
 		<script th:inline="javascript">
       		// Price update logic   		
@@ -664,6 +672,47 @@
 			        $('#biddersModal').hide();
 			    });		        
 		    });
+		    
+			document.addEventListener("DOMContentLoaded", function() {
+
+    document.getElementById('totalBidsButton').addEventListener('click', function() {
+        let marketListingId = window.location.pathname.split("/").pop();
+        
+        fetch(`/bidsForListing/${marketListingId}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(bids => {
+            // Clear previous list content
+            let totalBidsList = document.getElementById('totalBidsList');
+            while (totalBidsList.firstChild) {
+                totalBidsList.removeChild(totalBidsList.firstChild);
+            }
+
+            // Populate the list with bids
+            bids.forEach(bid => {
+                let listItem = document.createElement('li');
+                listItem.textContent = bid.bidder.username + ': ' + bid.bidAmount;
+                totalBidsList.appendChild(listItem);
+            });
+
+            // Display the modal
+            document.getElementById('totalBidsModal').style.display = 'block';
+        })
+        .catch(error => {
+            console.error('Failed to retrieve bids.', error);
+        });
+    });
+
+    // Logic to close the modal
+    document.getElementById('closeTotalBidsModalButton').addEventListener('click', function() {
+        document.getElementById('totalBidsModal').style.display = 'none';
+    });
+});
+		    
 		</script>    
     </body>
 </html>

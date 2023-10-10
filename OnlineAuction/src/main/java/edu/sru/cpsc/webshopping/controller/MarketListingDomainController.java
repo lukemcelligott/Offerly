@@ -41,6 +41,7 @@ import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 import edu.sru.cpsc.webshopping.domain.widgets.WidgetImage;
+import edu.sru.cpsc.webshopping.repository.market.BidRepository;
 import edu.sru.cpsc.webshopping.repository.market.MarketListingRepository;
 import edu.sru.cpsc.webshopping.repository.widgets.WidgetRepository;
 import edu.sru.cpsc.webshopping.service.AuctionService;
@@ -62,6 +63,8 @@ public class MarketListingDomainController {
 	private AuctionService auctionService;
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private BidRepository bidRepository;
 	@PersistenceContext private EntityManager entityManager;
 	
 	MarketListingDomainController(
@@ -368,6 +371,17 @@ public class MarketListingDomainController {
          Set<User> uniqueBidders = auctionService.findUniqueBiddersForListing(marketListing);
          List<String> bidderNames = uniqueBidders.stream().map(User::getUsername).collect(Collectors.toList());
          return ResponseEntity.ok(bidderNames);
+     }
+     
+     @GetMapping("/bidsForListing/{id}")
+     public ResponseEntity<List<Bid>> getBidsForListing(@PathVariable Long id) {
+    	 System.out.println("Ocean Darcy");
+         MarketListing marketListing = marketRepository.findById(id).orElse(null);
+         if (marketListing == null) {
+             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
+         }
+         List<Bid> bids = bidRepository.findByAuction(marketListing.getAuction());
+         return ResponseEntity.ok(bids);
      }
 }
 
