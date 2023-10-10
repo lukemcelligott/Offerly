@@ -75,4 +75,8 @@ public class AuctionService {
         }
     }
     
+    public List<Bid> getAllBidsForListing(MarketListing marketListing) {
+        return bidRepository.findByAuction(marketListing.getAuction());
+    }
+    
 }

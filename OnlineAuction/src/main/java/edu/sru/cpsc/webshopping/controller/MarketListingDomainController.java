@@ -5,6 +5,9 @@ import java.net.URI;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +41,7 @@ import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 import edu.sru.cpsc.webshopping.domain.widgets.WidgetImage;
+import edu.sru.cpsc.webshopping.repository.market.BidRepository;
 import edu.sru.cpsc.webshopping.repository.market.MarketListingRepository;
 import edu.sru.cpsc.webshopping.repository.widgets.WidgetRepository;
 import edu.sru.cpsc.webshopping.service.AuctionService;
@@ -59,6 +63,8 @@ public class MarketListingDomainController {
 	private AuctionService auctionService;
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private BidRepository bidRepository;
 	@PersistenceContext private EntityManager entityManager;
 	
 	MarketListingDomainController(
@@ -331,27 +337,64 @@ public class MarketListingDomainController {
 	     return ResponseEntity.ok(String.valueOf(totalBidsCount));
 	 }
 	 
-	    @GetMapping("/isHighestBidder/{marketListingId}")
-	    @ResponseBody
-	    public Map<String, Boolean> isHighestBidder(@PathVariable Long marketListingId, Principal principal) {
-	        MarketListing marketListing = marketRepository.findById(marketListingId).orElse(null);
+     @GetMapping("/isHighestBidder/{marketListingId}")
+     @ResponseBody
+     public Map<String, Boolean> isHighestBidder(@PathVariable Long marketListingId, Principal principal) {
+         MarketListing marketListing = marketRepository.findById(marketListingId).orElse(null);
 
-	        if (marketListing == null) {
-	            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Market listing not found");
-	        }
+         if (marketListing == null) {
+             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Market listing not found");
+         }
 
-	        Auction auction = marketListing.getAuction();
-	        Bid mostRecentBid = auctionService.findHighestBidForAuction(auction);
+         Auction auction = marketListing.getAuction();
+         Bid mostRecentBid = auctionService.findHighestBidForAuction(auction);
 
-	        Map<String, Boolean> response = new HashMap<>();
-	        if (mostRecentBid != null && mostRecentBid.getBidder().getUsername().equals(principal.getName())) {
-	            response.put("isHighestBidder", true);
-	            System.out.println("Lake");
-	        } else {
-	            response.put("isHighestBidder", false);
-	            System.out.println("Dog");
-	        } 
-	        System.out.println("Maple");
-	        return response;
-	    }
-	}
+         Map<String, Boolean> response = new HashMap<>();
+         if (mostRecentBid != null && mostRecentBid.getBidder().getUsername().equals(principal.getName())) {
+             response.put("isHighestBidder", true);
+             System.out.println("Lake");
+         } else {
+             response.put("isHighestBidder", false);
+             System.out.println("Dog");
+         } 
+         System.out.println("Maple");
+         return response;
+     }
+     
+     @GetMapping("/showUniqueBidders/{id}")
+     public ResponseEntity<List<String>> getUniqueBidders(@PathVariable Long id) {
+    	 System.out.println("Ocean Man");
+         MarketListing marketListing = marketRepository.findById(id).orElse(null);
+         if (marketListing == null) {
+             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
+         }
+         Set<User> uniqueBidders = auctionService.findUniqueBiddersForListing(marketListing);
+         List<String> bidderNames = uniqueBidders.stream().map(User::getUsername).collect(Collectors.toList());
+         return ResponseEntity.ok(bidderNames);
+     }
+     
+     @GetMapping("/bidsForListing/{id}")
+     public ResponseEntity<List<Bid>> getBidsForListing(@PathVariable Long id) {
+         try {
+        	 System.out.println("Ocean Darcy");
+             MarketListing marketListing = marketRepository.findById(id).orElse(null);
+             if (marketListing == null) {
+                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
+             }
+             List<Bid> bids = bidRepository.findByAuction(marketListing.getAuction());
+             
+             System.out.println("Number of bids retrieved: " + bids.size());
+             for (Bid bid : bids) {
+                 System.out.println("Bidder: " + bid.getBidder().getUsername() + ", Amount: " + bid.getBidAmount());
+             }
+             
+             return ResponseEntity.ok(bids);
+         
+         } catch (Exception e) {
+             e.printStackTrace(); // log the error
+             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
+         }
+     }
+}
+
+

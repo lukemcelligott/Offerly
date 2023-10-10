@@ -6,7 +6,6 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/magnify/2.3.3/js/jquery.magnify.min.js" integrity="sha512-YKxHqn7D0M5knQJO2xKHZpCfZ+/Ta7qpEHgADN+AkY2U2Y4JJtlCEHzKWV5ZE87vZR3ipdzNJ4U/sfjIaoHMfw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         
         <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
@@ -92,22 +91,30 @@
 						    </div>
 						
 						    <!-- Listing: Current Bid -->
-						    <div class="d-flex justify-content-center details-container">
-						        <div class="auction-details-container d-flex justify-content-between align-items-center" style="width: 100%; max-width: 500px;">
-						            <div class="auction-price-container details-text">
-						                <span>Current Bid:</span>
-						                <strong><span th:text="'$' + ${currListing.auction.currentBid}"></span></strong>
-						            </div>
-						        </div>
-						    </div>
-						
-						    <!-- Listing: Unique Bidders & Total Bid -->
-						  <div class="d-flex justify-content-center details-container auction-details-container">
-					           <span class="details-text">Unique Bidders: </span>
-							   <strong><span id="uniqueBidderCountSpan" style="margin-left: 5px;"></span></strong>
-							   <span class="details-text" style="margin-left: 15px;">Total Bids: </span>
-							   <strong><span id="totalBidsCountSpan" style="margin-left: 5px;"></span></strong>
-						  	</div>
+							<div class="d-flex justify-content-center details-container">
+							    <div class="auction-details-container d-flex justify-content-between align-items-center" style="width: 100%; max-width: 500px;">
+							        <div class="auction-price-container details-text">
+							            <span>Starting Bid:</span>
+							            <strong><span th:text="'$' + ${currListing.auction.startingBid}"></span></strong>
+							
+							            <!-- Show Current Bid only if it's different from the Starting Bid -->
+							            <span th:if="${currListing.auction.startingBid != currListing.auction.currentBid}">Current Bid:</span>
+							            <strong th:if="${currListing.auction.startingBid != currListing.auction.currentBid}"><span th:text="'$' + ${currListing.auction.currentBid}"></span></strong>
+							        </div>
+							    </div>
+							</div>
+													
+							<!-- Listing: Unique Bidders & Total Bid -->
+							<div class="d-flex justify-content-center details-container auction-details-container">
+							    <button id="biddersButton">
+							        <span class="details-text">Unique Bidders: </span>
+							        <strong><span id="uniqueBidderCountSpan" style="margin-left: 5px;"></span></strong>
+							    </button>
+							    <button id="totalBidsButton">
+							        <span class="details-text">Total Bids: </span>
+							        <strong><span id="totalBidsCountSpan" style="margin-left: 5px;"></span></strong>
+							    </button>
+							</div>
 
 						
 						    <!-- Auction End Date Countdown -->
@@ -389,11 +396,24 @@
               	</div>
             </div>
         </div>
-          
+        
+      	<div id="biddersModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; padding: 20px; border: 1px solid gray;">
+		    <h3>Unique Bidders</h3>
+		    <ul id="biddersList"></ul>
+		    <button id="closeModalButton" style="margin-top: 10px;">Back</button>
+		</div>
+        
+        <div id="totalBidsModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; padding: 20px; border: 1px solid gray;">
+		    <h3>Total Bids</h3>
+		    <ul id="totalBidsList"></ul>
+		    <button id="closeTotalBidsModalButton" style="margin-top: 10px;">Back</button>
+		</div>
+        
         
 		<script th:inline="javascript">
-      		// Price update logic
-        	const basePrice = /*[[${currListing.pricePerItem}]]*/ 0.0;
+      		// Price update logic   		
+        	//const basePrice = /*[[${currListing.pricePerItem}]]*/ 0.0;
+        	/*
         	const qtyBoughtElement = document.getElementById('qtyBought');
         	const purchaseButtonElement = document.getElementById('purchaseButton');
        
@@ -409,6 +429,7 @@
                 qtyBoughtElement.addEventListener('change', updatePrice);
             }
             updatePrice();
+            */
             
             function confirmBid() {
               return confirm("Are you sure you want to place this bid?");
@@ -619,6 +640,64 @@
 		}
 		
 		magnify("showWidget", 3); */    
-        </script>        
+        </script>  
+        <script>
+		    $(document).ready(function() {
+		        // Function to show the list of unique bidders
+		        function showBiddersList() {
+		            // Get the market listing ID
+		            let marketListingId = window.location.pathname.split("/").pop();
+		
+		            // Fetch unique bidders from the server
+		            $.get(`/showUniqueBidders/${marketListingId}`, function(data) {
+		                // Assuming your endpoint returns a list of usernames
+		                $('#biddersList').empty(); // Clear existing list items
+		                data.forEach(bidder => {
+		                    $('#biddersList').append(`<li>${bidder}</li>`);
+		                });
+		            });
+		        }
+		
+		        // Event listener for the button click
+		        $('#biddersButton').on('click', function() {
+		            let modal = $('#biddersModal');
+		            if (modal.css('display') === 'none') {
+		                showBiddersList(); // Fetch and show list if modal is currently hidden
+		            }
+		            modal.toggle(); // Toggle visibility
+		        });
+		        
+	            // Event listener to close the modal when the "Back" button is clicked
+			    $('#closeModalButton').on('click', function() {
+			        $('#biddersModal').hide();
+			    });		        
+		    });
+		    
+			// Fetch and display bids when totalBidsButton is clicked
+			$("#totalBidsButton").click(function() {
+			    // Make a placeholder for the listing ID. Replace '5' with the actual listing ID you want.
+			    let marketListingId = window.location.pathname.split("/").pop();
+			    
+			    // Fetch bids from the backend
+			    $.get('/bidsForListing/' + marketListingId, function(bids) {
+			        // Clear any previous bid content
+			        $("#totalBidsList").empty();
+			        
+			        // Populate the UL with bid data
+			        bids.forEach(bid => {
+			            $("#totalBidsList").append('<li>Username: ' + bid.bidder.username + ', Bid Amount: ' + bid.bidAmount + '</li>');
+			        });
+			        
+			        // Display the modal
+			        $("#totalBidsModal").show();
+			    });
+			});
+			
+			// Close the modal when the close button is clicked
+			$("#closeTotalBidsModalButton").click(function() {
+			    $("#totalBidsModal").hide();
+			});   
+		    
+		</script>    
     </body>
 </html>
