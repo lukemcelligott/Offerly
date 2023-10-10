@@ -673,45 +673,30 @@
 			    });		        
 		    });
 		    
-			document.addEventListener("DOMContentLoaded", function() {
-
-    document.getElementById('totalBidsButton').addEventListener('click', function() {
-        let marketListingId = window.location.pathname.split("/").pop();
-        
-        fetch(`/bidsForListing/${marketListingId}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(bids => {
-            // Clear previous list content
-            let totalBidsList = document.getElementById('totalBidsList');
-            while (totalBidsList.firstChild) {
-                totalBidsList.removeChild(totalBidsList.firstChild);
-            }
-
-            // Populate the list with bids
-            bids.forEach(bid => {
-                let listItem = document.createElement('li');
-                listItem.textContent = bid.bidder.username + ': ' + bid.bidAmount;
-                totalBidsList.appendChild(listItem);
-            });
-
-            // Display the modal
-            document.getElementById('totalBidsModal').style.display = 'block';
-        })
-        .catch(error => {
-            console.error('Failed to retrieve bids.', error);
-        });
-    });
-
-    // Logic to close the modal
-    document.getElementById('closeTotalBidsModalButton').addEventListener('click', function() {
-        document.getElementById('totalBidsModal').style.display = 'none';
-    });
-});
+			// Fetch and display bids when totalBidsButton is clicked
+			$("#totalBidsButton").click(function() {
+			    // Make a placeholder for the listing ID. Replace '5' with the actual listing ID you want.
+			    let marketListingId = window.location.pathname.split("/").pop();
+			    
+			    // Fetch bids from the backend
+			    $.get('/bidsForListing/' + marketListingId, function(bids) {
+			        // Clear any previous bid content
+			        $("#totalBidsList").empty();
+			        
+			        // Populate the UL with bid data
+			        bids.forEach(bid => {
+			            $("#totalBidsList").append('<li>Username: ' + bid.bidder.username + ', Bid Amount: ' + bid.bidAmount + '</li>');
+			        });
+			        
+			        // Display the modal
+			        $("#totalBidsModal").show();
+			    });
+			});
+			
+			// Close the modal when the close button is clicked
+			$("#closeTotalBidsModalButton").click(function() {
+			    $("#totalBidsModal").hide();
+			});   
 		    
 		</script>    
     </body>

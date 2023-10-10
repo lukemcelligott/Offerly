@@ -375,13 +375,25 @@ public class MarketListingDomainController {
      
      @GetMapping("/bidsForListing/{id}")
      public ResponseEntity<List<Bid>> getBidsForListing(@PathVariable Long id) {
-    	 System.out.println("Ocean Darcy");
-         MarketListing marketListing = marketRepository.findById(id).orElse(null);
-         if (marketListing == null) {
-             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
+         try {
+        	 System.out.println("Ocean Darcy");
+             MarketListing marketListing = marketRepository.findById(id).orElse(null);
+             if (marketListing == null) {
+                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
+             }
+             List<Bid> bids = bidRepository.findByAuction(marketListing.getAuction());
+             
+             System.out.println("Number of bids retrieved: " + bids.size());
+             for (Bid bid : bids) {
+                 System.out.println("Bidder: " + bid.getBidder().getUsername() + ", Amount: " + bid.getBidAmount());
+             }
+             
+             return ResponseEntity.ok(bids);
+         
+         } catch (Exception e) {
+             e.printStackTrace(); // log the error
+             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
          }
-         List<Bid> bids = bidRepository.findByAuction(marketListing.getAuction());
-         return ResponseEntity.ok(bids);
      }
 }
 
