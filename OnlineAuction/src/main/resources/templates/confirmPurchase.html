@@ -411,7 +411,7 @@
 						</div>
 					</div>
 					<div class="modal-footer">
-						<button type="submit" name="submit" class="btn btn-success" id="mysignupbutton">Submit</button>
+						<button type="submit" name="submit" class="btn btn-success" id="confirmShippingButton">Submit</button>
 					</div>
 				</form>
 			</div>
@@ -429,68 +429,175 @@
 					</button>
 				</div>
 				<div class="modal-body">
-					<!-- Form for Adding New Payment Method -->
-					<form method="post" action="#" class="py-3" th:action="@{/addPayment}" object="${paymentDetails}">
-						<div class="row">
-							<div class="col-md-6 mb-3">
-								<!-- Card Type -->
-								<select class="form-select" id="cardType" name="cardType">
-									<option
-										th:each="cardType : ${cardTypes}"
-										th:value="${cardType.cardType}"
-										th:text="${cardType.cardType}">
-									</option>
-								</select>
-							</div>
-							<div class="col-md-6 mb-3">
-								<!-- Cardholder Name -->
-								<input type="text" class="form-control" field="*{cardholderName}" name="cardholderName" placeholder="Cardholder Name"></input>
-							</div>
+					<!-- Tab Navigation for Payment Methods -->
+					<ul class="nav nav-tabs" id="paymentMethodTab" role="tablist">
+						<li class="nav-item">
+							<a class="nav-link active" id="creditCard-tab" data-toggle="tab" href="#creditCard" role="tab" aria-controls="creditCard" aria-selected="true">Credit Card</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" id="bankAccount-tab" data-toggle="tab" href="#bankAccount" role="tab" aria-controls="bankAccount" aria-selected="false">Bank Account</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" id="paypal-tab" data-toggle="tab" href="#paypal" role="tab" aria-controls="paypal" aria-selected="false">PayPal</a>
+						</li>
+					</ul>
+					
+					<!-- Tab Content for Payment Methods -->
+					<div class="tab-content" id="paymentMethodTabContent">
+						<!-- Credit Card Form -->
+						<div class="tab-pane fade show active" id="creditCard" role="tabpanel" aria-labelledby="creditCard-tab">
+							<form method="post" id="creditCardForm" action="#" class="py-3" th:action="@{/addPayment}" object="${paymentDetails}">
+								<div class="row">
+									<div class="col-md-6 mb-3">
+										<!-- Card Type -->
+										<select class="form-select" id="cardType" name="cardType">
+											<option
+												th:each="cardType : ${cardTypes}"
+												th:value="${cardType.cardType}"
+												th:text="${cardType.cardType}">
+											</option>
+										</select>
+									</div>
+									<div class="col-md-6 mb-3">
+										<!-- Cardholder Name -->
+										<input type="text" class="form-control" field="*{cardholderName}" name="cardholderName" placeholder="Cardholder Name"></input>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6 mb-3">
+										<!-- Card Number -->
+										<input type="tel" class="form-control" field="*{cardNumber}" name="cardNumber" placeholder="Card Number" maxlength="16"></input>
+									</div>
+									<div class="col-md-6 mb-3">
+										<!-- Expiration Date -->
+										<input field="*{expirationDate}" name="expirationDate" class="form-control month-picker" placeholder="Exp. Date (MM / YY)" autocomplete="do-not-autofill"/>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6 mb-3">
+										<!-- Security Code -->
+										<input type="tel" class="form-control" id="securityCode" field="*{securityCode}" placeholder="CVV" name="securityCode" maxlength="4"></input>
+									</div>
+									<div class="col-md-6 mb-3">
+										<!-- Postal Code -->
+										<input type="tel" class="form-control" id="postalCode" field="*{postalCode}" placeholder="Postal Code" name="postalCode" maxlength="5"></input>
+									</div>
+								</div>
+								<!--used for learning how to use jQuery to get month and year since input type="month" doesn't work on firefox https://stackoverflow.com/questions/2208480/jquery-ui-datepicker-to-show-month-year-only --> 
+								<script type="text/javascript"> 
+										$(function() {
+											$('.month-picker').datepicker( {
+												changeMonth: true,
+												changeYear: true,
+												showButtonPanel: true,
+												dateFormat: 'MM yy',
+												
+												onClose: function(dateText, inst) { 
+													var year = inst.selectedYear;
+													var month = inst.selectedMonth + 1;
+													var lastDay = new Date(year, month, 0).getDate();
+													$(this).datepicker('setDate', new Date(year, month - 1, lastDay));
+												}
+											});
+										});                                                                         
+								</script>        
+								
+							</form>
 						</div>
-						<div class="row">
-							<div class="col-md-6 mb-3">
-								<!-- Card Number -->
-								<input type="tel" class="form-control" field="*{cardNumber}" name="cardNumber" placeholder="Card Number" maxlength="16"></input>
-							</div>
-							<div class="col-md-6 mb-3">
-								<!-- Expiration Date -->
-								<input field="*{expirationDate}" name="expirationDate" class="form-control month-picker" placeholder="Exp. Date (MM / YY)" autocomplete="do-not-autofill"/>
-							</div>
+
+						<!-- Bank Account Form -->
+						<div class="tab-pane fade" id="bankAccount" role="tabpanel" aria-labelledby="bankAccount-tab">
+							<form id="bankAccountForm" method="post" action="#" th:action="@{/addDirectDeposit}" th:object="${directDepositDetails}">
+									<div class="d-flex flex-column justify-content-center">
+											<div class="card-body d-flex flex-column">
+												<table style="width:20vw; justify-content:center; margin-left:auto; margin-right:auto;">
+													<tbody>
+														<tr>
+															<td><label class="form-label" for="accountholderName">Account holder Name</label></td>
+														</tr>
+														<tr>
+															<td colspan="2"><input class="form-control" type="text" th:field="*{accountholderName}"></input>
+																<p th:if="${#fields.hasErrors('accountholderName')}" th:errors="*{accountholderName}"></p></td>
+														</tr>
+														<tr>
+															<td colspan="2"><label class="form-label" for="routingNumber">Routing Number</label></td>
+														</tr>
+														<tr>
+															<td colspan="2"><input class="form-control" type="number" th:field="*{routingNumber}"></input>
+															<p th:if="${#fields.hasErrors('routingNumber')}" th:errors="*{routingNumber}"></p></td>
+														</tr>
+														<tr>
+															<td colspan="2"><label class="form-label" for="accountNumber">Account Number</label></td>
+														</tr>
+														<tr>
+															<td colspan="2"><input class="form-control" type="number" th:field="*{accountNumber}"></input>
+															<p th:if="${#fields.hasErrors('accountNumber')}" th:errors="*{accountNumber}"></p></td>
+														</tr>
+														<tr>
+															<td colspan="2"><label class="form-label" for="bankName">Bank Name</label></td>
+														</tr>
+														<tr>
+															<td colspan="2"><input class="form-control" type="text" th:field="*{bankName}"></input>
+															<p th:if="${#fields.hasErrors('bankName')}" th:errors="*{bankName}"></p></td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+									</div>
+							</form>
 						</div>
-						<div class="row">
-							<div class="col-md-6 mb-3">
-								<!-- Security Code -->
-								<input type="tel" class="form-control" id="securityCode" field="*{securityCode}" placeholder="CVV" name="securityCode" maxlength="4"></input>
-							</div>
-							<div class="col-md-6 mb-3">
-								<!-- Postal Code -->
-								<input type="tel" class="form-control" id="postalCode" field="*{postalCode}" placeholder="Postal Code" name="postalCode" maxlength="5"></input>
-							</div>
+	
+						<!-- PayPal Form -->
+						<div class="tab-pane fade" id="paypal" role="tabpanel" aria-labelledby="paypal-tab">
+							<script type="text/javascript">
+								var totalPriceAfterTaxes = /*[[${purchase.totalPriceAfterTaxes}]]*/ '0.00';
+							</script>
+							<div id="paypal-button-container" class="mt-3"></div>
+							<script>
+								paypal.Buttons({
+									createOrder: function(data, actions) {
+										// This function sets up the details of the transaction, including the amount and line item details.
+										return actions.order.create({
+											purchase_units: [{
+												amount: {
+													value: totalPriceAfterTaxes
+												}
+											}]
+										});
+									},
+									onApprove: function(data, actions) {
+										// This function captures the funds from the transaction.
+										return actions.order.capture().then(function(details) {
+											// This function shows a transaction success message to your buyer.
+											alert('Transaction completed by ' + details.payer.name.given_name);
+										});
+									}
+								}).render('#paypal-button-container');
+							</script>
 						</div>
-						<!--used for learning how to use jQuery to get month and year since input type="month" doesn't work on firefox https://stackoverflow.com/questions/2208480/jquery-ui-datepicker-to-show-month-year-only --> 
-						<script type="text/javascript"> 
-								$(function() {
-									$('.month-picker').datepicker( {
-										changeMonth: true,
-										changeYear: true,
-										showButtonPanel: true,
-										dateFormat: 'MM yy',
-										
-										onClose: function(dateText, inst) { 
-											var year = inst.selectedYear;
-											var month = inst.selectedMonth + 1;
-											var lastDay = new Date(year, month, 0).getDate();
-											$(this).datepicker('setDate', new Date(year, month - 1, lastDay));
-										}
-									});
-								});                                                                         
-						</script>        
-						<div class="modal-footer">
-							<!-- Confirm button -->
-							<button class="btn btn-outline-success" type="submit" name="submit" id="mysignupbutton">Confirm</button>
-						</div>
-					</form>
-				</div>
+					</div>
+			</div>
+			<div class="modal-footer">
+				<script type="text/javascript">
+					$(document).on('click', '#confirmButton', function() {
+						var activeTab = $('#paymentMethodTabContent .tab-pane.active').attr('id');
+						console.log('Active tab: ' + activeTab);
+						switch (activeTab) {
+							case 'creditCard':
+								console.log('Submitting creditCard form'); 
+								$('#creditCardForm').submit();
+								break;
+							case 'bankAccount':
+								console.log('Submitting bankAccount form'); 
+								$('#bankAccountForm').submit();
+								break;
+							case 'paypal':
+								break;
+						}
+					});
+				</script>
+				<!-- Confirm button -->
+				<button class="btn btn-outline-success" type="button" name="submit" id="confirmButton">Confirm</button>
 			</div>
 		</div>
 	</div>

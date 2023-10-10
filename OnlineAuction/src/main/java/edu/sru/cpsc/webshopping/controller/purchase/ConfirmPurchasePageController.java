@@ -32,6 +32,8 @@ import edu.sru.cpsc.webshopping.controller.UserDetailsController;
 import edu.sru.cpsc.webshopping.controller.billing.CardTypeController;
 import edu.sru.cpsc.webshopping.controller.billing.PaymentDetailsController;
 import edu.sru.cpsc.webshopping.controller.billing.StateDetailsController;
+import edu.sru.cpsc.webshopping.domain.billing.DirectDepositDetails;
+import edu.sru.cpsc.webshopping.domain.billing.DirectDepositDetails_Form;
 import edu.sru.cpsc.webshopping.domain.billing.PaymentDetails;
 import edu.sru.cpsc.webshopping.domain.billing.PaymentDetails_Form;
 import edu.sru.cpsc.webshopping.domain.billing.Paypal;
@@ -157,6 +159,7 @@ public class ConfirmPurchasePageController {
 		
 		details = new PaymentDetails();
 		paypal = new Paypal_Form();
+		DirectDepositDetails_Form directDeposit = new DirectDepositDetails_Form();
 		if(validatedDetails == null)
 			validatedDetails = user.getDefaultPaymentDetails();
 		if (this.address == null)
@@ -183,6 +186,7 @@ public class ConfirmPurchasePageController {
 		model.addAttribute("loginEr", loginEr);
 		model.addAttribute("user", user);
 		model.addAttribute("defaultDetails", user.getDefaultPaymentDetails());
+		model.addAttribute("directDepositDetails", directDeposit);
 		model.addAttribute("tax", purchase.getTotalPriceAfterTaxes().subtract(purchase.getTotalPriceBeforeTaxes()));
 		if ((user.getPaymentDetails() != null && user.getPaymentDetails().isEmpty()) || user.getPaymentDetails() == null)
 			model.addAttribute("allDetails", null);
@@ -241,6 +245,7 @@ public class ConfirmPurchasePageController {
 		model.addAttribute("loginEr", loginEr);
 		model.addAttribute("user", user);
 		model.addAttribute("defaultDetails", user.getDefaultPaymentDetails());
+
 		if (user.getPaymentDetails() != null && user.getPaymentDetails().isEmpty())
 			model.addAttribute("allDetails", null);
 		else
@@ -565,7 +570,7 @@ public class ConfirmPurchasePageController {
 		return initializePurchasePage(prevListing, purchase, model, principal);
 	}
 
-	@PostMapping(value = "/addPayment", params="submit")
+	@PostMapping(value = "/addPayment")
 	public String addPaymentDetails(@Validated @ModelAttribute("paymentDetails") PaymentDetails_Form details, BindingResult result, Model model, Principal principal) {
 	
 		User user = userService.getUserByUsername(principal.getName());
@@ -600,6 +605,19 @@ public class ConfirmPurchasePageController {
 			relogin = true;
 			validatedDetails = currDetails;
 		}
+		userService.updateUserProfile(user.getId(), user);
+		return initializePurchasePage(prevListing, purchase, model, principal);
+	}
+
+	@PostMapping(value = "/addDirectDeposit")
+	public String addDirectDepositDetails(@Validated @ModelAttribute("directDepositDetails") DirectDepositDetails_Form details, BindingResult result, Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
+		DirectDepositDetails currDirectDetails = new DirectDepositDetails();
+		currDirectDetails.buildFromForm(details);
+		if (user == null) {
+			throw new IllegalStateException("Cannot purchase an item when not logged in.");
+		}
+		userController.updateDirectDepositDetails(currDirectDetails, principal);
 		userService.updateUserProfile(user.getId(), user);
 		return initializePurchasePage(prevListing, purchase, model, principal);
 	}
