@@ -67,7 +67,7 @@ public class Transaction {
 
 	private boolean isLocalPickup;
 	
-	@OneToOne
+	@OneToOne(cascade = CascadeType.PERSIST)
 	private Shipping shippingEntry;
 
 	@OneToOne

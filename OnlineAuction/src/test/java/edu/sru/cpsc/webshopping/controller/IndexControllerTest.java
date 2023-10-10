@@ -67,7 +67,7 @@ class IndexControllerTest {
         when(userService.getUserByUsername("testuser")).thenReturn(user);
 
         // Act
-        String viewName = indexController.showUserList(model, principal);
+        String viewName = indexController.showUserList(model);
 
         // Assert
         assertEquals("index", viewName);
@@ -85,7 +85,7 @@ class IndexControllerTest {
         when(userService.getUserByUsername("testuser")).thenReturn(user);
 
         // Act
-        String viewName = indexController.showIndex(model, principal);
+        String viewName = indexController.showIndex(model);
 
         // Assert
         assertEquals("index", viewName);

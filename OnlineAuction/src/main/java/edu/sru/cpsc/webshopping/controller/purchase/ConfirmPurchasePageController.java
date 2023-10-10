@@ -32,6 +32,8 @@ import edu.sru.cpsc.webshopping.controller.UserDetailsController;
 import edu.sru.cpsc.webshopping.controller.billing.CardTypeController;
 import edu.sru.cpsc.webshopping.controller.billing.PaymentDetailsController;
 import edu.sru.cpsc.webshopping.controller.billing.StateDetailsController;
+import edu.sru.cpsc.webshopping.domain.billing.DirectDepositDetails;
+import edu.sru.cpsc.webshopping.domain.billing.DirectDepositDetails_Form;
 import edu.sru.cpsc.webshopping.domain.billing.PaymentDetails;
 import edu.sru.cpsc.webshopping.domain.billing.PaymentDetails_Form;
 import edu.sru.cpsc.webshopping.domain.billing.Paypal;
@@ -129,6 +131,8 @@ public class ConfirmPurchasePageController {
 	    	address = user.getDefaultShipping();
 	    else
 	    	address = null;
+			purchase.setTotalPriceAfterTaxes(purchase.getTotalPriceBeforeTaxes());
+			purchase.setSellerProfit(purchase.getTotalPriceAfterTaxes().multiply(BigDecimal.ONE.subtract(Transaction.WEBSITE_CUT_PERCENTAGE)));
 
 		if(this.address != null) //use the taxjar api to get the state and local sales tax information (if there is an address than tax information can be calculated)
 		{
@@ -137,8 +141,14 @@ public class ConfirmPurchasePageController {
 				//RateResponse res = client.ratesForLocation(this.address.getPostalCode());
 				StateDetails state = address.getState();
 				BigDecimal taxRate = state.getSalesTaxRate();
+				//divide tax rate by 100 to get the percentage
+				taxRate = taxRate.divide(new BigDecimal(100));
+				System.out.println("Total Price After Taxes: " + purchase.getTotalPriceBeforeTaxes() + "* 1 ("+taxRate+")");
+				BigDecimal totalPriceAfterTaxes = purchase.getTotalPriceBeforeTaxes().multiply(BigDecimal.ONE.add(taxRate));
+				// round to 2 decimal places
+				totalPriceAfterTaxes = totalPriceAfterTaxes.setScale(2, RoundingMode.HALF_UP);
 
-				purchase.setTotalPriceAfterTaxes(purchase.getTotalPriceBeforeTaxes().multiply(BigDecimal.ONE.add(taxRate)));
+				purchase.setTotalPriceAfterTaxes(totalPriceAfterTaxes);
 				purchase.setSellerProfit(purchase.getTotalPriceAfterTaxes().multiply(BigDecimal.ONE.subtract(Transaction.WEBSITE_CUT_PERCENTAGE)));
 			}
 			catch(Exception e)
@@ -149,6 +159,7 @@ public class ConfirmPurchasePageController {
 		
 		details = new PaymentDetails();
 		paypal = new Paypal_Form();
+		DirectDepositDetails_Form directDeposit = new DirectDepositDetails_Form();
 		if(validatedDetails == null)
 			validatedDetails = user.getDefaultPaymentDetails();
 		if (this.address == null)
@@ -156,6 +167,8 @@ public class ConfirmPurchasePageController {
 		else
 			model.addAttribute("selectedAddress", this.address);
 
+		model.addAttribute("defaultAddress", user.getDefaultShipping());
+		model.addAttribute("allAddresses", shippingAddressController.getShippingDetailsByUser(user));
 		model.addAttribute("shippingDetails", new ShippingAddress_Form());
 		model.addAttribute("purchase", purchase);
 		model.addAttribute("marketListing", this.prevListing);
@@ -173,6 +186,8 @@ public class ConfirmPurchasePageController {
 		model.addAttribute("loginEr", loginEr);
 		model.addAttribute("user", user);
 		model.addAttribute("defaultDetails", user.getDefaultPaymentDetails());
+		model.addAttribute("directDepositDetails", directDeposit);
+		model.addAttribute("tax", purchase.getTotalPriceAfterTaxes().subtract(purchase.getTotalPriceBeforeTaxes()));
 		if ((user.getPaymentDetails() != null && user.getPaymentDetails().isEmpty()) || user.getPaymentDetails() == null)
 			model.addAttribute("allDetails", null);
 		else
@@ -230,6 +245,7 @@ public class ConfirmPurchasePageController {
 		model.addAttribute("loginEr", loginEr);
 		model.addAttribute("user", user);
 		model.addAttribute("defaultDetails", user.getDefaultPaymentDetails());
+
 		if (user.getPaymentDetails() != null && user.getPaymentDetails().isEmpty())
 			model.addAttribute("allDetails", null);
 		else
@@ -553,6 +569,58 @@ public class ConfirmPurchasePageController {
 		userService.updateUserProfile(user.getId(), user);
 		return initializePurchasePage(prevListing, purchase, model, principal);
 	}
+
+	@PostMapping(value = "/addPayment")
+	public String addPaymentDetails(@Validated @ModelAttribute("paymentDetails") PaymentDetails_Form details, BindingResult result, Model model, Principal principal) {
+	
+		User user = userService.getUserByUsername(principal.getName());
+		PaymentDetails currDetails = new PaymentDetails();
+		allSelected = false;
+		currDetails.buildFromForm(details);
+		if (user == null) {
+			throw new IllegalStateException("Cannot purchase an item when not logged in.");
+		}
+		// Test that payment details are valid
+		if (!paymentDetailsInvalid(details) && !result.hasErrors()) {
+			// add the card to the database if it's new
+			if (!payDetController.checkDuplicateCard(currDetails)) {
+				payDetController.addPaymentDetails(currDetails);
+				System.out.println("option 1");
+			} else {
+				currDetails = payDetController.getPaymentDetailsByCardNumberAndExpirationDate(currDetails);
+				System.out.println(currDetails.getId());
+			}
+			if (address != null)
+				allSelected = true;
+			Set<PaymentDetails> PD = user.getPaymentDetails();
+			if(PD == null)
+				PD = new HashSet<PaymentDetails>();
+			PD.add(currDetails);
+			user.setPaymentDetails(PD);
+			if(user.getDefaultPaymentDetails() == null)
+				user.setDefaultPaymentDetails(currDetails);
+			currDetails.setUser(user);
+			payDetController.addPaymentDetails(currDetails);
+			modifyPayment = false;
+			relogin = true;
+			validatedDetails = currDetails;
+		}
+		userService.updateUserProfile(user.getId(), user);
+		return initializePurchasePage(prevListing, purchase, model, principal);
+	}
+
+	@PostMapping(value = "/addDirectDeposit")
+	public String addDirectDepositDetails(@Validated @ModelAttribute("directDepositDetails") DirectDepositDetails_Form details, BindingResult result, Model model, Principal principal) {
+		User user = userService.getUserByUsername(principal.getName());
+		DirectDepositDetails currDirectDetails = new DirectDepositDetails();
+		currDirectDetails.buildFromForm(details);
+		if (user == null) {
+			throw new IllegalStateException("Cannot purchase an item when not logged in.");
+		}
+		userController.updateDirectDepositDetails(currDirectDetails, principal);
+		userService.updateUserProfile(user.getId(), user);
+		return initializePurchasePage(prevListing, purchase, model, principal);
+	}
 	
 	/**
 	 * prepares the page for a user modifying their payment details
@@ -576,16 +644,12 @@ public class ConfirmPurchasePageController {
 	 */
 	@Transactional
 	@RequestMapping(value = "/attemptPurchase")
-	public String attemptPurchase(@RequestParam("deliveryOption") String deliveryOption, Model model, Principal principal) {
+	public String attemptPurchase(@RequestParam("deliveryOption") String deliveryOption, @RequestParam("selectedPaymentId") Long selectedPaymentId, @RequestParam("selectedAddressId") Long selectedAddressId, Model model, Principal principal) {
 		User user = userService.getUserByUsername(principal.getName());
-		if ((address != null && validatedDetails != null) || (address != null && depositPicked == true)) {
-			BigDecimal salesTaxPercentage = this.address.getState().getSalesTaxRate().divide(new BigDecimal(100));
-			BigDecimal afterSalesTax = purchase.getTotalPriceBeforeTaxes()
-					.add(salesTaxPercentage.multiply(purchase.getTotalPriceBeforeTaxes())).setScale(2, RoundingMode.UP);
-			purchase.setTotalPriceAfterTaxes(afterSalesTax);
-			BigDecimal finalSellerProfit = afterSalesTax
-					.subtract(afterSalesTax.multiply(Transaction.WEBSITE_CUT_PERCENTAGE));
-			purchase.setSellerProfit(finalSellerProfit);
+		ShippingAddress selectedAddress = shippingAddressController.getShippingAddressEntry(selectedAddressId);
+		PaymentDetails selectedPayment = payDetController.getPaymentDetail(selectedPaymentId, model);
+
+		if (selectedAddress != null && selectedPayment != null) {
 			// Update market listing to reflect purchase
 			marketListingController.marketListingPurchaseUpdate(prevListing, purchase.getQtyBought());
 			// Creates an unfinished shipping label, to be filled out later by the seller
@@ -593,16 +657,14 @@ public class ConfirmPurchasePageController {
 			if ("shipping".equals(deliveryOption)) {
 				Shipping shipping = new Shipping();
 				shipping.setTransaction(purchase);
-				shipping.setAddress(address);
+				shipping.setAddress(selectedAddress);
 				purchase.setShippingEntry(shipping);
 			} else if ("pickup".equals(deliveryOption)) {
 				purchase.setLocalPickup(purchase.getMarketListing().getLocalPickup());
 			}
 			
-			if(depositPicked == false)
-				purchase.setPaymentDetails(validatedDetails);
-			else
-				purchase.setDepositDetails(user.getDirectDepositDetails());
+			purchase.setPaymentDetails(selectedPayment);
+
 			transController.addTransaction(purchase);
 			return "redirect:/homePage";
 		} else {

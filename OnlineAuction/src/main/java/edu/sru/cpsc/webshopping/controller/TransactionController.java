@@ -60,7 +60,7 @@ public class TransactionController {
 	public Transaction addTransaction(@Validated Transaction transaction) {
 		MarketListing ml = entityManager.find(MarketListing.class, transaction.getMarketListing().getId());
 		// Shipping entry and the associated address are created at the same time as the Transaction
-		entityManager.persist(transaction.getShippingEntry());
+		// entityManager.persist(transaction.getShippingEntry());
 		transaction.setMarketListing(ml);
 		return repository.save(transaction);
 	}

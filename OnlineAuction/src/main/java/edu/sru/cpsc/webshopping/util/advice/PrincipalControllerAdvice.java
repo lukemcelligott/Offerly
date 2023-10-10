@@ -16,7 +16,7 @@ public class PrincipalControllerAdvice {
     @ExceptionHandler(UnauthenticatedUserException.class)
     public void handleUnauthenticated(Principal principal, HttpServletResponse response) throws IOException {
         if (principal == null) {
-            response.sendRedirect("/login");
+            response.sendRedirect("/index");
         }
     }
     

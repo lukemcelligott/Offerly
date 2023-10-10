@@ -50,3 +50,63 @@ form {
 	padding-left: 10px;
 	padding-right: 10px;
 }
+
+.ui-datepicker-calendar {
+	display: none;
+}
+
+.ui-datepicker {
+	z-index: 1500 !important;
+}
+
+.radio-button input[type="radio"]:checked+label {
+	background-color: #FBD8B4;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+input[type=number] {
+	-moz-appearance: textfield;
+}
+
+#page {
+	display: flex;
+	/*height: calc(92vh - 60px);*/
+}
+
+#website-title {
+	margin-left: 8px;
+	margin-right: 8px;
+	font-size: 12px;
+}
+
+label {
+	display: inline-block;
+}
+
+#shippingHeading .btn-link,
+#purchaseDetailsAccordion .btn-link,
+#paymentAccordion .btn-link {
+	color: #0d6efd !important;
+	/* Using !important to ensure our color is applied */
+	text-decoration: none;
+	/* To remove the underline */
+}
+
+/* Change color of accordion header on hover for better UX */
+#shippingHeading .btn-link:hover,
+#purchaseDetailsAccordion .btn-link:hover,
+#paymentAccordion .btn-link:hover {
+	color: #0b5cda !important;
+	/* Slightly darker shade for hover, using !important for override */
+}
+
+.custom-font-style {
+	font-family: 'Poppins', sans-serif;
+	font-size: 1.5em;
+}
+
