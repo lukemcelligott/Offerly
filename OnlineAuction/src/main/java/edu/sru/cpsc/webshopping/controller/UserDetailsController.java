@@ -65,6 +65,7 @@ import edu.sru.cpsc.webshopping.domain.billing.ShippingAddress_Form;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.repository.billing.PaymentDetailsRepository;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
+import edu.sru.cpsc.webshopping.service.AddressService;
 import edu.sru.cpsc.webshopping.service.UserService;
 
 
@@ -120,6 +121,8 @@ public class UserDetailsController {
 
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private AddressService addressService;
 	
 	public UserDetailsController(UserController userController, UserRepository userRepository, 
 			TransactionController transController, CardTypeController cardController,
@@ -1122,7 +1125,7 @@ public class UserDetailsController {
 	 * @return
 	 */
 	public boolean shippingAddressConstraintsFailed(ShippingAddress_Form form) {
-		return addressExists(form);
+		return !addressExists(form);
 	}
 	
 	
@@ -1161,35 +1164,9 @@ public class UserDetailsController {
 	} */
 	
 	
-	/*
-	 * https://developers.google.com/maps/documentation/address-validation/get-api-key
-	 * https://developers.google.com/maps/documentation/address-validation/reference/rest/v1/TopLevel/validateAddress
-	 * 
-	 * Google Maps Address Verification API
-	 */
 	
 	public boolean addressExists(ShippingAddress_Form shipping) {
-	    GeoApiContext context = new GeoApiContext.Builder()
-	        .apiKey("AIzaSyCRm7IoRW0gGqjIgh_I5OrpzLWYKxxTr5s")
-	        .build();
-
-	    String address = shipping.getStreetAddress() + ", " + shipping.getCity() + ", " + shipping.getState().getStateName() + " " + shipping.getPostalCode();
-
-	    try {
-	        AutocompletePrediction[] results = PlacesApi.placeAutocomplete(context, address, null).await();
-	        if (results != null && results.length > 0) {
-	            // At least one address match found
-	            return true;
-	        } else {
-	            // No matches found
-	            System.out.println("Cannot find address");
-	            return false;
-	        }
-	    } catch (ApiException | InterruptedException | IOException e) {
-	        System.out.println(e.getMessage());
-	        e.printStackTrace();
-	        return false;
-	    }
+	    return addressService.addressExists(shipping);
 	}
 	
 	

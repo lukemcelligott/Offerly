@@ -143,13 +143,13 @@
 				<div class="d-flex justify-content-center my-3">
 					<div class="form-check form-check-inline">
 						<input class="form-check-input" type="radio" name="deliveryOption" id="shippingOption"
-							value="shipping" th:disabled="${marketListing.isLocalPickupOnly}"
+							th:value="shipping" th:disabled="${marketListing.isLocalPickupOnly}"
 							th:checked="${!marketListing.isLocalPickupOnly}">
 						<label class="form-check-label" for="shippingOption">Shipping</label>
 					</div>
 					<div class="form-check form-check-inline">
 						<input class="form-check-input" type="radio" name="deliveryOption" id="pickupOption"
-							value="pickup" th:disabled="${marketListing.localPickup == null}"
+							th:value="pickup" th:disabled="${marketListing.localPickup == null}"
 							th:checked="${marketListing.isLocalPickupOnly}">
 						<label class="form-check-label" for="pickupOption">Local Pickup</label>
 					</div>
@@ -192,7 +192,7 @@
 										</div>
 									</div>
 								</div>
-								<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#shippingModal">Add</button>
+								<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#shippingModal">Add a New Address</button>
 								<div th:if="${errMessage != null}" th:text="${errMessage}"
 									class="alert alert-danger d-flex justify-content-center my-3">
 								</div>
@@ -251,9 +251,9 @@
 									<div class="row g-0">
 										<div class="col-md-4">
 											<!-- Display Card Image -->
-											<img th:src="@{/images/cardTypes/{image}.png(image = ${selectedPayment.cardType.toLowerCase()})}" alt="Card Image" src="">
+											<img th:src="@{/images/cardTypes/{image}.png(image = ${selectedPayment.cardType.toLowerCase()})}" alt="Card Image" src="" style="width: 100%">
 										</div>
-										<div class="col-md-8">
+										<div class="col-md-6">
 											<div class="card-body">
 												<h5 class="card-title">Default Card</h5>
 												<!-- Card Details -->
@@ -334,12 +334,14 @@
 						</div>
 						<form method="post" th:action="@{/attemptPurchase}">
 							<input type="hidden" name="deliveryOption" th:value="${deliveryOption}">
+							<input type="hidden" name="selectedPaymentId" th:value="${selectedPayment.id}">
+							<input type="hidden" name="selectedAddressId" th:value="${selectedAddress.id}">
 							<!-- Totals Table -->
 							<table class="table table-bordered mb-4">
 								<tbody>
 									<tr>
 										<td>Items:</td>
-										<td class="text-right"><strong>$<span th:text="${purchase.totalPriceBeforeTaxes}"></span></strong></td>
+										<td class="text-right">$<span th:text="${purchase.totalPriceBeforeTaxes}"></span></td>
 									</tr>
 									<tr>
 										<td>Estimated Tax:</td>
@@ -511,6 +513,26 @@
 			}
 		}
 	});
+
+	document.addEventListener('DOMContentLoaded', function() {
+        // Get all radio buttons with name 'deliveryOption' and the hidden input field.
+        const deliveryOptions = document.querySelectorAll('input[name="deliveryOption"]');
+        const deliveryOptionInput = document.querySelector('input[name="deliveryOption"][type="hidden"]');
+
+		deliveryOptions.forEach(option => {
+            if(option.checked) {
+                deliveryOptionInput.value = option.value;
+            }
+        });
+
+        // Loop through each radio button and add an event listener.
+        deliveryOptions.forEach(option => {
+            option.addEventListener('change', function() {
+                // Update the hidden input field's value.
+                deliveryOptionInput.value = this.value;
+            });
+        });
+    });
 </script>
 
 </html>

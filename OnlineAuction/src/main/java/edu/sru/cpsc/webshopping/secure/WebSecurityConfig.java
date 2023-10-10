@@ -44,7 +44,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
-		
 			.authorizeRequests()
 				/* begin - users visiting these URLs do not need authenticated because of .permitAll() */
 				.antMatchers("/", "/index", "/newUser", "/adduser", "/add-user-signup","/emailverification", "/get-all-card-types", "/submitShippingAddressSignUp",

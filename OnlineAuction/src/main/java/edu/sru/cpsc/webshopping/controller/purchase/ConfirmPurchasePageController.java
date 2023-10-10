@@ -626,16 +626,12 @@ public class ConfirmPurchasePageController {
 	 */
 	@Transactional
 	@RequestMapping(value = "/attemptPurchase")
-	public String attemptPurchase(@RequestParam("deliveryOption") String deliveryOption, Model model, Principal principal) {
+	public String attemptPurchase(@RequestParam("deliveryOption") String deliveryOption, @RequestParam("selectedPaymentId") Long selectedPaymentId, @RequestParam("selectedAddressId") Long selectedAddressId, Model model, Principal principal) {
 		User user = userService.getUserByUsername(principal.getName());
-		if ((address != null && validatedDetails != null) || (address != null && depositPicked == true)) {
-			BigDecimal salesTaxPercentage = this.address.getState().getSalesTaxRate().divide(new BigDecimal(100));
-			BigDecimal afterSalesTax = purchase.getTotalPriceBeforeTaxes()
-					.add(salesTaxPercentage.multiply(purchase.getTotalPriceBeforeTaxes())).setScale(2, RoundingMode.UP);
-			purchase.setTotalPriceAfterTaxes(afterSalesTax);
-			BigDecimal finalSellerProfit = afterSalesTax
-					.subtract(afterSalesTax.multiply(Transaction.WEBSITE_CUT_PERCENTAGE));
-			purchase.setSellerProfit(finalSellerProfit);
+		ShippingAddress selectedAddress = shippingAddressController.getShippingAddressEntry(selectedAddressId);
+		PaymentDetails selectedPayment = payDetController.getPaymentDetail(selectedPaymentId, model);
+
+		if (selectedAddress != null && selectedPayment != null) {
 			// Update market listing to reflect purchase
 			marketListingController.marketListingPurchaseUpdate(prevListing, purchase.getQtyBought());
 			// Creates an unfinished shipping label, to be filled out later by the seller
@@ -643,16 +639,14 @@ public class ConfirmPurchasePageController {
 			if ("shipping".equals(deliveryOption)) {
 				Shipping shipping = new Shipping();
 				shipping.setTransaction(purchase);
-				shipping.setAddress(address);
+				shipping.setAddress(selectedAddress);
 				purchase.setShippingEntry(shipping);
 			} else if ("pickup".equals(deliveryOption)) {
 				purchase.setLocalPickup(purchase.getMarketListing().getLocalPickup());
 			}
 			
-			if(depositPicked == false)
-				purchase.setPaymentDetails(validatedDetails);
-			else
-				purchase.setDepositDetails(user.getDirectDepositDetails());
+			purchase.setPaymentDetails(selectedPayment);
+
 			transController.addTransaction(purchase);
 			return "redirect:/homePage";
 		} else {
