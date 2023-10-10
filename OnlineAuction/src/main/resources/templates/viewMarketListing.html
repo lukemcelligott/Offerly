@@ -95,7 +95,7 @@
 							    <div class="auction-details-container d-flex justify-content-between align-items-center" style="width: 100%; max-width: 500px;">
 							        <div class="auction-price-container details-text">
 							            <span>Starting Bid:</span>
-							            <strong><span th:text="'$' + ${currListing.auction.startingBid}"></span></strong>
+							            <strong><span id="startingBid" th:text="'$' + ${currListing.auction.startingBid}"></span></strong>
 							
 							            <!-- Show Current Bid only if it's different from the Starting Bid -->
 							            <span th:if="${currListing.auction.startingBid != currListing.auction.currentBid}">Current Bid:</span>
@@ -701,11 +701,27 @@
 			    const bidsList = document.getElementById('totalBidsList');
 			    bidsList.innerHTML = ''; // Clear any existing list items
 			
+			    // Get the starting bid from the HTML
+			    let startingBidElement = document.getElementById('startingBid');
+			    let startingBid = parseFloat(startingBidElement.textContent.replace('$', ''));
+			
+			    let currentAuctionPrice = startingBid; // Starting bid now fetched dynamically
+			    let previousAuctionPrice = currentAuctionPrice;
+			
 			    data.forEach(bid => {
 			        const listItem = document.createElement('li');
-			        listItem.textContent = `${bid.username} bid $${bid.bidAmount}.`; 
+			
+			        // Update the auction price
+			        currentAuctionPrice += bid.bidAmount;
+			
+			        // Display the text with the username in bold
+			        listItem.innerHTML = `<strong>${bid.username}</strong> bids $${bid.bidAmount}. New Auction price is $${currentAuctionPrice} from $${previousAuctionPrice}.`;
+			
 			        // Prepend the new list item to the list so that it appears at the top
 			        bidsList.insertBefore(listItem, bidsList.firstChild);
+			
+			        // Update the previous auction price for the next iteration
+			        previousAuctionPrice = currentAuctionPrice;
 			    });
 			}
 			
