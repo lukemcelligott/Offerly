@@ -5,6 +5,9 @@ import java.net.URI;
 import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -353,6 +356,18 @@ public class MarketListingDomainController {
          } 
          System.out.println("Maple");
          return response;
+     }
+     
+     @GetMapping("/showUniqueBidders/{id}")
+     public ResponseEntity<List<String>> getUniqueBidders(@PathVariable Long id) {
+    	 System.out.println("Ocean Man");
+         MarketListing marketListing = marketRepository.findById(id).orElse(null);
+         if (marketListing == null) {
+             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
+         }
+         Set<User> uniqueBidders = auctionService.findUniqueBiddersForListing(marketListing);
+         List<String> bidderNames = uniqueBidders.stream().map(User::getUsername).collect(Collectors.toList());
+         return ResponseEntity.ok(bidderNames);
      }
 }
 

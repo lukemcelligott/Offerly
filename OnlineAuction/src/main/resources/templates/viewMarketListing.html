@@ -6,7 +6,6 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/magnify/2.3.3/js/jquery.magnify.min.js" integrity="sha512-YKxHqn7D0M5knQJO2xKHZpCfZ+/Ta7qpEHgADN+AkY2U2Y4JJtlCEHzKWV5ZE87vZR3ipdzNJ4U/sfjIaoHMfw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         
         <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
@@ -107,7 +106,7 @@
 													
 						    <!-- Listing: Unique Bidders & Total Bid -->
 						  	<div class="d-flex justify-content-center details-container auction-details-container">
-							    <button id="biddersButton" style="background: none; border: none; cursor: pointer;">
+							    <button id="biddersButton">
 							        <span class="details-text">Unique Bidders: </span>
 							        <strong><span id="uniqueBidderCountSpan" style="margin-left: 5px;"></span></strong>
 							        <span class="details-text" style="margin-left: 15px;">Total Bids: </span>
@@ -396,10 +395,10 @@
             </div>
         </div>
         
-        <!-- Show List of Unique Bidders and Bids -->
-        <div id="biddersModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; padding: 20px; border: 1px solid gray;">
-    		<h3>Unique Bidders</h3>
-    		<ul id="biddersList"></ul>
+      	<div id="biddersModal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; padding: 20px; border: 1px solid gray;">
+		    <h3>Unique Bidders</h3>
+		    <ul id="biddersList"></ul>
+		    <button id="closeModalButton" style="margin-top: 10px;">Back</button>
 		</div>
           
         
@@ -633,35 +632,38 @@
 		}
 		
 		magnify("showWidget", 3); */    
-        </script>     
-        <script th:inline="javascript">
-			document.getElementById("biddersButton").addEventListener("click", function() {
-			    let marketListingId = window.location.pathname.split("/").pop();
-			
-			    // Create a new XMLHttpRequest
-			    let xhr = new XMLHttpRequest();
-			
-			    xhr.open('GET', `/getUniqueBiddersForListing/${listingId}`, true);
-			
-			    xhr.onload = function() {
-			        if (this.status === 200) {
-			            let data = JSON.parse(this.responseText);
-			            let biddersList = document.getElementById("biddersList");
-			            biddersList.innerHTML = ''; // Clear any previous data
-			
-			            data.forEach(bid => {
-			                let li = document.createElement("li");
-			                li.textContent = `${bid.bidder}: $${bid.amount}`;
-			                biddersList.appendChild(li);
-			            });
-			
-			            // Show the modal
-			            document.getElementById("biddersModal").style.display = "block";
-			        }
-			    }
-			
-			    xhr.send();
-			});
-	</script>   
+        </script>  
+        <script>
+		    $(document).ready(function() {
+		        // Function to show the list of unique bidders
+		        function showBiddersList() {
+		            // Get the market listing ID
+		            let marketListingId = window.location.pathname.split("/").pop();
+		
+		            // Fetch unique bidders from the server
+		            $.get(`/showUniqueBidders/${marketListingId}`, function(data) {
+		                // Assuming your endpoint returns a list of usernames
+		                $('#biddersList').empty(); // Clear existing list items
+		                data.forEach(bidder => {
+		                    $('#biddersList').append(`<li>${bidder}</li>`);
+		                });
+		            });
+		        }
+		
+		        // Event listener for the button click
+		        $('#biddersButton').on('click', function() {
+		            let modal = $('#biddersModal');
+		            if (modal.css('display') === 'none') {
+		                showBiddersList(); // Fetch and show list if modal is currently hidden
+		            }
+		            modal.toggle(); // Toggle visibility
+		        });
+		        
+	            // Event listener to close the modal when the "Back" button is clicked
+			    $('#closeModalButton').on('click', function() {
+			        $('#biddersModal').hide();
+			    });		        
+		    });
+		</script>    
     </body>
 </html>

@@ -188,3 +188,84 @@ div.auction-price-container{
 .thumbnail.selected {
     opacity: 0.5; /* Adjust the opacity value as needed */
 }
+
+body, button {
+    font-family: 'Poppins', sans-serif;
+}
+
+#biddersModal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    width: 300px;
+    max-width: 100%;
+    z-index: 1000;
+}
+
+#biddersModal h3 {
+    margin-top: 0;
+    font-weight: 500;
+    color: #333;
+}
+
+#biddersModal ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+#biddersModal li {
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+}
+
+#biddersModal li:last-child {
+    border-bottom: none;
+}
+
+#closeModalButton {
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    margin-top: 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+#closeModalButton:hover {
+    background-color: #0056b3;
+}
+
+#biddersButton {
+    padding: 10px 20px;
+    border: 1px solid #e0e0e0; /* Light border color */
+    background-color: #f7f7f7; /* Light background color */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Subtle shadow for depth */
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    outline: none; /* Remove default outline */
+    color: #333; /* Text color */
+    font-size: 14px;
+}
+
+#biddersButton:hover {
+    transform: translateY(-2px); /* Slight upward lift on hover */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08); /* Increased shadow on hover */
+}
+
+#biddersButton:active {
+    transform: translateY(0); /* Reset the position when button is active/clicked */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Reset shadow when button is active/clicked */
+}
