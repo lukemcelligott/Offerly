@@ -673,31 +673,46 @@
 			    });		        
 		    });
 		    
-			// Fetch and display bids when totalBidsButton is clicked
-			$("#totalBidsButton").click(function() {
-			    // Make a placeholder for the listing ID. Replace '5' with the actual listing ID you want.
-			    let marketListingId = window.location.pathname.split("/").pop();
-			    
-			    // Fetch bids from the backend
-			    $.get('/bidsForListing/' + marketListingId, function(bids) {
-			        // Clear any previous bid content
-			        $("#totalBidsList").empty();
-			        
-			        // Populate the UL with bid data
-			        bids.forEach(bid => {
-			            $("#totalBidsList").append('<li>Username: ' + bid.bidder.username + ', Bid Amount: ' + bid.bidAmount + '</li>');
-			        });
-			        
-			        // Display the modal
-			        $("#totalBidsModal").show();
-			    });
-			});
+			document.getElementById('totalBidsButton').addEventListener('click', function() {
+		    const listingId = window.location.pathname.split("/").pop();
+		    fetchBidsData(listingId)
+		        .then(data => {
+		            populateBidsModal(data);
+		            document.getElementById('totalBidsModal').style.display = 'block';
+		        })
+		        .catch(error => {
+		            console.error("There was a problem with the fetch operation:", error.message);
+		        });
+		});
+		
+			document.getElementById('closeTotalBidsModalButton').addEventListener('click', closeBidsModal);
 			
-			// Close the modal when the close button is clicked
-			$("#closeTotalBidsModalButton").click(function() {
-			    $("#totalBidsModal").hide();
-			});   
-		    
+			function fetchBidsData(id) {
+			    return fetch(`/bidsForListing/${id}`)
+			        .then(response => {
+			            if (!response.ok) {
+			                throw new Error('Network response was not ok');
+			            }
+			            return response.json();
+			        });
+			}
+			
+			function populateBidsModal(data) {
+			    const bidsList = document.getElementById('totalBidsList');
+			    bidsList.innerHTML = ''; // Clear any existing list items
+			
+			    data.forEach(bid => {
+			        const listItem = document.createElement('li');
+			        listItem.textContent = `${bid.username} bid $${bid.bidAmount}.`; 
+			        // Prepend the new list item to the list so that it appears at the top
+			        bidsList.insertBefore(listItem, bidsList.firstChild);
+			    });
+			}
+			
+			function closeBidsModal() {
+			    document.getElementById('totalBidsModal').style.display = 'none';
+			}  
+				    
 		</script>    
     </body>
 </html>
