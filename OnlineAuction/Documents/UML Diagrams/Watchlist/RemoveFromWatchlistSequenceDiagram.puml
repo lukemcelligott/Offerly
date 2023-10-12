@@ -1,5 +1,6 @@
 @startuml
-title     Removing Item from Watchlist \nSequence Diagram
+
+title          Removing Item from Watchlist \nSequence Diagram
 
 actor          Actor                            as actor
 participant    watchlist                        as watchlist
@@ -15,7 +16,7 @@ marketListController   ->     userController          : userController.removeFro
 userController         ->     watchlistService        : user.getWishlistedWidgets().remove(delWidget);
 watchlistService       ->     user                    : user.getWishlistedWidgets.remove(product)
 user                   ->     database                : remove(userId, productId) to widget_wishlist_entry
-marketListController   -->    watchlist               : redirect:/Watchlist
-watchlist              -->    actor                   : alert("Added to Watchlist")
+marketListController   -->    watchlist               : redirect:/viewMarketListing/{productId}
+watchlist              -->    actor                   : "Remove from Watchlist" button becomes "Add to Watchlist"
 
 @enduml
