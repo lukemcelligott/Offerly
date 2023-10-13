@@ -1,5 +1,6 @@
 @startuml
-title     Adding Item to Watchlist \nSequence Diagram
+
+title          Adding Item to Watchlist \nSequence Diagram
 
 actor          Actor                            as actor
 participant    viewMarketListing                as viewMarketListing
@@ -16,6 +17,6 @@ userController         ->     watchlistService        : watchlistService.watchli
 watchlistService       ->     user                    : user.getWishlistedWidgets().add(addedWidget);
 user                   ->     database                : add(userId, productId) to widget_wishlist_entry
 marketListController   -->    viewMarketListing       : redirect:/viewMarketListing/{productId}
-viewMarketListing      -->    actor                   : alert("Added to Watchlist")
+viewMarketListing      -->    actor                   : "Add to Watchlist" button becomes "Remove from Watchlist"
 
 @enduml
