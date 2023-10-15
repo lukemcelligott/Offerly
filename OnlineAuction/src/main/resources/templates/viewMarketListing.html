@@ -7,6 +7,7 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         
         <script src="https://cdnjs.cloudflare.com/ajax/libs/magnify/2.3.3/js/jquery.magnify.min.js" integrity="sha512-YKxHqn7D0M5knQJO2xKHZpCfZ+/Ta7qpEHgADN+AkY2U2Y4JJtlCEHzKWV5ZE87vZR3ipdzNJ4U/sfjIaoHMfw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         
         <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
         
@@ -102,8 +103,7 @@
 							            <strong th:if="${currListing.auction.startingBid != currListing.auction.currentBid}"><span th:text="'$' + ${currListing.auction.currentBid}"></span></strong>
 							        </div>
 							    </div>
-							</div>
-													
+							</div>													
 							<!-- Listing: Unique Bidders & Total Bid -->
 							<div class="d-flex justify-content-center details-container auction-details-container">
 							    <button id="biddersButton">
@@ -114,18 +114,14 @@
 							        <span class="details-text">Total Bids: </span>
 							        <strong><span id="totalBidsCountSpan" style="margin-left: 5px;"></span></strong>
 							    </button>
-							</div>
-
-						
+							</div>						
 						    <!-- Auction End Date Countdown -->
 						    <div class="d-flex justify-content-center details-container">
 						        <div class="auction-price-container details-text">
 						            <span>Auction Ends In:</span>
 						            <strong><span id="countdown"></span></strong>
 						        </div>
-						    </div>
-						    					    
-																				
+						    </div>						    					    																				
 							<!-- Purchase Auction Div -->
 							<div id="purchaseAuctionDiv" class="col-auto d-flex justify-content-center" style="display:none;">
 							    <form id="purchaseAuctionForm" class="row g-3 my-2" th:action="@{/viewMarketListing/attemptPurchase}" th:object="${newTransaction}" method="post">
@@ -139,38 +135,31 @@
 							</div>
 						</div>
                         
-                  
                         <!-- Right Column: Seller Details and Action Buttons -->
-                        <div class="col-lg-4">
-                            
+                        <div class="col-lg-4">                         
                             <!-- Widget Title -->
                             <div class="mb-4 mt-4">
                                 <h2 class="display-4" style="font-size: 30px;" th:text="${widget.name}"></h2> 
                                 <div class="seller-display d-flex align-items-center mb-1">
 	                                <!-- Seller Avatar -->
 	                                <img th:if="${seller.userImage == null}" th:src="@{/images/userImages/default_user_icon.png}" alt="Seller Avatar" class="rounded-circle me-3" style="width:50px; height:50px;"></img>
-									<img th:if="${seller.userImage != null}" th:src="@{/images/userImages/{icon}(icon = ${seller.userImage})}" alt="Seller Avatar" class="rounded-circle me-3" style="width:50px; height:50px;"></img>
-	                            
+									<img th:if="${seller.userImage != null}" th:src="@{/images/userImages/{icon}(icon = ${seller.userImage})}" alt="Seller Avatar" class="rounded-circle me-3" style="width:50px; height:50px;"></img>	                            
 	                                <!-- Seller Details -->
 	                                <div>
 	                                    <!-- Seller Name -->
-	                                    <h5 th:text="${seller.username}" class="mb-1"></h5>
-	                            
+	                                    <h5 th:text="${seller.username}" class="mb-1"></h5>	                  
 	                                    <!-- Seller Rating -->
 	                                    <div class="d-flex align-items-center">
 											<!-- Rating Value -->
-	                                        <span th:text="${sellerRating.rating}" class="me-2"></span>
-	                                        
+	                                        <span th:text="${sellerRating.rating}" class="me-2"></span>	                                        
 	                                        <!-- Filled Stars -->
 	                                        <th:block th:each="star : ${#numbers.sequence(1, sellerRating.rating)}">
 	                                            <span class="text-warning">★</span>
-	                                        </th:block>
-	                                        
+	                                        </th:block>	                                        
 	                                        <!-- Unfilled Stars -->
 	                                        <th:block th:each="star : ${#numbers.sequence(sellerRating.rating + 1, 5)}">
 	                                            <span class="text-muted">★</span>
-	                                        </th:block>
-	                                        
+	                                        </th:block>	                                        
 	                                        <!-- Number of Ratings -->
 	                                        <span class="ms-2 text-muted" th:text=" ${sellerRating.numRatings} + ' rating(s)'"></span>
 	                                    </div>
@@ -357,16 +346,50 @@
                   		<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 	</div>
                 	<div class="modal-body">
-                  		<form th:action="@{/updateBid}" method="post">
-                    		<div class="mb-3">
-								<span th:text="'Auction Price: $' + ${currListing.auction.currentBid}"></span>
-                      			<label for="bidAmount" class="form-label">(Bid Amount: $00.01 - $20)</label>
-                      			<input type="number" class="form-control" id="bidAmount" name="bidAmount" max="20" min="0.01" step="0.01" data-auction-price="${currListing.auction.currentBid}">
-                    		</div>
-                    		<input type="hidden" name="bidderId" th:value="${currentUser.id}"/>
-                    		<input type="hidden" name="listingId" th:value="${currListing.id}"/>
-                    		<input class="btn btn-success" id="bidButton" name="placeBid" type="submit" value="Bid Now" onclick="return confirmBid();"/>
-                  		</form>
+						<!--select manual or automatic bidding -->
+						<div class="d-flex justify-content-center" style="margin-bottom: 2%;">
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio" name="biddingOption" id="manualOption" checked>
+								<label class="form-check-label" for="manualOption">Manual Bidding</label>
+							</div>
+							<div class="form-check form-check-inline">
+								<input class="form-check-input" type="radio" name="biddingOption" id="autoOption">
+								<label class="form-check-label" for="autoOption">Automatic Bidding</label>
+							</div>
+						</div>
+						<!-- Content for manual bidding -->
+						<div id="manualBiddingContent" style="display: block;">
+							<form th:action="@{/updateBid}" method="post">
+	                    		<div class="mb-3">
+									<span th:text="'Auction Price: $' + ${currListing.auction.currentBid}"></span>
+	                      			<label for="bidAmount" class="form-label">(Bid Amount: $00.01 - $20)</label>
+	                      			<input type="number" class="form-control" id="bidAmount" name="bidAmount" max="20" min="0.01" step="0.01" data-auction-price="${currListing.auction.currentBid}">
+	                    		</div>
+	                    		<input type="hidden" name="bidderId" th:value="${currentUser.id}"/>
+	                    		<input type="hidden" name="listingId" th:value="${currListing.id}"/>
+	                    		<!-- place bid button -->
+	                    		<div class="text-center">
+									<input class="btn btn-outline-success" id="bidButton" name="placeBid" type="submit" value="Place Bid" onclick="return confirmBid();"/>
+								</div>
+	                  		</form>
+						</div>
+                  		<!-- Content for automatic bidding -->
+                  		<div id="automaticBiddingContent" style="display: none;">
+							<form th:action="@{/autoBid}" method="post">
+	                    		<div class="mb-3">
+									<label for="bidAmount" class="form-label">Enter Maximum Bid Price</label>
+									<span th:text="'(Current Auction Price: $' + ${currListing.auction.currentBid} + ')'"></span>
+	                      			<input type="number" class="form-control" id="maxBid" name="maxBid" min="0.01" step="0.01" data-auction-price="${currListing.auction.currentBid}">
+	                    		</div>
+	                    		<input type="hidden" name="bidderId" th:value="${currentUser.id}"/>
+	                    		<input type="hidden" name="listingId" th:value="${currListing.id}"/>
+	                    		<!-- place bid button -->
+	                    		<div class="text-center">
+									<input class="btn btn-outline-success" id="bidButton" name="placeBid" type="submit" value="Place Bid" onclick="return confirmBid();"/>
+								</div>
+	                  		</form>
+						</div>
+                  		
                 	</div>
               	</div>
             </div>
@@ -411,26 +434,6 @@
         
         
 		<script th:inline="javascript">
-      		// Price update logic   		
-        	//const basePrice = /*[[${currListing.pricePerItem}]]*/ 0.0;
-        	/*
-        	const qtyBoughtElement = document.getElementById('qtyBought');
-        	const purchaseButtonElement = document.getElementById('purchaseButton');
-       
-        	function updatePrice() {
-            	if (qtyBoughtElement && purchaseButtonElement) {
-                    const qty = parseInt(qtyBoughtElement.value);
-                    const totalPrice = (qty * basePrice).toFixed(2);
-                    purchaseButtonElement.value = 'Buy Now for $' + totalPrice;
-            	}
-        	}
-    
-            if (qtyBoughtElement) {
-                qtyBoughtElement.addEventListener('change', updatePrice);
-            }
-            updatePrice();
-            */
-            
             function confirmBid() {
               return confirm("Are you sure you want to place this bid?");
             }
@@ -443,18 +446,6 @@
             // update which image is being displayed
             function updateDisplayImg() {
 				image.src = '/listingImages/' + images[x];
-				
-				// Remove the "selected" class from all thumbnail images
-			    /*const thumbnailImages = document.querySelectorAll('.thumbnail');
-			    thumbnailImages.forEach(function (thumbnail) {
-			        thumbnail.classList.remove('selected');
-			    });*/
-			
-			    // Add the "selected" class to the displayed thumbnail image
-			    /*const displayedThumbnail = thumbnailImages[x];
-			    if (displayedThumbnail) {
-			        displayedThumbnail.classList.add('selected');
-			    }*/
 			     const thumbnailImages = document.querySelectorAll('.thumbnail');
 			    thumbnailImages.forEach(function (thumbnail, index) {
 			        if (index === x) {
@@ -590,56 +581,56 @@
 			    });
 			});
 		
-		/* Image Magnifier glass https://www.w3schools.com/howto/howto_js_image_magnifier_glass.asp
-		function magnify(imgID, zoom) {
-		  	var img, glass, w, h, bw;
-		  	img = document.getElementById(imgID);
-		
-		  	glass = document.createElement("DIV");
-		  	glass.setAttribute("class", "img-magnifier-glass");
-		
-		  	img.parentElement.insertBefore(glass, img);
-		
-		  	glass.style.backgroundImage = "url('" + img.src + "')";
-		  	glass.style.backgroundRepeat = "no-repeat";
-		  	glass.style.backgroundSize = (img.width * zoom) + "px " + (img.height * zoom) + "px";
-		  	bw = 3;
-		  	w = glass.offsetWidth / 2;
-		  	h = glass.offsetHeight / 2;
-		
-		  	glass.addEventListener("mousemove", moveMagnifier);
-		  	img.addEventListener("mousemove", moveMagnifier);
-		
-		  	glass.addEventListener("touchmove", moveMagnifier);
-		  	img.addEventListener("touchmove", moveMagnifier);
-		  	function moveMagnifier(e) {
-			    var pos, x, y;
-			    e.preventDefault();
-			    pos = getCursorPos(e);
-			    x = pos.x;
-			    y = pos.y;
-			    if (x > img.width - (w / zoom)) {x = img.width - (w / zoom);}
-			    if (x < w / zoom) {x = w / zoom;}
-			    if (y > img.height - (h / zoom)) {y = img.height - (h / zoom);}
-			    if (y < h / zoom) {y = h / zoom;}
-			    glass.style.left = (x - w) + "px";
-			    glass.style.top = (y - h) + "px";
-			    glass.style.backgroundPosition = "-" + ((x * zoom) - w + bw) + "px -" + ((y * zoom) - h + bw) + "px";
-		 	}
-		
-		  	function getCursorPos(e) {
-			    var a, x = 0, y = 0;
-			    e = e || window.event;
-			    a = img.getBoundingClientRect();
-			    x = e.pageX - a.left;
-			    y = e.pageY - a.top;
-			    x = x - window.pageXOffset;
-			    y = y - window.pageYOffset;
-			    return {x : x, y : y};
-		  	}
-		}
-		
-		magnify("showWidget", 3); */    
+			/* Image Magnifier glass https://www.w3schools.com/howto/howto_js_image_magnifier_glass.asp
+			function magnify(imgID, zoom) {
+			  	var img, glass, w, h, bw;
+			  	img = document.getElementById(imgID);
+			
+			  	glass = document.createElement("DIV");
+			  	glass.setAttribute("class", "img-magnifier-glass");
+			
+			  	img.parentElement.insertBefore(glass, img);
+			
+			  	glass.style.backgroundImage = "url('" + img.src + "')";
+			  	glass.style.backgroundRepeat = "no-repeat";
+			  	glass.style.backgroundSize = (img.width * zoom) + "px " + (img.height * zoom) + "px";
+			  	bw = 3;
+			  	w = glass.offsetWidth / 2;
+			  	h = glass.offsetHeight / 2;
+			
+			  	glass.addEventListener("mousemove", moveMagnifier);
+			  	img.addEventListener("mousemove", moveMagnifier);
+			
+			  	glass.addEventListener("touchmove", moveMagnifier);
+			  	img.addEventListener("touchmove", moveMagnifier);
+			  	function moveMagnifier(e) {
+				    var pos, x, y;
+				    e.preventDefault();
+				    pos = getCursorPos(e);
+				    x = pos.x;
+				    y = pos.y;
+				    if (x > img.width - (w / zoom)) {x = img.width - (w / zoom);}
+				    if (x < w / zoom) {x = w / zoom;}
+				    if (y > img.height - (h / zoom)) {y = img.height - (h / zoom);}
+				    if (y < h / zoom) {y = h / zoom;}
+				    glass.style.left = (x - w) + "px";
+				    glass.style.top = (y - h) + "px";
+				    glass.style.backgroundPosition = "-" + ((x * zoom) - w + bw) + "px -" + ((y * zoom) - h + bw) + "px";
+			 	}
+			
+			  	function getCursorPos(e) {
+				    var a, x = 0, y = 0;
+				    e = e || window.event;
+				    a = img.getBoundingClientRect();
+				    x = e.pageX - a.left;
+				    y = e.pageY - a.top;
+				    x = x - window.pageXOffset;
+				    y = y - window.pageYOffset;
+				    return {x : x, y : y};
+			  	}
+			}
+			
+			magnify("showWidget", 3); */    
         </script>  
         <script>
 		    $(document).ready(function() {
@@ -683,7 +674,7 @@
 		        .catch(error => {
 		            console.error("There was a problem with the fetch operation:", error.message);
 		        });
-		});
+			});
 		
 			document.getElementById('closeTotalBidsModalButton').addEventListener('click', closeBidsModal);
 			
@@ -728,7 +719,24 @@
 			function closeBidsModal() {
 			    document.getElementById('totalBidsModal').style.display = 'none';
 			}  
-				    
+			
+			// manual vs automatic bidding js
+			$(document).ready(function () {
+		        $("input[type=radio][name=biddingOption]").change(function () {
+		            var selectedOption = $("input[name=biddingOption]:checked").attr('id');
+		            
+		            if (selectedOption === "manualOption") {
+		                $("#manualBiddingContent").show();
+		                $("#automaticBiddingContent").hide();
+		            } else if (selectedOption === "autoOption") {
+		                $("#manualBiddingContent").hide();
+		                $("#automaticBiddingContent").show();
+		            }
+		        });
+		        
+		        // Trigger the change event initially to set the default view
+		        $("input[type=radio][name=biddingOption]:checked").change();
+			});
 		</script>    
     </body>
 </html>
