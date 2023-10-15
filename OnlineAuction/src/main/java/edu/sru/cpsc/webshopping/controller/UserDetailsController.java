@@ -195,6 +195,7 @@ public class UserDetailsController {
 			model.addAttribute("savedDetails", null);
 		else
 			model.addAttribute("savedDetails", payDetCont.getPaymentDetailsByUser(user));
+		model.addAttribute("savedDirectDepositDetails", user.getDirectDepositDetails());
 		model.addAttribute("addNew", addNewPD);
 		model.addAttribute("updateId", updateIdPD);
 		model.addAttribute("update", updatePD);
@@ -232,6 +233,7 @@ public class UserDetailsController {
 			model.addAttribute("savedDetails", null);
 		else
 			model.addAttribute("savedDetails", payDetCont.getPaymentDetailsByUser(user));
+		model.addAttribute("savedDirectDepositDetails", user.getDirectDepositDetails());
 		model.addAttribute("addNew", addNewPD);
 		model.addAttribute("updateId", updateIdPD);
 		model.addAttribute("update", updatePD);
@@ -273,6 +275,7 @@ public class UserDetailsController {
 			model.addAttribute("savedShippingDetails", null);
 		else
 			model.addAttribute("savedShippingDetails", shippingController.getShippingDetailsByUser(user));
+		model.addAttribute("savedDirectDepositDetails", user.getDirectDepositDetails());
 		model.addAttribute("addNew", addNewSA);
 		model.addAttribute("updateId", updateIdSA);
 		model.addAttribute("update", updateSA);
@@ -304,6 +307,7 @@ public class UserDetailsController {
 			model.addAttribute("savedShippingDetails", null);
 		else
 			model.addAttribute("savedShippingDetails", shippingController.getShippingDetailsByUser(user));
+		model.addAttribute("savedDirectDepositDetails", user.getDirectDepositDetails());
 		model.addAttribute("addNew", addNewSA);
 		model.addAttribute("updateId", updateIdSA);
 		model.addAttribute("update", updateSA);
@@ -547,7 +551,7 @@ public class UserDetailsController {
 		DirectDepositDetails deposit = new DirectDepositDetails();
 		deposit.buildFromForm(details);
 		this.userController.updateDirectDepositDetails(deposit, principal);
-		return "redirect:/userDetails/depositDetails";
+		return "redirect:/userDetails/initializePaymentDetails";
 	}
 	
 	/**
@@ -575,7 +579,7 @@ public class UserDetailsController {
 			return "userDetails";
 		}
 		this.userController.deleteDirectDepositDetails(user);
-		return "redirect:/userDetails/depositDetails";
+		return "redirect:/userDetails/initializePaymentDetails";
 	}
 	
 	/**

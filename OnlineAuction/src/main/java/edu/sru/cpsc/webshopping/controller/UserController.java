@@ -247,7 +247,7 @@ public class UserController {
 		details.setAccountholderName(passwordEncoder.encode(details.getAccountholderName()));
 		details.setAccountNumber(passwordEncoder.encode(details.getAccountNumber()));
 		details.setRoutingNumber(passwordEncoder.encode(details.getRoutingNumber()));
-		details.setBankName(passwordEncoder.encode(details.getBankName()));
+		//details.setBankName(passwordEncoder.encode(details.getBankName()));
 		// No assigned details - add to user
 		if (user.getDirectDepositDetails() == null) {
 			entityManager.persist(details);
@@ -256,11 +256,15 @@ public class UserController {
 		}
 		else {
 			DirectDepositDetails curr = entityManager.find(DirectDepositDetails.class, user.getDirectDepositDetails().getId());
+			if(curr == null) {
+				return;
+			}
 			curr.transferFields(details);
+			entityManager.merge(curr);
 			user.setDirectDepositDetails(curr);
 			entityManager.merge(user);
 		}
-		user.setDirectDepositDetails(details);
+		//user.setDirectDepositDetails(details);
 	}
 	
 	/**

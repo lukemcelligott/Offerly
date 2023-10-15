@@ -96,7 +96,7 @@
 				</li>
 				
 				<!-- User info -->
-				<li th:if="${selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).PAYMENT_DETAILS or selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).DEPOSIT_DETAILS}" class="nav-item pointer" style="position: relative; z-index: 10;">
+				<!-- <li th:if="${selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).PAYMENT_DETAILS or selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).DEPOSIT_DETAILS}" class="nav-item pointer" style="position: relative; z-index: 10;">
 					<a th:if="${selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).PAYMENT_DETAILS or selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).DEPOSIT_DETAILS}" class="submit4 nav-link dropdown-toggle active" data-bs-toggle="dropdown"><span>Payment Details</span></a>
 					<a th:unless="${selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).PAYMENT_DETAILS or selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).DEPOSIT_DETAILS}" class="submit4 nav-link dropdown-toggle" data-bs-toggle="dropdown"><span>Payment Details</span></a>
 					<div class="dropdown-menu dropdown-menu-end dropdown-menu-dark" style="text-align: center;">
@@ -105,7 +105,7 @@
 						<a th:if="${selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).DEPOSIT_DETAILS}" th:href="@{/userDetails/depositDetails}" class="submit4 nav-link active">Direct Deposit</a>
 						<a th:unless="${selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).DEPOSIT_DETAILS}" th:href="@{/userDetails/depositDetails}" class="submit4">Direct Deposit</a>
 					</div>
-				</li>
+				</li> -->
 				
 			</ul>
 		</div>
