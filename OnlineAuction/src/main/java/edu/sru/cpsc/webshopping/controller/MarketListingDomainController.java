@@ -297,6 +297,8 @@ public class MarketListingDomainController {
 		Auction auction = listing.getAuction();
 		BigDecimal currentBidPrice = auction.getCurrentBid();
 		
+		boolean manualBid = true; //TEST
+		
 		// Ensure that listing.getAuctionPrice() also returns a BigDecimal. Bid amount should be less than 20
 		if (listing != null && bidAmount.compareTo(new BigDecimal(20)) <= 0 && listing.getAuction().getCurrentBid().add(bidAmount).compareTo(listing.getAuction().getStartingBid()) >= 0){
 			BigDecimal newBid = currentBidPrice.add(bidAmount);
@@ -309,24 +311,7 @@ public class MarketListingDomainController {
 		}
 		
 		// check for any autobids
-		List<AutoBid> autobids = auctionService.getAutoBidsForListing(auction);
-		if (autobids != null) {
-			for (AutoBid bidEntry : autobids) {
-				BigDecimal userMaxPrice = bidEntry.getMaxBid(); // the maximum price the bidder is willing to spend				
-				Auction autoAuction = listing.getAuction(); // local auction variable
-				BigDecimal autoCurrentPrice = autoAuction.getCurrentBid(); // local current price of auction
-				BigDecimal increment = calculateIncrement(bidEntry.getMaxBid()); // auto bid increment bid
-				BigDecimal potentialBid = autoCurrentPrice.add(increment); // the potential auto bid value
-				
-				// if the user is willing to spend more than the current bid price and the potential bid does not put them over their maximum spending limit
-				if (userMaxPrice.compareTo(currentBidPrice) > 0 && userMaxPrice.compareTo(potentialBid) >= 0) {
-					auctionService.bid(auction, bidEntry.getBidder(), increment); // bid on the item
-					autoAuction.setCurrentBid(potentialBid); // update the current bid price
-					marketRepository.save(listing); // save the listing with the new bid price
-					System.out.println("found autobidders");
-				}
-			}
-		}
+		placeAutoBids(listing, auction, currentBidPrice, manualBid);
 		
 		// redirect
 		URI redirectUri = URI.create("/viewMarketListing/" + listingId);
@@ -347,93 +332,32 @@ public class MarketListingDomainController {
 	 */
 	@PostMapping("/autoBid")
 	public ResponseEntity<Object> autoBid(@RequestParam BigDecimal maxBid, @RequestParam Long listingId, @RequestParam Long bidderId, Model model, RedirectAttributes redirectAttributes, Principal principal) {
-//		User bidder = userService.getUserById(bidderId); // get bidder
-//		User user = userService.getUserByUsername(principal.getName()); // get user
-//		
-//		MarketListing listing = marketRepository.findById(listingId).orElse(null); // get listing
-//		Auction auction = listing.getAuction(); // get auction
-//		
-//		BigDecimal currentBidPrice = auction.getCurrentBid(); // up to date bid price		
-//		BigDecimal increment = calculateIncrement(maxBid); // set up increments for auto bidding
-//		
-//		System.out.println("increment is currently:" + increment);
-//		if (listing != null && maxBid.compareTo(currentBidPrice) > 0){
-//			auctionService.autoBid(auction, user, maxBid); // update autobid table with user and max amount for according auction
-//			BigDecimal newBid = currentBidPrice.add(increment); // set current bid price
-//			auctionService.bid(auction, bidder, increment); // actually bid on the item
-//			listing.getAuction().setCurrentBid(newBid); // update listing
-//			marketRepository.save(listing); //save listing
-//			
-//			watchlistService.watchlistAdd(listing, user); // add listing to bidder's watchlist
-//			userService.addUser(user); // save user to the user repository
-//		}
+		// WORKING: bids are placed without user interaction NOT WORKING: user places two bids initially, bids don't always reach max limit
+		User bidder = userService.getUserById(bidderId); // get bidder
+		User user = userService.getUserByUsername(principal.getName()); // get user
+		
+		MarketListing listing = marketRepository.findById(listingId).orElse(null); // get listing
+		Auction auction = listing.getAuction(); // get auction
+		
+		BigDecimal currentBidPrice = auction.getCurrentBid(); // up to date bid price		
+		BigDecimal increment = calculateIncrement(maxBid); // set up increments for auto bidding
+		
+		boolean manualBid = false; //TEST
+		
+		System.out.println("increment is currently:" + increment);
+		if (listing != null && maxBid.compareTo(currentBidPrice) > 0){
+			auctionService.autoBid(auction, user, maxBid); // update autobid table with user and max amount for according auction
+			BigDecimal newBid = currentBidPrice.add(increment); // set current bid price
+			auctionService.bid(auction, bidder, increment); // actually bid on the item
+			listing.getAuction().setCurrentBid(newBid); // update listing
+			marketRepository.save(listing); //save listing
+			
+			watchlistService.watchlistAdd(listing, user); // add listing to bidder's watchlist
+			userService.addUser(user); // save user to the user repository
+		}
 		
 		// check for any autobids
-//		List<AutoBid> autobids = auctionService.getAutoBidsForListing(auction);
-//		if (autobids != null) {
-//			for (AutoBid bidEntry : autobids) {
-//				BigDecimal userMaxPrice = bidEntry.getMaxBid(); // the maximum price the bidder is willing to spend				
-//				Auction autoAuction = listing.getAuction(); // local auction variable
-//				BigDecimal autoCurrentPrice = autoAuction.getCurrentBid(); // local current price of auction
-//				BigDecimal autoIncrement = calculateIncrement(bidEntry.getMaxBid()); // auto bid increment bid
-//				BigDecimal potentialBid = autoCurrentPrice.add(autoIncrement); // the potential auto bid value
-//				
-//				// if the user is willing to spend more than the current bid price and the potential bid does not put them over their maximum spending limit
-//				if (userMaxPrice.compareTo(currentBidPrice) > 0 && userMaxPrice.compareTo(potentialBid) >= 0) {
-//					auctionService.bid(auction, bidEntry.getBidder(), increment); // bid on the item
-//					autoAuction.setCurrentBid(potentialBid); // update the current bid price
-//					marketRepository.save(listing); // save the listing with the new bid price
-//					System.out.println("found autobidders");
-//				}
-//			}
-//		}
-		
-		User bidder = userService.getUserById(bidderId); // get bidder
-	    User user = userService.getUserByUsername(principal.getName()); // get user
-
-	    MarketListing listing = marketRepository.findById(listingId).orElse(null); // get listing
-	    Auction auction = listing.getAuction(); // get auction
-
-	    BigDecimal currentBidPrice = auction.getCurrentBid(); // up to date bid price
-
-	    if (listing != null && maxBid.compareTo(currentBidPrice) > 0) {
-	        BigDecimal increment = calculateIncrement(maxBid);
-
-	        // Iteratively check for autobids competition
-	        boolean autobidPlaced;
-	        do {
-	            autobidPlaced = false; // Flag to track if any autobid was placed in this iteration
-	            List<AutoBid> autobids = auctionService.getAutoBidsForListing(auction);
-	            if (autobids != null) {
-	                for (AutoBid bidEntry : autobids) {
-	                    BigDecimal userMaxPrice = bidEntry.getMaxBid(); // the maximum price the bidder is willing to spend
-	                    Auction autoAuction = listing.getAuction(); // local auction variable
-	                    BigDecimal autoCurrentPrice = autoAuction.getCurrentBid(); // local current price of the auction
-	                    BigDecimal autoIncrement = calculateIncrement(userMaxPrice); // auto bid increment
-	                    BigDecimal potentialBid = autoCurrentPrice.add(autoIncrement); // the potential auto bid value
-
-	                    // If the user is willing to spend more than the current bid price and the potential bid does not put them over their maximum spending limit
-	                    if (userMaxPrice.compareTo(autoCurrentPrice) > 0 && userMaxPrice.compareTo(potentialBid) >= 0) {
-	                        auctionService.bid(auction, bidEntry.getBidder(), autoIncrement); // bid on the item
-	                        autoAuction.setCurrentBid(potentialBid); // update the current bid price
-	                        marketRepository.save(listing); // save the listing with the new bid price
-	                        autobidPlaced = true; // A bid was placed in this iteration
-	                        System.out.println("Found autobidders competing.");
-	                    }
-	                }
-	            }
-	        } while (autobidPlaced); // Continue until no more autobids can be placed in this iteration
-
-	        // Place the initial autobid
-	        auctionService.autoBid(auction, user, maxBid); // update autobid table with user and max amount for the auction
-	        BigDecimal newBid = currentBidPrice.add(increment); // set current bid price
-	        auctionService.bid(auction, bidder, increment); // place the initial autobid
-	        listing.getAuction().setCurrentBid(newBid); // update listing
-	        marketRepository.save(listing); // save listing
-
-	        watchlistService.watchlistAdd(listing, user); // add listing to the bidder's watchlist
-	        userService.addUser(user); // save the user to the user repository
-	    }
+		placeAutoBids(listing, auction, currentBidPrice, manualBid);
 		
 		// redirect
 		URI redirectUri = URI.create("/viewMarketListing/" + listingId);
@@ -446,27 +370,127 @@ public class MarketListingDomainController {
 	 * @return  the bid increment
 	 */
 	private BigDecimal calculateIncrement(BigDecimal currentBidPrice) {
-		if (currentBidPrice.compareTo(new BigDecimal("0.01")) >= 0 && currentBidPrice.compareTo(new BigDecimal("0.99")) <= 0) {
-	        return new BigDecimal("0.05");
-	    } else if (currentBidPrice.compareTo(new BigDecimal("1.00")) >= 0 && currentBidPrice.compareTo(new BigDecimal("4.99")) <= 0) {
-	        return new BigDecimal("0.25");
-	    } else if (currentBidPrice.compareTo(new BigDecimal("5.00")) >= 0 && currentBidPrice.compareTo(new BigDecimal("24.99")) <= 0) {
-	        return new BigDecimal("0.50");
-	    } else if (currentBidPrice.compareTo(new BigDecimal("25.00")) >= 0 && currentBidPrice.compareTo(new BigDecimal("99.99")) <= 0) {
-	        return new BigDecimal("1.00");
-	    } else if (currentBidPrice.compareTo(new BigDecimal("100.00")) >= 0 && currentBidPrice.compareTo(new BigDecimal("249.99")) <= 0) {
-	        return new BigDecimal("2.50");
-	    } else if (currentBidPrice.compareTo(new BigDecimal("250.00")) >= 0 && currentBidPrice.compareTo(new BigDecimal("499.99")) <= 0) {
-	        return new BigDecimal("5.00");
-	    } else if (currentBidPrice.compareTo(new BigDecimal("500.00")) >= 0 && currentBidPrice.compareTo(new BigDecimal("999.99")) <= 0) {
-	        return new BigDecimal("10.00");
-	    } else if (currentBidPrice.compareTo(new BigDecimal("1000.00")) >= 0 && currentBidPrice.compareTo(new BigDecimal("2499.99")) <= 0) {
-	        return new BigDecimal("25.00");
-	    } else if (currentBidPrice.compareTo(new BigDecimal("2500.00")) >= 0 && currentBidPrice.compareTo(new BigDecimal("4999.99")) <= 0) {
-	        return new BigDecimal("50.00");
-	    } else {
-	        return new BigDecimal("100.00");
+		BigDecimal[] priceRanges = {
+	        new BigDecimal("0.01"), new BigDecimal("0.99"),
+	        new BigDecimal("1.00"), new BigDecimal("4.99"),
+	        new BigDecimal("5.00"), new BigDecimal("24.99"),
+	        new BigDecimal("25.00"), new BigDecimal("99.99"),
+	        new BigDecimal("100.00"), new BigDecimal("249.99"),
+	        new BigDecimal("250.00"), new BigDecimal("499.99"),
+	        new BigDecimal("500.00"), new BigDecimal("999.99"),
+	        new BigDecimal("1000.00"), new BigDecimal("2499.99"),
+	        new BigDecimal("2500.00"), new BigDecimal("4999.99"),
+	        new BigDecimal("5000.00")
+	    };
+
+	    BigDecimal[] increments = {
+	        new BigDecimal("0.05"),
+	        new BigDecimal("0.25"),
+	        new BigDecimal("0.50"),
+	        new BigDecimal("1.00"),
+	        new BigDecimal("2.50"),
+	        new BigDecimal("5.00"),
+	        new BigDecimal("10.00"),
+	        new BigDecimal("25.00"),
+	        new BigDecimal("50.00"),
+	        new BigDecimal("100.00")
+	    };
+
+	    for (int i = 0; i < priceRanges.length; i += 2) {
+	        if (currentBidPrice.compareTo(priceRanges[i]) >= 0 && currentBidPrice.compareTo(priceRanges[i + 1]) <= 0) {
+	            return increments[i / 2];
+	        }
 	    }
+
+	    return new BigDecimal("100.00");
+	}
+	
+	// check the db for anyone that has auto bidding set up for an auction and place the according bids
+	private void placeAutoBids(MarketListing listing, Auction auction, BigDecimal currentBidPrice, boolean manualBid) {
+//		List<AutoBid> autobids = auctionService.getAutoBidsForListing(auction); // collection of every user that has auto bidding setup for the specific product
+//		
+//		if (autobids != null  && !autobids.isEmpty()) { // make sure there are entries in the db
+//			if(areOtherAutoBidders(autobids, autobids.get(0).getBidder())) { // check to see if there are other autobidders
+//		        for (AutoBid bidEntry : autobids) {
+//		            BigDecimal userMaxPrice = bidEntry.getMaxBid(); // get the user's max price
+//		            Auction autoAuction = listing.getAuction(); // get the auction
+//		            BigDecimal autoCurrentPrice = autoAuction.getCurrentBid(); // get the current price of the auction
+//		            //BigDecimal autoIncrement = calculateIncrement(bidEntry.getMaxBid()); // get the increment that the user will bid
+//		            BigDecimal autoIncrement = calculateIncrement(autoCurrentPrice); // get the increment that the user will bid
+//		            BigDecimal potentialBid = autoCurrentPrice.add(autoIncrement); // set the potential bid for the user
+//		            
+//		            // Check if the user is willing to spend more than the current bid price and if the potential bid does not exceed their maximum limit
+//		            if (userMaxPrice.compareTo(currentBidPrice) > 0 && potentialBid.compareTo(userMaxPrice) <= 0) {
+//		                // Place the auto bid for the user
+//		                auctionService.bid(auction, bidEntry.getBidder(), autoIncrement);
+//		                autoAuction.setCurrentBid(potentialBid);
+//		                marketRepository.save(listing);
+//		                System.out.println("Found autobidders");
+//		            }
+//		        }
+//			}
+//	    }
+		
+		// WORKING FOR AUTO VS AUTO BIDDERS, NOT WORKING FOR MANUAL VS AUTO BIDDER
+		List<AutoBid> autobids = auctionService.getAutoBidsForListing(auction);
+	    //boolean userPlacedManualBid = false;
+
+		// If a manual bid was placed, check again after autobids
+	    if (manualBid) {
+	        //placeAutoBids(listing, auction, currentBidPrice);
+	    	if(autobids != null) {
+		    	for (AutoBid bidEntry : autobids) {
+			        BigDecimal userMaxPrice = bidEntry.getMaxBid();
+			        Auction autoAuction = listing.getAuction();
+			        BigDecimal autoCurrentPrice = autoAuction.getCurrentBid();
+			        BigDecimal autoIncrement = calculateIncrement(autoCurrentPrice);
+			        BigDecimal potentialBid = autoCurrentPrice.add(autoIncrement);
+		
+			        if (userMaxPrice.compareTo(currentBidPrice) > 0 && userMaxPrice.compareTo(potentialBid) >= 0) {
+			            auctionService.bid(auction, bidEntry.getBidder(), autoIncrement);
+			            autoAuction.setCurrentBid(potentialBid);
+			            marketRepository.save(listing);
+			            //userPlacedManualBid = true;
+			            System.out.println("Found autobidders");
+			        }
+			    }
+	    	}
+	    }
+		
+	    if(!manualBid) {
+	    	if(areOtherAutoBidders(autobids, autobids.get(0).getBidder())) {
+	    		if(autobids != null && !autobids.isEmpty()) {
+				    for (AutoBid bidEntry : autobids) {
+				        BigDecimal userMaxPrice = bidEntry.getMaxBid();
+				        Auction autoAuction = listing.getAuction();
+				        BigDecimal autoCurrentPrice = autoAuction.getCurrentBid();
+				        BigDecimal autoIncrement = calculateIncrement(autoCurrentPrice);
+				        BigDecimal potentialBid = autoCurrentPrice.add(autoIncrement);
+			
+				        if (userMaxPrice.compareTo(currentBidPrice) > 0 && userMaxPrice.compareTo(potentialBid) >= 0) {
+				            auctionService.bid(auction, bidEntry.getBidder(), autoIncrement);
+				            autoAuction.setCurrentBid(potentialBid);
+				            marketRepository.save(listing);
+				            //userPlacedManualBid = true;
+				            System.out.println("Found autobidders");
+				        } else {
+				        	autobids.remove(bidEntry);
+				        }
+				    }
+	    		}
+		    }
+	    }
+	    
+	}
+	
+	private boolean areOtherAutoBidders(List<AutoBid> autobids, User currentUser) {
+	    for (AutoBid bidEntry : autobids) {
+	        if (!bidEntry.getBidder().equals(currentUser)) {
+	            // There are other auto-bidders
+	            return true;
+	        }
+	    }
+	    return false;
 	}
 	
 	@GetMapping("/uniqueBiddersCount/{id}")
