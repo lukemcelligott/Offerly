@@ -4,26 +4,70 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Column;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
+import java.util.Objects;
 
 import edu.sru.cpsc.webshopping.domain.user.User;
 
-
 @Entity
 public class SocialMessage {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     @ManyToOne
+    @JoinColumn(name="sender_id")
+    @NotNull
     private User sender;
-    
+
     @ManyToOne
+    @JoinColumn(name="receiver_id")
+    @NotNull
     private User receiver;
-    
+
+    @Column(columnDefinition = "TEXT")
+    @NotNull
+    @Size(min = 1, max = 5000) // Example sizes; adjust as necessary
     private String content;
+
+    private LocalDateTime sentTimestamp = LocalDateTime.now();
+    private LocalDateTime readTimestamp;
+    private boolean isDelivered = false;
+    private boolean isRead = false;
     
- // Getters
+    
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SocialMessage that = (SocialMessage) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "SocialMessage{" +
+                "id=" + id +
+                ", sender=" + sender +
+                ", receiver=" + receiver +
+                ", content='" + content + '\'' +
+                ", sentTimestamp=" + sentTimestamp +
+                ", readTimestamp=" + readTimestamp +
+                ", isRead=" + isRead +
+                '}';
+    }
+    
     public Long getId() {
         return id;
     }
@@ -40,7 +84,6 @@ public class SocialMessage {
         return content;
     }
 
-    // Setters
     public void setId(Long id) {
         this.id = id;
     }
@@ -56,5 +99,37 @@ public class SocialMessage {
     public void setContent(String content) {
         this.content = content;
     }
+
+	public LocalDateTime getSentTimestamp() {
+		return sentTimestamp;
+	}
+
+	public void setSentTimestamp(LocalDateTime sentTimestamp) {
+		this.sentTimestamp = sentTimestamp;
+	}
+
+	public LocalDateTime getReadTimestamp() {
+		return readTimestamp;
+	}
+
+	public void setReadTimestamp(LocalDateTime readTimestamp) {
+		this.readTimestamp = readTimestamp;
+	}
+	
+	 public boolean isDelivered() {
+	        return isDelivered;
+	    }
+
+	    public void setDelivered(boolean isDelivered) {
+	        this.isDelivered = isDelivered;
+	    }
+
+	public boolean isRead() {
+		return isRead;
+	}
+
+	public void setRead(boolean isRead) {
+		this.isRead = isRead;
+	}
     
 }

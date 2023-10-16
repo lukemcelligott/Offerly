@@ -1,8 +1,10 @@
 package edu.sru.cpsc.webshopping.controller;
 
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -107,6 +109,7 @@ public class FriendsController {
 		List<User> friends = friendshipService.getAllFriendsForUser(user);
 		List<SocialMessage> messages = messageService.getAllMessagesForUser(user);
 
+
         model.addAttribute("friends", friends);
         model.addAttribute("messages", messages);
         return "inbox";
@@ -122,32 +125,24 @@ public class FriendsController {
         }
 
         List<SocialMessage> messages = messageService.getAllMessagesForUser(currentUser, friend);
+
+        List<Map<String, Object>> messagesList = messages.stream().map(msg -> {
+            Map<String, Object> map = new HashMap<>();
+            map.put("sender", Map.of("username", msg.getSender().getUsername()));
+            map.put("content", msg.getContent());
+            map.put("timestamp", msg.getSentTimestamp().toString()); // Convert LocalDateTime to string
+            return map;
+        }).collect(Collectors.toList());
+
         Map<String, Object> responseBody = Map.of(
             "friendName", friend.getUsername(),
-            "messages", messages
+            "messages", messagesList
         );
+        
+    	System.out.println("Big Papa Pie");
 
         return ResponseEntity.ok(responseBody);
     }
-    
-    @PostMapping("/messages/send")
-    public ResponseEntity<?> sendMessage(@RequestParam String content, @RequestParam Long receiver, Principal principal) {
-        User sender = userService.getUserByUsername(principal.getName());
-        User receiverUser = userRepository.findById(receiver).orElse(null);
-        
-        if (receiverUser == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Receiver not found"));
-        }
-
-        SocialMessage message = new SocialMessage();
-        message.setSender(sender);
-        message.setReceiver(receiverUser);
-        message.setContent(content);
-        messageService.saveMessage(message);
-        
-        return ResponseEntity.ok(Map.of("status", "Message sent"));
-    }
-    
 
     @PostMapping("/acceptRequest")
     public String acceptFriendRequest(@RequestParam("requestId") Long requestId) {

@@ -17,6 +17,11 @@
     <link th:href="@{/styles/button.css}" rel="stylesheet" />
     <link th:href="@{/styles/landing.css}" rel="stylesheet" />
     <link th:href="@{/styles/employee_page.css}" rel="stylesheet" />
+    
+    <!-- Web Socket Library - Real Time Messaging -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
 
     <style>
         body {
@@ -127,94 +132,114 @@
         </div>
     </div>
 
-    <script>
-        let currentFriendId = null;
+<script>
+    let stompClient = null;
+    let currentFriendId = null;
 
-		function loadConversation(friendId) {
-	    // Remove 'selected-friend' class from all friends
-	    document.querySelectorAll('.list-group-item').forEach(item => {
-	        item.classList.remove('selected-friend');
-	    });
-	
-	    // Add 'selected-friend' class to the clicked friend
-	    const selectedFriend = document.getElementById('friend-' + friendId);
-	    if (selectedFriend) {
-	        selectedFriend.classList.add('selected-friend');
-	
-	        // Update the friendName span with the selected friend's name
-	        const friendNameSpan = document.getElementById('friendName');
-	        friendNameSpan.textContent = selectedFriend.textContent.trim();
-	    }
-	
-	    // Hide the current conversation box if any
-	    if (currentFriendId && currentFriendId !== friendId) {
-	        const currentChatBox = document.getElementById('chatBox-' + currentFriendId);
-	        if (currentChatBox) currentChatBox.style.display = 'none';
-	    }
-	
-	    currentFriendId = friendId;
-	
-	    // Check if the conversation box for the clicked friend already exists
-	    let chatBox = document.getElementById('chatBox-' + friendId);
-	
-	    // If it doesn't exist, create a new one
-	    if (!chatBox) {
-	        fetch('/api/conversations/' + friendId)
-	            .then(response => response.json())
-	            .then(conversation => {
-	                const conversationBox = document.getElementById('conversationBox');
-	                const friendNameSpan = document.getElementById('friendName');
-	                friendNameSpan.textContent = conversation.friendName;
-	
-	                // Create a new chat box for the clicked friend
-	                chatBox = document.createElement('div');
-	                chatBox.id = 'chatBox-' + friendId;
-	                chatBox.style = 'border: 1px solid #ccc; padding: 10px; height: 200px; overflow-y: scroll;';
-	                conversationBox.appendChild(chatBox);
-	
-	                // Populate the chat box with messages
-	                conversation.messages.forEach(message => {
-	                    const messageDiv = document.createElement('div');
-	                    const senderName = message.sender.username;
-	                    messageDiv.textContent = senderName + ': ' + message.content;
-	                    chatBox.appendChild(messageDiv);
-	                });
-	            });
-		    } else {
-		        // If it already exists, just show it
-		        chatBox.style.display = 'block';
-		    }
-		}
-			
+    function connectWebSocket() {
+        const socket = new SockJS('/websocket-endpoint');
 
+        socket.onerror = function(event) {
+            console.error("WebSocket Error:", event);
+        };
 
-        document.getElementById('sendMessageForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const messageInput = document.getElementById('messageInput');
-            const messageContent = messageInput.value;
-
-            if (currentFriendId) {
-                fetch(`/friends/messages/send`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: `content=${messageContent}&receiver=${currentFriendId}`
-                }).then(response => {
-                    if (response.ok) {
-                        const conversationBox = document.getElementById('conversationBox');
-                        const messageDiv = document.createElement('div');
-                        messageDiv.textContent = messageContent;
-                        conversationBox.appendChild(messageDiv);
-                        messageInput.value = '';
-                    } else {
-                        console.error('Failed to send message');
-                    }
-                });
+        socket.onclose = function(event) {
+            if (event.wasClean) {
+                console.log(`Closed cleanly, code=${event.code}, reason=${event.reason}`);
+            } else {
+                console.error('Connection died');
+                connectWebSocket(); // reconnect
             }
+        };
+
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function() {
+            stompClient.subscribe('/topic/messages', function(messageOutput) {
+                const message = JSON.parse(messageOutput.body);
+                displayReceivedMessage(message);
+            });
         });
-    </script>
+    }
+
+    function sendWebSocketMessage(content, receiver) {
+        stompClient.send("/app/send/message", {}, JSON.stringify({
+            content: content,
+            receiverId: receiver
+        }));
+    }
+
+   	function displayReceivedMessage(message) {
+	    const chatBox = document.getElementById('chatBox-' + currentFriendId);
+	    if (!chatBox) return;
+	
+	    const messageDiv = document.createElement('div');
+	    const senderName = message.sender.username;
+	    const timestamp = new Date(message.timestamp).toLocaleTimeString().slice(0, 5); // Convert ISO date string to HH:MM format
+	    messageDiv.textContent = `[${timestamp}] ${senderName}: ${message.content}`;
+	    chatBox.appendChild(messageDiv);
+	}
+
+  	function loadConversation(friendId) {
+        currentFriendId = friendId;
+
+        // Remove 'selected-friend' class from all friends
+        document.querySelectorAll('.list-group-item').forEach(item => {
+            item.classList.remove('selected-friend');
+        });
+
+        const selectedFriend = document.getElementById('friend-' + friendId);
+        if (selectedFriend) {
+            selectedFriend.classList.add('selected-friend');
+            const friendNameSpan = document.getElementById('friendName');
+            friendNameSpan.textContent = selectedFriend.textContent.trim();
+        }
+
+        const chatBoxId = 'chatBox-' + friendId;
+        let chatBox = document.getElementById(chatBoxId);
+
+        if (!chatBox) {
+            fetch('/api/conversations/' + friendId)
+                .then(response => response.json())
+                .then(conversation => {
+                    const friendNameSpan = document.getElementById('friendName');
+                    friendNameSpan.textContent = conversation.friendName;
+
+                    chatBox = document.getElementById(chatBoxId) || document.createElement('div');
+                    chatBox.id = chatBoxId;
+                    chatBox.style = 'border: 1px solid #ccc; padding: 10px; height: 200px; overflow-y: scroll;';
+                    document.getElementById('conversationBox').appendChild(chatBox);
+
+                    conversation.messages.forEach(message => {
+					    const messageDiv = document.createElement('div');
+					    const senderName = message.sender.username;
+					    const timestamp = new Date(message.timestamp).toLocaleTimeString().slice(0, 5); // Convert ISO date string to HH:MM format
+					    messageDiv.textContent = `[${timestamp}] ${senderName}: ${message.content}`;
+					    chatBox.appendChild(messageDiv);
+					});
+                });
+        } else {
+            chatBox.style.display = 'block';
+        }
+    }
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        connectWebSocket();
+    });
+
+    document.getElementById('sendMessageForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const messageInput = document.getElementById('messageInput');
+        const messageContent = messageInput.value;
+
+        if (currentFriendId) {
+            sendWebSocketMessage(messageContent, currentFriendId);
+            messageInput.value = '';
+        }
+    });
+</script>
+
 </body>
 
 </html>
