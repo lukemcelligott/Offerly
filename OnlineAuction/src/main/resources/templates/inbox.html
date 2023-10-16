@@ -119,15 +119,27 @@
 			<div class="col-md-8">
 			    <div id="conversationBox">
 			        <h3>Conversation with <span id="friendName"></span></h3>
-			        <!-- Chat Box for messages -->
-			        <div id="chatBox" style="border: 1px solid #ccc; padding: 10px; height: 200px; overflow-y: scroll;">
-			            <!-- Message contents would go here, populated by JavaScript -->
+			        
+			        <!-- Chat Box for conversation with sellerName1 -->
+			        <div id="chatBox-5664" class="individualChatBox" style="border: 1px solid #ccc; padding: 10px; height: 200px; overflow-y: scroll; display: none;">
+			            <!-- Sample chat content with sellerName1 -->
+			            <div>[12:10] sellerName: Hey, is the product still available?</div>
+			            <div>[12:15] sellerName1: Yes, it's still up for sale.</div>
 			        </div>
+			        
+			        <!-- Chat Box for conversation with userName -->
+			        <div id="chatBox-5597" class="individualChatBox" style="border: 1px solid #ccc; padding: 10px; height: 200px; overflow-y: scroll; display: none;">
+			            <!-- Sample chat content with userName -->
+			            <div>[11:30] sellerName: Hi, do you offer discounts?</div>
+			            <div>[11:32] userName: Sorry, the price is fixed.</div>
+			        </div>
+			        
 			    </div>
-			    <form id="sendMessageForm" class="mt-2">
-			        <input type="text" id="messageInput" placeholder="Type a message..." class="form-control"/>
-			        <button type="submit" class="btn btn-primary mt-2">Send</button>
-			    </form>
+			</div>
+			<form id="sendMessageForm" class="mt-2">
+		        <input type="text" id="messageInput" placeholder="Type a message..." class="form-control"/>
+		        <button type="submit" class="btn btn-primary mt-2">Send</button>
+		    </form>
 			</div>
         </div>
     </div>
@@ -179,65 +191,42 @@
 	    chatBox.appendChild(messageDiv);
 	}
 
-  	function loadConversation(friendId) {
-        currentFriendId = friendId;
-
-        // Remove 'selected-friend' class from all friends
-        document.querySelectorAll('.list-group-item').forEach(item => {
-            item.classList.remove('selected-friend');
-        });
-
-        const selectedFriend = document.getElementById('friend-' + friendId);
-        if (selectedFriend) {
-            selectedFriend.classList.add('selected-friend');
-            const friendNameSpan = document.getElementById('friendName');
-            friendNameSpan.textContent = selectedFriend.textContent.trim();
-        }
-
-        const chatBoxId = 'chatBox-' + friendId;
-        let chatBox = document.getElementById(chatBoxId);
-
-        if (!chatBox) {
-            fetch('/api/conversations/' + friendId)
-                .then(response => response.json())
-                .then(conversation => {
-                    const friendNameSpan = document.getElementById('friendName');
-                    friendNameSpan.textContent = conversation.friendName;
-
-                    chatBox = document.getElementById(chatBoxId) || document.createElement('div');
-                    chatBox.id = chatBoxId;
-                    chatBox.style = 'border: 1px solid #ccc; padding: 10px; height: 200px; overflow-y: scroll;';
-                    document.getElementById('conversationBox').appendChild(chatBox);
-
-                    conversation.messages.forEach(message => {
-					    const messageDiv = document.createElement('div');
-					    const senderName = message.sender.username;
-					    const timestamp = new Date(message.timestamp).toLocaleTimeString().slice(0, 5); // Convert ISO date string to HH:MM format
-					    messageDiv.textContent = `[${timestamp}] ${senderName}: ${message.content}`;
-					    chatBox.appendChild(messageDiv);
-					});
-                });
-        } else {
-            chatBox.style.display = 'block';
-        }
-    }
-
-
-    document.addEventListener('DOMContentLoaded', function() {
-        connectWebSocket();
-    });
-
-    document.getElementById('sendMessageForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-
-        const messageInput = document.getElementById('messageInput');
-        const messageContent = messageInput.value;
-
-        if (currentFriendId) {
-            sendWebSocketMessage(messageContent, currentFriendId);
-            messageInput.value = '';
-        }
-    });
+	function loadConversation(friendId) {
+	    currentFriendId = friendId;
+	
+	    // Hide all chat boxes
+	    const chatBoxes = document.querySelectorAll('.individualChatBox');
+	    chatBoxes.forEach(box => {
+	        box.style.display = 'none';
+	    });
+	
+	    const selectedChatBox = document.getElementById('chatBox-' + friendId);
+	    if (selectedChatBox) {
+	        selectedChatBox.style.display = 'block';  // Show the selected chat box
+	    }
+	
+	    const selectedFriend = document.getElementById('friend-' + friendId);
+	    if (selectedFriend) {
+	        document.getElementById('friendName').textContent = selectedFriend.textContent.trim();  // Update friend's name at the top
+	    }
+	}
+	
+	
+	    document.addEventListener('DOMContentLoaded', function() {
+	        connectWebSocket();
+	    });
+	
+	    document.getElementById('sendMessageForm').addEventListener('submit', function(e) {
+	        e.preventDefault();
+	
+	        const messageInput = document.getElementById('messageInput');
+	        const messageContent = messageInput.value;
+	
+	        if (currentFriendId) {
+	            sendWebSocketMessage(messageContent, currentFriendId);
+	            messageInput.value = '';
+	        }
+	    });
 </script>
 
 </body>
