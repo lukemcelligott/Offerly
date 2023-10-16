@@ -290,6 +290,15 @@ public class MarketListingDomainController {
 	    return marketRepository.save(marketListing);
 	}
 
+	/*
+	 * method for placing a manual bid on a market listing
+	 * @param   the bid the user is placing on the listing
+	 * @param   the market listing id
+	 * @param   the ID of the user placing the bid
+	 * @param   model
+	 * @param   redirect attributes
+	 * return   redirect
+	 */
 	@PostMapping("/updateBid")
 	public ResponseEntity<Object> updateBid(@RequestParam BigDecimal bidAmount, @RequestParam Long listingId, @RequestParam Long bidderId, Model model, RedirectAttributes redirectAttributes, Principal principal) {
 		User bidder = userService.getUserById(bidderId);
@@ -299,7 +308,7 @@ public class MarketListingDomainController {
 		Auction auction = listing.getAuction();
 		BigDecimal currentBidPrice = auction.getCurrentBid();
 		
-		boolean manualBid = true; //TEST
+		boolean manualBid = true; // variable saying this is a manual bid
 		
 		// Ensure that listing.getAuctionPrice() also returns a BigDecimal. Bid amount should be less than 20
 		if (listing != null && bidAmount.compareTo(new BigDecimal(20)) <= 0 && listing.getAuction().getCurrentBid().add(bidAmount).compareTo(listing.getAuction().getStartingBid()) >= 0){
@@ -330,32 +339,30 @@ public class MarketListingDomainController {
 	 * @param   model
 	 * @param   redirect attributes
 	 * @param   principal
-	 * @return  redirect to the market listing page
+	 * return  redirect to the market listing page
 	 */
 	@PostMapping("/autoBid")
 	public ResponseEntity<Object> autoBid(@RequestParam BigDecimal maxBid, @RequestParam Long listingId, @RequestParam Long bidderId, Model model, RedirectAttributes redirectAttributes, Principal principal) {
-		// WORKING: bids are placed without user interaction NOT WORKING: user places two bids initially, bids don't always reach max limit
-		User bidder = userService.getUserById(bidderId); // get bidder
-		User user = userService.getUserByUsername(principal.getName()); // get user
+		User bidder = userService.getUserById(bidderId);
+		User user = userService.getUserByUsername(principal.getName());
 		
-		MarketListing listing = marketRepository.findById(listingId).orElse(null); // get listing
-		Auction auction = listing.getAuction(); // get auction
+		MarketListing listing = marketRepository.findById(listingId).orElse(null);
+		Auction auction = listing.getAuction();
 		
-		BigDecimal currentBidPrice = auction.getCurrentBid(); // up to date bid price		
+		BigDecimal currentBidPrice = auction.getCurrentBid();	
 		BigDecimal increment = calculateIncrement(maxBid); // set up increments for auto bidding
 		
-		boolean manualBid = false; //TEST
+		boolean manualBid = false; // variable saying this is an auto bid
 		
-		System.out.println("increment is currently:" + increment);
 		if (listing != null && maxBid.compareTo(currentBidPrice) > 0){
 			auctionService.autoBid(auction, user, maxBid); // update autobid table with user and max amount for according auction
-			BigDecimal newBid = currentBidPrice.add(increment); // set current bid price
-			auctionService.bid(auction, bidder, increment); // actually bid on the item
-			listing.getAuction().setCurrentBid(newBid); // update listing
-			marketRepository.save(listing); //save listing
+			BigDecimal newBid = currentBidPrice.add(increment);
+			auctionService.bid(auction, bidder, increment);
+			listing.getAuction().setCurrentBid(newBid);
+			marketRepository.save(listing);
 			
 			watchlistService.watchlistAdd(listing, user); // add listing to bidder's watchlist
-			userService.addUser(user); // save user to the user repository
+			userService.addUser(user);
 		}
 		
 		// check for any autobids
@@ -442,7 +449,7 @@ public class MarketListingDomainController {
 	    if (!manualBid) {
 	        while (autobids.size() > 1) {   
 	            for (AutoBid bidEntry : autobids) { // iterate through list of auto bidders
-	            	if(autobids != null && !autobids.isEmpty()) {
+	            	if(autobids != null && !autobids.isEmpty()) { // ensure there are people auto bidding
 	            		// auction variables
 		                BigDecimal userMaxPrice = bidEntry.getMaxBid();
 		                Auction autoAuction = listing.getAuction();
