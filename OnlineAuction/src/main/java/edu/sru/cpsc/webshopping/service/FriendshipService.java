@@ -28,17 +28,19 @@ public class FriendshipService {
     
     
     public List<User> getAllFriendsForUser(User user) {
-        List<Friendship> friendships = friendshipRepository.findByUser1OrUser2(user, user);
-        List<User> friends = new ArrayList<>();
+        List<Friendship> friendships1 = friendshipRepository.findAllByUser1(user);
+        List<Friendship> friendships2 = friendshipRepository.findAllByUser2(user);
 
-        for(Friendship friendship: friendships) {
-            if(friendship.getUser1().equals(user)) {
-                friends.add(friendship.getUser2()); // changed from getUser1() to getUser2()
-            } else {
-                friends.add(friendship.getUser1()); // changed from getUser2() to getUser1()
-            }
+        List<User> friends = new ArrayList<>();
+        
+        for(Friendship friendship : friendships1) {
+            friends.add(friendship.getUser2());
         }
         
+        for(Friendship friendship : friendships2) {
+            friends.add(friendship.getUser1());
+        }
+
         return friends;
     }
     
@@ -53,11 +55,17 @@ public class FriendshipService {
         if(user2 == null) {   
             return null;
         }
-        Friendship friendship = friendshipRepository.findByUser1AndUser2(user1, user2);
-        if(friendship == null) {
-            friendship = friendshipRepository.findByUser1AndUser2(user2, user1);
+        
+        // Attempt to find a friendship in one direction
+        List<Friendship> friendships = friendshipRepository.findByUser1AndUser2(user1, user2);
+        
+        // If no friendship is found in the first direction, attempt the other direction
+        if(friendships.isEmpty()) {
+            friendships = friendshipRepository.findByUser2AndUser1(user1, user2);
         }
-        return friendship;
+
+        // Return the first friendship found, or null if none exists
+        return friendships.isEmpty() ? null : friendships.get(0);
     }
     
     public void removeFriendship(Friendship friendship) {
@@ -66,9 +74,23 @@ public class FriendshipService {
     
     public boolean sendFriendRequest(User sender, User receiver) {
         if(sender.equals(receiver)) {
-            System.out.println("No good.");
+            System.out.println("Cannot send a friend request to oneself.");
             return false;
         }
+        
+        // Check if they are already friends
+        if(!friendshipRepository.findByUser1AndUser2(sender, receiver).isEmpty() || 
+           !friendshipRepository.findByUser2AndUser1(sender, receiver).isEmpty()) {
+            System.out.println("Users are already friends.");
+            return false;
+        }
+
+        // Check if there's already a pending friend request from sender to receiver
+        if(!friendSocialRequestRepository.findBySenderAndReceiverAndStatus(sender, receiver, FriendStatus.PENDING).isEmpty()) {
+            System.out.println("A pending friend request from sender to receiver already exists.");
+            return false;
+        }
+        
         SocialFriendRequest request = new SocialFriendRequest();
         request.setSender(sender);
         request.setReceiver(receiver);
@@ -85,7 +107,6 @@ public class FriendshipService {
         request.setStatus(FriendStatus.ACCEPTED);
         friendSocialRequestRepository.save(request);
         
-        // Here you can also add code to create a Friendship entity
     }
     
     public void declineRequest(SocialFriendRequest request) {
@@ -93,5 +114,4 @@ public class FriendshipService {
         friendSocialRequestRepository.delete(request);
     }
 
-    //... methods to add, remove friends, etc. ...
 }

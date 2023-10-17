@@ -13,4 +13,5 @@ import edu.sru.cpsc.webshopping.domain.user.User;
 public interface FriendSocialRequestRepository extends JpaRepository<SocialFriendRequest, Long> {
 	List<SocialFriendRequest> findByReceiverAndStatus(User receiver, FriendStatus status);
 	List<SocialFriendRequest> findAllByReceiver(User receiver);
+	List<SocialFriendRequest> findBySenderAndReceiverAndStatus(User sender, User receiver, FriendStatus status);
 }

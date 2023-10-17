@@ -31,6 +31,9 @@ import org.springframework.lang.NonNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import edu.sru.cpsc.webshopping.domain.billing.DirectDepositDetails;
 import edu.sru.cpsc.webshopping.domain.billing.PaymentDetails;
 import edu.sru.cpsc.webshopping.domain.billing.Paypal;
@@ -139,7 +142,8 @@ public class User implements UserDetails {
 	@NonNull
 	private String creationDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 	
-	@OneToMany(mappedBy="seller")
+	@OneToMany(mappedBy="seller", fetch = FetchType.EAGER)
+	@JsonIgnore
 	private Set<MarketListing> marketListings;
 	
 	@OneToMany(mappedBy="buyer")

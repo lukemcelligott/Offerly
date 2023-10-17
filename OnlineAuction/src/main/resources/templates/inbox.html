@@ -17,6 +17,11 @@
     <link th:href="@{/styles/button.css}" rel="stylesheet" />
     <link th:href="@{/styles/landing.css}" rel="stylesheet" />
     <link th:href="@{/styles/employee_page.css}" rel="stylesheet" />
+    
+    <!-- Web Socket Library - Real Time Messaging -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+
 
     <style>
         body {
@@ -114,107 +119,189 @@
 			<div class="col-md-8">
 			    <div id="conversationBox">
 			        <h3>Conversation with <span id="friendName"></span></h3>
-			        <!-- Chat Box for messages -->
-			        <div id="chatBox" style="border: 1px solid #ccc; padding: 10px; height: 200px; overflow-y: scroll;">
-			            <!-- Message contents would go here, populated by JavaScript -->
-			        </div>
+			
+			        <!-- This is where the dynamic chat box will be appended -->
+			        
 			    </div>
-			    <form id="sendMessageForm" class="mt-2">
-			        <input type="text" id="messageInput" placeholder="Type a message..." class="form-control"/>
-			        <button type="submit" class="btn btn-primary mt-2">Send</button>
-			    </form>
+			 	<form id="sendMessageForm" class="mt-2">
+				    <input type="hidden" id="currentUserId" th:value="${user.id}"/>
+				    <input type="hidden" id="currentUsername" th:value="${user.username}"/>
+				
+				    <input type="text" id="messageInput" placeholder="Type a message..." class="form-control"/>
+				    <button type="submit" class="btn btn-primary mt-2">Send</button>
+				</form>
 			</div>
         </div>
     </div>
+<script>
+		
+    const userId = document.getElementById("currentUserId").value;
+	const username = document.getElementById("currentUsername").value;
+	
+	console.log("User ID:", userId);
+	console.log("Username:", username);
 
-    <script>
-        let currentFriendId = null;
-
-		function loadConversation(friendId) {
-	    // Remove 'selected-friend' class from all friends
-	    document.querySelectorAll('.list-group-item').forEach(item => {
-	        item.classList.remove('selected-friend');
+	let stompClient = null;
+	let currentFriendId = null;
+	
+	function connectWebSocket() {
+	    const socket = new SockJS('/websocket-endpoint');
+	
+	    socket.onerror = function(event) {
+	        console.error("WebSocket Error:", event);
+	    };
+	
+	    socket.onclose = function(event) {
+	        if (event.wasClean) {
+	            console.log(`Closed cleanly, code=${event.code}, reason=${event.reason}`);
+	        } else {
+	            console.error('Connection died');
+	            connectWebSocket(); // reconnect
+	        }
+	    };
+	
+	    stompClient = Stomp.over(socket);
+	    stompClient.connect({}, function() {
+	        stompClient.subscribe('/topic/messages', function(messageOutput) {
+				console.log("Received WebSocket Message:", messageOutput);
+	            const message = JSON.parse(messageOutput.body);
+	            displayReceivedMessage(message);
+	        });
 	    });
+	}
 	
-	    // Add 'selected-friend' class to the clicked friend
-	    const selectedFriend = document.getElementById('friend-' + friendId);
-	    if (selectedFriend) {
-	        selectedFriend.classList.add('selected-friend');
+	function sendWebSocketMessage(content, receiver) {
+	    const messageToSend = {
+	        content: content,
+	        receiverId: receiver,
+	        sender: { id: userId, username: username }, // Use variables instead of strings
+	        timestamp: new Date().toISOString()
+	    };
 	
-	        // Update the friendName span with the selected friend's name
-	        const friendNameSpan = document.getElementById('friendName');
-	        friendNameSpan.textContent = selectedFriend.textContent.trim();
+	    stompClient.send("/app/send/message", {}, JSON.stringify(messageToSend));
+	    
+	    // Display the message in the chatbox immediately after sending
+	    displayReceivedMessage(messageToSend);
+	}
+	
+	function displayReceivedMessage(message) {
+    // Append message to sender's chatBox
+    console.log("Received message timestamp:", message.timestamp);
+    appendMessageToChatBox(message, message.sender.id);
+    
+    // Append message to receiver's chatBox
+    appendMessageToChatBox(message, message.receiver.id);
+}
+
+	function appendMessageToChatBox(message, userId) {
+	    let chatBox = document.getElementById('chatBox-' + userId);
+	    
+	    if (!chatBox) {
+	        chatBox = document.createElement('div');
+	        chatBox.id = 'chatBox-' + userId;
+	        chatBox.className = 'individualChatBox';
+	        chatBox.style = 'border: 1px solid #ccc; padding: 10px; height: 200px; overflow-y: scroll; display: none;';
+	        document.getElementById('conversationBox').appendChild(chatBox);
+	    }
+	    
+	    const messageDiv = document.createElement('div');
+	    const senderName = message.sender.username;
+	
+	    const dateObj = new Date(message.timestamp);
+	
+	    let hours = dateObj.getHours();
+	    const minutes = ('0' + dateObj.getMinutes()).slice(-2);
+	    let period = "AM";
+	
+	    // Convert hours from 24-hour format to 12-hour format and set the period (AM/PM)
+	    if (hours >= 12) {
+	        hours -= 12;
+	        period = "PM";
+	    }
+	    if (hours === 0) {
+	        hours = 12;
 	    }
 	
-	    // Hide the current conversation box if any
-	    if (currentFriendId && currentFriendId !== friendId) {
-	        const currentChatBox = document.getElementById('chatBox-' + currentFriendId);
-	        if (currentChatBox) currentChatBox.style.display = 'none';
-	    }
+	    const formattedTimestamp = 
+	        ('0' + (dateObj.getMonth() + 1)).slice(-2) + '-' + 
+	        ('0' + dateObj.getDate()).slice(-2) + '-' + 
+	        dateObj.getFullYear().toString().substr(-2) + ' : ' + 
+	        ('0' + hours).slice(-2) + ':' + 
+	        minutes + period;
 	
+	    messageDiv.textContent = `[${formattedTimestamp}] ${senderName}: ${message.content}`;
+	    chatBox.appendChild(messageDiv);
+}
+	
+	function loadConversation(friendId) {
+		console.log("loadConversation called for friendId:", friendId);
 	    currentFriendId = friendId;
 	
-	    // Check if the conversation box for the clicked friend already exists
-	    let chatBox = document.getElementById('chatBox-' + friendId);
+	    // Hide all chat boxes
+	    const chatBoxes = document.querySelectorAll('.individualChatBox');
+	    chatBoxes.forEach(box => {
+	        box.style.display = 'none';
+	    });
 	
-	    // If it doesn't exist, create a new one
-	    if (!chatBox) {
-	        fetch('/api/conversations/' + friendId)
-	            .then(response => response.json())
-	            .then(conversation => {
-	                const conversationBox = document.getElementById('conversationBox');
-	                const friendNameSpan = document.getElementById('friendName');
-	                friendNameSpan.textContent = conversation.friendName;
+	    let selectedChatBox = document.getElementById('chatBox-' + friendId);
 	
-	                // Create a new chat box for the clicked friend
-	                chatBox = document.createElement('div');
-	                chatBox.id = 'chatBox-' + friendId;
-	                chatBox.style = 'border: 1px solid #ccc; padding: 10px; height: 200px; overflow-y: scroll;';
-	                conversationBox.appendChild(chatBox);
+	    // If the chatBox doesn't exist, create one
+	    if (!selectedChatBox) {
+	        selectedChatBox = document.createElement('div');
+	        selectedChatBox.id = 'chatBox-' + friendId;
+	        selectedChatBox.className = 'individualChatBox';
+	        selectedChatBox.style = 'border: 1px solid #ccc; padding: 10px; height: 200px; overflow-y: scroll; display: block;';
+	        document.getElementById('conversationBox').appendChild(selectedChatBox);
+	    } else {
+	        selectedChatBox.style.display = 'block';
+	    }
 	
-	                // Populate the chat box with messages
-	                conversation.messages.forEach(message => {
-	                    const messageDiv = document.createElement('div');
-	                    const senderName = message.sender.username;
-	                    messageDiv.textContent = senderName + ': ' + message.content;
-	                    chatBox.appendChild(messageDiv);
-	                });
+	    const selectedFriend = document.getElementById('friend-' + friendId);
+	    if (selectedFriend) {
+	        document.getElementById('friendName').textContent = selectedFriend.textContent.trim();
+	    }
+	    
+	    // Fetch conversation history from the server
+	    fetch('/api/conversations/' + friendId)
+	    .then(response => {
+	        if (!response.ok) {
+	            throw new Error(`HTTP error! Status: ${response.status}`);
+	        }
+	        return response.json();
+	    })
+	    .then(data => {
+	        const messages = data.messages;
+	        messages.forEach(message => {
+	            displayReceivedMessage({
+	                content: message.content,
+	                sender: { username: message.sender.username },
+	                timestamp: message.timestamp
 	            });
-		    } else {
-		        // If it already exists, just show it
-		        chatBox.style.display = 'block';
-		    }
-		}
-			
+	        });
+	        console.log("BIG YIPPER! loadConversation called for friendId:", friendId);
+	    })
+	    .catch(error => console.error('Error fetching conversation:', error));
+	    
+	}
+	
+	document.addEventListener('DOMContentLoaded', function() {
+	    connectWebSocket();
+	});
+	
+	document.getElementById('sendMessageForm').addEventListener('submit', function(e) {
+	    e.preventDefault();
+	
+	    const messageInput = document.getElementById('messageInput');
+	    const messageContent = messageInput.value;
+	
+	    if (currentFriendId) {
+	        sendWebSocketMessage(messageContent, currentFriendId);
+	        messageInput.value = '';
+	    }
+	});
 
+</script>
 
-        document.getElementById('sendMessageForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const messageInput = document.getElementById('messageInput');
-            const messageContent = messageInput.value;
-
-            if (currentFriendId) {
-                fetch(`/friends/messages/send`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: `content=${messageContent}&receiver=${currentFriendId}`
-                }).then(response => {
-                    if (response.ok) {
-                        const conversationBox = document.getElementById('conversationBox');
-                        const messageDiv = document.createElement('div');
-                        messageDiv.textContent = messageContent;
-                        conversationBox.appendChild(messageDiv);
-                        messageInput.value = '';
-                    } else {
-                        console.error('Failed to send message');
-                    }
-                });
-            }
-        });
-    </script>
 </body>
 
 </html>

@@ -1,5 +1,6 @@
 package edu.sru.cpsc.webshopping.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,27 +12,35 @@ import edu.sru.cpsc.webshopping.repository.misc.MessageSocialRepository;
 
 @Service
 public class MessageService {
-	
     @Autowired
-    private MessageSocialRepository messageRepository;
+    private MessageSocialRepository messageRepository;   
     
-    @Autowired
-    private MessageSocialRepository messageSocialRepository;
-
     public List<SocialMessage> getAllMessagesForUser(User user) {
         return messageRepository.findBySenderOrReceiver(user, user);
     }
     
     public List<SocialMessage> getAllMessagesForUser(User user1, User user2) {
-        return messageSocialRepository.getAllMessagesForUser(user1, user2);
+        return messageRepository.findAllBySenderAndReceiver(user1, user2);
+    }
+    
+    public List<SocialMessage> getUnreadMessagesForUser(User recipient) {
+        return messageRepository.findByReceiverAndIsReadFalse(recipient);
     }
 
-    public void sendMessage(SocialMessage message) {
+    public void markMessageAsRead(SocialMessage message) {
+        message.setRead(true);
+        message.setReadTimestamp(LocalDateTime.now());
+        messageRepository.save(message);
+    }
+
+    public void markMessageAsDelivered(SocialMessage message) {
+        message.setDelivered(true);
         messageRepository.save(message);
     }
     
-    public void saveMessage(SocialMessage message) {
-        messageRepository.save(message);
+    public SocialMessage saveMessage(SocialMessage message) {
+    	System.out.println("Marble Cake");
+        return messageRepository.save(message);
     }
-    //... methods to send, retrieve messages, etc. ...
+
 }
