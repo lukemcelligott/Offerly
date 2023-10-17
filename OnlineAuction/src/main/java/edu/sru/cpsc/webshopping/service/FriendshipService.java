@@ -55,11 +55,17 @@ public class FriendshipService {
         if(user2 == null) {   
             return null;
         }
-        Friendship friendship = friendshipRepository.findByUser1AndUser2(user1, user2);
-        if(friendship == null) {
-            friendship = friendshipRepository.findByUser1AndUser2(user2, user1);
+        
+        // Attempt to find a friendship in one direction
+        List<Friendship> friendships = friendshipRepository.findByUser1AndUser2(user1, user2);
+        
+        // If no friendship is found in the first direction, attempt the other direction
+        if(friendships.isEmpty()) {
+            friendships = friendshipRepository.findByUser2AndUser1(user1, user2);
         }
-        return friendship;
+
+        // Return the first friendship found, or null if none exists
+        return friendships.isEmpty() ? null : friendships.get(0);
     }
     
     public void removeFriendship(Friendship friendship) {
@@ -68,9 +74,23 @@ public class FriendshipService {
     
     public boolean sendFriendRequest(User sender, User receiver) {
         if(sender.equals(receiver)) {
-            System.out.println("No good.");
+            System.out.println("Cannot send a friend request to oneself.");
             return false;
         }
+        
+        // Check if they are already friends
+        if(!friendshipRepository.findByUser1AndUser2(sender, receiver).isEmpty() || 
+           !friendshipRepository.findByUser2AndUser1(sender, receiver).isEmpty()) {
+            System.out.println("Users are already friends.");
+            return false;
+        }
+
+        // Check if there's already a pending friend request from sender to receiver
+        if(!friendSocialRequestRepository.findBySenderAndReceiverAndStatus(sender, receiver, FriendStatus.PENDING).isEmpty()) {
+            System.out.println("A pending friend request from sender to receiver already exists.");
+            return false;
+        }
+        
         SocialFriendRequest request = new SocialFriendRequest();
         request.setSender(sender);
         request.setReceiver(receiver);
