@@ -106,10 +106,16 @@
 						<!-- Security Code -->
 						<input type="tel" class="form-control" id="securityCode" field="*{securityCode}" placeholder="CVV" name="securityCode" maxlength="4"></input>
 	                    <p th:text="${securityCodeErr}" th:if="${securityCodeErr != null}"></p>
-	                    <!-- Postal Code -->
-		                <input type="tel" class="form-control" id="postalCode" field="*{postalCode}" placeholder="Postal Code" name="postalCode" maxlength="5"></input>
-		                <p th:text="${postalCodeErr}" th:if="${postalCodeErr != null}"></p>
 					</div>
+                    
+                    <!-- Select Saved Shipping Address -->
+                    <div class="input-group mb-3">
+                        <label for="billingAddress" class="input-group-text">Billing Address:</label>
+                        <select class="form-select" id="billingAddress" name="billingAddress">
+                            <option value="">-- Saved Addresses: --</option>
+                            <option th:each="address : ${savedShippingDetails}" th:value="${address.id}" th:text="${address.streetAddress + ', ' + address.city + ', ' + address.state.stateName + ' ' + address.postalCode}"></option>
+                        </select>
+                    </div>
                     
                 </div>
                 <!-- Purchase decisions -->

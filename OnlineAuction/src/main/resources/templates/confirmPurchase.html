@@ -256,6 +256,7 @@
 										<div class="col-md-6">
 											<div class="card-body">
 												<h5 class="card-title">Default Card</h5>
+												<h4 th:text="${selectedPayment.cardType}"></h4>
 												<!-- Card Details -->
 												<p class="card-text">**** **** **** <span th:text="${selectedPayment.last4Digits}"></span></p>
 											</div>
@@ -478,10 +479,13 @@
 										<!-- Security Code -->
 										<input type="tel" class="form-control" id="securityCode" field="*{securityCode}" placeholder="CVV" name="securityCode" maxlength="4"></input>
 									</div>
-									<div class="col-md-6 mb-3">
-										<!-- Postal Code -->
-										<input type="tel" class="form-control" id="postalCode" field="*{postalCode}" placeholder="Postal Code" name="postalCode" maxlength="5"></input>
-									</div>
+								</div>
+								<div class="row mb-3">
+									<label for="billingAddress" class="input-group-text">Billing Address:</label>
+									<select class="form-select" id="billingAddress" name="billingAddress">
+										<option value="">-- Saved Addresses: --</option>
+										<option th:each="address : ${allAddresses}" th:value="${address.id}" th:text="${address.streetAddress + ', ' + address.city + ', ' + address.state.stateName + ' ' + address.postalCode}"></option>
+									</select>
 								</div>
 								<!--used for learning how to use jQuery to get month and year since input type="month" doesn't work on firefox https://stackoverflow.com/questions/2208480/jquery-ui-datepicker-to-show-month-year-only --> 
 								<script type="text/javascript"> 
@@ -540,6 +544,13 @@
 															<td colspan="2"><input class="form-control" type="text" th:field="*{bankName}"></input>
 															<p th:if="${#fields.hasErrors('bankName')}" th:errors="*{bankName}"></p></td>
 														</tr>
+														<div class="input-group mb-3">
+															<label for="billingAddress" class="input-group-text">Billing Address:</label>
+															<select class="form-select" id="billingAddress" name="billingAddress">
+																<option value="">-- Saved Addresses: --</option>
+																<option th:each="address : ${allAddresses}" th:value="${address.id}" th:text="${address.streetAddress + ', ' + address.city + ', ' + address.state.stateName + ' ' + address.postalCode}"></option>
+															</select>
+														</div>
 													</tbody>
 												</table>
 											</div>

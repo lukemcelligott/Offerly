@@ -25,11 +25,8 @@ public class PaymentDetails_Form {
 	@NonNull
 	@Size(min = 3, max = 4, message = "Security Code must be between 3 and 4 characters.")
 	private String securityCode;
-	
-	@NonNull
-	@Size(min = 5, max = 5, message = "Postal Code must be 5 characters")
-	private String postalCode;
-	
+
+	private long billingAddress;
 
 	public String getCardType() {
 		return cardType;
@@ -71,11 +68,11 @@ public class PaymentDetails_Form {
 		this.securityCode = securityCode;
 	}
 
-	public String getPostalCode() {
-		return postalCode;
+	public long getBillingAddress() {
+		return billingAddress;
 	}
 
-	public void setPostalCode(String postalCode) {
-		this.postalCode = postalCode;
+	public void setBillingAddress(long billingAddress) {
+		this.billingAddress = billingAddress;
 	}
 }

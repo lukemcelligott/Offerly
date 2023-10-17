@@ -70,7 +70,10 @@ public class TransactionDetailsPageController {
 			(user.getId() != trans.getSeller().getId() &&
 			user.getId() != trans.getBuyer().getId()))
 			throw new IllegalStateException("Invalid user.");
-		origEntry = shippingController.getShippingEntry(trans.getShippingEntry().getId());
+		
+		if(trans.getShippingEntry() != null){
+			origEntry = shippingController.getShippingEntry(trans.getShippingEntry().getId());
+		}
 		reloadModel(model, user);
 		return "transactionDetails";
 	}
@@ -151,6 +154,9 @@ public class TransactionDetailsPageController {
 	 * @return true if the loaded Transaction can be cancelled, false otherwise
 	 */
 	public boolean canDeleteTransaction() {
+		if(trans.getShippingEntry() == null){
+			return true;
+		}
 		if (trans.getShippingEntry().getTrackingNumber() != null) // Not allowed to cancel a transaction if shipping label created
 			return false;
 		return true;

@@ -344,7 +344,8 @@ public class ConfirmPurchasePageController {
 		User user = userService.getUserByUsername(principal.getName());
 		PaymentDetails currDetails = new PaymentDetails();
 		allSelected = false;
-		currDetails.buildFromForm(paymentDetails);
+		ShippingAddress billingAddress = shippingAddressController.getShippingAddressEntry(paymentDetails.getBillingAddress());
+		currDetails.buildFromForm(paymentDetails, billingAddress);
 		if (user == null) {
 			throw new IllegalStateException("Cannot purchase an item when not logged in.");
 		}
@@ -570,19 +571,30 @@ public class ConfirmPurchasePageController {
 		return initializePurchasePage(prevListing, purchase, model, principal);
 	}
 
+	@Transactional
 	@PostMapping(value = "/addPayment")
 	public String addPaymentDetails(@Validated @ModelAttribute("paymentDetails") PaymentDetails_Form details, BindingResult result, Model model, Principal principal) {
-	
+
 		User user = userService.getUserByUsername(principal.getName());
 		PaymentDetails currDetails = new PaymentDetails();
 		allSelected = false;
-		currDetails.buildFromForm(details);
+		ShippingAddress billingAddress = shippingAddressController.getShippingAddressEntry(details.getBillingAddress());
+		currDetails.buildFromForm(details, billingAddress);
 		if (user == null) {
 			throw new IllegalStateException("Cannot purchase an item when not logged in.");
 		}
 		// Test that payment details are valid
 		if (!paymentDetailsInvalid(details) && !result.hasErrors()) {
-			// add the card to the database if it's new
+			if (address != null)
+				allSelected = true;
+			currDetails.setUser(user);
+			Set<PaymentDetails> PD = user.getPaymentDetails();
+			if(PD == null)
+				PD = new HashSet<PaymentDetails>();
+			PD.add(currDetails);
+			user.setPaymentDetails(PD);
+			if(user.getDefaultPaymentDetails() == null)
+				user.setDefaultPaymentDetails(currDetails);	
 			if (!payDetController.checkDuplicateCard(currDetails)) {
 				payDetController.addPaymentDetails(currDetails);
 				System.out.println("option 1");
@@ -590,17 +602,6 @@ public class ConfirmPurchasePageController {
 				currDetails = payDetController.getPaymentDetailsByCardNumberAndExpirationDate(currDetails);
 				System.out.println(currDetails.getId());
 			}
-			if (address != null)
-				allSelected = true;
-			Set<PaymentDetails> PD = user.getPaymentDetails();
-			if(PD == null)
-				PD = new HashSet<PaymentDetails>();
-			PD.add(currDetails);
-			user.setPaymentDetails(PD);
-			if(user.getDefaultPaymentDetails() == null)
-				user.setDefaultPaymentDetails(currDetails);
-			currDetails.setUser(user);
-			payDetController.addPaymentDetails(currDetails);
 			modifyPayment = false;
 			relogin = true;
 			validatedDetails = currDetails;
@@ -609,11 +610,13 @@ public class ConfirmPurchasePageController {
 		return initializePurchasePage(prevListing, purchase, model, principal);
 	}
 
+	@Transactional
 	@PostMapping(value = "/addDirectDeposit")
 	public String addDirectDepositDetails(@Validated @ModelAttribute("directDepositDetails") DirectDepositDetails_Form details, BindingResult result, Model model, Principal principal) {
 		User user = userService.getUserByUsername(principal.getName());
 		DirectDepositDetails currDirectDetails = new DirectDepositDetails();
-		currDirectDetails.buildFromForm(details);
+		ShippingAddress billingAddress = shippingAddressController.getShippingAddressEntry(details.getBillingAddress());
+		currDirectDetails.buildFromForm(details, billingAddress);
 		if (user == null) {
 			throw new IllegalStateException("Cannot purchase an item when not logged in.");
 		}
@@ -659,8 +662,10 @@ public class ConfirmPurchasePageController {
 				shipping.setTransaction(purchase);
 				shipping.setAddress(selectedAddress);
 				purchase.setShippingEntry(shipping);
+				purchase.setLocalPickup(false);
 			} else if ("pickup".equals(deliveryOption)) {
 				purchase.setLocalPickup(purchase.getMarketListing().getLocalPickup());
+				purchase.setLocalPickup(true);
 			}
 			
 			purchase.setPaymentDetails(selectedPayment);

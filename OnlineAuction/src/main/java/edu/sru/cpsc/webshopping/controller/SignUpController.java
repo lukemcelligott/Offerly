@@ -349,6 +349,7 @@ public class SignUpController {
     	userRepository.save(user);
     	model.addAttribute("user", user);
     	model.addAttribute("cardTypes", cardController.getAllCardTypes());
+      model.addAttribute("states", stateDetailsController.getAllStates());
     	
     	System.out.println("line 341 " + user);
     	User userLogin = userController.getUserByUsername(user.getUsername());
@@ -356,7 +357,7 @@ public class SignUpController {
     	//userController.setCurrently_Logged_In(userLogin);
     	//System.out.println(userController.getCurrently_Logged_In());
     	
-    	return "newUserPayment";
+    	return "newUserShipping";
     } else {
     	//userController.setCurrently_Logged_In(user);
     	System.out.println("line 335 " + usertemp);
@@ -372,8 +373,9 @@ public class SignUpController {
     	model.addAttribute("countryCodes", countryCodesMap);
     	model.addAttribute("defaultCountryCode", defaultCountryCode);
     	model.addAttribute("cardTypes", cardController.getAllCardTypes());
+      model.addAttribute("states", stateDetailsController.getAllStates());
     	
-    	return "newUserPayment";
+    	return "newUserShipping";
     }
   }
   
@@ -385,7 +387,8 @@ public class SignUpController {
 	  	System.out.println("got to start of payment");
 		PaymentDetails currDetails = new PaymentDetails();
 		allSelected = false;
-		currDetails.buildFromForm(paymentDetails);
+    ShippingAddress billingAddress = shippingController.getShippingAddressEntry(paymentDetails.getBillingAddress());
+		currDetails.buildFromForm(paymentDetails, billingAddress);
 		model.addAttribute("cardTypes", cardController.getAllCardTypes());
     System.out.println("userId: " + userId);
 		// Test that payment details are valid
@@ -414,9 +417,10 @@ public class SignUpController {
 			modifyPayment = false;
 			relogin = true;
 			validatedDetails = currDetails;
-			model.addAttribute("states", stateDetailsController.getAllStates());
-      model.addAttribute("user", user);
-			return "newUserShipping";
+      setPage("success");
+      model.addAttribute("page", getPage());
+
+			return "redirect:/newUser";
 		}
 		// Transaction failed - post error
 		else {
@@ -458,7 +462,7 @@ public class SignUpController {
 			model.addAttribute("existingSecurityCode", new String());
 			model.addAttribute("states", stateDetailsController.getAllStates());
 			
-			return "newUserShipping";
+			return "newUserPayment";
 		}
 	}
   	
@@ -529,7 +533,7 @@ public class SignUpController {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}			
-			return "/newUserShipping";
+			return "newUserShipping";
 		}
 		ShippingAddress shipping = new ShippingAddress();
 		User user = userRepository.findById(userId).orElse(null);
@@ -544,7 +548,14 @@ public class SignUpController {
 		shippingController.addShippingAddress(shipping, user);
 		userRepository.save(user);
 		addNewSA = false;
-		return "redirect:/newUser";
+    
+    model.addAttribute("user", user);
+    model.addAttribute("cardTypes", cardController.getAllCardTypes());
+    model.addAttribute("states", stateDetailsController.getAllStates());
+    model.addAttribute("savedShippingDetails", shippingController.getShippingDetailsByUser(user));
+
+
+		return "newUserPayment";
 	}
 
   @GetMapping({"/forgotUser/{id}"})

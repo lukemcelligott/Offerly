@@ -57,8 +57,8 @@ public class PaymentDetailsController {
 		details.setLast4Digits(details.getLast4Digits());
 		details.setCardType(details.getCardType());
 		details.setExpirationDate(passwordEncoder.encode(details.getExpirationDate()));
-		details.setPostalCode(passwordEncoder.encode(details.getPostalCode()));
 		details.setSecurityCode(passwordEncoder.encode(details.getSecurityCode()));
+		details.setBillingAddress(details.getBillingAddress());
 		// No assigned details - add to user
 		paymentDetailsRepository.save(details);
 		// entityManager.persist(details);
@@ -91,7 +91,6 @@ public class PaymentDetailsController {
 			if( passwordEncoder.matches(details.getCardholderName(), PD.getCardholderName())
 			&& passwordEncoder.matches(details.getCardNumber(), PD.getCardNumber())
 			&& passwordEncoder.matches(details.getExpirationDate(), PD.getExpirationDate())
-			&& passwordEncoder.matches(details.getPostalCode(), PD.getPostalCode())
 			&& passwordEncoder.matches(details.getSecurityCode(), PD.getSecurityCode()))
 				check = 0;
 		}
@@ -118,7 +117,6 @@ public class PaymentDetailsController {
 			if( passwordEncoder.matches(details.getCardholderName(), PD.getCardholderName())
 			&& passwordEncoder.matches(details.getCardNumber(), PD.getCardNumber())
 			&& passwordEncoder.matches(details.getExpirationDate(), PD.getExpirationDate())
-			&& passwordEncoder.matches(details.getPostalCode(), PD.getPostalCode())
 			&& passwordEncoder.matches(details.getSecurityCode(), PD.getSecurityCode()))
 				return PD;
 		}
@@ -143,8 +141,8 @@ public class PaymentDetailsController {
 		details.setLast4Digits(details.getLast4Digits());
 		details.setCardType(details.getCardType());
 		details.setExpirationDate(passwordEncoder.encode(details.getExpirationDate()));
-		details.setPostalCode(passwordEncoder.encode(details.getPostalCode()));
 		details.setSecurityCode(passwordEncoder.encode(details.getSecurityCode()));
+		details.setBillingAddress(details.getBillingAddress());
 		// No assigned details - add to user
 		PaymentDetails curr = entityManager.find(PaymentDetails.class, currDetails.getId());
 		curr.transferFields(details);

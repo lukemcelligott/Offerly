@@ -103,7 +103,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="my-2">
+					<div class="my-2" th:if="${!trans.isLocalPickup}">
 						<div class="d-flex justify-content-center">
 							<h2>Shipping Information</h2>
 						</div>
@@ -143,8 +143,24 @@
 							</div>							
 						</div>
 					</div>
+
+					<div class="my-2" th:if="${trans.isLocalPickup}">
+						<div class="d-flex justify-content-center">
+							<h2>Local Pickup Information: </h2>
+						</div>
+						<div class="container">
+							<div class="row">
+								<ul class="list-group col-sm-3">
+									<li class="list-group-item">City: <span th:text="${trans.localPickup.location.city}"></span></li>
+									<li class="list-group-item">State: <span th:text="${trans.localPickup.location.state.stateName}"></span></li>
+								</ul>
+							</div>						
+						</div>
+					</div>
+
+
 					<!-- If seller, give access to changing shipping information -->
-					<form th:if="${user.id == trans.seller.id}"
+					<form th:if="${user.id == trans.seller.id} and ${!trans.isLocalPickup}"
 						  method="post" action="#"
 						  th:action="@{/viewTransactionDetails/submitShippingUpdate}" th:object="${shipping}">
   						<div class="d-flex justify-content-center">
@@ -211,7 +227,10 @@
 		function displayTrackingInfo(track) {
 			const trackingHtml = generateTrackingHtml(track);
 			document.getElementById('tracking-status').innerHTML = trackingHtml;
-			document.getElementById('eta').textContent = `Estimated Arrival: ${new Date(track.eta).toLocaleDateString("en-US")}`;
+			const etaText = track.eta 
+				? `Estimated Arrival: ${new Date(track.eta).toLocaleDateString("en-US")}` 
+				: 'Estimated Arrival: N/A';
+			document.getElementById('eta').textContent = etaText;
 			updateTrackingUI(track);
 		}
 
