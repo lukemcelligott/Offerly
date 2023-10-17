@@ -73,14 +73,12 @@ public class DomainBillingSpringTest {
 		payment.setCardNumber("1234567891234567");
 		payment.setCardType("Visa");
 		payment.setExpirationDate("10/2028");
-		payment.setPostalCode("16057");
 		payment.setSecurityCode("123");
 		
 		assertEquals("Heidi", payment.getCardholderName());
 		assertEquals("1234567891234567", payment.getCardNumber());
 		assertEquals("Visa", payment.getCardType());
 		assertEquals("10/2028", payment.getExpirationDate());
-		assertEquals("16057", payment.getPostalCode());
 		assertEquals("123", payment.getSecurityCode());
 	}
 	
@@ -95,7 +93,6 @@ public class DomainBillingSpringTest {
 		pay.setCardType("Visa");
 		pay.setExpirationDate("10/2028");
 		pay.setId(24);
-		pay.setPostalCode("16057");
 		pay.setSecurityCode("123");
 		
 		assertEquals("Heidi", pay.getCardholderName());
@@ -103,7 +100,6 @@ public class DomainBillingSpringTest {
 		assertEquals("Visa", pay.getCardType());
 		assertEquals("10/2028", pay.getExpirationDate());
 		assertEquals(24, pay.getId());
-		assertEquals("16057", pay.getPostalCode());
 		assertEquals("123", pay.getSecurityCode());
 	}
 	

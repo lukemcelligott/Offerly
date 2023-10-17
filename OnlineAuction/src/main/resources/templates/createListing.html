@@ -27,6 +27,13 @@
 				margin-right: 8px;
 				font-size: 12px;
 			}
+
+			#pickupAddressFields {
+				border: 2px solid #686868;
+				padding: 10px;
+				position: relative;
+				margin-bottom: 10px;
+			}
 		</style>
 	</head>
 	
@@ -83,12 +90,13 @@
 						</div>
 						<!-- Button to add a pickup location -->
 						<div class="form-group" style="padding-bottom: 15px;">
-							<button type="button" class="btn btn-primary" onclick="showPickupAddressFields()">Add Pickup Location</button>
+							<button type="button" class="btn btn-primary" id="addPickupLocationButton" onclick="showPickupAddressFields()">Add Pickup Location</button>
 						</div>
 
 						<!-- Hidden div containing pickup address fields -->
 						<div id="pickupAddressFields" style="display: none;">
-							<div class="form-group">
+							<button type="button" class="btn btn-danger" id="removePickupButton" style="position: absolute; top: 10px; right: 10px;" onclick="hidePickupAddressFields()">X</button>
+							<div class="form-group" style="margin-top: 20px;">
 								<label for="streetAddress">Street Address:</label>
 								<input type="text" class="form-control" id="streetAddress" name="localPickup.location.streetAddress" th:field="*{localPickup.location.streetAddress}">
 								<p th:if="${streetAddressErr != null}" th:text="${streetAddressErr}"></p>
@@ -110,14 +118,13 @@
 								</select>
 								<p th:if="${stateIdErr}" th:text="${stateId}"></p>
 							</div>
-						</div>
 
-						<!-- Checkbox for local pickup only -->
-						<div class="form-group" style="padding-bottom: 15px;">
-							<input type="checkbox" id="isLocalPickupOnly" name="isLocalPickupOnly" th:field="*{isLocalPickupOnly}">
-							<label for="isLocalPickupOnly">List item for local pickup only</label>
+							<!-- Checkbox for local pickup only -->
+							<div class="form-group" style="padding-bottom: 15px;">
+								<input type="checkbox" id="isLocalPickupOnly" name="isLocalPickupOnly" th:field="*{isLocalPickupOnly}">
+								<label for="isLocalPickupOnly">List item for local pickup only</label>
+							</div>
 						</div>
-						
 
 						<p th:if="${#fields.hasErrors('qtyAvailable')}" th:errors="*{qtyAvailable}"></p>
 						<div class="form-group w-35" style="padding-bottom: 15px;">
@@ -171,6 +178,26 @@
 
 			function showPickupAddressFields() {
 				document.getElementById('pickupAddressFields').style.display = 'block';
+				document.getElementById('addPickupLocationButton').style.display = 'none';  // hide the "Add Pickup Location" button
+			}
+			function hidePickupAddressFields() {
+				var pickupAddressFields = document.getElementById('pickupAddressFields');
+				pickupAddressFields.style.display = 'none';
+				document.getElementById('addPickupLocationButton').style.display = 'block';  // show the "Add Pickup Location" button
+				
+				// Get all input, select, and textarea elements within the #pickupAddressFields div
+				var inputs = pickupAddressFields.querySelectorAll('input, select, textarea');
+				
+				// Reset the value of each input/select/textarea element
+				inputs.forEach(function(input) {
+					if (input.type === 'checkbox' || input.type === 'radio') {
+						input.checked = false;  // Uncheck checkboxes and radio buttons
+					} else if (input.tagName === 'SELECT') {
+						input.selectedIndex = 0;  // Reset select elements to their first option
+					} else {
+						input.value = '';  // Clear text, email, password, etc. input types
+					}
+				});
 			}
 		</script>
 	</body>

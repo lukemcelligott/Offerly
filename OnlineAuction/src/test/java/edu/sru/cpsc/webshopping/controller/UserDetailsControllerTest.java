@@ -70,7 +70,6 @@ public class UserDetailsControllerTest {
 		validDetails.setCardNumber("1111111111111111");
 		validDetails.setCardType("Discover");
 		validDetails.setExpirationDate("2022/12/01");
-		validDetails.setPostalCode("12345");
 		validDetails.setSecurityCode("1234");
 		
 		RequestBuilder request = MockMvcRequestBuilders.post("/submitPaymentDetailsAction")
@@ -96,7 +95,6 @@ public class UserDetailsControllerTest {
 		invalidDetails.setCardNumber("1111111111111111");
 		invalidDetails.setCardType("Discover");
 		invalidDetails.setExpirationDate("2022/12/01");
-		invalidDetails.setPostalCode("12345");
 		invalidDetails.setSecurityCode("1234");
 		invalidDetails.setCardholderName("");
 		

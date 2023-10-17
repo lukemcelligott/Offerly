@@ -104,7 +104,6 @@ public class ConfirmPurchasePageControllerTest {
 		validDetailsForm.setCardNumber("1111444455557777");
 		validDetailsForm.setCardType("Discover");
 		validDetailsForm.setExpirationDate(LocalDate.now().toString());
-		validDetailsForm.setPostalCode("44525");
 		validDetailsForm.setSecurityCode("1234");
 		// Add Paypal details to user
 		Paypal validPaypal = new Paypal();
@@ -158,7 +157,6 @@ public class ConfirmPurchasePageControllerTest {
 		validDetails.setCardNumber("1111444455557777");
 		validDetails.setCardType("Discover");
 		validDetails.setExpirationDate(LocalDate.now().toString());
-		validDetails.setPostalCode("44525");
 		validDetails.setSecurityCode("1234");
 		
 		pageController.openConfirmPurchasePage(address, newListing, trans, model, principal);
@@ -187,7 +185,6 @@ public class ConfirmPurchasePageControllerTest {
 		details.setCardNumber("1111444455557777");
 		details.setCardType("Discover");
 		details.setExpirationDate(LocalDate.now().toString());
-		details.setPostalCode("44525");
 		details.setSecurityCode("1234");
 		
 		pageController.openConfirmPurchasePage(address, newListing, trans, model, principal);
@@ -222,11 +219,9 @@ public class ConfirmPurchasePageControllerTest {
 			.andExpect(MockMvcResultMatchers.view().name("confirmPurchase"))
 			.andExpect(MockMvcResultMatchers.status().isOk());
 		details.setExpirationDate(LocalDate.now().toString());
-		details.setPostalCode("");
 		mvc.perform(request)
 			.andExpect(MockMvcResultMatchers.view().name("confirmPurchase"))
 			.andExpect(MockMvcResultMatchers.status().isOk());
-		details.setPostalCode("44525");
 		details.setSecurityCode("");
 		mvc.perform(request)
 			.andExpect(MockMvcResultMatchers.view().name("confirmPurchase"))
@@ -254,11 +249,9 @@ public class ConfirmPurchasePageControllerTest {
 			.andExpect(MockMvcResultMatchers.view().name("confirmPurchase"))
 			.andExpect(MockMvcResultMatchers.status().isOk());
 		details.setExpirationDate(LocalDate.now().toString());
-		details.setPostalCode("55249");
 		mvc.perform(request)
 			.andExpect(MockMvcResultMatchers.view().name("confirmPurchase"))
 			.andExpect(MockMvcResultMatchers.status().isOk());
-		details.setPostalCode("44525");
 		details.setSecurityCode("4457");
 		mvc.perform(request)
 			.andExpect(MockMvcResultMatchers.view().name("confirmPurchase"))

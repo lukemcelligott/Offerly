@@ -6,8 +6,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 import org.springframework.lang.NonNull;
+
+import com.taxjar.model.taxes.Shipping;
 
 import edu.sru.cpsc.webshopping.domain.user.User;
 
@@ -41,9 +44,10 @@ public class PaymentDetails {
 	
 	@NonNull
 	private String securityCode;
-	
+
 	@NonNull
-	private String postalCode;
+	@OneToOne (cascade = CascadeType.ALL)
+	private ShippingAddress billingAddress;
 	
 	@ManyToOne(cascade = CascadeType.MERGE)
 	private User user;
@@ -95,14 +99,6 @@ public class PaymentDetails {
 	public void setSecurityCode(String securityCode) {
 		this.securityCode = securityCode;
 	}
-
-	public String getPostalCode() {
-		return postalCode;
-	}
-
-	public void setPostalCode(String postalCode) {
-		this.postalCode = postalCode;
-	}
 	
 	public String getLast4Digits() {
 		return last4Digits;
@@ -119,6 +115,12 @@ public class PaymentDetails {
 	public void setUser(User user) {
 		this.user = user;
 	}
+	public ShippingAddress getBillingAddress() {
+		return billingAddress;
+	}
+	public void setBillingAddress(ShippingAddress billingAddress) {
+		this.billingAddress = billingAddress;
+	}
 
 	// Sets the non-id fields of the calling PaymentDetails to match that of the passed PaymentDetails
 	public void transferFields(PaymentDetails other) {
@@ -128,10 +130,10 @@ public class PaymentDetails {
 		this.last4Digits = other.last4Digits;
 		this.expirationDate = other.expirationDate;
 		this.securityCode = other.securityCode;
-		this.postalCode = other.postalCode;
+		this.billingAddress = other.billingAddress;
 	}
 	
-	public void buildFromForm(PaymentDetails_Form form) {
+	public void buildFromForm(PaymentDetails_Form form, ShippingAddress billingAddress) {
 		this.cardType = form.getCardType();
 		this.cardholderName = form.getCardholderName();
 		this.cardNumber = form.getCardNumber();
@@ -139,7 +141,7 @@ public class PaymentDetails {
 			this.last4Digits = form.getCardNumber().substring(12);
 		this.expirationDate = form.getExpirationDate();
 		this.securityCode = form.getSecurityCode();
-		this.postalCode = form.getPostalCode();
+		this.billingAddress = billingAddress;
 	}
 
 }
