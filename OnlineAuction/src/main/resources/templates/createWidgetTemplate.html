@@ -279,6 +279,8 @@
 				attributeInput.classList.add('form-input');
 				attributeInput.required = true;
 
+				attributeInput.addEventListener('input', checkFields);
+
 				cell1.innerHTML = attributeName;
 				cell2.appendChild(attributeInput);
 

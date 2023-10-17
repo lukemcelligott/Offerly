@@ -662,8 +662,10 @@ public class ConfirmPurchasePageController {
 				shipping.setTransaction(purchase);
 				shipping.setAddress(selectedAddress);
 				purchase.setShippingEntry(shipping);
+				purchase.setLocalPickup(false);
 			} else if ("pickup".equals(deliveryOption)) {
 				purchase.setLocalPickup(purchase.getMarketListing().getLocalPickup());
+				purchase.setLocalPickup(true);
 			}
 			
 			purchase.setPaymentDetails(selectedPayment);
