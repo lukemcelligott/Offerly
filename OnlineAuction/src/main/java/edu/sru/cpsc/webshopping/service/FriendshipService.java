@@ -28,17 +28,19 @@ public class FriendshipService {
     
     
     public List<User> getAllFriendsForUser(User user) {
-        List<Friendship> friendships = friendshipRepository.findByUser1OrUser2(user, user);
-        List<User> friends = new ArrayList<>();
+        List<Friendship> friendships1 = friendshipRepository.findAllByUser1(user);
+        List<Friendship> friendships2 = friendshipRepository.findAllByUser2(user);
 
-        for(Friendship friendship: friendships) {
-            if(friendship.getUser1().equals(user)) {
-                friends.add(friendship.getUser2()); // changed from getUser1() to getUser2()
-            } else {
-                friends.add(friendship.getUser1()); // changed from getUser2() to getUser1()
-            }
+        List<User> friends = new ArrayList<>();
+        
+        for(Friendship friendship : friendships1) {
+            friends.add(friendship.getUser2());
         }
         
+        for(Friendship friendship : friendships2) {
+            friends.add(friendship.getUser1());
+        }
+
         return friends;
     }
     
@@ -85,7 +87,6 @@ public class FriendshipService {
         request.setStatus(FriendStatus.ACCEPTED);
         friendSocialRequestRepository.save(request);
         
-        // Here you can also add code to create a Friendship entity
     }
     
     public void declineRequest(SocialFriendRequest request) {
@@ -93,5 +94,4 @@ public class FriendshipService {
         friendSocialRequestRepository.delete(request);
     }
 
-    //... methods to add, remove friends, etc. ...
 }
