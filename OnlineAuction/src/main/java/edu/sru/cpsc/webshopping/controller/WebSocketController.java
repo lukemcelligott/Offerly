@@ -1,6 +1,8 @@
 package edu.sru.cpsc.webshopping.controller;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -35,6 +37,7 @@ public class WebSocketController {
         message.setContent(messageDto.getContent());
         message.setSender(currentUser);
         message.setReceiver(receiver);
+        message.setSentTimestamp(LocalDateTime.now());
         
         messageService.saveMessage(message);
         System.out.println("Duckies on lake");
@@ -46,7 +49,8 @@ public class WebSocketController {
         return new SocialMessageDTO(
             message.getContent(),
             toDTO(message.getSender()),
-            toDTO(message.getReceiver())
+            toDTO(message.getReceiver()),
+            message.getSentTimestamp()
         );
     }
 
@@ -59,11 +63,13 @@ public class WebSocketController {
         private String content;
         private UserDTO sender;
         private UserDTO receiver;
+        private LocalDateTime timestamp;
 
-        public SocialMessageDTO(String content, UserDTO sender, UserDTO receiver) {
+        public SocialMessageDTO(String content, UserDTO sender, UserDTO receiver, LocalDateTime timestamp){
             this.setContent(content);
             this.setSender(sender);
             this.setReceiver(receiver);
+            this.setTimestamp(timestamp);
         }
 
 		public String getContent() {
@@ -89,8 +95,14 @@ public class WebSocketController {
 		public void setReceiver(UserDTO receiver) {
 			this.receiver = receiver;
 		}
+		
+		 public LocalDateTime getTimestamp() {
+	            return timestamp;
+	        }
 
-		// ... getters and setters ...
+	        public void setTimestamp(LocalDateTime timestamp) {
+	            this.timestamp = timestamp;
+	        }
 
     }
 
@@ -119,8 +131,6 @@ public class WebSocketController {
 			this.username = username;
 		}
 
-		// ... getters and setters ...
-
     }
 
     public static class IncomingSocialMessageDTO {
@@ -139,7 +149,7 @@ public class WebSocketController {
 			this.receiverId = receiverId;
 		}
 
-		// ... getters and setters ...
-
     }
 }
+
+

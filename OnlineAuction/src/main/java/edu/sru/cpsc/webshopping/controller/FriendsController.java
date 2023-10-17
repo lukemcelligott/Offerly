@@ -128,8 +128,9 @@ public class FriendsController {
 
         List<Map<String, Object>> messagesList = messages.stream().map(msg -> {
             Map<String, Object> map = new HashMap<>();
-            map.put("sender", Map.of("username", msg.getSender().getUsername()));
             map.put("content", msg.getContent());
+            map.put("receiverId", currentUser.getId()); // Add the ID of the logged-in user as receiverId
+            map.put("sender", Map.of("id", msg.getSender().getId(), "username", msg.getSender().getUsername())); // Adjust sender to have id and username
             map.put("timestamp", msg.getSentTimestamp().toString()); // Convert LocalDateTime to string
             return map;
         }).collect(Collectors.toList());
@@ -138,11 +139,12 @@ public class FriendsController {
             "friendName", friend.getUsername(),
             "messages", messagesList
         );
-        
-    	System.out.println("Big Papa Pie");
+
+        System.out.println("Big Papa Pie");
 
         return ResponseEntity.ok(responseBody);
     }
+
 
     @PostMapping("/acceptRequest")
     public String acceptFriendRequest(@RequestParam("requestId") Long requestId) {
