@@ -9,10 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import edu.sru.cpsc.webshopping.domain.market.Auction;
+import edu.sru.cpsc.webshopping.domain.market.AutoBid;
 import edu.sru.cpsc.webshopping.domain.market.Bid;
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.repository.market.AuctionRepository;
+import edu.sru.cpsc.webshopping.repository.market.AutoBidRepository;
 import edu.sru.cpsc.webshopping.repository.market.BidRepository;
 
 @Service
@@ -23,6 +25,9 @@ public class AuctionService {
 
     @Autowired
     private BidRepository bidRepository;
+    
+    @Autowired
+    private AutoBidRepository autoBidRepository;
 
     /**
      * Creates or updates an auction with the provided details.
@@ -37,6 +42,19 @@ public class AuctionService {
     public Bid bid(Auction auction, User user, BigDecimal bidAmount) {
         Bid bid = new Bid(auction, user, bidAmount);
     	return bidRepository.save(bid);
+    }
+    
+    public AutoBid autoBid(Auction auction, User user, BigDecimal maxBid) {
+    	AutoBid autoBid = new AutoBid(maxBid, auction, user);
+    	return autoBidRepository.save(autoBid);
+    }
+    
+    public void removeAutoBid(long id) {
+    	autoBidRepository.deleteById(id);
+    }
+    
+    public List<AutoBid> getAutoBidsForListing(Auction auction) {
+    	return autoBidRepository.findByAuction(auction);
     }
     
     public Set<User> findUniqueBiddersForListing(MarketListing marketListing) {
