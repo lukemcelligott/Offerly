@@ -80,7 +80,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `category` WRITE;
 /*!40000 ALTER TABLE `category` DISABLE KEYS */;
-INSERT INTO `category` VALUES (1,'Animals & Pet Supplies',1,NULL),(5366,'Vehicles & Parts',1,NULL),(5367,'Vehicle Parts & Accessories',1,5366);
+INSERT INTO `category` VALUES (1,'Animals & Pet Supplies',1,NULL),(5367,'Vehicle Parts & Accessories',1,5366);
 /*!40000 ALTER TABLE `category` ENABLE KEYS */;
 UNLOCK TABLES;
 
