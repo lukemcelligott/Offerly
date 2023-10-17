@@ -195,6 +195,7 @@ public class UserDetailsController {
 			model.addAttribute("savedDetails", null);
 		else
 			model.addAttribute("savedDetails", payDetCont.getPaymentDetailsByUser(user));
+		model.addAttribute("savedShippingDetails", shippingController.getShippingDetailsByUser(user));
 		model.addAttribute("savedDirectDepositDetails", user.getDirectDepositDetails());
 		model.addAttribute("addNew", addNewPD);
 		model.addAttribute("updateId", updateIdPD);
@@ -233,6 +234,7 @@ public class UserDetailsController {
 			model.addAttribute("savedDetails", null);
 		else
 			model.addAttribute("savedDetails", payDetCont.getPaymentDetailsByUser(user));
+		model.addAttribute("savedShippingDetails", shippingController.getShippingDetailsByUser(user));
 		model.addAttribute("savedDirectDepositDetails", user.getDirectDepositDetails());
 		model.addAttribute("addNew", addNewPD);
 		model.addAttribute("updateId", updateIdPD);
@@ -271,10 +273,7 @@ public class UserDetailsController {
 			model.addAttribute("defaultShippingDetails", user.getDefaultShipping());
 		else
 			model.addAttribute("defaultShippingDetails", null);
-		if(user.getShippingDetails() != null && user.getShippingDetails().isEmpty())
-			model.addAttribute("savedShippingDetails", null);
-		else
-			model.addAttribute("savedShippingDetails", shippingController.getShippingDetailsByUser(user));
+		model.addAttribute("savedShippingDetails", shippingController.getShippingDetailsByUser(user));
 		model.addAttribute("savedDirectDepositDetails", user.getDirectDepositDetails());
 		model.addAttribute("addNew", addNewSA);
 		model.addAttribute("updateId", updateIdSA);
@@ -303,10 +302,8 @@ public class UserDetailsController {
 			model.addAttribute("defaultShippingDetails", user.getDefaultShipping());
 		else
 			model.addAttribute("defaultShippingDetails", null);
-		if(user.getShippingDetails() != null && user.getShippingDetails().isEmpty())
-			model.addAttribute("savedShippingDetails", null);
-		else
-			model.addAttribute("savedShippingDetails", shippingController.getShippingDetailsByUser(user));
+			
+		model.addAttribute("savedShippingDetails", shippingController.getShippingDetailsByUser(user));
 		model.addAttribute("savedDirectDepositDetails", user.getDirectDepositDetails());
 		model.addAttribute("addNew", addNewSA);
 		model.addAttribute("updateId", updateIdSA);
@@ -438,6 +435,7 @@ public class UserDetailsController {
 		DirectDepositDetails_Form details = new DirectDepositDetails_Form();
 		model.addAttribute("directDepositDetails", details);
 		model.addAttribute("user", user);
+		model.addAttribute("savedShippingDetails", shippingController.getShippingDetailsByUser(user));
 		selectedMenu = SUB_MENU.DEPOSIT_DETAILS;
 		model.addAttribute("selectedMenu", selectedMenu);
 		return "userDetails";
@@ -533,6 +531,7 @@ public class UserDetailsController {
 	 * @param details the filled out DirectDepositDetails from the page's form
 	 * @return 	a redirection string pointing to the userDetails page
 	 */
+	@Transactional
 	@RequestMapping(value = "/submitDepositDetailsAction", 
 			method = RequestMethod.POST, params="submit")
 	public String sendUpdateDD(
@@ -549,7 +548,8 @@ public class UserDetailsController {
 			return "userDetails";
 		}
 		DirectDepositDetails deposit = new DirectDepositDetails();
-		deposit.buildFromForm(details);
+		ShippingAddress billingAddress = shippingController.getShippingAddressEntry(details.getBillingAddress());
+		deposit.buildFromForm(details, billingAddress);
 		this.userController.updateDirectDepositDetails(deposit, principal);
 		return "redirect:/userDetails/initializePaymentDetails";
 	}
@@ -621,7 +621,9 @@ public class UserDetailsController {
 			return "/userDetails";
 		}
 		PaymentDetails payment = new PaymentDetails();
-		payment.buildFromForm(details);
+		//get billing adderss by id in form
+		ShippingAddress billingAddress = shippingController.getShippingAddressEntry(details.getBillingAddress());
+		payment.buildFromForm(details, billingAddress);
 		payment.setUser(user);
 		Set<PaymentDetails> PD = user.getPaymentDetails();
 		if(PD == null)
@@ -676,7 +678,8 @@ public class UserDetailsController {
 			return "/userDetails";
 		}
 		PaymentDetails payment = new PaymentDetails();
-		payment.buildFromForm(details);
+		ShippingAddress billingAddress = shippingController.getShippingAddressEntry(details.getBillingAddress());
+		payment.buildFromForm(details, billingAddress);
 		payDetCont.updatePaymentDetails(payment, currDetails);	
 		Set<PaymentDetails> pDetails = user.getPaymentDetails();
 		List<PaymentDetails> PD = new ArrayList<>(pDetails);
@@ -731,7 +734,12 @@ public class UserDetailsController {
 		{
 			System.out.println("detached");
 			entityManager.detach(user.getDefaultPaymentDetails());
-			user.setDefaultPaymentDetails(null);
+			List<PaymentDetails> PD = new ArrayList<>(user.getPaymentDetails());
+			PD.remove(currDetails);
+			if(PD.isEmpty())
+				user.setDefaultPaymentDetails(null);
+			else
+				user.setDefaultPaymentDetails(PD.get(0));
 			userRepository.save(user);
 		}
 		List<PaymentDetails> PD = new ArrayList<>(user.getPaymentDetails());

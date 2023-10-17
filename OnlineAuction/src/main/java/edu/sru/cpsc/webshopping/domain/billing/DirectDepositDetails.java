@@ -1,9 +1,11 @@
 package edu.sru.cpsc.webshopping.domain.billing;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 
 import org.springframework.lang.NonNull;
 
@@ -29,6 +31,10 @@ public class DirectDepositDetails {
 
 	@NonNull
 	private String bankName;
+
+	@NonNull
+	@OneToOne (cascade = CascadeType.ALL)
+	private ShippingAddress billingAddress;
 	
 	public long getId() {
 		return id;
@@ -70,6 +76,14 @@ public class DirectDepositDetails {
 		this.bankName = bankName;
 	}
 
+	public ShippingAddress getBillingAddress() {
+		return billingAddress;
+	}
+
+	public void setBillingAddress(ShippingAddress billingAddress) {
+		this.billingAddress = billingAddress;
+	}
+
 	// Sets the non-id fields of the calling DirectDepositDetails to 
 	// match that of the passed DirectDepositDetails
 	public void transferFields(DirectDepositDetails other) {
@@ -77,13 +91,15 @@ public class DirectDepositDetails {
 		this.routingNumber = other.routingNumber;
 		this.accountNumber = other.accountNumber;
 		this.bankName = other.bankName;
+		this.billingAddress = other.billingAddress;
 	}
 
-	public void buildFromForm(DirectDepositDetails_Form other) {
+	public void buildFromForm(DirectDepositDetails_Form other, ShippingAddress billingAddress) {
 		this.accountholderName = other.getAccountholderName();
 		this.routingNumber = other.getRoutingNumber();
 		this.accountNumber = other.getAccountNumber();
 		this.bankName = other.getBankName();
+		this.billingAddress = billingAddress;
 	}
 	
 }

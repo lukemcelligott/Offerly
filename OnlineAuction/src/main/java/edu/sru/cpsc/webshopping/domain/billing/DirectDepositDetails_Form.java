@@ -20,6 +20,8 @@ public class DirectDepositDetails_Form {
 	@Size(min = 1, message = "The Bank Name must be at least 1 character.")
 	private String bankName;
 
+	private long billingAddress;
+
 	public String getAccountholderName() {
 		return accountholderName;
 	}
@@ -50,5 +52,13 @@ public class DirectDepositDetails_Form {
 
 	public void setBankName(String bankName) {
 		this.bankName = bankName;
+	}
+
+	public long getBillingAddress() {
+		return billingAddress;
+	}
+
+	public void setBillingAddress(long billingAddress) {
+		this.billingAddress = billingAddress;
 	}
 }

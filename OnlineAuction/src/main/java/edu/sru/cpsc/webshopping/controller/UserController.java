@@ -165,8 +165,8 @@ public class UserController {
 		details.setLast4Digits(details.getLast4Digits());
 		details.setCardType(details.getCardType());
 		details.setExpirationDate(passwordEncoder.encode(details.getExpirationDate()));
-		details.setPostalCode(passwordEncoder.encode(details.getPostalCode()));
 		details.setSecurityCode(passwordEncoder.encode(details.getSecurityCode()));
+		details.setBillingAddress(details.getBillingAddress());
 		// No assigned details - add to user
 		if (user.getPaymentDetails() == null) {
 			entityManager.persist(details);

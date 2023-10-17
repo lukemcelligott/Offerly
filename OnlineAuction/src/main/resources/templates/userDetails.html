@@ -225,7 +225,7 @@
 				<!-- Payment details submenu -->
 				<form method="post" action="#" th:if="${selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).PAYMENT_DETAILS}"
 					th:action="@{/submitPaymentDetailsAction}" th:object="${paymentDetails}">
-					<div class="card" th:if="${savedDetails != null and addNew == false and relogin == false}">
+					<div class="card" th:if="${addNew == false and relogin == false}">
 						<!-- Default Card Details -->
 						<div th:if="${defaultPaymentDetails} != null" class="mb-3 mx-3 mt-4">
 							<h3><strong>Default Card:</strong></h3>
@@ -282,21 +282,6 @@
 								</div>
 							</div>
 							<h3 class="d-flex"><a class="btn btn-success" th:href="@{/addNewCard}">+</a></h3>
-							<!-- <div th:each="payment : ${savedDetails}">
-								<h4 th:if="${payment.id} != ${defaultPaymentDetails.id}">
-									<img th:src="@{/images/cardTypes/{image}.png(image = ${payment.cardType.toLowerCase()})}" alt="Card Type Image" style="width: 30px; height: 20px;">
-									<span th:text="${payment.cardType}"></span>
-									<span><small> ending in **** **** **** <span th:text="${payment.last4Digits}"></span></small></span>
-									<a class="btn btn-sm btn-outline-primary" th:href="@{/makeDefaultPaymentDetails/{id}(id = ${payment.id})}">Set as Default</a>
-									<a class="btn btn-sm btn-outline-secondary" th:href="@{/updatePaymentDetails/{id}(id = ${payment.id})}">
-										<i class="fa fa-gear"></i>
-									</a>
-									<a class="btn btn-sm btn-outline-danger" th:href="@{/deleteExistingPaymentDetails/{id}(id = ${payment.id})}">
-										<i class="fa fa-trash"></i>
-									</a>
-								</h4>
-							</div>
-							<h3 class="d-flex"><a class="btn btn-success" th:href="@{/addNewCard}">+</a></h3> -->
 						</div>
 						
 
@@ -382,9 +367,15 @@
 										<!-- Security Code -->
 										<input type="tel" class="form-control" id="securityCode" field="*{securityCode}" placeholder="CVV" name="securityCode" maxlength="4"></input>
 										<p th:text="${securityCodeErr}" th:if="${securityCodeErr != null}"></p>
-										<!-- Postal Code -->
-										<input type="tel" class="form-control" id="postalCode" field="*{postalCode}" placeholder="Postal Code" name="postalCode" maxlength="5"></input>
-										<p th:text="${postalCodeErr}" th:if="${postalCodeErr != null}"></p>
+									</div>
+
+									<!-- Select Saved Shipping Address -->
+									<div class="input-group mb-3">
+										<label for="billingAddress" class="input-group-text">Billing Address:</label>
+										<select class="form-select" id="billingAddress" name="billingAddress">
+											<option value="">-- Saved Addresses: --</option>
+											<option th:each="address : ${savedShippingDetails}" th:value="${address.id}" th:text="${address.streetAddress + ', ' + address.city + ', ' + address.state.stateName + ' ' + address.postalCode}"></option>
+										</select>
 									</div>
 									
 								</div>
@@ -496,6 +487,17 @@
 											<tr>
 												<td colspan="2"><input class="form-control" type="text" th:field="*{bankName}"></input>
 												<p th:if="${#fields.hasErrors('bankName')}" th:errors="*{bankName}"></p></td>
+											</tr>
+											<tr>
+												<td style="background-color: #89CFF0" colspan="2"><label class="form-label" for="ddBillingAddress">Billing Address</label></td>
+											</tr>
+											<tr>
+												<td colspan="2">
+													<select class="form-select" id="ddBillingAddress" name="billingAddress">
+														<option value="">-- Saved Addresses: --</option>
+														<option th:each="address : ${savedShippingDetails}" th:value="${address.id}" th:text="${address.streetAddress + ', ' + address.city + ', ' + address.state.stateName + ' ' + address.postalCode}"></option>
+													</select>
+												</td>
 											</tr>
 											<!-- <button type="button" class="btn btn-lg btn-danger" disabled
 													th:if="${currUser.directDepositDetails == null}">No Deposit Details Added</button></div> -->
