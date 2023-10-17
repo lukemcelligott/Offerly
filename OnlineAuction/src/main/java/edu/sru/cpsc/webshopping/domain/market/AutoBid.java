@@ -34,6 +34,10 @@ public class AutoBid {
     	this.bidder = bidder;
     }
     
+    public long getId() {
+    	return this.id;
+    }
+    
     public void setMaxBid(BigDecimal maxBid) {
     	this.maxBid = maxBid;
     }

@@ -49,6 +49,10 @@ public class AuctionService {
     	return autoBidRepository.save(autoBid);
     }
     
+    public void removeAutoBid(long id) {
+    	autoBidRepository.deleteById(id);
+    }
+    
     public List<AutoBid> getAutoBidsForListing(Auction auction) {
     	return autoBidRepository.findByAuction(auction);
     }

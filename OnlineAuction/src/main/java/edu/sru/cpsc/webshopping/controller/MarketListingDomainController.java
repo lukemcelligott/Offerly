@@ -445,30 +445,44 @@ public class MarketListingDomainController {
 	    	}
 	    }
 	    
-	    // If a manual bid was placed, look for auto bids
-	    if (!manualBid) {
-	        while (autobids.size() > 1) {   
-	            for (AutoBid bidEntry : autobids) { // iterate through list of auto bidders
-	            	if(autobids != null && !autobids.isEmpty()) { // ensure there are people auto bidding
-	            		// auction variables
-		                BigDecimal userMaxPrice = bidEntry.getMaxBid();
-		                Auction autoAuction = listing.getAuction();
-		                BigDecimal autoCurrentPrice = autoAuction.getCurrentBid();
-		                BigDecimal autoIncrement = calculateIncrement(autoCurrentPrice);
-		                BigDecimal potentialBid = autoCurrentPrice.add(autoIncrement);
-		                
-		                if (userMaxPrice.compareTo(currentBidPrice) > 0 && userMaxPrice.compareTo(potentialBid) >= 0) { // make sure the potential bid is under the user's max price
-		                	// place a bid
-		                    auctionService.bid(auction, bidEntry.getBidder(), autoIncrement);
-		                    autoAuction.setCurrentBid(potentialBid);
-		                    marketRepository.save(listing);
-		                } else {
-		                    autobids.remove(bidEntry); // remove user info from auto bidding if over price limit
-		                }
-	            	}
-	            }
-	        }
-	    }       
+	    // If an auto bid was placed, make the higher auto bidder raise the bid to the lower auto bid price	    
+	    if (!manualBid) {	        
+	    	if(autobids.size() >= 2) {
+	    		// initialize info on the bidder with the higher price
+	    		User highestAutoBidder = null;
+		        BigDecimal higherAutoBid = autobids.get(0).getMaxBid();
+		        long highBidderId = -1;
+		        
+		        // initialize info on the bidder with the lower price
+		        User lowestAutoBidder = null;
+		        BigDecimal lowerAutoBid = BigDecimal.valueOf(Double.MAX_VALUE);
+		        long lowBidderId = -1;
+		        
+		        for (AutoBid bidEntry : autobids) { // loop through the auto bids
+		        	if (bidEntry.getMaxBid().compareTo(higherAutoBid) > 0) { // check if the value is higher than the current highest bid
+		        		// populate data
+		        		higherAutoBid = bidEntry.getMaxBid();
+		        		highestAutoBidder = bidEntry.getBidder();
+		        		highBidderId = bidEntry.getId();
+		        	}
+		        	if (bidEntry.getMaxBid().compareTo(lowerAutoBid) < 0 && !bidEntry.getBidder().equals(highestAutoBidder)) { // check if the value is higher than the current lowest bid
+		        		// populate data
+		        		lowerAutoBid = bidEntry.getMaxBid();
+		        		lowestAutoBidder = bidEntry.getBidder();
+		        		lowBidderId = bidEntry.getId();
+		        	}
+		        }
+		        
+		        BigDecimal autoIncrement = calculateIncrement(lowerAutoBid); // set up bid increment
+		        BigDecimal newBid = autoIncrement.add(lowerAutoBid); // add bid increment to the lower bid ceiling
+		        
+		        auctionService.bid(auction, highestAutoBidder, newBid); // bid on the product
+		        auction.setCurrentBid(newBid); // update the bid price
+		        marketRepository.save(listing); // save the listing
+		        
+		        auctionService.removeAutoBid(lowBidderId); // remove the lower bidder from the table
+	    	}
+	    }   
 	}
 	
 	@GetMapping("/uniqueBiddersCount/{id}")
