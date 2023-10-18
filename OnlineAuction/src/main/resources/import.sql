@@ -192,7 +192,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `pickup_address` WRITE;
 /*!40000 ALTER TABLE `pickup_address` DISABLE KEYS */;
-INSERT INTO `pickup_address` VALUES (5612,'slippery Rock','','16057','104 Maltby Avenue','Pennsylvania'),(5631,'','','','','Alabama'),(5648,'slippery Rock','','16057','104 Maltby Avenue','Pennsylvania'),(5660,'','','','','Alabama'),(5684,'slippery Rock','','16057','104 Maltby Avenue','Pennsylvania');
+INSERT INTO `pickup_address` VALUES (5612,'Slippery Rock','','16057','104 Maltby Avenue','Pennsylvania'),(5631,'','','','','Alabama'),(5648,'Slippery Rock','','16057','104 Maltby Avenue','Pennsylvania'),(5660,'Slippery Rock','','','','Alabama'),(5684,'Slippery Rock','','16057','104 Maltby Avenue','Pennsylvania');
 /*!40000 ALTER TABLE `pickup_address` ENABLE KEYS */;
 UNLOCK TABLES;
 

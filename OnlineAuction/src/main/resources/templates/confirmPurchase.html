@@ -269,13 +269,26 @@
 									<label class="form-label"><strong>Select a different payment method:</strong></label>
 									<div th:each="payment : ${allDetails}">
 										<div class="form-check">
-											<input class="form-check-input" type="radio" name="savedPayment" th:value="${payment.id}" th:id="${'payment-' + payment.id}" th:checked="${payment.id == selectedPayment.id ? 'checked' : ''}">
+											<input class="form-check-input" type="radio" name="savedPayment" th:value="${payment.id}" th:id="${'payment-' + payment.id}" th:checked="${payment.id == selectedPayment.id ? 'checked' : ''}" onclick="updateSelectedPaymentType('card')">
 											<label class="form-check-label" th:for="${'payment-' + payment.id}">
 												<img th:src="@{/images/cardTypes/{image}.png(image = ${payment.cardType.toLowerCase()})}" alt="Card Type Image" style="width: 30px; height: 20px;">
 												**** **** **** <span th:text="${payment.last4Digits}"></span>
 											</label>
 										</div>
 									</div>
+									<!--Direct Deposit-->
+									<div class="form-check" th:if="${directDeposit != null}">
+										<input class="form-check-input" type="radio" name="savedPayment" th:value="${directDeposit.id}" th:id="${'directDeposit-' + directDeposit.id}" onclick="updateSelectedPaymentType('directDeposit')">
+										<label class="form-check-label" th:for="${'directDeposit-' + directDeposit.id}">
+											<img th:src="@{/images/cardTypes/bank.png}" alt="Card Type Image" style="width: 30px; height: 20px;">
+											<span th:text="${directDeposit.bankName}"></span>
+										</label>
+									</div>
+									<script>
+										function updateSelectedPaymentType(paymentType) {
+											document.getElementById("selectedPaymentType").value = paymentType;
+										}
+									</script>
 								</div>
 
 								<!-- Add New Payment Option -->
@@ -337,6 +350,7 @@
 							<input type="hidden" name="deliveryOption" th:value="${deliveryOption}">
 							<input type="hidden" name="selectedPaymentId" th:value="${selectedPayment.id}">
 							<input type="hidden" name="selectedAddressId" th:value="${selectedAddress.id}">
+							<input type="hidden" name="selectedPaymentType" id="selectedPaymentType" value="card">
 							<!-- Totals Table -->
 							<table class="table table-bordered mb-4">
 								<tbody>

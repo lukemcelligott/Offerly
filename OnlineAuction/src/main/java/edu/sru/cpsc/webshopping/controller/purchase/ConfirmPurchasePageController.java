@@ -46,6 +46,7 @@ import edu.sru.cpsc.webshopping.domain.market.Shipping;
 import edu.sru.cpsc.webshopping.domain.market.Transaction;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.repository.billing.PaymentDetailsRepository;
+import edu.sru.cpsc.webshopping.service.PaymentService;
 import edu.sru.cpsc.webshopping.service.UserService;
 
 /**
@@ -68,6 +69,8 @@ public class ConfirmPurchasePageController {
 	private StateDetailsController stateDetailsController;
 	@Autowired
 	private ShippingAddressDomainController shippingAddressController;
+	@Autowired
+	private PaymentService paymentService;
 	
 	@Lazy
 	private PurchaseShippingAddressPageController shippingController;
@@ -192,6 +195,12 @@ public class ConfirmPurchasePageController {
 			model.addAttribute("allDetails", null);
 		else
 			model.addAttribute("allDetails", payDetController.getPaymentDetailsByUser(user));
+		if ((user.getDirectDepositDetails() != null)) {
+			model.addAttribute("directDeposit", user.getDirectDepositDetails());
+		}
+		else {
+			model.addAttribute("directDeposit", null);
+		}
 		model.addAttribute("existingSecurityCode", new String());
 		return "confirmPurchase";
 	}
@@ -647,12 +656,25 @@ public class ConfirmPurchasePageController {
 	 */
 	@Transactional
 	@RequestMapping(value = "/attemptPurchase")
-	public String attemptPurchase(@RequestParam("deliveryOption") String deliveryOption, @RequestParam("selectedPaymentId") Long selectedPaymentId, @RequestParam("selectedAddressId") Long selectedAddressId, Model model, Principal principal) {
+	public String attemptPurchase(@RequestParam("deliveryOption") String deliveryOption, @RequestParam("selectedPaymentId") Long selectedPaymentId, @RequestParam("selectedPaymentType") String selectedPaymentType, @RequestParam("selectedAddressId") Long selectedAddressId, Model model, Principal principal) {
 		User user = userService.getUserByUsername(principal.getName());
 		ShippingAddress selectedAddress = shippingAddressController.getShippingAddressEntry(selectedAddressId);
-		PaymentDetails selectedPayment = payDetController.getPaymentDetail(selectedPaymentId, model);
+		PaymentDetails selectedPayment;
+		DirectDepositDetails selectedDirectDeposit;
+		Boolean payFlag = true;
+		if ("card".equals(selectedPaymentType)) {
+			selectedPayment = payDetController.getPaymentDetail(selectedPaymentId, model);
+			if(selectedPayment == null)
+				payFlag = false;
+			purchase.setPaymentDetails(selectedPayment);
+		} else if ("directDeposit".equals(selectedPaymentType)) {
+			selectedDirectDeposit = paymentService.getDirectDepositDetails(selectedPaymentId);
+			if(selectedDirectDeposit == null)
+				payFlag = false;
+			purchase.setDepositDetails(selectedDirectDeposit);
+		}
 
-		if (selectedAddress != null && selectedPayment != null) {
+		if (selectedAddress != null && payFlag) {
 			// Update market listing to reflect purchase
 			marketListingController.marketListingPurchaseUpdate(prevListing, purchase.getQtyBought());
 			// Creates an unfinished shipping label, to be filled out later by the seller
@@ -667,8 +689,6 @@ public class ConfirmPurchasePageController {
 				purchase.setLocalPickup(purchase.getMarketListing().getLocalPickup());
 				purchase.setLocalPickup(true);
 			}
-			
-			purchase.setPaymentDetails(selectedPayment);
 
 			transController.addTransaction(purchase);
 			return "redirect:/homePage";
@@ -683,27 +703,8 @@ public class ConfirmPurchasePageController {
 
 			if (address == null)
 				model.addAttribute("noAddress", "Please enter a shipping address");
-			model.addAttribute("purchase", purchase);
-			model.addAttribute("marketListing", prevListing);
-			model.addAttribute("widget", prevListing.getWidgetSold());
-			model.addAttribute("paymentDetails", details);
-			model.addAttribute("paypal", paypal);
-			model.addAttribute("selectedPayment", validatedDetails);
-			model.addAttribute("toShipping", toShipping);
-			model.addAttribute("useThis", true);
-			model.addAttribute("depositPicked", depositPicked);
-			model.addAttribute("allSelected", allSelected);
-			model.addAttribute("cardTypes", cardController.getAllCardTypes());
-			model.addAttribute("user", user);
-			model.addAttribute("relogin", relogin);
-			model.addAttribute("loginEr", loginEr);
-			model.addAttribute("defaultDetails", user.getDefaultPaymentDetails());
-			if (user.getPaymentDetails() != null && user.getPaymentDetails().isEmpty())
-				model.addAttribute("allDetails", null);
-			else
-				model.addAttribute("allDetails", payDetController.getPaymentDetailsByUser(user));
-			model.addAttribute("existingSecurityCode", new String());
-			return "confirmPurchase";
+			
+			return this.initializePurchasePage(purchase.getMarketListing(), purchase, model, principal);
 		}
 	}
 	
