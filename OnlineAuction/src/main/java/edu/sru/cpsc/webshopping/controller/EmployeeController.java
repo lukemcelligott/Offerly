@@ -996,26 +996,21 @@ public class EmployeeController {
     return "employee";
   }
 
+  /*
+   * method for admins to modify user account
+   * params  account information
+   */
   @RequestMapping({"/editUser"})
-  public String editUser(
-      @RequestParam("id") Long id,
-      @RequestParam("userName") String userName,
-      @RequestParam("password") String password,
-      @RequestParam("passwordConf") String passwordConf,
-      @RequestParam("email") String email,
-      @RequestParam("fName") String fName,
-      @RequestParam("lName") String lName,
-      @RequestParam("phoneNumber") String phoneNumber,
-      @RequestParam("cc") String cc,
-      @RequestParam("role") String role,
-      @RequestParam("emailVerification") String emailVerification,
-      @RequestParam("dispName") String dispName,
-      @RequestParam("userDesc") String userDesc,
-      @RequestParam("creationDate") String creationDate,
-      Model model, Principal principal) {
-    setMasterPage("result");
+  public String editUser(@RequestParam("id") Long id, @RequestParam("userName") String userName, @RequestParam("password") String password,
+	  @RequestParam("passwordConf") String passwordConf, @RequestParam("email") String email, @RequestParam("fName") String fName,
+      @RequestParam("lName") String lName, @RequestParam("phoneNumber") String phoneNumber, @RequestParam("cc") String cc, @RequestParam("role") String role,
+      @RequestParam("emailVerification") String emailVerification, @RequestParam("dispName") String dispName, @RequestParam("userDesc") String userDesc,
+      @RequestParam("creationDate") String creationDate, @RequestParam("status") String status, Model model, Principal principal) {
+	setMasterPage("result");
     model.addAttribute("masterPage", getMasterPage());
     User user = userService.getUserByUsername(principal.getName());
+        
+    // check for admin account
     if (user.getRole().equals("ROLE_ADMIN")
         || user.getRole().equals("ROLE_CUSTOMERSERVICE")
         || user.getRole().equals("ROLE_TECHNICALSERVICE")
@@ -1029,11 +1024,20 @@ public class EmployeeController {
       return "employee";
     }
 
-    User editUser = userController.getUser(id, model);
+    User editUser = userController.getUser(id, model); // user account to be modified
+    
+    // sets status to true or false to correlate to enabled or disabled
+    boolean acctStatus = status.equals("enabled");
 
+    // make changes to the account based on parameters
     editUser.setUsername(userName);
-    editUser.setPassword(password);
-    editUser.setPasswordconf(passwordConf);
+    // only change the password if the admin entered a new password
+    if(password != null && !password.isEmpty()) {
+    	editUser.setPassword(password);
+    }
+    if(passwordConf != "" || passwordConf != null) {
+    	editUser.setPasswordconf(passwordConf);
+    }
     editUser.setEmail(email);
     editUser.setFirstName(fName);
     editUser.setLastName(lName);
@@ -1044,6 +1048,10 @@ public class EmployeeController {
     editUser.setDisplayName(dispName);
     editUser.setUserDescription(userDesc);
     editUser.setCreationDate(creationDate);
+    editUser.setEnabled(acctStatus); // lock or unlock account
+    System.out.println("after: " + editUser.getEnabled());
+    
+    // error handling
     List<String> errorString = new ArrayList<>();
     if (userName.length() < 6 || userName.length() > 30) {
       errorString.add(" Enter username between 6-30 characters ");
@@ -1063,6 +1071,7 @@ public class EmployeeController {
     if (passwordConf.length() < 6 || passwordConf.length() > 200) {
       errorString.add(" Enter a password confirmation between 6-200 characters ");
     }
+    
     try {
       userController.editUser(editUser);
       setPage3("editSuccess");
@@ -1071,13 +1080,16 @@ public class EmployeeController {
       model.addAttribute("error", errorString);
       setPage3("editFail");
     } finally {
-
       getAllUsers().clear();
       Iterable<User> allUsersIterator = userController.getAllUsers();
 
       allUsersIterator.iterator().forEachRemaining(u -> getAllUsers().add(u));
       User useradd = new User();
       setSearchedUser(editUser);
+      
+      //userRepository.save(editUser); // trying to fix error once account is enabled again but cannot login
+      
+      // add attributes
       model.addAttribute("users", getAllUsers());
       model.addAttribute("searchedUser", getSearchedUser());
       model.addAttribute("roleList", roleList);
@@ -1087,8 +1099,19 @@ public class EmployeeController {
       model.addAttribute("page2", page2);
       model.addAttribute("page3", getPage3());
       model.addAttribute("myusers", getMyUserSearch());
+      //model.addAttribute(isEnabled);
+      //model.addAttribute(isDisabled);
+      //System.out.println("Final model addition: " + isEnabled);
     }
+    
     return "employee";
+  }
+  
+  @RequestMapping({"/disableUser"})
+  public void disableUser (@RequestParam("id") Long id, Model model){
+	  User editUser = userController.getUser(id, model);
+	  
+	  editUser.setEnabled(false);
   }
 
   @RequestMapping({"/editWidgetHere"})
