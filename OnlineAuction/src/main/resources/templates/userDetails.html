@@ -324,6 +324,16 @@
 									<b>Payment Method</b>
 								</div>
 								<div class="card-body">
+									<!-- Select Saved Shipping Address -->
+									<div class="input-group mb-3">
+										<label for="billingAddress" class="input-group-text">Billing Address:</label>
+										<select class="form-select" id="billingAddress" name="billingAddress">
+											<option value="">-- Saved Addresses: --</option>
+											<option th:each="address : ${savedShippingDetails}" th:value="${address.id}" th:text="${address.streetAddress + ', ' + address.city + ', ' + address.state.stateName + ' ' + address.postalCode}"></option>
+										</select>
+										<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#billingAddressModal">Add a New Billing Address</button>
+									</div>
+
 									<div class="input-group mb-3">
 										<!-- Card Type -->
 										<select class="form-select" id="cardType" name="cardType">
@@ -368,16 +378,6 @@
 										<input type="tel" class="form-control" id="securityCode" field="*{securityCode}" placeholder="CVV" name="securityCode" maxlength="4"></input>
 										<p th:text="${securityCodeErr}" th:if="${securityCodeErr != null}"></p>
 									</div>
-
-									<!-- Select Saved Shipping Address -->
-									<div class="input-group mb-3">
-										<label for="billingAddress" class="input-group-text">Billing Address:</label>
-										<select class="form-select" id="billingAddress" name="billingAddress">
-											<option value="">-- Saved Addresses: --</option>
-											<option th:each="address : ${savedShippingDetails}" th:value="${address.id}" th:text="${address.streetAddress + ', ' + address.city + ', ' + address.state.stateName + ' ' + address.postalCode}"></option>
-										</select>
-									</div>
-									
 								</div>
 								<!-- buttons -->
 								<div class="d-flex justify-content-center mb-3">
@@ -449,67 +449,51 @@
 				</form>-->
 					
 				<!-- Deposit details submenu -->
-				<form method="post" action="#" th:if="${selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).DEPOSIT_DETAILS}"
-					th:action="@{/submitDepositDetailsAction}" th:object="${directDepositDetails}">
-						<div class="d-flex flex-column justify-content-center">
-								<div class="card-body d-flex flex-column">
-									<table style="width:20vw; justify-content:center; margin-left:auto; margin-right:auto;" class="uniTableForm">
-										<thead>
-											<tr>
-												<td colspan="2" style="background-color: #D3D3D3;"><h2>Update Direct Deposit Details</h2></td>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<td style="background-color: #89CFF0" colspan="2"><label style="background-color: #89CFF0" class="form-label" for="accountholderName">Account holder Name</label></td>
-											</tr>
-											<tr>
-												<td colspan="2"><input class="form-control" type="text" th:field="*{accountholderName}"></input>
-													<p th:if="${#fields.hasErrors('accountholderName')}" th:errors="*{accountholderName}"></p></td>
-											</tr>
-											<tr>
-												<td style="background-color: #89CFF0" colspan="2"><label class="form-label" for="routingNumber">Routing Number</label></td>
-											</tr>
-											<tr>
-												<td colspan="2"><input class="form-control" type="number" th:field="*{routingNumber}"></input>
-												<p th:if="${#fields.hasErrors('routingNumber')}" th:errors="*{routingNumber}"></p></td>
-											</tr>
-											<tr>
-												<td style="background-color: #89CFF0" colspan="2"><label class="form-label" for="accountNumber">Account Number</label></td>
-											</tr>
-											<tr>
-												<td colspan="2"><input class="form-control" type="number" th:field="*{accountNumber}"></input>
-												<p th:if="${#fields.hasErrors('accountNumber')}" th:errors="*{accountNumber}"></p></td>
-											</tr>
-											<tr>
-												<td style="background-color: #89CFF0" colspan="2"><label class="form-label" for="bankName">Bank Name</label></td>
-											</tr>
-											<tr>
-												<td colspan="2"><input class="form-control" type="text" th:field="*{bankName}"></input>
-												<p th:if="${#fields.hasErrors('bankName')}" th:errors="*{bankName}"></p></td>
-											</tr>
-											<tr>
-												<td style="background-color: #89CFF0" colspan="2"><label class="form-label" for="ddBillingAddress">Billing Address</label></td>
-											</tr>
-											<tr>
-												<td colspan="2">
-													<select class="form-select" id="ddBillingAddress" name="billingAddress">
-														<option value="">-- Saved Addresses: --</option>
-														<option th:each="address : ${savedShippingDetails}" th:value="${address.id}" th:text="${address.streetAddress + ', ' + address.city + ', ' + address.state.stateName + ' ' + address.postalCode}"></option>
-													</select>
-												</td>
-											</tr>
-											<!-- <button type="button" class="btn btn-lg btn-danger" disabled
-													th:if="${currUser.directDepositDetails == null}">No Deposit Details Added</button></div> -->
-										</tbody>
-									</table>
-									<div style="margin-top:5px;" class="d-flex justify-content-center mb-3">
-										<a class="btn btn-lg btn-danger" th:href="@{/goBackToMainPD}">Back</a>
-										<button type="submit" name="submit" class="btn btn-lg btn-success" style="margin-left:50px; float: right">Update</button>
-									</div>
-								</div>
+				<form method="post" action="#" th:if="${selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).DEPOSIT_DETAILS}" th:action="@{/submitDepositDetailsAction}" th:object="${directDepositDetails}">
+					<div class="row">
+						<div class="col-md-6 mb-3">
+							<label for="ddBillingAddress" class="input-group-text">Billing Address:</label>
+							<select class="form-select" id="ddBillingAddress" name="billingAddress">
+							<option value="">-- Saved Addresses: --</option>
+							<option th:each="address : ${savedShippingDetails}" th:value="${address.id}" th:text="${address.streetAddress + ', ' + address.city + ', ' + address.state.stateName + ' ' + address.postalCode}"></option>
+							</select>
 						</div>
-						
+						<div class="col-md-6 mb-3">
+							<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#billingAddressModal">Add a New Billing Address</button>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6 mb-3">
+							<!-- Account holder Name -->
+							<label class="form-label" for="accountholderName">Account holder Name</label>
+							<input class="form-control" type="text" th:field="*{accountholderName}">
+							<p th:if="${#fields.hasErrors('accountholderName')}" th:errors="*{accountholderName}"></p>
+						</div>
+						<div class="col-md-6 mb-3">
+							<!-- Routing Number -->
+							<label class="form-label" for="routingNumber">Routing Number</label>
+							<input class="form-control" type="number" th:field="*{routingNumber}">
+							<p th:if="${#fields.hasErrors('routingNumber')}" th:errors="*{routingNumber}"></p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6 mb-3">
+							<!-- Account Number -->
+							<label class="form-label" for="accountNumber">Account Number</label>
+							<input class="form-control" type="number" th:field="*{accountNumber}">
+							<p th:if="${#fields.hasErrors('accountNumber')}" th:errors="*{accountNumber}"></p>
+						</div>
+						<div class="col-md-6 mb-3">
+							<!-- Bank Name -->
+							<label class="form-label" for="bankName">Bank Name</label>
+							<input class="form-control" type="text" th:field="*{bankName}">
+							<p th:if="${#fields.hasErrors('bankName')}" th:errors="*{bankName}"></p>
+						</div>
+					</div>
+					<div class="d-flex justify-content-center mb-3">
+						<a class="btn btn-lg btn-danger" th:href="@{/goBackToMainPD}">Back</a>
+						<button type="submit" name="submit" class="btn btn-lg btn-success" style="margin-left:50px;">Update</button>
+					</div>
 				</form>
 				
 				<!-- Shipping Details Submenu -->
@@ -645,5 +629,58 @@
 				</form>
 			</div>
 		</div>
+
+	<!--Billing Address Modal-->
+	<div class="modal fade" id="billingAddressModal" tabindex="-1" aria-labelledby="billingAddressModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="billingAddressModalLabel">Billing Address</h5>
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<form method="post" action="#" th:action="@{/addBillingAddress}" object="${billingAddress}" class="py-3">
+					<input type="hidden" name="userId" th:value="${user.id}">
+					<!--Pass the selectedMenu object-->
+					<input type="hidden" name="selectedMenu" th:value="${selectedMenu}">
+					<div class="row">
+						<div class="col-md-6 mb-3">
+							<input type="text" field="*{recipient}" name="recipient" class="form-control" placeholder="Recipient"></input>
+							<p th:if="${recipientErr != null}" th:text="${recipientErr}"></p>
+						</div>
+						<div class="col-md-6 mb-3">
+							<input type="text" field="*{streetAddress}" name="streetAddress" class="form-control" placeholder="Street Address"></input>
+							<p th:if="${streetAddressErr != null}" th:text="${streetAddressErr}"></p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6 mb-3">
+							<input type="text" field="*{extraLocationInfo}" name="extraLocationInfo" class="form-control" placeholder="Apt, suite, unit, building, etc. (optional)"></input>
+						</div>
+						<div class="col-md-6 mb-3">
+							<input type="text" field="*{city}" name="city" class="form-control" placeholder="City"></input>
+							<p th:if="${cityErr != null}" th:text="${cityErr}"></p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6 mb-3">
+							<select class="form-select" id="stateId" name="stateId">
+								<option th:each="state : ${states}" th:value="${state.stateName}" th:text="${state.stateName}"></option>
+							</select>
+							<p th:if="${stateIdErr}" th:text="${stateId}"></p>
+						</div>
+						<div class="col-md-6 mb-3">
+							<input type="tel" field="*{postalCode}" name="postalCode" class="form-control" maxlength="5" placeholder="Postal Code"></input>
+							<p th:if="${postalCodeErr != null}" th:text="${postalCodeErr}"></p>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="submit" name="submit" class="btn btn-success" id="confirmBillingAddressButton">Submit</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 	</body>
 </html> 

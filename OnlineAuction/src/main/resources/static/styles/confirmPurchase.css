@@ -110,3 +110,7 @@ label {
 	font-size: 1.5em;
 }
 
+#shippingModal{
+	z-index: 2000 !important;
+}
+
