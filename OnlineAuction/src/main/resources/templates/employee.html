@@ -370,6 +370,7 @@
 	            	<h1>Employee Creation Failed</h1>
 	            </div>
 	          
+	            <!-- adding a user page 
 		        <div th:case="create">
 		            <form th:action="@{/createEmployee}" th:object="${useradd}" method="post">
 		              	<div class ="card h-100 w-100">
@@ -454,57 +455,156 @@
 							</div>              
 		              	</div>
 		        	</th:block>
-		        </div>
+		        </div>-->
+		        <div th:case="create">
+				    <form th:action="@{/createEmployee}" th:object="${useradd}" method="post" class="container">
+				        <div class="card my-4 mx-4">
+				            <div class="card-body" style="padding-top: 24px;">
+				                <div class="card" style="width: fit-content; height: fit-content; margin: 0 auto;">
+				                    <table class="table table-bordered">
+				                        <thead>
+				                            <tr>
+				                                <td colspan="2" class="bg-light text-center"><h4>Add User</h4></td>
+				                            </tr>
+				                        </thead>
+				                        <tbody>
+				                            <tr>
+				                                <td class="bg-light"><label for="userName">Username:</label></td>
+				                                <td><input type="text" th:field="*{username}" id="username" class="form-control" placeholder="Enter username"></td>
+				                            </tr>
+				                            <tr>
+				                                <td class="bg-light"><label for="password">Password:</label></td>
+				                                <td><input type="text" th:field="*{password}" id="password" class="form-control" placeholder="Enter password"></td>
+				                            </tr>
+				                            <tr>
+				                                <td class="bg-light"><label for="email">Email: </label></td>
+				                                <td><input type="text" th:field="*{email}" id="email" class="form-control" placeholder="Enter email"></td>
+				                            </tr>
+				                            <tr>
+				                                <td class="bg-light">Select Role:</td>
+				                                <td style="padding-right: 8px;">
+				                                    <div>
+				                                        <select th:field="*{role}" class="form-select">
+				                                            <option th:each="role : ${roleList}" th:text="${role}" th:value="${role}"/>
+				                                        </select>
+				                                    </div>
+				                                </td>
+				                            </tr>
+				                        </tbody>
+				                    </table>
+				                    <input type="submit" class="btn btn-outline-success" value="Add" style="float: right">
+				                </div>
+				            </div>
+				        </div>
+				        <span style="color:red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+				        <span style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+				        <span style="color:red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+				    </form>
+				    <th:block th:switch="${page2}">
+				        <div th:case="create">
+				            <div class="card h-100 w-100">
+				                <div class="card-body" style="padding-top: 24px;">
+				                    <div class="card" style="width: fit-content; height: fit-content; margin: 0 auto;">
+				                        <table class="table table-bordered">
+				                            <tr>
+				                                <td colspan="3" style="background-color: rgb(4, 179, 87);">Creation Successful</td>
+				                            </tr>
+				                        </table>
+				                    </div>
+				                </div>
+				            </div>
+				        </div>
+				        <div th:case="createFail">
+				            <div class="card h-100 w-100">
+				                <div class="card-body" style="padding-top: 24px;">
+				                    <div class="card" style="width: fit-content; height: fit-content; margin: 0 auto;">
+				                        <table class="table table-bordered">
+				                            <tr>
+				                                <td colspan="3">Creation Fail</td>
+				                            </tr>
+				                            <tr>
+				                                <td colspan="3"><p th:text="${createStringError}"></p></td>
+				                            </tr>
+				                        </table>
+				                    </div>
+				                </div>
+				            </div>
+				        </div>
+				    </th:block>
+				</div>
+
 	          
-		          <div th:case="searchWidgetSellerMarketListing">
+	          	<!-- view market listings -->
+		        <div th:case="searchWidgetSellerMarketListing">
 		            <form th:action="@{/viewWidgetListing}" method="post">
-		            	<div class ="card h-100 w-100">
+		            	<div class ="card my-4 mx-4">
 		              		<div class="card-body" style="padding-top: 24px;">
-		              			<div class="card" style="width: fit-content; height: fit-content; margin-left: auto; margin-right: auto;">
-		              				<table class="uniTableForm">
+		              			<div class="card" style="height: fit-content; margin-left: auto; margin-right: auto;">
+									<div class="card-header">
+										<h2>Search Widgets</h2>
+									</div>
+		              				<table class="table">
 		              					<thead>
-		              						<tr>
-		              							<td colspan="5" style="background-color: #D3D3D3; text-align: center;"><h2>Search Widgets</h2></td>
-		              						</tr>
-											<tr>
-		      									<td colspan="1">Search By:
-		      										<div>
-			      										<input type="radio" value="name" name="filterSearch" id="name" checked>
-			      										<label for="name">Name</label>
-			      									</div>
-			      									<div>
-			      										<input type="radio" value="description" name="filterSearch" id="description">
-			      										<label for="description">Description</label>
-			      									</div>
-			      									<div>
-			      										<input type="radio" value="category" name="filterSearch" id="category">
-			      										<label for="category">Category</label>
-		      										</div>
-		      									</td>
-		      									<td colspan="2"><input type="text" id="widgetNameInput" name="name"></td>
-		           								<td colspan="2"><input type="submit" style="height:75%; text-align: center; " class="buttonSearchUser" value="Search">
-		           								<a th:href="@{/searchWidgetButton}">Reset</a></td>	
-		      								</tr>
-		      								<tr>
-		            							<td colspan="4" style="background-color: #D3D3D3; text-align: center;"><h4>Widget</h4></td>
-		      								</tr>
-		      								<tr>
-		            							<td id="bg-color">View Listing</td>
-		            							<td id="bg-color">Widget Name</td>
-		            							<td id="bg-color">Widget Description</td>
-		            							<td id="bg-color">Widget Category</td>
-		      								</tr>
-										</thead>
-										<tbody>
-		      								<th:block th:each="searchedWidgets: ${allWidgets}">
-		      									<tr>
-		            								<td><a th:href="@{/viewOneListing/{id}(id = ${searchedWidgets.id})}">View</a></td>
-		                  							<td><p th:text="${searchedWidgets.name}"></p></td>
-		                  							<td><p th:text="${searchedWidgets.description}"></p></td>
-		                  							<td><p th:text="${searchedWidgets.category}"></p></td>
-		            							</tr>
-		       								</th:block>
-										</tbody>
+											<!-- searching table -->
+											<table class="table">
+												<!-- choose to search by name, description, or category -->
+						                        <td style="height: 55px;">
+													<label for="userName">Search By:</label>
+					                                <input type="radio" value="name" name="filterSearch" id="name" checked>
+			      									<label for="name">Name</label>
+					                                <input type="radio" value="description" name="filterSearch" id="description">
+			      									<label for="description">Description</label>
+			      									<input type="radio" value="category" name="filterSearch" id="category">
+			      									<label for="category">Category</label>
+						                        </td>
+						                        <!-- search bar -->
+						                        <td style="height: 55px;">
+						                            <input type="text" id="widgetNameInput" name="name" style="width: 97%" placeholder="Search here">
+						                        </td>
+						                        <!-- search button -->
+						                        <td style="height: 55px;">
+						                            <input type="submit" style="text-align: center;" class="btn btn-outline-primary" value="Search">
+		           									<a class="btn btn-outline-secondary" th:href="@{/searchWidgetButton}">Reset</a>
+						                        </td>
+					                        </table>
+					                        
+					                        <!-- All User's information table -->
+							                <div class="card mx-4" style="margin-bottom: 1.5rem!important;">
+							                    <div class="card-header">
+							                        <h3>Listings</h3>
+							                    </div>
+							                    <div class="card-body">
+							                        <table class="table table-striped">
+							                            <thead>
+							                                <tr>
+							                                    <th scope="col"><h5>View Listing</h5></th>
+							                                    <th scope="col"><h5>Listing Name</h5></th>
+							                                    <th scope="col"><h5>Description</h5></th>
+							                                    <th scope="col"><h5>Category</h5></th>
+							                                </tr>
+							                            </thead>
+							                            <tbody>
+							                                <th:block th:each="searchedWidgets: ${allWidgets}">
+							                                    <tr>
+							                                        <td>
+							                                            <a th:href="@{/viewOneListing/{id}(id = ${searchedWidgets.id})}">View</a>
+							                                        </td>
+							                                        <td>
+							                                            <p th:text="${searchedWidgets.name}"></p>
+							                                        </td>
+							                                        <td>
+							                                            <p th:text="${searchedWidgets.description}"></p>
+							                                        </td>
+							                                        <td>
+							                                            <p th:text="${searchedWidgets.category}"></p>
+							                                        </td>
+							                                    </tr>
+							                                </th:block>
+							                            </tbody>
+							                        </table>
+							                    </div>
+							                </div>
+					                        
 		              				</table>
 		              			</div>
 		              		</div>
@@ -629,11 +729,11 @@
 					                        </td>
 					                        <!-- search bar -->
 					                        <td style="height: 55px;">
-					                            <input type="text" id="nameInput" name="userName" style="width: 97%">
+					                            <input type="text" id="nameInput" name="userName" style="width: 97%" placeholder="Search here">
 					                        </td>
 					                        <!-- search button -->
 					                        <td style="height: 55px;">
-					                            <input type="submit" class="btn btn-outline-secondary" value="Search">
+					                            <input type="submit" class="btn btn-outline-primary" value="Search">
 					                        </td>
 				                        </table>
 				                    </div>
@@ -1159,32 +1259,31 @@
 		              	</div>
 		              </div>
 		          </div>
-	          
+	          	  
+	          	  <!-- single market listing view -->
 		          <div th:case="searchMarketListing">
 		            <form th:action="@{/viewMarketListing/deleteListing/{listing-id}(listing-id=${searchedMarkets.id})}" method="post" action="#">
-		            	<div class ="card h-100 w-100">
+		            	<div class ="card my-4 mx-4">
 		              		<div class="card-body" style="padding-top: 24px;">
 		              			<div class="card" style="width: fit-content; height: fit-content; float:left">
-		              				<table class="uniTableForm">
+									<div class="card-header">
+										<h2>Listing Info</h2>
+									</div>
+		              				<table class="table">
+										<!-- table headers -->
 		              					<thead>
 				            				<tr>
-												<td colspan="2" style="background-color:#D3D3D3"><h3>Widget</h3></td>
-												<td style="background-color:#D3D3D3"><h3>Seller</h3></td>	
-												<td colspan="3" style="background-color:#D3D3D3"><h3>Market Listing</h3></td>
-												<td><input type="submit" class="buttonSearchUser" style="background-color: red;" value="Delete Listing"/></td>
-												<td><button class="buttonSearchUser" type="button" onclick="location.href='/searchWidgetButton'">Go Back</button></td>		
-				            				</tr>
-				            				<tr>
-				            					<td style="background-color: #89CFF0">Widget ID</td>
-				            					<td style="background-color: #89CFF0">Widget Name</td>
-				            					<td style="background-color: #89CFF0">Widget Description</td>
-				            					<td style="background-color: #89CFF0">Widget Category</td>
-				            					<td style="background-color: #89CFF0">Seller Username</td>
-				            					<td style="background-color: #89CFF0">Market ID</td>
-				            					<td style="background-color: #89CFF0">Quantity</td>
-				            					<td style="background-color: #89CFF0">Price</td>
+												<th scope="col"><h5>ID</h5></th>
+												<th scope="col"><h5>Name</h5></th>
+												<th scope="col"><h5>Description</h5></th>
+												<th scope="col"><h5>Category</h5></th>
+												<th scope="col"><h5>Seller Username</h5></th>
+												<th scope="col"><h5>Market ID</h5></th>
+												<th scope="col"><h5>Quantity</h5></th>
+												<th scope="col"><h5>Price</h5></th>
 				            				</tr>
 				            			</thead>
+				            			<!-- table data -->
 				            			<tbody>
 				            				<tr>
 				            					<th:block th:each="searchedWidgets: ${searchedWidgets}">
@@ -1204,6 +1303,10 @@
 				            				</tr>
 				            			</tbody>
 	              					</table>
+	              					<!-- delete listing button -->
+	              					<div style="display: flex; justify-content: center; margin-bottom: 1%;">
+										  <input type="submit" class="btn btn-outline-danger" value="Delete Listing"/>
+									</div>
 	              				</div>
 	              			</div>
 	              		</div>
