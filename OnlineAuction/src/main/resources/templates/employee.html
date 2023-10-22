@@ -370,92 +370,7 @@
 	            	<h1>Employee Creation Failed</h1>
 	            </div>
 	          
-	            <!-- adding a user page 
-		        <div th:case="create">
-		            <form th:action="@{/createEmployee}" th:object="${useradd}" method="post">
-		              	<div class ="card h-100 w-100">
-		              		<div class="card-body" style="padding-top: 24px;">
-		              			<div class="card" style="width: fit-content; height: fit-content; margin-left: auto; margin-right: auto;">
-		              				<table class="uniTableForm">
-			              				<thead>
-			              					<tr>
-			              						<td colspan="2" style="background-color: #D3D3D3; text-align: center;"><h4>Add User</h4></td>
-			              					</tr>
-			              				</thead>
-			              				<tbody>
-			              					<tr>
-			              						<td id="bg-color"><label for="userName">Username:</label></td>
-			              						<td><input type="text" th:field="*{username}" id="username"></td>
-			              					</tr>
-			              					<tr>
-			              						 <td id="bg-color"><label for="password">Password:</label></td>
-			                  					 <td><input type="text" th:field="*{password}" id="password"></td>
-			              					</tr>
-			              					<tr>
-			              						 <td id="bg-color"><label for="email">Email: </label></td>
-			                  					 <td><input type="text" th:field="*{email}" id="email"></td>
-			              					</tr>
-			              					<tr>
-			              						<td id="bg-color">Select Role:</td>
-			              						<td style="padding-right: 8px;">
-			              							<div>
-			              								<select th:field="*{role}">
-			                      						<option th:each="role : ${roleList}" th:text="${role}" th:value="${role}"/>
-			                    						</select>
-			              							</div>
-			              						</td>
-			              					</tr>
-		              					</tbody>
-		              					<tfoot>
-		              						<tr>
-		              							<td>
-			              							<div>
-			                        					<button class="btn btn-outline-danger" type="button" onclick="location.href='/employee'">Cancel</button>
-			                        				</div>
-			              						</td>
-			              						<td style="padding-right:8px"><input type="submit" class="btn btn-outline-success" value="Add" style="float:right"></td>
-			              					</tr>
-			              				</tfoot>
-			              			</table>
-			              		</div>
-		              		</div>
-		              	</div>
-		              	<span style="color:red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></spa>
-		              	<span style="color:red" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
-		            	<span style="color:red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
-		            </form>
-		            <th:block th:switch="${page2}">
-		              	<div th:case="create">
-		                	<div class ="card h-100 w-100">
-		              			<div class="card-body" style="padding-top: 24px;">
-		              				<div class="card" style="width: fit-content; height: fit-content; margin-left: auto; margin-right: auto;">
-		              					<table class="addUserSuccess">
-			              					<tr>
-			              						<td colspan="3" style="background-color: rgb(4, 179, 87);">Creation Successful</td>
-			              					</tr>
-		              					</table>
-		              				</div>
-		              			</div>
-		              		</div>		
-		              	</div>
-			            <div th:case="createFail">
-			              	<div class ="card h-100 w-100">
-			              		<div class="card-body" style="padding-top: 24px;">
-			              			<div class="card" style="width: fit-content; height: fit-content; margin-left: auto; margin-right: auto;">
-			              				<table class="addUserCreateFail">
-			              					<tr>
-			                    				<td colspan="3"> Creation Fail</td>
-			                  				</tr>
-			                  				<tr>
-			                    				<td colspan="3"><p th:text="${createStringError}"></p></td>
-			                  				</tr>           					
-			              				</table>
-		              				</div>
-								</div>
-							</div>              
-		              	</div>
-		        	</th:block>
-		        </div>-->
+	            <!-- adding a user page -->
 		        <div th:case="create">
 				    <form th:action="@{/createEmployee}" th:object="${useradd}" method="post" class="container">
 				        <div class="card my-4 mx-4">
@@ -480,6 +395,7 @@
 				                                <td class="bg-light"><label for="email">Email: </label></td>
 				                                <td><input type="text" th:field="*{email}" id="email" class="form-control" placeholder="Enter email"></td>
 				                            </tr>
+				                            <!-- role selection -->
 				                            <tr>
 				                                <td class="bg-light">Select Role:</td>
 				                                <td style="padding-right: 8px;">
@@ -492,6 +408,7 @@
 				                            </tr>
 				                        </tbody>
 				                    </table>
+				                    <!-- add button -->
 				                    <input type="submit" class="btn btn-outline-success" value="Add" style="float: right">
 				                </div>
 				            </div>
@@ -533,7 +450,6 @@
 				    </th:block>
 				</div>
 
-	          
 	          	<!-- view market listings -->
 		        <div th:case="searchWidgetSellerMarketListing">
 		            <form th:action="@{/viewWidgetListing}" method="post">
@@ -604,7 +520,6 @@
 							                        </table>
 							                    </div>
 							                </div>
-					                        
 		              				</table>
 		              			</div>
 		              		</div>
