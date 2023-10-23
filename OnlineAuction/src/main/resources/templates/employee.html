@@ -43,31 +43,31 @@
 		        }
 		      })
 		    });
-	  </script>
-	  <script>
-	  	var timer = 0;								//timer intializer set to zero
-	    var idleCheck = setInterval(function(){		
-	      ++timer;									//increases variable timer via interval
-	      document.onmousemove = resetIdleClock;	//resets timer on user mouse move
-	      document.onload = resetIdleClock;			//resets timer when page is intialized
-	      document.onclick = resetIdleClock;		//resets timer on user click
-	      document.onkeydown = resetIdleClock;		//when key is pressed on page
-	      		
-	      if(timer == 75000){						//if statement captures when idle timer reaches 5 mins
-	      	lockUserAccount();						//alert message indictating to user they have been logged out
-	      	window.location.href = "http://localhost:8080/do_the_logout";		//logs user out and redircts to home page
-	      	}
-	      		
-	      	function resetIdleClock(){				//function to reset timer variable
-	      		timer = 0;
-	      	}
-	      	
-	      	function lockUserAccount(){				//function to alert use they have been logged out
-	      		window.alert("logged-out due to inactivity, re-validation required")
-	      	}
-	      	// javascript function has been modified, is within the references document
-	     });
-    </script>
+	  	</script>
+	  	<script>
+	  		var timer = 0;								//timer intializer set to zero
+	    	var idleCheck = setInterval(function(){		
+		      ++timer;									//increases variable timer via interval
+		      document.onmousemove = resetIdleClock;	//resets timer on user mouse move
+		      document.onload = resetIdleClock;			//resets timer when page is intialized
+		      document.onclick = resetIdleClock;		//resets timer on user click
+		      document.onkeydown = resetIdleClock;		//when key is pressed on page
+		      		
+		      if(timer == 75000){						//if statement captures when idle timer reaches 5 mins
+		      	lockUserAccount();						//alert message indictating to user they have been logged out
+		      	window.location.href = "http://localhost:8080/do_the_logout";		//logs user out and redircts to home page
+		      	}
+		      		
+		      	function resetIdleClock(){				//function to reset timer variable
+		      		timer = 0;
+		      	}
+		      	
+		      	function lockUserAccount(){				//function to alert use they have been logged out
+		      		window.alert("logged-out due to inactivity, re-validation required")
+		      	}
+		      	// javascript function has been modified, is within the references document
+		     });
+	    </script>
 	</head>
 
 <body>
@@ -77,59 +77,54 @@
 	<!-- END HEADER BAR -->
 
 	<div>
-	    <th:block th:switch="${masterPage}">
-	      <div th:case="base">
-	        <th:block th:switch="${page}">
-	          <div th:case="begin">
-	            <table style="text-align: center;">
-	              <tr>
-	                <th> Welcome to the Employee Home Page</th>
-	              </tr>
-	              <tr>
-	                <td> Click the buttons on the top navigation bar to get started</td>
-	              </tr>
-	              <tr>
-	                <th> Clicking the <i>Pseudo Ebay</i> logo in the top-left will bring you back to this screen</th>
-	              </tr>
-	              <tr>
-	                <td> Various employee roles share this workspace. Depending on your role you may not
-	                  have proper authority to access everything that you click on. In that case, you
-	                  may see a screen saying you do not have the proper authority. To get back, either
-	                  click home or one of the other buttons on the top navigation bar.
-	                </td>
-	              </tr>
-	              <tr>
-	                <th> To prevent 'Tailgating,' all administrators will be logged out if idle. </th>
-	              </tr>
-	              <tr>
-	                <td> To re-gain access to administrator page, sign back in using administrative credentials.
-	                </td>
-	              </tr>
-	            </table>
-	          </div>
-	        </th:block>
-	      </div>
+		<th:block th:switch="${masterPage}">
+	    	<div th:case="base">
+	        	<th:block th:switch="${page}">
+	          		<div th:case="begin">
+	            		<table style="text-align: center;">
+	              			<tr>
+	                			<th> Welcome to the Employee Home Page</th>
+	              			</tr>
+	              			<tr>
+	                			<td> Click the buttons on the top navigation bar to get started</td>
+	              			</tr>
+	              			<tr>
+	                			<th> Clicking the <i>Pseudo Ebay</i> logo in the top-left will bring you back to this screen</th>
+	              			</tr>
+	              			<tr>
+	                			<td>Various employee roles share this workspace. Depending on your role you may not
+				                  	have proper authority to access everything that you click on. In that case, you
+				                  	may see a screen saying you do not have the proper authority. To get back, either
+				                  	click home or one of the other buttons on the top navigation bar.
+	                			</td>
+	              			</tr>
+	              			<tr>
+	                			<th> To prevent 'Tailgating,' all administrators will be logged out if idle. </th>
+	              			</tr>
+	              			<tr>
+	                			<td> To re-gain access to administrator page, sign back in using administrative credentials.</td>
+	              			</tr>
+	            		</table>
+	          		</div>
+	        	</th:block>
+	      	</div>
 	      
-	      <div th:case="query">
-	      	<th:block th:switch="${page}">
-	          <div th:case="notAuthorized">
-	            <table class="center">
-	              <tr>
-	                <th> You do not have the proper authority to view this page</th>
-	              </tr>
-	            </table>
-	          </div>
-	          <div th:case="searchMarketListing">
-	            <form th:action="@{/searchListing}" method="post">
-	
-	              <label for="widgetName">Enter widget name</label>
-	
-	              <input type="text" name="widgetName" id="widgetNameInput"><br>
-	
-	              <input type="submit" class="submit" value="Search">
-	
-	            </form>
-	          </div>
+	      	<div th:case="query">
+	      		<th:block th:switch="${page}">
+	          		<div th:case="notAuthorized">
+	            		<table class="center">
+	              			<tr>
+	                			<th> You do not have the proper authority to view this page</th>
+	              			</tr>
+	            		</table>
+	          		</div>
+	          		<div th:case="searchMarketListing">
+	            		<form th:action="@{/searchListing}" method="post">
+	              			<label for="widgetName">Enter widget name</la>
+	              			<input type="text" name="widgetName" id="widgetNameInput"><br>
+	              			<input type="submit" class="submit" value="Search">
+	            		</form>
+	          		</div>
 	          
 	          <!-- tickets page -->
 	          <div th:case="ticket">
@@ -165,12 +160,12 @@
 			                    				<td>
 				                      				<th:block th:if="${!ticket.isResolved()}">
 				                       					 <form method="post" th:action="@{/assignTicket/{id}(id = ${ticket.id})}">
-				                          					<select th:name="username" style="max-width: 70%">
+				                          					<select class="form-select" th:name="username" style="max-width: 70%; display: inline;">
 				                            					<option th:each="assignuser : ${users}"
 				                                   				th:value="${assignuser.username}"
 				                                    			th:text="${assignuser.username != user.username} ? ${assignuser.role} + ' - ' + ${assignuser.username} : 'Assign To Me'"></option>
 				                          					</select>
-				                         			 		<input type="submit" value="Submit"/>
+				                         			 		<input class="btn btn-outline-secondary" type="submit" value="Submit"/>
 				                        				</form>
 				                      				</th:block>
 				                      				<th:block th:unless="${!ticket.isResolved()}"><p>None</p></th:block>
@@ -243,7 +238,7 @@
 							</table>
 						</div>
 					</div>
-				</div>
+			  	</div>
 	          </div>
 	
 			  <!-- resolved tickets page -->
@@ -252,12 +247,12 @@
 	              		<th:block th:switch="${pageSuccess}">
 	                		<div th:case="ticketMovedToUnresolved">
 	                  			<tr>
-	                    			<th colspan="3" style="background-color: rgb(128, 128, 192);"> Ticket was moved back to unresolved</th>
+	                    			<th colspan="3" style="background-color: rgb(128, 128, 192);">Ticket was moved back to unresolved</th>
 	                  			</tr>
 	                		</div>
 	                		<div th:case="ticketEscalated">
 	                  			<tr>
-	                    			<th colspan="3" style="background-color: rgb(128, 128, 192);"> Ticket was escalated</th>
+	                    			<th colspan="3" style="background-color: rgb(128, 128, 192);">Ticket was escalated</th>
 	                  			</tr>
 	                		</div>
 	              		</th:block>
@@ -265,13 +260,13 @@
 	                		<th colspan="9"> Tickets</th>
 	              		</tr>
 	              		<tr>
-	                		<th> Reporter</th>
-	                		<th> Offender</th>
-	                		<th> Ticket Category</th>
-	                		<th> Feedback</th>
-	                		<th> Date Created</th>
-	                		<th> Resolve Tickets</th>
-	                		<th colspan="3"> Escalate Tickets</th>
+	                		<th>Reporter</th>
+	                		<th>Offender</th>
+	                		<th>Ticket Category</th>
+	                		<th>Feedback</th>
+	                		<th>Date Created</th>
+	                		<th>Resolve Tickets</th>
+	                		<th colspan="3">Escalate Tickets</th>
 	              		</tr>
 	              		<th:block th:each="tickets: ${tickets}">
 	                		<tr>
@@ -311,7 +306,7 @@
 	            	<form th:action="@{/lookupStatistics}" method="post">
 	              		<table class="center">
 	                		<tr>
-	                  			<th> Select statistic type</th>
+	                  			<th>Select statistic type</th>
 	                		</tr>
 	                		<tr>
 	                  			<td>
@@ -323,7 +318,7 @@
 	                  			</td>
 	                		</tr>
 	                		<tr>
-	                  			<th> Select date to filter by</th>
+	                  			<th>Select date to filter by</th>
 	                		</tr>
 	                		<tr>
 	                  			<td>
