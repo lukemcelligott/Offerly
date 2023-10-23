@@ -39,6 +39,11 @@
 	.back-button i {
 	    margin-right: 8px; /* Space between icon and text */
 	}	
+	
+	.condensed-list .list-group-item {
+        margin: 0;
+        padding: 0.5rem 1.25rem; /* Reduced padding */
+    }
 	</style>
 	
 </head>
@@ -69,26 +74,40 @@
 		                    
 		                    <!-- Friend's Details -->
 							<div class="col-sm-6 d-flex justify-content-start"> 
-                            	<ul class="list-group w-100 text-center" style="margin-left: -15px;"> 
-		                            <li class="list-group-item">Username: <span th:text="${friend.username}"></span></li>
-		                            <li class="list-group-item">Email: <span th:text="${friend.email}"></span></li>
-		                            <li class="list-group-item">Account Created: <span th:text="${friend.creationDate}"></span></li>
-		                            <li class="list-group-item">Rating: 
-		                                <!-- Rating Value -->
-		                                <span th:text="${friend.sellerRating.rating}"></span>
-		                                <!-- Filled Stars -->
-		                                <th:block th:each="star : ${#numbers.sequence(1, friend.sellerRating.rating)}">
-		                                    <span class="text-warning">★</span>
-		                                </th:block>
-		                                <!-- Unfilled Stars -->
-		                                <th:block th:each="star : ${#numbers.sequence(friend.sellerRating.rating + 1, 5)}">
-		                                    <span class="text-muted">★</span>
-		                                </th:block>
-		                                <!-- Number of Ratings -->
-		                                <span class="ms-2 text-muted" th:text="${friend.sellerRating.numRatings} + ' rating(s)'"></span>
-		                            </li>
-		                        </ul>
-		                    </div>
+							    <ul class="list-group w-100 text-center condensed-list" style="margin-left: -15px;"> 
+							        <li class="list-group-item">Username: <span th:text="${friend.username}"></span></li>
+							        <li class="list-group-item">Email: <span th:text="${friend.email}"></span></li>
+							        <li class="list-group-item">Account Created: <span th:text="${friend.creationDate}"></span></li>
+							        <li class="list-group-item">Rating: 
+							            <!-- Rating Value -->
+							            <span th:text="${friend.sellerRating.rating}"></span>
+							            <!-- Filled Stars -->
+							            <th:block th:each="star : ${#numbers.sequence(1, friend.sellerRating.rating)}">
+							                <span class="text-warning">★</span>
+							            </th:block>
+							            <!-- Unfilled Stars -->
+							            <th:block th:each="star : ${#numbers.sequence(friend.sellerRating.rating + 1, 5)}">
+							                <span class="text-muted">★</span>
+							            </th:block>
+							            <!-- Number of Ratings -->
+							            <span class="ms-2 text-muted" th:text="${friend.sellerRating.numRatings} + ' rating(s)'"></span>
+							        </li>
+							        <li class="list-group-item">
+							            <!-- Chat Box Icon -->
+							            <a th:href="@{/inbox}" class="btn btn-sm btn-primary me-2">
+							                <i class="fas fa-comment-alt"></i>
+							            </a>
+							            <!-- Trash Can Icon -->
+							            <form th:action="@{/remove}" method="post" style="display: inline;">
+									        <input type="hidden" th:value="${friend.id}" name="friendId" />
+									        <button class="btn btn-sm btn-danger custom-btn-space" type="submit">
+									            <i class="fas fa-trash"></i>
+									        </button>
+									    </form>
+							        </li>
+							    </ul>
+							</div>
+
 		                </div>
 		            </div>
 		        </div>

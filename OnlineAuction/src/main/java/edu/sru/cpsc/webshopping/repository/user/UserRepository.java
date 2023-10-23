@@ -19,5 +19,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
 	
 	List<User> findByUsernameStartingWith(String query);
 	List<User> findByEmailContaining(String query);
+	
 }
 	

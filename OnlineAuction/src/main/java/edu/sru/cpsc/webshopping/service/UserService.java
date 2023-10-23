@@ -71,8 +71,28 @@ public class UserService {
         return userRepository.save(userToRate);
     }
     
-    public List<User> searchUsers(String query) {
-        return userRepository.findByUsernameStartingWith(query);
+    public List<User> getAllUsers() {
+        Iterable<User> usersIterable = userRepository.findAll();
+        List<User> userList = new ArrayList<>();
+        for (User user : usersIterable) {
+            userList.add(user);
+        }
+        return userList;
+    }
+    
+    public List<User> searchUsers(String query, String filterType) {
+        List<User> allUsers = getAllUsers();  // You might need to implement this method
+        List<User> matchedUsers = new ArrayList<>();
+
+        for (User user : allUsers) {
+            if (filterType.equals("name") && user.getUsername().contains(query)) {
+                matchedUsers.add(user);
+            } else if (filterType.equals("email") && user.getEmail().contains(query)) {
+                matchedUsers.add(user);
+            }
+        }
+
+        return matchedUsers;
     }
     
 //    public void refreshUser(User user) {

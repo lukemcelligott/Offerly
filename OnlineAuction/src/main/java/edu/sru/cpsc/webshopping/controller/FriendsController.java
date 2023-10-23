@@ -64,7 +64,10 @@ public class FriendsController {
         List<User> friends = friendshipService.getAllFriendsForUser(user);
         List<SocialMessage> messages = messageService.getAllMessagesForUser(user);
         List<SocialFriendRequest> friendRequests = friendSocialRequestRepository.findAllByReceiver(user);
-
+        List<User> allUsers = userService.getAllUsers();
+        
+        model.addAttribute("allUsers", allUsers);
+        model.addAttribute("myusers", allUsers);
         model.addAttribute("friends", friends);
         model.addAttribute("messages", messages);
         model.addAttribute("friendRequests", friendRequests);
@@ -225,15 +228,17 @@ public class FriendsController {
         return "redirect:/Social";
     }
     
-    @GetMapping("/search")
-    @ResponseBody
-    public List<User> searchUsers(@RequestParam String query) {
-        List<User> results = userRepository.findByUsernameStartingWith(query);
-        System.out.println("Results size: " + results.size());
-        results.forEach(user -> System.out.println(user.getUsername()));
-        return results;
+    @PostMapping("/searchUser")
+    public String searchUser(@RequestParam("userName") String userName, Model model, Principal principal) {
+        User currentUser = userService.getUserByUsername(principal.getName());
+        
+        List<User> matchedUsers = userService.searchUsers(userName, "name");
+        
+        model.addAttribute("currentUser", currentUser);
+        model.addAttribute("matchedUsers", matchedUsers);
+
+        return "social"; 
     }
-    
     
     
   
