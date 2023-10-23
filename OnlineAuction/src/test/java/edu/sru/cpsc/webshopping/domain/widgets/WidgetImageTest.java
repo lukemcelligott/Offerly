@@ -6,13 +6,13 @@ import org.junit.jupiter.api.Test;
 
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 
-public class WidgetImageDomainTest {
+public class WidgetImageTest {
 	@Test
 	
 	/*
 	 * Tests the WidgetImage domain
 	 */
-	void WidgetImageTest()
+	public void testWidgetImage()
 	{
 		MarketListing ML = new MarketListing();
 		ML.setId(12);

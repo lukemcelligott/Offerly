@@ -36,7 +36,7 @@ import edu.sru.cpsc.webshopping.service.UserService;
 import edu.sru.cpsc.webshopping.service.WidgetService;
 import edu.sru.cpsc.webshopping.util.enums.AttributeDataType;
 
-@SpringBootTest
+@SpringBootTest(classes = {AddWidgetControllerTest.class})
 public class AddWidgetControllerTest {
 
 	@Mock

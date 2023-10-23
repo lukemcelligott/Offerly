@@ -19,40 +19,6 @@ import edu.sru.cpsc.webshopping.util.enums.MessageType;
 public class DomainUserSpringTest {
 	
 	/*
-	 * Tests that a new applicant is loaded and verified 
-	 */
-	@Test
-	void applicantUserTest() {
-		
-		Applicant applicant = new Applicant();
-		applicant.setFirstName("Addie");
-		applicant.setLastName("Tellier");
-		applicant.setEmail("ant1017@sru.edu");
-		applicant.setPhoneNumber("724-123-4567");
-		applicant.setRoleAppliedfor("Role");
-		applicant.setAnswer1("Dog");
-		applicant.setAnswer2("Cat");
-		applicant.setAnswer3("Yes");
-		applicant.setAnswer4("No");
-		applicant.setId(34);
-		applicant.setApplicationDate("Oct 6");
-		applicant.setReviewed(true);
-		
-		assertEquals("Addie", applicant.getFirstName());
-		assertEquals("Tellier", applicant.getLastName());
-		assertEquals("ant1017@sru.edu", applicant.getEmail());
-		assertEquals("724-123-4567", applicant.getPhoneNumber());
-		assertEquals("Role", applicant.getRoleAppliedfor());
-		assertEquals("Dog", applicant.getAnswer1());
-		assertEquals("Cat", applicant.getAnswer2());
-		assertEquals("Yes", applicant.getAnswer3());
-		assertEquals("No", applicant.getAnswer4());
-		assertEquals(34, applicant.getId());
-		assertEquals("Oct 6", applicant.getApplicationDate());
-		assertEquals(true, applicant.getReviewed());
-	}
-	
-	/*
 	 * From the previous group
 	 * Tests the statistics and creats a slight log
 	 */

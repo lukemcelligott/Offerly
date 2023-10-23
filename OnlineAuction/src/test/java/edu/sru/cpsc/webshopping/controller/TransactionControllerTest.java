@@ -1,5 +1,8 @@
 package edu.sru.cpsc.webshopping.controller;
 
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+
 import org.junit.Test;
 import org.junit.jupiter.api.BeforeAll;
 
@@ -44,8 +47,8 @@ public class TransactionControllerTest {
 		
 		@Test
 		public void addTransaction() {
-			String actual = null;
-			assertsEquals(Widget.addTransaction(null), actual);
+			Transaction transaction = new Transaction();
+			assertNull(Widget.addTransaction(transaction));
 		}
 		@Test
 		public void cancelTransaction() {

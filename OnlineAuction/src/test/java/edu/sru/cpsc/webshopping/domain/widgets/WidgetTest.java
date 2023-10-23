@@ -5,8 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest(classes = {WidgetSpringTest.class})
-public class WidgetSpringTest {
+@SpringBootTest(classes = {WidgetTest.class})
+public class WidgetTest {
 
 	/*
 	 * Tests that basic user information is stored
@@ -18,12 +18,13 @@ public class WidgetSpringTest {
 		widget.setCategory(category);
 		widget.setDescription("description");
 		widget.setId(21);
-		widget.setName("Heidi");
+		widget.setName("test");
 		
 		assertEquals("category", widget.getCategory().getName());
 		assertEquals("description", widget.getDescription());
 		assertEquals(21, widget.getId());
-		assertEquals("Heidi", widget.getName());
+		assertEquals("test", widget.getName());
+
 		
 	}
 }

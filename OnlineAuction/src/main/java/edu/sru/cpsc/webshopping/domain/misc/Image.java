@@ -27,6 +27,23 @@ public class Image{
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "image_packet_packet_id")
 	private ImagePacket imagePacket;
+
+	public Long getImage_id() {
+		return image_id;
+	}
+
+	public void setImage_id(Long image_id) {
+		this.image_id = image_id;
+	}
+
+	public ImagePacket getImagePacket() {
+		return imagePacket;
+	}
+
+	public void setImagePacket(ImagePacket imagePacket) {
+		this.imagePacket = imagePacket;
+	}
+	
 	
 }
 

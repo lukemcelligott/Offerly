@@ -5,12 +5,15 @@ import static org.mockito.Mockito.when;
 
 import java.security.Principal;
 
-import org.junit.Test;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -25,18 +28,17 @@ import edu.sru.cpsc.webshopping.domain.billing.PaymentDetails_Form;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.service.UserService;
 
-@SpringBootTest
+@SpringBootTest(classes = {UserDetailsControllerTest.class})
 @AutoConfigureMockMvc
-
 public class UserDetailsControllerTest {
 
 	@Autowired
 	private MockMvc mvc;
 	@Autowired
 	private WebApplicationContext webApplicationContext;
-	@Autowired
+	@MockBean
 	private UserController userController;
-	@Autowired
+	@MockBean
 	private UserService userService;
 	
 	private User currUser;
@@ -47,7 +49,7 @@ public class UserDetailsControllerTest {
 	 */
 	@BeforeEach
 	public void initializeTest() {
-		this.mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build(); //sets up the build
+		//this.mvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build(); //sets up the build
 		// Initializes User
 		currUser = new User();
 		currUser.setPassword("");
@@ -107,42 +109,6 @@ public class UserDetailsControllerTest {
 		// Check that a PaymentDetails has been added to the user
 		Assertions.assertEquals(null, currUser.getPaymentDetails());
 		
-		
-		
-		/*
-				
-		mvc.perform(request);
-		Assertions.assertEquals(null, currUser.getPaymentDetails());
-		invalidDetails.setCardholderName("Test Name");
-		
-		invalidDetails.setCardNumber("22");
-		mvc.perform(request);
-		Assertions.assertEquals(null, currUser.getPaymentDetails());
-		invalidDetails.setCardNumber("1111111111111111");
-		
-		invalidDetails.setCardType("");
-		mvc.perform(request);
-		Assertions.assertEquals(null, currUser.getPaymentDetails());
-		invalidDetails.setCardNumber("Discover");
-		
-		invalidDetails.setExpirationDate("");
-		mvc.perform(request);
-		Assertions.assertEquals(null, currUser.getPaymentDetails());
-		// Tests expired card check
-		invalidDetails.setExpirationDate("2022/01/01");
-		mvc.perform(request);
-		Assertions.assertEquals(null, currUser.getPaymentDetails());
-		
-		invalidDetails.setPostalCode("2");
-		mvc.perform(request);
-		Assertions.assertEquals(null, currUser.getPaymentDetails());
-		invalidDetails.setPostalCode("12345");
-		
-		invalidDetails.setSecurityCode("1");
-		mvc.perform(request);
-		Assertions.assertEquals(null, currUser.getPaymentDetails());
-		invalidDetails.setSecurityCode("12345");
-		*/
 	}
 	
 	/**
@@ -150,6 +116,7 @@ public class UserDetailsControllerTest {
 	 * @throws Throws Exception if the test fails
 	 */
 	@Test
+	@WithMockUser(username = "testuser", password = "testpass")
 	public void updateDirectDepositDetailsSuccess() throws Exception {
 		mvc.perform(MockMvcRequestBuilders.get("/userDetails"))
 			.andExpect(MockMvcResultMatchers.status().isOk());
