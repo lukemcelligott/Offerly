@@ -17,85 +17,16 @@
     <link th:href="@{/styles/button.css}" rel="stylesheet" />
     <link th:href="@{/styles/landing.css}" rel="stylesheet" />
     <link th:href="@{/styles/employee_page.css}" rel="stylesheet" />
+    <link th:href="@{/styles/inbox.css}" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     
     <!-- Web Socket Library - Real Time Messaging -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.5.1/sockjs.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 
-
     <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f4f6f8;
-            margin: 0;
-            padding: 0;
-        }
-
-        h3 {
-            font-weight: 600;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #eaeaea;
-            padding-bottom: 10px;
-        }
-
-        .btn {
-            font-weight: 600;
-            border: none;
-            transition: all 0.3s ease;
-            padding: 10px 25px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 50px auto;
-            background-color: #fff;
-            border-radius: 15px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-        }
-
-        ul.list-group li {
-            border-radius: 10px;
-            transition: background-color 0.3s ease, transform 0.3s ease;
-        }
-
-        ul.list-group li:hover {
-            background-color: #f5f5f5;
-            transform: translateX(10px);
-        }
-
-        .list-group-item {
-            border: 2px solid transparent;
-            margin: 5px 0;
-            box-sizing: border-box;
-            transition: border-color 0.3s ease;
-        }
-
-        .form-control {
-            border-radius: 20px;
-            border: 2px solid #eaeaea;
-        }
-
-        .form-control:focus {
-            border-color: #007BFF;
-            box-shadow: none;
-        }
-        
-        .selected-friend {
-    	    box-shadow: 0 0 0 2px #0d6efd inset;
-    		border-color: transparent;
-		}
-		
-		ul.list-group li.selected-friend {
-    	margin: 10px 0;
-		}
     </style>
+    
 </head>
 
 <body>
@@ -106,33 +37,51 @@
     <div class="container mt-5">
         <div class="row">
             <!-- Friends List Section -->
-            <div class="col-md-4">
-                <h3>Friends List</h3>
-                <ul class="list-group">
-                    <li class="list-group-item" th:each="friend : ${friends}" th:id="${'friend-' + friend.id}" th:onclick="'loadConversation(' + ${friend.id} + ')'">
-                        <span th:text="${friend.username}"></span>
-                    </li>
-                </ul>
-            </div>
+			<div class="col-md-2">			
+			    <h3>Friends List</h3>
+			    
+			    <!-- Search Input for Friends -->
+			    <input type="text" id="inboxFriendSearch" placeholder="Search for a friend..." class="form-control mb-3" />
+			    
+			    <ul class="list-group" id="inboxFriendList">
+			        <li class="list-group-item friend-item-inbox" 
+			            th:each="friend : ${friends}" 
+			            th:id="${'friend-' + friend.id}" 
+			            th:onclick="'highlightSelectedFriend(this); loadConversation(' + ${friend.id} + ')'">
+			        <span th:text="${friend.username}"></span>
+			        </li>
+			    </ul>
+			</div>
 
             <!-- Conversation Section -->
-			<div class="col-md-8">
+			<div class="col-md-10">				
+				<!-- Back Arrow Icon -->
+			    <a th:href="@{/Social}" class="back-arrow float-end" title="Go back to Social">
+			        <i class="fas fa-arrow-left"></i> Back
+			    </a>
+			    
 			    <div id="conversationBox">
 			        <h3>Conversation with <span id="friendName"></span></h3>
 			
 			        <!-- This is where the dynamic chat box will be appended -->
 			        
 			    </div>
-			 	<form id="sendMessageForm" class="mt-2">
-				    <input type="hidden" id="currentUserId" th:value="${user.id}"/>
-				    <input type="hidden" id="currentUsername" th:value="${user.username}"/>
+			 	<form id="sendMessageForm" class="mt-2 position-relative">
+				    <input type="hidden" id="currentUserId" th:value="${user.id}" />
+				    <input type="hidden" id="currentUsername" th:value="${user.username}" />
 				
-				    <input type="text" id="messageInput" placeholder="Type a message..." class="form-control"/>
-				    <button type="submit" class="btn btn-primary mt-2">Send</button>
+				    <input type="text" id="messageInput" placeholder="Type a message..." class="form-control message-input-with-icon"/>
+				    <button type="submit" class="btn-send-icon">
+				        <i class="fas fa-paper-plane"></i>
+				    </button>
 				</form>
 			</div>
+			
         </div>
     </div>
+    
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    
 <script>
 		
     const userId = document.getElementById("currentUserId").value;
@@ -184,6 +133,19 @@
 	    displayReceivedMessage(messageToSend);
 	}
 	
+	function highlightSelectedFriend(element) {
+    // Get all the friends from the list
+    const friends = document.querySelectorAll('.list-group-item');
+
+    // Remove the 'selected-friend' class from all friends
+    friends.forEach(function(friend) {
+        friend.classList.remove('selected-friend');
+    });
+
+    // Add the 'selected-friend' class to the clicked friend
+    element.classList.add('selected-friend');
+	}
+	
 	function displayReceivedMessage(message) {
     // Append message to sender's chatBox
     console.log("Received message timestamp:", message.timestamp);
@@ -231,7 +193,7 @@
 	
 	    messageDiv.textContent = `[${formattedTimestamp}] ${senderName}: ${message.content}`;
 	    chatBox.appendChild(messageDiv);
-}
+	}
 	
 	function loadConversation(friendId) {
 		console.log("loadConversation called for friendId:", friendId);
@@ -247,19 +209,20 @@
 	
 	    // If the chatBox doesn't exist, create one
 	    if (!selectedChatBox) {
-	        selectedChatBox = document.createElement('div');
-	        selectedChatBox.id = 'chatBox-' + friendId;
-	        selectedChatBox.className = 'individualChatBox';
-	        selectedChatBox.style = 'border: 1px solid #ccc; padding: 10px; height: 200px; overflow-y: scroll; display: block;';
-	        document.getElementById('conversationBox').appendChild(selectedChatBox);
-	    } else {
-	        selectedChatBox.style.display = 'block';
-	    }
+		    selectedChatBox = document.createElement('div');
+		    selectedChatBox.id = 'chatBox-' + friendId;
+		    selectedChatBox.className = 'individualChatBox';
+		    document.getElementById('conversationBox').appendChild(selectedChatBox);
+		} else {
+		    selectedChatBox.style.display = 'block';
+		}
 	
 	    const selectedFriend = document.getElementById('friend-' + friendId);
 	    if (selectedFriend) {
 	        document.getElementById('friendName').textContent = selectedFriend.textContent.trim();
 	    }
+	    
+	    document.getElementById('sendMessageForm').style.display = 'block';
 	    
 	    // Fetch conversation history from the server
 	    fetch('/api/conversations/' + friendId)
@@ -282,6 +245,7 @@
 	    })
 	    .catch(error => console.error('Error fetching conversation:', error));
 	    
+	    
 	}
 	
 	document.addEventListener('DOMContentLoaded', function() {
@@ -299,7 +263,21 @@
 	        messageInput.value = '';
 	    }
 	});
-
+	
+$(document).ready(function(){
+    $("#inboxFriendSearch").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        
+        $("#inboxFriendList .friend-item-inbox").each(function() {
+            var username = $(this).find('span').text().toLowerCase();
+            if (username.indexOf(value) !== -1) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    });
+});
 </script>
 
 </body>

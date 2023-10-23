@@ -1,5 +1,8 @@
 package edu.sru.cpsc.webshopping.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -66,6 +69,10 @@ public class UserService {
         //set rating with new incoming rating from a user. This will update the average rating.
         userToRate.getSellerRating().setRating(rating);
         return userRepository.save(userToRate);
+    }
+    
+    public List<User> searchUsers(String query) {
+        return userRepository.findByUsernameStartingWith(query);
     }
     
 //    public void refreshUser(User user) {

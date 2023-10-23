@@ -62,16 +62,9 @@
 				</li>
 				-->
 				
-				<li class="nav-item pointer" style="position: relative; z-index: 10;">
-				    <!-- New dropdown for Social -->
-				    <a th:if="${page == 'social' || page == 'addFriends' || page == 'inbox'}" class="submit4 nav-link dropdown-toggle active" data-bs-toggle="dropdown"><span>Social</span></a>
-				    <a th:unless="${page == 'social' || page == 'addFriends' || page == 'inbox'}" class="submit4 nav-link dropdown-toggle" data-bs-toggle="dropdown"><span>Social</span></a>
-				    <div class="dropdown-menu dropdown-menu-end dropdown-menu-dark" style="text-align: center;">
-				        <a th:if="${page == 'addFriends'}" class="submit4 nav-link active" th:href="@{/friends/addFriends}"><span>Add Friends</span></a>
-				        <a th:unless="${page == 'addFriends'}" class="submit4" th:href="@{/friends/addFriends}"><span>Add Friends</span></a>
-				        <a th:if="${page == 'inbox'}" class="submit4 nav-link active" th:href="@{/friends/inbox}"><span>Inbox</span></a>
-				        <a th:unless="${page == 'inbox'}" class="submit4" th:href="@{/friends/inbox}"><span>Inbox</span></a>
-				    </div>
+				<li class="nav-item">
+					<a th:if="${page == 'social'}" th:href="@{/Social}" class="submit4 nav-link active"><span>Social</span></a>
+					<a th:unless="${page == 'social'}" th:href="@{/Social}" class="submit4"><span>Social</span></a>
 				</li>
 				
 				<!-- Messages 

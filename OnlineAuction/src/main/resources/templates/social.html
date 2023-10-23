@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Social Page</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom Styles -->
+    <link th:href="@{/styles/button.css}" rel="stylesheet" />
+    <link th:href="@{/styles/landing.css}" rel="stylesheet" />
+    <link th:href="@{/styles/employee_page.css}" rel="stylesheet" />
+    <link th:href="@{/styles/social.css}" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+
+    <style>
+    </style>
+    
+</head>
+
+<body>
+
+	<!-- HEADER BAR -->
+    <div th:insert="header :: header" th:unless="${user == null}"></div>
+
+    <!-- Main Content Wrapper -->
+    <div class="container mt-5">
+
+        <!-- Alert for friend request sent -->
+        <div th:if="${requestSent}" class="alert alert-success" role="alert">
+            Friend request has been sent!
+        </div>
+
+        <!-- Alert for error message -->
+        <div th:if="${errorMessage}" class="alert alert-danger" role="alert" th:text="${errorMessage}"></div>
+
+        <!-- Start of Row -->
+        <div class="row mb-5">
+
+			<!-- Left Container: Friends List Section -->
+			<div class="col-md-6">
+			    <div class="container p-4 bg-white rounded shadow">
+			        <h3>Friends List</h3>
+			        
+			        <!-- Search Input for Friends -->
+			        <input type="text" id="friendSearch" placeholder="Search for a friend..." class="form-control mb-3" />
+			        
+			        <ul class="list-group" id="friendList">
+			            <li class="list-group-item friend-item" th:each="friend : ${friends}">
+			                <span th:text="${friend.username}"></span>
+			
+			                <div class="float-end">
+			                    <!-- View Profile Button -->
+								<a th:href="@{'/viewProfile/' + ${friend.id}}" class="btn btn-sm btn-success custom-btn-space">View Profile</a> 
+								
+								<!-- Message Button -->
+								<a th:href="@{/inbox}" class="btn btn-sm btn-primary custom-btn-space">Message</a>
+								
+								<!-- Remove Button -->
+								<form th:action="@{/remove}" method="post" style="display: inline;">
+								    <input type="hidden" th:value="${friend.id}" name="friendId" />
+								    <button class="btn btn-sm btn-danger custom-btn-space" type="submit">Remove</button>
+								</form>
+			                </div>
+			            </li>
+			        </ul>
+			    </div>
+			</div>
+
+            <!-- Right Container: Add Friend & Friend Requests Section -->
+            <div class="col-md-6">
+                <div class="container p-4 bg-white rounded shadow">
+                    <!-- Add Friend Section -->
+                    <h3>
+						Add Friend
+						<i class="fas fa-cog" data-bs-toggle="modal" data-bs-target="#filterModal"></i>
+					</h3>
+					
+                    <form th:action="@{/add}" method="post">
+					    <!-- General input field for adding friends by username or email -->
+					    <div class="searchWrapper">
+						    <input id="addValue" type="text" name="value" placeholder="Enter friend's username" class="form-control mb-3" />
+						    <ul id="searchResults" class="list-group"></ul>
+						</div>
+					    
+					    <!-- Hidden input to capture the current filter type -->
+					    <input type="hidden" name="filterType" id="currentFilterType" value="username" />
+					
+					    <button type="submit" class="btn btn-primary w-100 mb-4">Add Friend</button>
+					</form>
+
+                    <!-- Friend Requests Section -->
+                    <h3>Friend Requests</h3>
+                    <ul class="list-group">
+                        <li class="list-group-item" th:each="request : ${friendRequests}">
+                            <span th:text="${request.sender.username}"></span>
+
+                            <div class="float-end">
+                                <!-- Accept Button -->
+                                <form th:action="@{/acceptRequest}" method="post" style="display: inline;">
+                                    <input type="hidden" th:value="${request.id}" name="requestId" />
+                                    <button class="btn btn-sm btn-success me-2" type="submit">Accept</button>
+                                </form>
+
+                                <!-- Decline Button -->
+                                <form th:action="@{/declineRequest}" method="post" style="display: inline;">
+                                    <input type="hidden" th:value="${request.id}" name="requestId" />
+                                    <button class="btn btn-sm btn-danger" type="submit">Decline</button>
+                                </form>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+	
+	<!-- Filter Modal -->
+	<div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <h5 class="modal-title" id="filterModalLabel">Add Friend via</h5>
+	                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	            </div>
+	            <div class="modal-body">
+	                <div class="form-check">
+	                    <input class="form-check-input" type="radio" name="filterOption" id="filterUsername" value="username" checked>
+	                    <label class="form-check-label" for="filterUsername">Username</label>
+	                </div>
+	                <div class="form-check">
+	                    <input class="form-check-input" type="radio" name="filterOption" id="filterEmail" value="email">
+	                    <label class="form-check-label" for="filterEmail">Email</label>
+	                </div>
+	                <div class="mt-3">
+	                    <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal">Close</button>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+
+   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+   
+   <script>
+	   
+	    $(document).ready(function() {
+			
+			$("#addValue").on("blur", function() {
+		    // Using a timeout here to give a small delay allowing users to click on search results
+		    setTimeout(() => {
+		        clearSearchResults();
+		    	}, 200);
+			});		
+		
+			$("form").on("submit", function() {
+			    clearSearchResults();
+			});
+			
+		    // Update filter preferences when the "Save Preference" button is clicked
+		    $("#filterModal .btn-primary").on("click", function() {
+		        const selectedFilter = $("input[name='filterOption']:checked").val();
+		        if (selectedFilter === "email") {
+		            $("#addValue").attr("placeholder", "Enter friend's email");
+		        } else {
+		            $("#addValue").attr("placeholder", "Enter friend's username");
+		        }
+		        $("#currentFilterType").val(selectedFilter);
+		    });
+		
+		    // Live search as user types in the search box
+		    $("#addValue").on("keyup", function() {
+		        const query = $(this).val();
+		
+		        if (query.length > 2) {
+		            // Assuming you have an endpoint like /searchUsers?query=...
+		      		$.ajax({
+					    url: "/search",
+					    method: "GET",
+					    data: {
+					        query: query,
+					        filterType: $("#currentFilterType").val()
+					    },
+					    success: function(data) {
+					        displaySearchResults(data);
+					    },
+					    error: function(error) {
+					        console.error("Error fetching search results", error);
+					    }
+					});
+		        } else {
+		            // Clear the search results if user input is less than 3 characters
+		            clearSearchResults();
+		        }
+		    });
+		});
+		
+		function displaySearchResults(data) {
+		    const resultsContainer = $("#searchResults");
+		    resultsContainer.empty();
+		
+		    if (data && data.length) {
+		        data.forEach(user => {
+					console.log(user.username);
+		            const listItem = $(`<li class="user-btn">${user.username}</li>`);
+		            listItem.on('click', function() {
+		                // On click of the search result
+		                $("#addValue").val(user.username); // Populate the input with selected username
+		                clearSearchResults(); // Clear the search results
+		            });
+		            resultsContainer.append(listItem);
+		        });
+		    } else {
+		        resultsContainer.append("<li>No results found</li>");
+		    }
+		}
+		
+		function clearSearchResults() {
+		    $("#searchResults").empty();
+		}
+	    
+	</script>
+	<script>
+		$(document).ready(function(){
+	        $("#friendSearch").on("keyup", function() {
+	            var value = $(this).val().toLowerCase();
+	            $("#friendList .friend-item").filter(function() {
+	                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+	            });
+	        });
+    	});
+	</script>
+
+</body>
+
+</html>
