@@ -1026,18 +1026,23 @@ public class EmployeeController {
 
     User editUser = userController.getUser(id, model); // user account to be modified
     
-    // sets status to true or false to correlate to enabled or disabled
-    boolean acctStatus = status.equals("enabled");
+    boolean acctStatus = status.equals("enabled"); // sets status to true or false to correlate to enabled or disabled
 
     // make changes to the account based on parameters
     editUser.setUsername(userName);
-    // only change the password if the admin entered a new password
-    if(password != null && !password.isEmpty()) {
+    
+    System.out.println("password before: " + editUser.getPassword());
+    // only change the password if the admin entered a new password NOT WORKING
+    if (password != null && !password.isEmpty()) {
     	editUser.setPassword(password);
+    	System.out.println("password cond hit");
     }
-    if(passwordConf != "" || passwordConf != null) {
+    if (passwordConf != null && !passwordConf.isEmpty()) {
     	editUser.setPasswordconf(passwordConf);
+    	System.out.println("password conf cond hit");
     }
+    System.out.println("password after: " + editUser.getPassword());
+    
     editUser.setEmail(email);
     editUser.setFirstName(fName);
     editUser.setLastName(lName);
@@ -1089,7 +1094,7 @@ public class EmployeeController {
       
       //userRepository.save(editUser); // trying to fix error once account is enabled again but cannot login
       
-      // add attributes
+      // model attributes
       model.addAttribute("users", getAllUsers());
       model.addAttribute("searchedUser", getSearchedUser());
       model.addAttribute("roleList", roleList);
@@ -1099,19 +1104,9 @@ public class EmployeeController {
       model.addAttribute("page2", page2);
       model.addAttribute("page3", getPage3());
       model.addAttribute("myusers", getMyUserSearch());
-      //model.addAttribute(isEnabled);
-      //model.addAttribute(isDisabled);
-      //System.out.println("Final model addition: " + isEnabled);
     }
     
     return "employee";
-  }
-  
-  @RequestMapping({"/disableUser"})
-  public void disableUser (@RequestParam("id") Long id, Model model){
-	  User editUser = userController.getUser(id, model);
-	  
-	  editUser.setEnabled(false);
   }
 
   @RequestMapping({"/editWidgetHere"})

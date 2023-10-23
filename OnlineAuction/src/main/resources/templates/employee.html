@@ -475,7 +475,7 @@
 						                        </td>
 						                        <!-- search bar -->
 						                        <td style="height: 55px;">
-						                            <input type="text" id="widgetNameInput" name="name" style="width: 97%" placeholder="Search here">
+						                            <input class="form-control" type="text" id="widgetNameInput" name="name" style="width: 97%" placeholder="Search here">
 						                        </td>
 						                        <!-- search button -->
 						                        <td style="height: 55px;">
@@ -644,7 +644,7 @@
 					                        </td>
 					                        <!-- search bar -->
 					                        <td style="height: 55px;">
-					                            <input type="text" id="nameInput" name="userName" style="width: 97%" placeholder="Search here">
+					                            <input class="form-control" type="text" id="nameInput" name="userName" style="width: 97%" placeholder="Search here">
 					                        </td>
 					                        <!-- search button -->
 					                        <td style="height: 55px;">
@@ -668,7 +668,7 @@
 				                                    <th scope="col"><h5>View Outbox</h5></th>
 				                                    <th scope="col"><h5>View Trash</h5></th>
 				                                    <th scope="col"><h5>Edit User</h5></th>
-				                                    <th scope="col"><h5>View User Profile</h5></th>
+				                                    <th scope="col"><h5>View Profile</h5></th>
 				                                </tr>
 				                            </thead>
 				                            <tbody>
@@ -938,7 +938,7 @@
 				<th:block th:switch="${page2}">
 		        	<div th:case="user">
 		          		<form th:action="@{/editUser}" method="post">
-		      				<div style="width: fit-content; height: fit-content; margin-left: auto; margin-right: auto;">
+		      				<div style="height: fit-content; margin-left: auto;">
 		              			<div class="card my-4 mx-4">
 									<div class="card-header">
 										<h2>Edit User:</h2>
@@ -952,51 +952,51 @@
 							                	<div class="col-sm"><b>Password Confirmation</b></div>
 							                </div>
 							                <div class="row">
-							                	<div class="col-sm" style="padding-right: 8px;"><input type="text" name="id" th:value="${searchedUser.id}"></div>
-							                	<div class="col-sm" style="padding-right: 8px;"><input type="text" name="userName" th:value=${searchedUser.username}></div>
-							                	<div class="col-sm" style="padding-right: 8px;"><input type="text" name="password"></div>
-							                	<div class="col-sm" style="padding-right: 8px;"><input type="text" name="passwordConf"></div>
+							                	<div class="col-sm" style="padding-right: 8px;"><input class="form-control" type="text" name="id" th:value="${searchedUser.id}"></div>
+							                	<div class="col-sm" style="padding-right: 8px;"><input class="form-control" type="text" name="userName" th:value=${searchedUser.username}></div>
+							                	<div class="col-sm" style="padding-right: 8px;"><input class="form-control" type="text" name="password" placeholder="Enter password"></div>
+							                	<div class="col-sm" style="padding-right: 8px;"><input class="form-control" type="text" name="passwordConf" placeholder="Enter password conf"></div>
 							                </div>
-							                <div class="row">
+							                <div class="row" style="margin-top: 1%;">
 							                	<div class="col-sm"><b>Email Address</b></div>
 							                	<div class="col-sm"><b>First Name</b></div>
 							                	<div class="col-sm"><b>Last Name</b></div>
 							                	<div class="col-sm"><b>Phone Number</b></div>
 							                </div>
 							                <div class="row">
-							                	<div class="col-sm" style="padding-right: 8px;"><input type="text" name="email" th:value=${searchedUser.email}></div>
-							                	<div class="col-sm" style="padding-right: 8px;"><input type="text" name="fName" th:value=${searchedUser.firstName}></div>
-							                	<div class="col-sm" style="padding-right: 8px;"><input type="text" name="lName" th:value=${searchedUser.lastName}></div>
-							                	<div class="col-sm" style="padding-right: 8px;"><input type="text" name="phoneNumber" th:value=${searchedUser.phoneNumber}></div>
+							                	<div class="col-sm" style="padding-right: 8px;"><input class="form-control" type="text" name="email" th:value=${searchedUser.email}></div>
+							                	<div class="col-sm" style="padding-right: 8px;"><input class="form-control" type="text" name="fName" th:value=${searchedUser.firstName}></div>
+							                	<div class="col-sm" style="padding-right: 8px;"><input class="form-control" type="text" name="lName" th:value=${searchedUser.lastName}></div>
+							                	<div class="col-sm" style="padding-right: 8px;"><input class="form-control" type="text" name="phoneNumber" th:value=${searchedUser.phoneNumber}></div>
 							                </div>
-							                <div class="row">
+							                <div class="row" style="margin-top: 1%;">
 							                  	<div class="col-sm"><b>Country Code</b></div>
 							                  	<div class="col-sm"><b>Role</b></div>
 							                  	<div class="col-sm"><b>Email Verification</b></div>
 							                  	<div class="col-sm"><b>Display Name</b></div>
 							                </div>
 							                <div class="row">
-							                  	<div class="col-sm" style="padding-right: 8px;"><input type="text" name="cc" th:value=${searchedUser.countryCode}></div>
-							                  	<div class="col-sm" style="padding-right: 8px;"><input type="text" name="role" th:value=${searchedUser.role}></div>
-							                  	<div class="col-sm" style="padding-right: 8px;"><input type="text" name="emailVerification" th:value=${searchedUser.emailVerification}></div>
-							                  	<div class="col-sm" style="padding-right: 8px;"><input type="text" name="dispName" th:value=${searchedUser.displayName}></div>
+							                  	<div class="col-sm" style="padding-right: 8px;"><input class="form-control" type="text" name="cc" th:value=${searchedUser.countryCode}></div>
+							                  	<div class="col-sm" style="padding-right: 8px;"><input class="form-control" type="text" name="role" th:value=${searchedUser.role}></div>
+							                  	<div class="col-sm" style="padding-right: 8px;"><input class="form-control" type="text" name="emailVerification" th:value=${searchedUser.emailVerification}></div>
+							                  	<div class="col-sm" style="padding-right: 8px;"><input class="form-control" type="text" name="dispName" th:value=${searchedUser.displayName} placeholder="Enter display name"></div>
 							                </div>
-							                <div class="row">
+							                <div class="row" style="margin-top: 1%;">
 							                  	<div class="col-sm"><b>User Description</b></div>
 							                  	<div class="col-sm"><b>Creation Date</b></div>
-							                  	<div class="col-sm"><b>User Status</b></div>
-							                  	<div></div>
-							                  	
+							                  	<div class="col-sm"><b>Set User Status</b></div>
+							                  	<div class="col-sm"></div>
 							                </div>
 							                <div class="row">
-							                  	<div class="col-sm" style="padding-right: 8px;"><input type="text" name="userDesc" th:value=${searchedUser.userDescription}></div>
-							                  	<div class="col-sm" style="padding-right: 8px;"><input type="text" name="creationDate" th:value=${searchedUser.creationDate}></div>
+							                  	<div class="col-sm" style="padding-right: 8px;"><input class="form-control" type="text" name="userDesc" th:value=${searchedUser.userDescription}></div>
+							                  	<div class="col-sm" style="padding-right: 8px;"><input class="form-control" type="text" name="creationDate" th:value=${searchedUser.creationDate}></div>
 							                  	<div class="form-group col-sm">
 											        <select class="form-select" id="statusDropdown" name="status">
 											            <option value="enabled">Enabled</option>
 											            <option value="disabled">Disabled</option>
 											        </select>
 											    </div>
+											    <div class="col-sm"></div>
 												<script>
 													document.getElementById('statusDropdown').addEventListener('change', function () {
 													    var selectedValue = this.value;
@@ -1004,7 +1004,7 @@
 													});
 												</script>
 							                  	<td colspan="1" style="display: flex; justify-content: space-between; margin-top: 1%; height: 55px;">
-													<button class="btn btn-outline-danger" type="button" onclick="location.href='/searchButton'">Cancel</button> <!-- back -->
+													<button class="btn btn-outline-danger" type="button" onclick="location.href='/searchButton'">Discard Changes</button> <!-- back -->
 													<input type="submit" class="btn btn-outline-success" value="Save Changes"/>
 												</td>
 							                </div>
@@ -1180,7 +1180,7 @@
 		            <form th:action="@{/viewMarketListing/deleteListing/{listing-id}(listing-id=${searchedMarkets.id})}" method="post" action="#">
 		            	<div class ="card my-4 mx-4">
 		              		<div class="card-body" style="padding-top: 24px;">
-		              			<div class="card" style="width: fit-content; height: fit-content; float:left">
+		              			<div class="card" style="height: fit-content;">
 									<div class="card-header">
 										<h2>Listing Info</h2>
 									</div>
