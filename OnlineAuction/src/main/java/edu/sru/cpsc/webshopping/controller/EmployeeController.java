@@ -46,6 +46,7 @@ import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 import edu.sru.cpsc.webshopping.repository.applicant.ApplicantRepository;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
 import edu.sru.cpsc.webshopping.repository.widgets.WidgetRepository;
+import edu.sru.cpsc.webshopping.service.CategoryService;
 import edu.sru.cpsc.webshopping.service.TicketService;
 import edu.sru.cpsc.webshopping.service.UserService;
 import edu.sru.cpsc.webshopping.util.constants.TimeConstants;
@@ -71,6 +72,8 @@ public class EmployeeController {
   private final EmailController emailController;
   private final WidgetRepository widgetRepository;
   private final CategoryController categories;
+  @Autowired
+  private CategoryService categoryService;
   private String page;
   private String mailboxPage;
   private String page2;
@@ -996,26 +999,21 @@ public class EmployeeController {
     return "employee";
   }
 
+  /*
+   * method for admins to modify user account
+   * params  account information
+   */
   @RequestMapping({"/editUser"})
-  public String editUser(
-      @RequestParam("id") Long id,
-      @RequestParam("userName") String userName,
-      @RequestParam("password") String password,
-      @RequestParam("passwordConf") String passwordConf,
-      @RequestParam("email") String email,
-      @RequestParam("fName") String fName,
-      @RequestParam("lName") String lName,
-      @RequestParam("phoneNumber") String phoneNumber,
-      @RequestParam("cc") String cc,
-      @RequestParam("role") String role,
-      @RequestParam("emailVerification") String emailVerification,
-      @RequestParam("dispName") String dispName,
-      @RequestParam("userDesc") String userDesc,
-      @RequestParam("creationDate") String creationDate,
-      Model model, Principal principal) {
-    setMasterPage("result");
+  public String editUser(@RequestParam("id") Long id, @RequestParam("userName") String userName, @RequestParam("password") String password,
+	  @RequestParam("passwordConf") String passwordConf, @RequestParam("email") String email, @RequestParam("fName") String fName,
+      @RequestParam("lName") String lName, @RequestParam("phoneNumber") String phoneNumber, @RequestParam("cc") String cc, @RequestParam("role") String role,
+      @RequestParam("emailVerification") String emailVerification, @RequestParam("dispName") String dispName, @RequestParam("userDesc") String userDesc,
+      @RequestParam("creationDate") String creationDate, @RequestParam("status") String status, Model model, Principal principal) {
+	setMasterPage("result");
     model.addAttribute("masterPage", getMasterPage());
     User user = userService.getUserByUsername(principal.getName());
+        
+    // check for admin account
     if (user.getRole().equals("ROLE_ADMIN")
         || user.getRole().equals("ROLE_CUSTOMERSERVICE")
         || user.getRole().equals("ROLE_TECHNICALSERVICE")
@@ -1029,11 +1027,21 @@ public class EmployeeController {
       return "employee";
     }
 
-    User editUser = userController.getUser(id, model);
+    User editUser = userController.getUser(id, model); // user account to be modified
+    
+    boolean acctStatus = status.equals("enabled"); // sets status to true or false to correlate to enabled or disabled
+    String oldPass = editUser.getPassword(); // old password used for comparison in user controller's editUser
 
+    // make changes to the account based on parameters
     editUser.setUsername(userName);
-    editUser.setPassword(password);
-    editUser.setPasswordconf(passwordConf);
+    
+    // only change the password if the admin entered a new password NOT WORKING
+    if (password != null && !password.isEmpty()) {
+    	editUser.setPassword(password);
+    	System.out.println("password cond hit");
+    }
+    
+    editUser.setPasswordconf(passwordConf);    
     editUser.setEmail(email);
     editUser.setFirstName(fName);
     editUser.setLastName(lName);
@@ -1044,6 +1052,9 @@ public class EmployeeController {
     editUser.setDisplayName(dispName);
     editUser.setUserDescription(userDesc);
     editUser.setCreationDate(creationDate);
+    editUser.setEnabled(acctStatus); // lock or unlock account
+    
+    // error handling
     List<String> errorString = new ArrayList<>();
     if (userName.length() < 6 || userName.length() > 30) {
       errorString.add(" Enter username between 6-30 characters ");
@@ -1063,21 +1074,23 @@ public class EmployeeController {
     if (passwordConf.length() < 6 || passwordConf.length() > 200) {
       errorString.add(" Enter a password confirmation between 6-200 characters ");
     }
+    
     try {
-      userController.editUser(editUser);
+      userController.editUser(editUser, oldPass);
       setPage3("editSuccess");
     } catch (Exception e) {
 
       model.addAttribute("error", errorString);
       setPage3("editFail");
     } finally {
-
       getAllUsers().clear();
       Iterable<User> allUsersIterator = userController.getAllUsers();
 
       allUsersIterator.iterator().forEachRemaining(u -> getAllUsers().add(u));
       User useradd = new User();
       setSearchedUser(editUser);
+            
+      // model attributes
       model.addAttribute("users", getAllUsers());
       model.addAttribute("searchedUser", getSearchedUser());
       model.addAttribute("roleList", roleList);
@@ -1088,6 +1101,7 @@ public class EmployeeController {
       model.addAttribute("page3", getPage3());
       model.addAttribute("myusers", getMyUserSearch());
     }
+    
     return "employee";
   }
 
@@ -1592,7 +1606,8 @@ public class EmployeeController {
     
     String[] allWidgetCate = new String[getAllWidgets().size()];
     for (int i = 0; i < allWidgetCate.length; i++) {
-      allWidgetCate[i] = getAllWidgets().get(i).getCategory().getName();
+      allWidgetCate[i] = categoryService.generateCategoryStack(getAllWidgets().get(i).getCategory()).toString();
+      System.out.println(allWidgetCate[i]);
     }
 
     model.addAttribute("widgetNames", allWidgetNames);

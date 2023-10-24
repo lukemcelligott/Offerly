@@ -338,13 +338,17 @@ public class UserController {
 		return userRepository.save(user);
 	}
 	@PostMapping("/edit-user")
-	public User editUser(@Valid User user) {
+	public User editUser(@Valid User user, String oldPass) {
 		// Find specific errors
 		// Verifies that the giver user.creationDate is in a valid format
 		//LocalDate.parse(user.getCreationDate());
 		// Find other errors determined by the result
 		
-		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		// only change the password if the new one if different from the old
+		if (user.getPassword() != oldPass) {
+			user.setPassword(passwordEncoder.encode(user.getPassword()));
+		}
+		
 		user.setPasswordconf(util.randomStringGenerator());
 		return userRepository.save(user);
 	}
