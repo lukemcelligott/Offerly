@@ -185,7 +185,9 @@ public class UserDetailsController {
 		model.addAttribute("cardTypes", cardController.getAllCardTypes());
 		// Model for updating Direct Deposit Details
 		DirectDepositDetails_Form details = new DirectDepositDetails_Form();
+		ShippingAddress_Form billingAddress = new ShippingAddress_Form();
 		model.addAttribute("directDepositDetails", details);
+		model.addAttribute("billingAdress", billingAddress);
 		model.addAttribute("user", user);
 		if(user.getDefaultPaymentDetails() != null)
 			model.addAttribute("defaultPaymentDetails", payDetCont.getPaymentDetail(user.getDefaultPaymentDetails().getId(), null));
@@ -197,6 +199,7 @@ public class UserDetailsController {
 			model.addAttribute("savedDetails", payDetCont.getPaymentDetailsByUser(user));
 		model.addAttribute("savedShippingDetails", shippingController.getShippingDetailsByUser(user));
 		model.addAttribute("savedDirectDepositDetails", user.getDirectDepositDetails());
+		model.addAttribute("states", stateDetailsController.getAllStates());
 		model.addAttribute("addNew", addNewPD);
 		model.addAttribute("updateId", updateIdPD);
 		model.addAttribute("update", updatePD);
@@ -224,7 +227,9 @@ public class UserDetailsController {
 		model.addAttribute("cardTypes", cardController.getAllCardTypes());
 		// Model for updating Direct Deposit Details
 		DirectDepositDetails_Form details = new DirectDepositDetails_Form();
+		ShippingAddress_Form billingAddress = new ShippingAddress_Form();
 		model.addAttribute("directDepositDetails", details);
+		model.addAttribute("billingAdress", billingAddress);
 		model.addAttribute("user", user);
 		if(user.getDefaultPaymentDetails() != null)
 			model.addAttribute("defaultPaymentDetails", payDetCont.getPaymentDetail(user.getDefaultPaymentDetails().getId(), null));
@@ -236,6 +241,7 @@ public class UserDetailsController {
 			model.addAttribute("savedDetails", payDetCont.getPaymentDetailsByUser(user));
 		model.addAttribute("savedShippingDetails", shippingController.getShippingDetailsByUser(user));
 		model.addAttribute("savedDirectDepositDetails", user.getDirectDepositDetails());
+		model.addAttribute("states", stateDetailsController.getAllStates());
 		model.addAttribute("addNew", addNewPD);
 		model.addAttribute("updateId", updateIdPD);
 		model.addAttribute("update", updatePD);
@@ -311,6 +317,49 @@ public class UserDetailsController {
 		model.addAttribute("relogin", reloginSA);
 		model.addAttribute("delete", delSA);
 		return "userDetails";
+	}
+
+	@PostMapping(value = "/addBillingAddress", params="submit")
+	public String addShippingDetails(@Validated @ModelAttribute("billingAddress") ShippingAddress_Form details, @ModelAttribute("selectedMenu") SUB_MENU menu, BindingResult result, @RequestParam("stateId") String stateId, Model model, Principal principal) {
+	
+		details.setState(stateDetailsController.getState(stateId));
+		User user = userService.getUserByUsername(principal.getName());
+
+		if (result.hasErrors()) {
+			// Add error messages
+			if(!result.hasErrors() && shippingAddressConstraintsFailed(details))
+				model.addAttribute("shippingError", "Address does not exist");
+			model.addAttribute("shippingDetails", new ShippingAddress_Form());
+			model.addAttribute("user", user);
+			model.addAttribute("states", stateDetailsController.getAllStates());
+			for (FieldError error : result.getFieldErrors()) {
+				model.addAttribute(error.getField() + "Err", error.getDefaultMessage());
+			}
+			if(menu == SUB_MENU.PAYMENT_DETAILS)
+				return "redirect:/userDetails/paymentDetails";
+			else if(menu == SUB_MENU.DEPOSIT_DETAILS)
+				return "redirect:/userDetails/depositDetails";
+			else
+				return "redirect:/userDetails";
+		}
+
+		ShippingAddress shipping = new ShippingAddress();
+		details.setState(stateDetailsController.getState(stateId));
+		shipping.buildFromForm(details);
+		shipping.setUser(user);
+		Set<ShippingAddress> SA = user.getShippingDetails();
+		if(SA == null)
+			SA = new HashSet<ShippingAddress>();
+		SA.add(shipping);
+		user.setShippingDetails(SA);
+		shippingController.addShippingAddress(shipping, user);
+		userService.updateUserProfile(user.getId(), user);
+		if(menu == SUB_MENU.PAYMENT_DETAILS)
+			return "redirect:/userDetails/paymentDetails";
+		else if(menu == SUB_MENU.DEPOSIT_DETAILS)
+				return "redirect:/userDetails/depositDetails";
+		else
+			return "redirect:/userDetails";
 	}
 	
 	/**
@@ -436,6 +485,7 @@ public class UserDetailsController {
 		model.addAttribute("directDepositDetails", details);
 		model.addAttribute("user", user);
 		model.addAttribute("savedShippingDetails", shippingController.getShippingDetailsByUser(user));
+		model.addAttribute("states", stateDetailsController.getAllStates());
 		selectedMenu = SUB_MENU.DEPOSIT_DETAILS;
 		model.addAttribute("selectedMenu", selectedMenu);
 		return "userDetails";
@@ -549,6 +599,7 @@ public class UserDetailsController {
 		}
 		DirectDepositDetails deposit = new DirectDepositDetails();
 		ShippingAddress billingAddress = shippingController.getShippingAddressEntry(details.getBillingAddress());
+		model.addAttribute("states", stateDetailsController.getAllStates());
 		deposit.buildFromForm(details, billingAddress);
 		this.userController.updateDirectDepositDetails(deposit, principal);
 		return "redirect:/userDetails/initializePaymentDetails";
@@ -578,6 +629,7 @@ public class UserDetailsController {
 			loadUserData(model, user);
 			return "userDetails";
 		}
+		model.addAttribute("states", stateDetailsController.getAllStates());
 		this.userController.deleteDirectDepositDetails(user);
 		return "redirect:/userDetails/initializePaymentDetails";
 	}

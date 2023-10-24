@@ -18,7 +18,7 @@ import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 /**
  * jUnit code for testing the MarketListingDomainController class
  */
-@SpringBootTest
+@SpringBootTest(classes = {MarketListingDomainControllerTest.class})
 public class MarketListingDomainControllerTest {
 	@Mock
 	private WidgetController widgetController;

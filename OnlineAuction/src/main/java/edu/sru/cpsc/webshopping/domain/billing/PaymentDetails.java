@@ -10,8 +10,6 @@ import javax.persistence.OneToOne;
 
 import org.springframework.lang.NonNull;
 
-import com.taxjar.model.taxes.Shipping;
-
 import edu.sru.cpsc.webshopping.domain.user.User;
 
 
