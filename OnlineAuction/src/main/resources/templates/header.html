@@ -63,8 +63,16 @@
 				-->
 				
 				<li class="nav-item">
-					<a th:if="${page == 'social'}" th:href="@{/Social}" class="submit4 nav-link active"><span>Social</span></a>
-					<a th:unless="${page == 'social'}" th:href="@{/Social}" class="submit4"><span>Social</span></a>
+				    <a th:if="${page == 'social' or page == 'viewProfile' or page == 'inbox'}" 
+				       th:href="@{/Social}" 
+				       class="submit4 nav-link active">
+				        <span>Social</span>
+				    </a>
+				    <a th:unless="${page == 'social' or page == 'viewProfile' or page == 'inbox'}" 
+				       th:href="@{/Social}" 
+				       class="submit4">
+				        <span>Social</span>
+				    </a>
 				</li>
 				
 				<!-- Messages 

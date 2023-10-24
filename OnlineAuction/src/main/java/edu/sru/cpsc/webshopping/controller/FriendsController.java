@@ -188,14 +188,6 @@ public class FriendsController {
             "messages", messagesList
         );
 
-        // Convert responseBody to JSON and print it
-        try {
-            String responseBodyAsJson = objectMapper.writeValueAsString(responseBody);
-            System.out.println(responseBodyAsJson);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         return ResponseEntity.ok(responseBody);
     }
     
