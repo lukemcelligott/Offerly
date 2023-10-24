@@ -176,8 +176,9 @@ public class FriendsController {
         List<Map<String, Object>> messagesList = messages.stream().map(msg -> {
             Map<String, Object> map = new HashMap<>();
             map.put("content", msg.getContent());
-            map.put("receiverId", msg.getReceiver().getId());
+            //map.put("receiverId", msg.getReceiver().getId());
             map.put("sender", Map.of("id", msg.getSender().getId(), "username", msg.getSender().getUsername())); // Adjust sender to have id and username
+            map.put("receiver",Map.of("id", msg.getReceiver().getId(), "username", msg.getReceiver().getUsername()));
             map.put("timestamp", msg.getSentTimestamp().toString()); // Convert LocalDateTime to string
             return map;
         }).collect(Collectors.toList());
