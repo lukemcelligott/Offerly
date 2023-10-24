@@ -46,6 +46,7 @@ import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 import edu.sru.cpsc.webshopping.repository.applicant.ApplicantRepository;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
 import edu.sru.cpsc.webshopping.repository.widgets.WidgetRepository;
+import edu.sru.cpsc.webshopping.service.CategoryService;
 import edu.sru.cpsc.webshopping.service.TicketService;
 import edu.sru.cpsc.webshopping.service.UserService;
 import edu.sru.cpsc.webshopping.util.constants.TimeConstants;
@@ -71,6 +72,8 @@ public class EmployeeController {
   private final EmailController emailController;
   private final WidgetRepository widgetRepository;
   private final CategoryController categories;
+  @Autowired
+  private CategoryService categoryService;
   private String page;
   private String mailboxPage;
   private String page2;
@@ -1027,22 +1030,18 @@ public class EmployeeController {
     User editUser = userController.getUser(id, model); // user account to be modified
     
     boolean acctStatus = status.equals("enabled"); // sets status to true or false to correlate to enabled or disabled
+    String oldPass = editUser.getPassword(); // old password used for comparison in user controller's editUser
 
     // make changes to the account based on parameters
     editUser.setUsername(userName);
     
-    System.out.println("password before: " + editUser.getPassword());
     // only change the password if the admin entered a new password NOT WORKING
     if (password != null && !password.isEmpty()) {
     	editUser.setPassword(password);
     	System.out.println("password cond hit");
     }
-    if (passwordConf != null && !passwordConf.isEmpty()) {
-    	editUser.setPasswordconf(passwordConf);
-    	System.out.println("password conf cond hit");
-    }
-    System.out.println("password after: " + editUser.getPassword());
     
+    editUser.setPasswordconf(passwordConf);    
     editUser.setEmail(email);
     editUser.setFirstName(fName);
     editUser.setLastName(lName);
@@ -1054,7 +1053,6 @@ public class EmployeeController {
     editUser.setUserDescription(userDesc);
     editUser.setCreationDate(creationDate);
     editUser.setEnabled(acctStatus); // lock or unlock account
-    System.out.println("after: " + editUser.getEnabled());
     
     // error handling
     List<String> errorString = new ArrayList<>();
@@ -1078,7 +1076,7 @@ public class EmployeeController {
     }
     
     try {
-      userController.editUser(editUser);
+      userController.editUser(editUser, oldPass);
       setPage3("editSuccess");
     } catch (Exception e) {
 
@@ -1091,9 +1089,7 @@ public class EmployeeController {
       allUsersIterator.iterator().forEachRemaining(u -> getAllUsers().add(u));
       User useradd = new User();
       setSearchedUser(editUser);
-      
-      //userRepository.save(editUser); // trying to fix error once account is enabled again but cannot login
-      
+            
       // model attributes
       model.addAttribute("users", getAllUsers());
       model.addAttribute("searchedUser", getSearchedUser());
@@ -1610,7 +1606,8 @@ public class EmployeeController {
     
     String[] allWidgetCate = new String[getAllWidgets().size()];
     for (int i = 0; i < allWidgetCate.length; i++) {
-      allWidgetCate[i] = getAllWidgets().get(i).getCategory().getName();
+      allWidgetCate[i] = categoryService.generateCategoryStack(getAllWidgets().get(i).getCategory()).toString();
+      System.out.println(allWidgetCate[i]);
     }
 
     model.addAttribute("widgetNames", allWidgetNames);
