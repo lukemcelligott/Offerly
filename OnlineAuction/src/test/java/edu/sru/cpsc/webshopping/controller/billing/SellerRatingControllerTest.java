@@ -21,7 +21,7 @@ import edu.sru.cpsc.webshopping.repository.user.UserRepository;
 import edu.sru.cpsc.webshopping.service.UserService;
 
 @ExtendWith(MockitoExtension.class)
-@SpringBootTest
+@SpringBootTest(classes = {SellerRatingControllerTest.class})
 public class SellerRatingControllerTest {
 
     @Mock

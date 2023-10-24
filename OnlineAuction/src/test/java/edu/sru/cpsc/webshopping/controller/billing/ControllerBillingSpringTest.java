@@ -15,7 +15,7 @@ import edu.sru.cpsc.webshopping.repository.billing.PaymentDetailsRepository;
 import edu.sru.cpsc.webshopping.repository.billing.PaypalRepository;
 import edu.sru.cpsc.webshopping.repository.billing.StateDetailsRepository;
 
-@SpringBootTest
+@SpringBootTest(classes = {ControllerBillingSpringTest.class})
 @AutoConfigureMockMvc
 //@ContextConfiguration(classes = ControllerBillingSpringTest.class, loader = AnnotationConfigContextLoader.class)
 

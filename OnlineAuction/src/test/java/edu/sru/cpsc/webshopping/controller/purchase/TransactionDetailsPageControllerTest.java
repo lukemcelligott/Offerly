@@ -40,7 +40,7 @@ import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 import edu.sru.cpsc.webshopping.repository.billing.StateDetailsRepository;
 import edu.sru.cpsc.webshopping.service.UserService;
 
-@SpringBootTest
+@SpringBootTest(classes = {TransactionDetailsPageControllerTest.class})
 @AutoConfigureMockMvc
 public class TransactionDetailsPageControllerTest {
 	@Autowired

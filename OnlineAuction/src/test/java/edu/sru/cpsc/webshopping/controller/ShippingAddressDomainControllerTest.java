@@ -10,13 +10,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
 import edu.sru.cpsc.webshopping.domain.billing.ShippingAddress;
 import edu.sru.cpsc.webshopping.repository.billing.ShippingAddressRepository;
 
-@WebMvcTest(ShippingAddressDomainController.class)
+@SpringBootTest(classes = {ShippingAddressDomainControllerTest.class})
 public class ShippingAddressDomainControllerTest {
 	@Autowired
 	private MockMvc mvc;

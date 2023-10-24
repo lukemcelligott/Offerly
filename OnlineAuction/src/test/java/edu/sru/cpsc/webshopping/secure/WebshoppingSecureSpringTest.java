@@ -2,37 +2,41 @@ package edu.sru.cpsc.webshopping.secure;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-import edu.sru.cpsc.webshopping.controller.StatisticsDomainController;
-import edu.sru.cpsc.webshopping.controller.UserController;
+import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
 
+@SpringBootTest(classes = {WebshoppingSecureSpringTest.class})
 public class WebshoppingSecureSpringTest {
 	
-	public WebshoppingSecureSpringTest(UserRepository userRepository, UserController userController,StatisticsDomainController statControl) {}
-	    @TestConfiguration
-	    static class UserDetailsServiceImplTestContextConfiguration {
-	 
-	        @Bean
-	        public UserDetailsService userDetailsService() {
-	            return new UserDetailsServiceImpl();
-	        }
-	    }
+	@TestConfiguration
+	static class UserDetailsServiceImplTestContextConfiguration {
+	
+		@Bean
+		public UserDetailsService userDetailsService() {
+			return new UserDetailsServiceImpl();
+		}
+	}
 	
 	@MockBean
 	private UserRepository userRepo;
 	
-	@Autowired
+	@MockBean
 	UserDetailsServiceImpl impl;
+
+	@MockBean
+	UserDetails userDetails;
 	
 	@Test
 	public void contextLoads() throws Exception {
@@ -43,9 +47,15 @@ public class WebshoppingSecureSpringTest {
 	void UserDetailsServiceImplTest() {
 		
 		UserDetailsServiceImpl impl = new UserDetailsServiceImpl();
+
+		User userActual = new User();
+		userActual.setUsername("userName");
+
+		when(userRepo.findByUsername("userName")).thenReturn(userActual);
+
 		UserDetails user = impl.loadUserByUsername("userName");
 		
-		assertEquals("userName", user.getUsername());
+		assertSame(userActual.getUsername(), user.getUsername());
 	}
 	
 	@Test
