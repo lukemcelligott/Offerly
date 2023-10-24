@@ -22,13 +22,32 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     
     <!-- jQuery and jQuery UI CSS -->
-	<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
 	
 	<!-- jQuery and jQuery UI JS -->
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
 
-    <style>
+    <style>		
+		/* Style the Autocomplete box container */
+.ui-autocomplete {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #aaa;
+    background-color: #f6f6f6;
+}
+
+/* Style each individual item in the Autocomplete dropdown */
+.ui-menu-item {
+    padding: 8px 12px;
+}
+
+/* Style for the highlighted item when you hover over or navigate with keyboard */
+.ui-menu-item-wrapper.ui-state-active {
+    background-color: #007bff;
+    color: white;
+    border-radius: 3px;
+}
     </style>
     
 </head>
@@ -99,7 +118,6 @@
 					<form th:action="@{/add}" method="post">
 					    <!-- Input field for searching friends by username -->
 					    <div class="searchWrapper">
-					        <!-- No more datalist reference here -->
 					        <input id="addValue" name="value" placeholder="Search by username..." class="form-control mb-3" autocomplete="off" />
 					    </div>
 					    
@@ -143,13 +161,13 @@
 		                    userName: request.term,
 		                },
 		                success: function(data) {
-		                    response(data.map(user => user.username));
+		                    response(data);
 		                }
 		            });
 		        },
-		        minLength: 2, // Trigger search after 2 characters
+		        minLength: 1, 
 		        select: function(event, ui) {
-		            // Optionally do something when an option is selected
+
 		        }
 		    });
 		});

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.validation.Valid;
 
@@ -54,6 +55,8 @@ public class FriendsController {
     
     @Autowired
     private MarketListingRepository marketListingRepository;
+    
+    private final ObjectMapper objectMapper = new ObjectMapper();
     
     @GetMapping("/Social")
     public String getSocialPage(Model model, Principal principal) {
@@ -157,10 +160,8 @@ public class FriendsController {
         model.addAttribute("friend", friend);
         
         return "viewProfile";
-    }
-
-    
-   /* 
+    } 
+   
     @GetMapping("/api/conversations/{friendId}")
     public ResponseEntity<Map<String, Object>> getConversation(@PathVariable Long friendId, Principal principal) {
         User currentUser = userService.getUserByUsername(principal.getName());
@@ -175,7 +176,7 @@ public class FriendsController {
         List<Map<String, Object>> messagesList = messages.stream().map(msg -> {
             Map<String, Object> map = new HashMap<>();
             map.put("content", msg.getContent());
-            map.put("receiverId", currentUser.getId()); // Add the ID of the logged-in user as receiverId
+            map.put("receiverId", msg.getReceiver().getId());
             map.put("sender", Map.of("id", msg.getSender().getId(), "username", msg.getSender().getUsername())); // Adjust sender to have id and username
             map.put("timestamp", msg.getSentTimestamp().toString()); // Convert LocalDateTime to string
             return map;
@@ -186,12 +187,16 @@ public class FriendsController {
             "messages", messagesList
         );
 
-        System.out.println("Big Papa Pie");
+        // Convert responseBody to JSON and print it
+        try {
+            String responseBodyAsJson = objectMapper.writeValueAsString(responseBody);
+            System.out.println(responseBodyAsJson);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         return ResponseEntity.ok(responseBody);
     }
-
-    */
     
     @PostMapping("/acceptRequest")
     public String acceptFriendRequest(@RequestParam("requestId") Long requestId) {
@@ -228,16 +233,12 @@ public class FriendsController {
         return "redirect:/Social";
     }
     
-    @PostMapping("/searchUser")
-    public String searchUser(@RequestParam("userName") String userName, Model model, Principal principal) {
-        User currentUser = userService.getUserByUsername(principal.getName());
-        
+    @GetMapping("/searchUser")
+    @ResponseBody
+    public List<String> searchUser(@RequestParam("userName") String userName) {
         List<User> matchedUsers = userService.searchUsers(userName, "name");
         
-        model.addAttribute("currentUser", currentUser);
-        model.addAttribute("matchedUsers", matchedUsers);
-
-        return "social"; 
+        return matchedUsers.stream().map(User::getUsername).collect(Collectors.toList());
     }
     
     
