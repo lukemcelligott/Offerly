@@ -80,14 +80,14 @@ public class FriendsController {
    
     @PostMapping("/add")
     public String addFriend(@RequestParam(name="value", required=false) String value,
-                            @RequestParam(name="filterType", required=false, defaultValue="username") String filterType,
+                            @RequestParam(name="filterType", required=false, defaultValue="name") String filterType,
                             Model model,
                             RedirectAttributes redirectAttributes,
                             Principal principal) {
 
         User currentUser = userService.getUserByUsername(principal.getName());
 
-        if (value != null && currentUser.getUsername().equals(value) && "username".equals(filterType)) {
+        if (value != null && currentUser.getUsername().equals(value) && "name".equals(filterType)) {
             redirectAttributes.addFlashAttribute("errorMessage", "You cannot send a friend request to yourself!");
             return "redirect:/Social";
         }
@@ -228,12 +228,19 @@ public class FriendsController {
     
     @GetMapping("/searchUser")
     @ResponseBody
-    public List<String> searchUser(@RequestParam("userName") String userName) {
-        List<User> matchedUsers = userService.searchUsers(userName, "name");
+    public List<String> searchUser(@RequestParam("value") String value, @RequestParam("filterType") String filterType) {
+        List<User> matchedUsers;
         
-        return matchedUsers.stream().map(User::getUsername).collect(Collectors.toList());
-    }
-    
-    
+        // Check the filterType and call the appropriate service method
+        if ("name".equals(filterType)) {
+            matchedUsers = userService.searchUsers(value, "name");
+            return matchedUsers.stream().map(User::getUsername).collect(Collectors.toList());
+        } else if ("email".equals(filterType)) {
+            matchedUsers = userService.searchUsers(value, "email");
+            return matchedUsers.stream().map(User::getEmail).collect(Collectors.toList());
+        } else {
+            throw new IllegalArgumentException("Invalid filter type");
+        }
+    } 
   
 }

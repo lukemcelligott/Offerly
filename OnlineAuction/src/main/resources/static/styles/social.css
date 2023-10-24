@@ -79,3 +79,8 @@ ul.list-group li:hover {
     margin: 0 5px; /* Adjust as necessary */
     padding: 2px 10px; /* Reducing padding to make buttons smaller */
 }
+
+.fas.fa-cog:hover {
+    color: #0D6EFD;
+    cursor: pointer;
+}

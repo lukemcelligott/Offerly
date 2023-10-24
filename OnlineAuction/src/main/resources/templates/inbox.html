@@ -32,11 +32,11 @@
 <body>
 
     <!-- HEADER BAR -->
-    <div th:insert="header :: header" th:unless="${user == null}"></div>
-
-    <div class="container mt-5">
-        <div class="row">
-            <!-- Friends List Section -->
+	<div th:insert="header :: header" th:unless="${user == null}"></div>
+	
+	<div class="container mt-5">
+	    <div class="row">
+	        <!-- Friends List Section -->
 			<div class="col-md-2">			
 			    <h3>Friends List</h3>
 			    
@@ -48,7 +48,13 @@
 			            th:each="friend : ${friends}" 
 			            th:id="${'friend-' + friend.id}" 
 			            th:onclick="'highlightSelectedFriend(this); loadConversation(' + ${friend.id} + ')'">
-			        <span th:text="${friend.username}"></span>
+			        <!-- Friend's Image -->
+			        <div class="d-inline-block mr-2" style="vertical-align: middle;">
+			            <img th:if="${friend.userImage != null}" th:src="@{/images/userImages/{icon}(icon=${friend.userImage})}" class="img-fluid" style="max-height: 40px; max-width: 40px;"></img>
+			            <img th:unless="${friend.userImage != null}" th:src="@{/images/userImages/default_user_icon.png}" class="img-fluid" style="max-height: 40px; max-width: 40px;"></img>
+			        </div>
+			        <!-- Friend's Username -->
+			        <span th:text="${friend.username}" style="vertical-align: middle;"></span>
 			        </li>
 			    </ul>
 			</div>

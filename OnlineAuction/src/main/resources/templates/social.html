@@ -29,25 +29,26 @@
 	<script src="https://code.jquery.com/ui/1.13.0/jquery-ui.min.js"></script>
 
     <style>		
-		/* Style the Autocomplete box container */
-.ui-autocomplete {
-    max-height: 200px;
-    overflow-y: auto;
-    border: 1px solid #aaa;
-    background-color: #f6f6f6;
-}
+		
+	.ui-autocomplete {
+	    max-height: 200px;
+	    overflow-y: auto;
+	    border: 1px solid #aaa;
+	    background-color: #f6f6f6;
+	}
+	
+	
+	.ui-menu-item {
+	    padding: 8px 12px;
+	}
+	
+	
+	.ui-menu-item-wrapper.ui-state-active {
+	    background-color: #007bff;
+	    color: white;
+	    border-radius: 3px;
+	}
 
-/* Style each individual item in the Autocomplete dropdown */
-.ui-menu-item {
-    padding: 8px 12px;
-}
-
-/* Style for the highlighted item when you hover over or navigate with keyboard */
-.ui-menu-item-wrapper.ui-state-active {
-    background-color: #007bff;
-    color: white;
-    border-radius: 3px;
-}
     </style>
     
 </head>
@@ -80,8 +81,16 @@
 			        <input type="text" id="friendSearch" placeholder="Search for a friend..." class="form-control mb-3" />
 			        
 			        <ul class="list-group" id="friendList">
-			            <li class="list-group-item friend-item" th:each="friend : ${friends}">
-			                <span th:text="${friend.username}"></span>
+					    <li class="list-group-item friend-item" th:each="friend : ${friends}">
+					
+					    	<!-- Friend's Image -->
+					        <div class="d-inline-block me-2">
+					            <img th:if="${friend.userImage != null}" th:src="@{/images/userImages/{icon}(icon=${friend.userImage})}" class="img-fluid" style="max-height: 50px; max-width: 50px;"></img>
+					            <img th:unless="${friend.userImage != null}" th:src="@{/images/userImages/default_user_icon.png}" class="img-fluid" style="max-height: 50px; max-width: 50px;"></img>
+					        </div>
+					
+					        <!-- Friend's Username -->
+					        <span th:text="${friend.username}"></span>
 			
 			                <div class="float-end">
 							    <!-- View Profile Button -->
@@ -110,17 +119,19 @@
             <!-- Right Container: Add Friend & Friend Requests Section -->
             <div class="col-md-6">
                 <div class="container p-4 bg-white rounded shadow">
-                    <!-- Add Friend Section -->
-					<h3>
-					    Add Friend					    
-					</h3>
+                	<!-- Add Friend Section -->
+			        <h3>
+			            Add Friend
+			            <i class="fas fa-cog ml-2" data-bs-toggle="modal" data-bs-target="#addFriendModal"></i>
+			        </h3>
 					
 					<form th:action="@{/add}" method="post">
-					    <!-- Input field for searching friends by username -->
+					    <!-- Input field for searching friends by username or email -->
 					    <div class="searchWrapper">
 					        <input id="addValue" name="value" placeholder="Search by username..." class="form-control mb-3" autocomplete="off" />
+					        <!-- Hidden field to specify search type (username or email) -->
+					        <input type="hidden" name="filterType" id="filterType" value="name" />
 					    </div>
-					    
 					    <button type="submit" class="btn btn-primary w-100 mb-4">Add Friend</button>
 					</form>
 
@@ -149,16 +160,49 @@
             </div>
         </div>
     </div>
+    
+    <!-- Modal for selecting add friend method -->
+    <div class="modal fade" id="addFriendModal" tabindex="-1" role="dialog" aria-labelledby="addFriendModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addFriendModalLabel">Add Friend via</h5>
+                    	<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+						    <span aria-hidden="true">&times;</span>
+						</button>
+                </div>
+                <div class="modal-body">
+                	<div class="form-check">
+					    <input class="form-check-input" type="radio" name="addFriendVia" id="viaUsername" value="username" checked>
+					    <label class="form-check-label" for="viaUsername">
+					        Username
+					    </label>
+					</div>
+					<div class="form-check">
+					    <input class="form-check-input" type="radio" name="addFriendVia" id="viaEmail" value="email">
+					    <label class="form-check-label" for="viaEmail">
+					        Email
+					    </label>
+					</div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 	<script>
 		$(document).ready(function() {
+		    // Autocomplete logic
 		    $("#addValue").autocomplete({
 		        source: function(request, response) {
+		            // Get the filter type from the hidden input
+		            var filterType = $('#filterType').val();
+		
 		            $.ajax({
 		                url: "/searchUser",
 		                dataType: "json",
 		                data: {
-		                    userName: request.term,
+		                    value: request.term,
+		                    filterType: filterType
 		                },
 		                success: function(data) {
 		                    response(data);
@@ -167,10 +211,22 @@
 		        },
 		        minLength: 1, 
 		        select: function(event, ui) {
-
+		            // Handle the selection if needed
 		        }
 		    });
+		
+		    // Event listeners to change the placeholder and hidden input value based on modal selection
+		    $('#viaUsername').on('click', function() {
+		        $('#addValue').attr('placeholder', 'Search by username...');
+		        $('#filterType').val('name');
+		    });
+		
+		    $('#viaEmail').on('click', function() {
+		        $('#addValue').attr('placeholder', 'Search by email...');
+		        $('#filterType').val('email');
+		    });
 		});
+
 		
 	</script>
 	<script>

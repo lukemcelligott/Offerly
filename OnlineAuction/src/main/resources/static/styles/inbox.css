@@ -117,3 +117,12 @@ margin: 10px 0;
     display: block;
     margin-bottom: -25px; /* Adjust as needed */
 }
+
+.friend-profile-img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 5px; /* small border-radius to make it look neater */
+    margin-right: 10px; /* space between image and username */
+    vertical-align: middle; /* to align it in the middle with the username */
+}
