@@ -89,14 +89,6 @@ public class MarketListing {
 	public void setPricePerItem(BigDecimal pricePerItem) {
 		this.pricePerItem = pricePerItem;
 	}
-	
-	/* public BigDecimal getAuctionPrice() {
-		return auctionPrice;
-	}
-
-	public void setAuctionPrice(BigDecimal auctionPrice) {
-		this.auctionPrice = auctionPrice;
-	} */
 
 	public long getQtyAvailable() {
 		return qtyAvailable;

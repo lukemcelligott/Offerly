@@ -24,7 +24,30 @@ public class ImagePacket{
 
 	@OneToMany(mappedBy = "imagePacket")
 	private Set<Image> images = new HashSet<>();
-	
-	
-	
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Set<Image> getImages() {
+		return images;
+	}
+
+	public void addImage(Image image) {
+		this.images.add(image);
+		image.setImagePacket(this);
+	}
+
+	public void removeImage(Image image) {
+		this.images.remove(image);
+		image.setImagePacket(null);
+	}
+
+	public void setImages(Set<Image> images) {
+		this.images = images;
+	}
 }

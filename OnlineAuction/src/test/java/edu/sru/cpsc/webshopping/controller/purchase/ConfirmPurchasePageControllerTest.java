@@ -43,7 +43,7 @@ import edu.sru.cpsc.webshopping.service.UserService;
 /**
  * jUnit code for testing the ConfirmPurchasePage
  */
-@SpringBootTest
+@SpringBootTest(classes = {ConfirmPurchasePageControllerTest.class})
 @AutoConfigureMockMvc
 public class ConfirmPurchasePageControllerTest {
 	@Autowired

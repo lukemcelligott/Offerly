@@ -39,7 +39,7 @@ import edu.sru.cpsc.webshopping.service.UserService;
 /**
  * jUnit code for testing the ViewMarketListing page
  */
-@SpringBootTest
+@SpringBootTest(classes = {MarketListingPageControllerTest.class})
 @AutoConfigureMockMvc
 public class MarketListingPageControllerTest {
 	@Autowired

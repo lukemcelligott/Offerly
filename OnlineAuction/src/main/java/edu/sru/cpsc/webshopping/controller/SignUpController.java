@@ -479,17 +479,17 @@ public class SignUpController {
 	public String createShippingDetails(@Validated @ModelAttribute("shippingDetails") ShippingAddress_Form details, BindingResult result, @RequestParam("stateId") String stateId, @RequestParam("userId") Long userId, Model model) {
 		/* https://www.geeksforgeeks.org/how-to-call-private-method-from-another-class-in-java-with-help-of-reflection-api/ */
 		/* trying to get loadUser from UserDetailsController */
-		Method m = null;
-		try {
-			m = UserDetailsController.class.getDeclaredMethod("loadUserData", Model.class);
-			m.setAccessible(true);
-		} catch (NoSuchMethodException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		Method m = null;
+//		try {
+//			m = UserDetailsController.class.getDeclaredMethod("loadUserData", Model.class);
+//			m.setAccessible(true);
+//		} catch (NoSuchMethodException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (SecurityException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
 		//selectedMenu = SUB_MENU.SHIPPING_DETAILS;
 		details.setState(stateDetailsController.getState(stateId));
@@ -521,18 +521,18 @@ public class SignUpController {
 			
 			// https://www.geeksforgeeks.org/how-to-call-private-method-from-another-class-in-java-with-help-of-reflection-api/
 			/* trying to invoke loadUser from UserDetailsController */
-			try {
-				m.invoke(userDetController, model);
-			} catch (IllegalAccessException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}			
+//			try {
+//				m.invoke(userDetController, model);
+//			} catch (IllegalAccessException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (IllegalArgumentException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			} catch (InvocationTargetException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}			
 			return "newUserShipping";
 		}
 		ShippingAddress shipping = new ShippingAddress();
