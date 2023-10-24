@@ -87,14 +87,17 @@ public class FriendsController {
 
         User currentUser = userService.getUserByUsername(principal.getName());
 
-        if (value != null && currentUser.getUsername().equals(value) && "name".equals(filterType)) {
-            redirectAttributes.addFlashAttribute("errorMessage", "You cannot send a friend request to yourself!");
-            return "redirect:/Social";
-        }
+        if (value != null && (
+        	    ("name".equals(filterType) && currentUser.getUsername().equals(value)) || 
+        	    ("email".equals(filterType) && currentUser.getEmail().equals(value))
+        	)) {
+        	    redirectAttributes.addFlashAttribute("errorMessage", "You cannot send a friend request to yourself!");
+        	    return "redirect:/Social";
+        	}
 
         User friendToAdd = null;
 
-        if ("username".equals(filterType)) {
+        if ("name".equals(filterType)) {
             friendToAdd = userRepository.findByUsername(value);
         } else if ("email".equals(filterType)) {
             friendToAdd = userRepository.findByEmail(value);

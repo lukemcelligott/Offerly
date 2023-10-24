@@ -194,7 +194,15 @@
 	        ('0' + hours).slice(-2) + ':' + 
 	        minutes + period;
 	
-	    messageDiv.textContent = `[${formattedTimestamp}] ${senderName}: ${message.content}`;
+	    const timestampText = document.createTextNode(`[${formattedTimestamp}] `);
+		const senderNameElem = document.createElement('strong'); // using <strong> for bold
+		senderNameElem.textContent = `${senderName}: `;
+		const messageContentText = document.createTextNode(message.content);
+		
+		// Append them to the messageDiv
+		messageDiv.appendChild(timestampText);
+		messageDiv.appendChild(senderNameElem);
+		messageDiv.appendChild(messageContentText);
 	    chatBox.appendChild(messageDiv);
 	}
 	
