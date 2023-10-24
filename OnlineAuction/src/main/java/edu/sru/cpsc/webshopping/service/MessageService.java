@@ -1,6 +1,8 @@
 package edu.sru.cpsc.webshopping.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +22,18 @@ public class MessageService {
     }
     
     public List<SocialMessage> getAllMessagesForUser(User user1, User user2) {
-        return messageRepository.findAllBySenderAndReceiver(user1, user2);
+        List<SocialMessage> user1ToUser2Messages = messageRepository.findAllBySenderAndReceiver(user1, user2);
+        List<SocialMessage> user2ToUser1Messages = messageRepository.findAllBySenderAndReceiver(user2, user1);
+        
+        List<SocialMessage> allMessages = new ArrayList<>(user1ToUser2Messages);
+        allMessages.addAll(user2ToUser1Messages);
+        
+        //Sort the messages by timestamp
+        allMessages.sort(Comparator.comparing(SocialMessage::getSentTimestamp));
+        
+        return allMessages;
     }
+
     
     public List<SocialMessage> getUnreadMessagesForUser(User recipient) {
         return messageRepository.findByReceiverAndIsReadFalse(recipient);
