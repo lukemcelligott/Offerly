@@ -244,7 +244,7 @@ public class UserController {
 			throw new IllegalStateException("Error updating payment details: User not logged in.");
 		}
 		// Encode fields
-		details.setAccountholderName(passwordEncoder.encode(details.getAccountholderName()));
+		// details.setAccountholderName(passwordEncoder.encode(details.getAccountholderName()));
 		details.setAccountNumber(passwordEncoder.encode(details.getAccountNumber()));
 		details.setRoutingNumber(passwordEncoder.encode(details.getRoutingNumber()));
 		//details.setBankName(passwordEncoder.encode(details.getBankName()));

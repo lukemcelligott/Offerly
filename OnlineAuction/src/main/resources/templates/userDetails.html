@@ -452,42 +452,63 @@
 				<form method="post" action="#" th:if="${selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).DEPOSIT_DETAILS}" th:action="@{/submitDepositDetailsAction}" th:object="${directDepositDetails}">
 					<div class="row">
 						<div class="col-md-6 mb-3">
-							<label for="ddBillingAddress" class="input-group-text">Billing Address:</label>
-							<select class="form-select" id="ddBillingAddress" name="billingAddress">
-							<option value="">-- Saved Addresses: --</option>
-							<option th:each="address : ${savedShippingDetails}" th:value="${address.id}" th:text="${address.streetAddress + ', ' + address.city + ', ' + address.state.stateName + ' ' + address.postalCode}"></option>
-							</select>
+							<label for="bankName" class="form-label">Bank Name:</label>
+							<input class="form-control" name="bankName" type="text" field="*{bankName}" th:value="${savedDirectDepositDetails != null ? savedDirectDepositDetails.bankName : ''}">
+							<p th:if="${#fields.hasErrors('bankName')}" th:errors="*{bankName}"></p>
 						</div>
 						<div class="col-md-6 mb-3">
-							<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#billingAddressModal">Add a New Billing Address</button>
+							<label class="form-label" for="state">Bank State</label>
+							<select class="form-select" id="stateId" name="stateId">
+								<option th:each="state : ${states}" th:value="${state.stateName}" th:text="${state.stateName}" th:selected="${savedDirectDepositDetails != null and savedDirectDepositDetails.bankAddress.state.stateName == state.stateName}"></option>
+							</select>
+							<p th:if="${#fields.hasErrors('state')}" th:errors="*{state}"></p>
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-md-6 mb-3">
-							<!-- Account holder Name -->
-							<label class="form-label" for="accountholderName">Account holder Name</label>
-							<input class="form-control" type="text" th:field="*{accountholderName}">
-							<p th:if="${#fields.hasErrors('accountholderName')}" th:errors="*{accountholderName}"></p>
+							<label class="form-label" for="streetAddress">Bank Address</label>
+							<input class="form-control" name="streetAddress" type="text" field="*{streetAddress}" th:value="${savedDirectDepositDetails != null ? savedDirectDepositDetails.bankAddress.streetAddress : ''}">
+							<p th:if="${#fields.hasErrors('streetAddress')}" th:errors="*{streetAddress}"></p>
 						</div>
 						<div class="col-md-6 mb-3">
-							<!-- Routing Number -->
-							<label class="form-label" for="routingNumber">Routing Number</label>
-							<input class="form-control" type="number" th:field="*{routingNumber}">
-							<p th:if="${#fields.hasErrors('routingNumber')}" th:errors="*{routingNumber}"></p>
+							<label class="form-label" for="extraLocationInfo">Bank Address Line 2 (optional)</label>
+							<input class="form-control" name="extraLocationInfo" type="text" field="*{extraLocationInfo}" th:value="${savedDirectDepositDetails != null ? savedDirectDepositDetails.bankAddress.extraLocationInfo : ''}">
+							<p th:if="${#fields.hasErrors('extraLocationInfo')}" th:errors="*{extraLocationInfo}"></p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6 mb-3">
+							<label class="form-label" for="postalCode">Bank Postal Code</label>
+							<input type="tel" field="*{postalCode}" name="postalCode" class="form-control" maxlength="5" th:value="${savedDirectDepositDetails != null ? savedDirectDepositDetails.bankAddress.postalCode : ''}"></input>
+							<p th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}"></p>
+						</div>
+						<div class="col-md-6 mb-3">
+							<label class="form-label" for="city">Bank City</label>
+							<input class="form-control" name="city" type="text" field="*{city}" th:value="${savedDirectDepositDetails != null ? savedDirectDepositDetails.bankAddress.city : ''}">
+							<p th:if="${#fields.hasErrors('city')}" th:errors="*{city}"></p>
+						</div>
+					</div>
+					<hr>
+					<div class="row">
+						<div class="col-md-12 mb-3">
+							<!-- Account holder Name -->
+							<label class="form-label" for="accountholderName">Account holder Name</label>
+							<input class="form-control" name="accountholderName" type="text" field="*{accountholderName}" th:value="${savedDirectDepositDetails != null ? savedDirectDepositDetails.accountholderName : ''}">
+							<p th:if="${#fields.hasErrors('accountholderName')}" th:errors="*{accountholderName}"></p>
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-md-6 mb-3">
 							<!-- Account Number -->
 							<label class="form-label" for="accountNumber">Account Number</label>
-							<input class="form-control" type="number" th:field="*{accountNumber}">
+							<input class="form-control" name="accountNumber" type="number" field="*{accountNumber}">
 							<p th:if="${#fields.hasErrors('accountNumber')}" th:errors="*{accountNumber}"></p>
 						</div>
 						<div class="col-md-6 mb-3">
-							<!-- Bank Name -->
-							<label class="form-label" for="bankName">Bank Name</label>
-							<input class="form-control" type="text" th:field="*{bankName}">
-							<p th:if="${#fields.hasErrors('bankName')}" th:errors="*{bankName}"></p>
+							<!-- Routing Number -->
+							<label class="form-label" for="routingNumber">Routing Number</label>
+							<input class="form-control" name="routingNumber" type="number" field="*{routingNumber}" maxlength="9">
+							<p th:if="${#fields.hasErrors('routingNumber')}" th:errors="*{routingNumber}"></p>
 						</div>
 					</div>
 					<div class="d-flex justify-content-center mb-3">

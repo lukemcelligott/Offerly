@@ -47,6 +47,8 @@ import com.google.maps.model.AutocompletePrediction;
 import edu.sru.cpsc.webshopping.controller.billing.CardTypeController;
 import edu.sru.cpsc.webshopping.controller.billing.PaymentDetailsController;
 import edu.sru.cpsc.webshopping.controller.billing.StateDetailsController;
+import edu.sru.cpsc.webshopping.domain.billing.BankAddress;
+import edu.sru.cpsc.webshopping.domain.billing.BankAddress_Form;
 
 /**
 import edu.sru.cpsc.webshopping.controller.purchase.ApiException;
@@ -186,8 +188,10 @@ public class UserDetailsController {
 		// Model for updating Direct Deposit Details
 		DirectDepositDetails_Form details = new DirectDepositDetails_Form();
 		ShippingAddress_Form billingAddress = new ShippingAddress_Form();
+		BankAddress_Form bankAddress = new BankAddress_Form();
 		model.addAttribute("directDepositDetails", details);
 		model.addAttribute("billingAdress", billingAddress);
+		model.addAttribute("bankAddress", bankAddress);
 		model.addAttribute("user", user);
 		if(user.getDefaultPaymentDetails() != null)
 			model.addAttribute("defaultPaymentDetails", payDetCont.getPaymentDetail(user.getDefaultPaymentDetails().getId(), null));
@@ -361,6 +365,44 @@ public class UserDetailsController {
 		else
 			return "redirect:/userDetails";
 	}
+
+	@PostMapping(value = "/addBankAddress", params="submit")
+	public String addBankAddress(@Validated @ModelAttribute("bankAddress") BankAddress_Form details, @ModelAttribute("selectedMenu") SUB_MENU menu, BindingResult result, @RequestParam("stateId") String stateId, Model model, Principal principal) {
+	
+		details.setState(stateDetailsController.getState(stateId));
+		User user = userService.getUserByUsername(principal.getName());
+
+		if (result.hasErrors()) {
+			// Add error messages
+			if(!result.hasErrors() && shippingAddressConstraintsFailed(details))
+				model.addAttribute("shippingError", "Address does not exist");
+			model.addAttribute("bankAddress", new BankAddress_Form());
+			model.addAttribute("user", user);
+			model.addAttribute("states", stateDetailsController.getAllStates());
+			for (FieldError error : result.getFieldErrors()) {
+				model.addAttribute(error.getField() + "Err", error.getDefaultMessage());
+			}
+			if(menu == SUB_MENU.PAYMENT_DETAILS)
+				return "redirect:/userDetails/paymentDetails";
+			else if(menu == SUB_MENU.DEPOSIT_DETAILS)
+				return "redirect:/userDetails/depositDetails";
+			else
+				return "redirect:/userDetails";
+		}
+
+		BankAddress bankAddress = new BankAddress();
+		bankAddress.setState(stateDetailsController.getState(stateId));
+		bankAddress.buildFromForm(details);
+
+		addressService.addBankAddress(bankAddress);
+		userService.updateUserProfile(user.getId(), user);
+		if(menu == SUB_MENU.PAYMENT_DETAILS)
+			return "redirect:/userDetails/paymentDetails";
+		else if(menu == SUB_MENU.DEPOSIT_DETAILS)
+				return "redirect:/userDetails/depositDetails";
+		else
+			return "redirect:/userDetails";
+	}
 	
 	/**
 	 * sets the necessary variables for adding shipping details
@@ -482,7 +524,11 @@ public class UserDetailsController {
 		model.addAttribute("cardTypes", cardController.getAllCardTypes());
 		// Model for updating Direct Deposit Details
 		DirectDepositDetails_Form details = new DirectDepositDetails_Form();
+		BankAddress_Form bankAddress = new BankAddress_Form();
+		DirectDepositDetails savedDetails = user.getDirectDepositDetails();
+		model.addAttribute("savedDirectDepositDetails", savedDetails);
 		model.addAttribute("directDepositDetails", details);
+		model.addAttribute("bankAddress", bankAddress);
 		model.addAttribute("user", user);
 		model.addAttribute("savedShippingDetails", shippingController.getShippingDetailsByUser(user));
 		model.addAttribute("states", stateDetailsController.getAllStates());
@@ -586,6 +632,7 @@ public class UserDetailsController {
 			method = RequestMethod.POST, params="submit")
 	public String sendUpdateDD(
 			@Validated @ModelAttribute("directDepositDetails") DirectDepositDetails_Form details,
+			@RequestParam("stateId") String stateId,
 			BindingResult result, Model model, Principal principal) {
 		User user = userService.getUserByUsername(principal.getName());
 		selectedMenu = SUB_MENU.DEPOSIT_DETAILS;
@@ -594,13 +641,14 @@ public class UserDetailsController {
 			System.out.println("deposit error");
 			model.addAttribute("errMessage", "Your updated direct deposit details has errors.");
 			model.addAttribute("paymentDetails", new PaymentDetails_Form());
+			model.addAttribute("states", stateDetailsController.getAllStates());
 			loadUserData(model, user);
 			return "userDetails";
 		}
-		DirectDepositDetails deposit = new DirectDepositDetails();
-		ShippingAddress billingAddress = shippingController.getShippingAddressEntry(details.getBillingAddress());
+		details.setState(stateDetailsController.getState(stateId));
+		DirectDepositDetails deposit = new DirectDepositDetails(user);
 		model.addAttribute("states", stateDetailsController.getAllStates());
-		deposit.buildFromForm(details, billingAddress);
+		deposit.buildFromForm(details);
 		this.userController.updateDirectDepositDetails(deposit, principal);
 		return "redirect:/userDetails/initializePaymentDetails";
 	}
@@ -1191,6 +1239,10 @@ public class UserDetailsController {
 	public boolean shippingAddressConstraintsFailed(ShippingAddress_Form form) {
 		return !addressExists(form);
 	}
+
+	public boolean shippingAddressConstraintsFailed(BankAddress_Form form) {
+		return !addressExists(form);
+	}
 	
 	
 	/**
@@ -1230,6 +1282,10 @@ public class UserDetailsController {
 	
 	
 	public boolean addressExists(ShippingAddress_Form shipping) {
+	    return addressService.addressExists(shipping);
+	}
+
+	public boolean addressExists(BankAddress_Form shipping) {
 	    return addressService.addressExists(shipping);
 	}
 	
