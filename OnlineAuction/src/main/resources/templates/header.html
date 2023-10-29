@@ -115,33 +115,44 @@
 		<!-- Admin's Header -->
 		<div th:if="${user.role} == ROLE_ADMIN">
 			<ul class="nav nav-pills">
+				<!-- home -->
 				<li class="nav-item">
 					<a th:if="${page == 'begin'}" class="submit4 nav-link active" th:href="@{/employee}"><span>Employee Home</span></a>
 					<a th:unless="${page == 'begin'}" class="submit4" th:href="@{/employee}"><span>Employee Home</span></a>
 				</li>
+				<!-- view users -->
 				<li class="nav-item">
 					<a th:if="${page == 'search'}" class="submit4 nav-link active" th:href="@{/searchButton}"><span>View Users</span></a>
 					<a th:unless="${page == 'search'}" class="submit4" th:href="@{/searchButton}"><span>View Users</span></a>
 				</li>
+				<!-- view tickets -->
 				<li class="nav-item">
-					<a th:if="${page == 'ticket'}" class="submit4 nav-link active" th:href="@{/searchTickets}"><span>View User Tickets</span></a>
-					<a th:unless="${page == 'ticket'}" class="submit4" th:href="@{/searchTickets}"><span>View User Tickets</span></a>
+					<a th:if="${page == 'ticket'}" class="submit4 nav-link active" th:href="@{/searchTickets}"><span>View Tickets</span></a>
+					<a th:unless="${page == 'ticket'}" class="submit4" th:href="@{/searchTickets}"><span>View Tickets</span></a>
 				</li>
+				<!-- view listings -->
 				<li class="nav-item">
-					<a th:if="${page =='searchWidgetSellerMarketListing'}" class="submit4 nav-link active" th:href="@{/searchWidgetButton}"><span>View User Items</span></a>
-					<a th:unless="${page =='searchWidgetSellerMarketListing'}" class="submit4" th:href="@{/searchWidgetButton}"><span>View User Items</span></a>
+					<a th:if="${page =='searchWidgetSellerMarketListing'}" class="submit4 nav-link active" th:href="@{/searchWidgetButton}"><span>View Listings</span></a>
+					<a th:unless="${page =='searchWidgetSellerMarketListing'}" class="submit4" th:href="@{/searchWidgetButton}"><span>View Listings</span></a>
 				</li>
+				<!-- item details -->
 				<li class="nav-item">
 					<a th:if="${page == 'widgetsInfo'}" class="submit4 nav-link active" th:href="@{/widgetsInfo}"><span>Items Details</span></a>
 					<a th:unless="${page == 'widgetsInfo'}" class="submit4" th:href="@{/widgetsInfo}"><span>Items Details</span></a>
 				</li>
+				<!-- add account -->
 				<li class="nav-item">
 					<a th:if="${page == 'create'}" class="submit4 nav-link active" th:href="@{/createButton}"><span>Add Account</span></a>
 					<a th:unless="${page == 'create'}" class="submit4" th:href="@{/createButton}"><span>Add Account</span></a>
 				</li>
+				<!-- social -->
 				<li class="nav-item">
-					<a th:if="${page == 'messages'}" class="submit4 nav-link active" th:href="@{/messages}"><span>My Messages</span></a>
-					<a th:unless="${page == 'messages'}" class="submit4" th:href="@{/messages}"><span>My Messages</span></a>
+				    <a th:if="${page == 'social' or page == 'viewProfile' or page == 'inbox'}" th:href="@{/Social}" class="submit4 nav-link active">
+				        <span>Social</span>
+				    </a>
+				    <a th:unless="${page == 'social' or page == 'viewProfile' or page == 'inbox'}" th:href="@{/Social}" class="submit4">
+				        <span>Social</span>
+				    </a>
 				</li>
 			</ul>
 		</div>

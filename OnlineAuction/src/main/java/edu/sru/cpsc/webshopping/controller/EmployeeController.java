@@ -1558,6 +1558,7 @@ public class EmployeeController {
     setSearchedMarket(market.getListingByWidget(getSearchedWidget()));
     setSearchedSeller(searchedMarket.getSeller());
     setSearchedUser(getSearchedSeller());
+    
     model.addAttribute("user", user);
     // setPage("listingResult");
     setMailboxPage("searchMarketListing");
@@ -1568,6 +1569,7 @@ public class EmployeeController {
     model.addAttribute("searchedUser", getSearchedUser());
     model.addAttribute("sellers", getSearchedSeller());
     model.addAttribute("searchedWidgets", getSearchedWidget());
+    model.addAttribute("widgetCategory", categoryService.generateCategoryStack(getSearchedWidget().getCategory()).toString());
     model.addAttribute("searchedMarkets", getSearchedMarket());
     model.addAttribute("mailpage", getMailboxPage());
     model.addAttribute("myusers", getMyUserSearch());
@@ -1607,7 +1609,6 @@ public class EmployeeController {
     String[] allWidgetCate = new String[getAllWidgets().size()];
     for (int i = 0; i < allWidgetCate.length; i++) {
       allWidgetCate[i] = categoryService.generateCategoryStack(getAllWidgets().get(i).getCategory()).toString();
-      System.out.println(allWidgetCate[i]);
     }
 
     model.addAttribute("widgetNames", allWidgetNames);
