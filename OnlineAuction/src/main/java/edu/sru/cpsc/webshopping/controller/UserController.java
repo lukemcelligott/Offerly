@@ -160,11 +160,11 @@ public class UserController {
 			throw new IllegalStateException("Error updating payment details: User not logged in.");
 		}
 		// Encode fields
-		details.setCardholderName(passwordEncoder.encode(details.getCardholderName()));
+		details.setCardholderName(details.getCardholderName());
 		details.setCardNumber(passwordEncoder.encode(details.getCardNumber()));
 		details.setLast4Digits(details.getLast4Digits());
 		details.setCardType(details.getCardType());
-		details.setExpirationDate(passwordEncoder.encode(details.getExpirationDate()));
+		details.setExpirationDate(details.getExpirationDate());
 		details.setSecurityCode(passwordEncoder.encode(details.getSecurityCode()));
 		details.setBillingAddress(details.getBillingAddress());
 		// No assigned details - add to user

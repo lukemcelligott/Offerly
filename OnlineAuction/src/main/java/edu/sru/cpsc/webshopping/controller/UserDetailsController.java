@@ -110,7 +110,7 @@ public class UserDetailsController {
 	private boolean loginErrorPD = false;
 	private boolean delSA = false;
 	private boolean delPD = false;
-	private long id2PD;
+	private long id2PD = -1;
 	private long updateIdPD = -1;
 	private long id2SA;
 	private long updateIdSA = -1;
@@ -243,6 +243,11 @@ public class UserDetailsController {
 			model.addAttribute("savedDetails", null);
 		else
 			model.addAttribute("savedDetails", payDetCont.getPaymentDetailsByUser(user));
+		if(updateIdPD != -1){
+			PaymentDetails detailsToUpdate = payDetCont.getPaymentDetail(updateIdPD, null);
+			System.out.println("details to update: " + detailsToUpdate.getExpirationDate());
+			model.addAttribute("detailsToUpdate", detailsToUpdate);
+		}
 		model.addAttribute("savedShippingDetails", shippingController.getShippingDetailsByUser(user));
 		model.addAttribute("savedDirectDepositDetails", user.getDirectDepositDetails());
 		model.addAttribute("states", stateDetailsController.getAllStates());
@@ -712,6 +717,8 @@ public class UserDetailsController {
 				model.addAttribute("savedDetails", null);
 			else
 				model.addAttribute("savedDetails", payDetCont.getPaymentDetailsByUser(user));
+			model.addAttribute("savedShippingDetails", shippingController.getShippingDetailsByUser(user));
+
 			model.addAttribute("addNew", addNewPD);
 			model.addAttribute("updateId", updateIdPD);
 			model.addAttribute("update", updatePD);
@@ -769,6 +776,7 @@ public class UserDetailsController {
 				model.addAttribute("savedDetails", null);
 			else
 				model.addAttribute("savedDetails", payDetCont.getPaymentDetailsByUser(user));
+			model.addAttribute("savedShippingDetails", shippingController.getShippingDetailsByUser(user));
 			model.addAttribute("addNew", addNewPD);
 			model.addAttribute("updateId", updateIdPD);
 			model.addAttribute("update", updatePD);
@@ -1325,7 +1333,7 @@ public class UserDetailsController {
 	}
 	
 	/**
-	 * Checks to see if the card's expiration date is more than 5 years in the future
+	 * Checks to see if the card's expiration date is more than 8 years in the future
 	 * @param details the PaymentDetails_Form to check
 	 * @return true if the card is not in the far future
 	 */
@@ -1333,7 +1341,7 @@ public class UserDetailsController {
 		int thisYear = LocalDate.now().getYear();
 		try {
 			int year = Integer.parseInt(details.getExpirationDate().substring(4, 8));
-			if((thisYear + 5) >= year)
+			if((thisYear + 8) >= year)
 				return false;
 			return true;
 		}

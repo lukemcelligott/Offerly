@@ -28,7 +28,6 @@ public class DirectDepositDetails_FormTest {
         form.setRoutingNumber("123456789");
         form.setAccountNumber("12345678901234567");
         form.setBankName("Bank of America");
-        form.setBillingAddress(12345L);
 
         assertEquals(0, validator.validate(form).size());
     }
@@ -40,7 +39,6 @@ public class DirectDepositDetails_FormTest {
         form.setRoutingNumber("12345678");
         form.setAccountNumber("123456789012345678");
         form.setBankName("");
-        form.setBillingAddress(0L);
 
         assertEquals(4, validator.validate(form).size());
     }
