@@ -54,9 +54,9 @@ public class DirectDepositDetailsTest {
 
     @Test
     public void testSetAndGetBillingAddress() {
-        ShippingAddress billingAddress = new ShippingAddress();
-        directDepositDetails.setBillingAddress(billingAddress);
-        assertNotNull(directDepositDetails.getBillingAddress());
+        BankAddress bankAddress = new BankAddress();
+        directDepositDetails.setBankAddress(bankAddress);
+        assertNotNull(directDepositDetails.getBankAddress());
     }
 
     @Test
@@ -66,8 +66,8 @@ public class DirectDepositDetailsTest {
         other.setRoutingNumber("111000025");
         other.setAccountNumber("123456789");
         other.setBankName("Wells Fargo");
-        ShippingAddress billingAddress = new ShippingAddress();
-        other.setBillingAddress(billingAddress);
+        BankAddress bankAddress = new BankAddress();
+        other.setBankAddress(bankAddress);
 
         directDepositDetails.transferFields(other);
 
@@ -75,7 +75,7 @@ public class DirectDepositDetailsTest {
         assertEquals(other.getRoutingNumber(), directDepositDetails.getRoutingNumber());
         assertEquals(other.getAccountNumber(), directDepositDetails.getAccountNumber());
         assertEquals(other.getBankName(), directDepositDetails.getBankName());
-        assertEquals(other.getBillingAddress(), directDepositDetails.getBillingAddress());
+        assertEquals(other.getBankAddress(), directDepositDetails.getBankAddress());
     }
 
     @Test
@@ -86,12 +86,12 @@ public class DirectDepositDetailsTest {
         other.setAccountNumber("123456789");
         other.setBankName("Wells Fargo");
         ShippingAddress billingAddress = new ShippingAddress();
-        directDepositDetails.buildFromForm(other, billingAddress);
+        directDepositDetails.buildFromForm(other);
 
         assertEquals(other.getAccountholderName(), directDepositDetails.getAccountholderName());
         assertEquals(other.getRoutingNumber(), directDepositDetails.getRoutingNumber());
         assertEquals(other.getAccountNumber(), directDepositDetails.getAccountNumber());
         assertEquals(other.getBankName(), directDepositDetails.getBankName());
-        assertEquals(billingAddress, directDepositDetails.getBillingAddress());
+        assertEquals(billingAddress, directDepositDetails.getBankAddress());
     }
 }

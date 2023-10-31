@@ -7,6 +7,22 @@ import javax.validation.constraints.Size;
  * A mirror of DirectDepositDetails used for validating form input
  */
 public class DirectDepositDetails_Form {
+
+	@Size(min = 1, message = "The Bank Name must be at least 1 character.")
+	private String bankName;
+	
+	@NotEmpty(message = "Street Address cannot be empty.")
+	private String streetAddress;
+	
+	private String extraLocationInfo;
+	
+	@Size(min = 5, max = 5, message = "The Postal Code must have five numbers")
+	private String postalCode;
+	
+	private StateDetails state;
+	
+	@NotEmpty(message = "The city cannot be empty.")
+	private String city;
 	
 	@NotEmpty(message = "The Account Holder Name cannot be empty.")
 	private String accountholderName;
@@ -16,11 +32,6 @@ public class DirectDepositDetails_Form {
 	
 	@Size(min = 1, max = 17, message = "The Account Number must be between 1 and 17 numbers.")
 	private String accountNumber;
-	
-	@Size(min = 1, message = "The Bank Name must be at least 1 character.")
-	private String bankName;
-
-	private long billingAddress;
 
 	public String getAccountholderName() {
 		return accountholderName;
@@ -54,11 +65,51 @@ public class DirectDepositDetails_Form {
 		this.bankName = bankName;
 	}
 
-	public long getBillingAddress() {
-		return billingAddress;
+	public String getStreetAddress() {
+		return streetAddress;
 	}
 
-	public void setBillingAddress(long billingAddress) {
-		this.billingAddress = billingAddress;
+	public void setStreetAddress(String streetAddress) {
+		if(streetAddress != null) {
+			this.streetAddress = streetAddress.trim();
+		}
+	}
+
+	public String getExtraLocationInfo() {
+		return extraLocationInfo;
+	}
+
+	public void setExtraLocationInfo(String extraLocationInfo) {
+		if(extraLocationInfo != null) {
+			this.extraLocationInfo = extraLocationInfo.trim();
+		}
+	}
+
+	public String getPostalCode() {
+		return postalCode;
+	}
+
+	public void setPostalCode(String postalCode) {
+		if(postalCode != null) {
+			this.postalCode = postalCode.trim();
+		}
+	}
+
+	public StateDetails getState() {
+		return state;
+	}
+
+	public void setState(StateDetails selectedState) {
+		this.state = selectedState;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		if(city != null) {
+			this.city = city.trim();
+		}
 	}
 }

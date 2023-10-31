@@ -5,9 +5,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 import org.springframework.lang.NonNull;
+
+import edu.sru.cpsc.webshopping.domain.user.User;
 
 
 /**
@@ -34,7 +37,19 @@ public class DirectDepositDetails {
 
 	@NonNull
 	@OneToOne (cascade = CascadeType.ALL)
-	private ShippingAddress billingAddress;
+	private BankAddress bankAddress;
+
+	@NonNull
+	@ManyToOne(cascade = CascadeType.MERGE)
+	private User user;
+
+	public DirectDepositDetails(User user) {
+		this.bankAddress = new BankAddress();
+		this.user = user;
+	}
+
+	public DirectDepositDetails() {
+	}
 	
 	public long getId() {
 		return id;
@@ -76,12 +91,20 @@ public class DirectDepositDetails {
 		this.bankName = bankName;
 	}
 
-	public ShippingAddress getBillingAddress() {
-		return billingAddress;
+	public BankAddress getBankAddress() {
+		return bankAddress;
 	}
 
-	public void setBillingAddress(ShippingAddress billingAddress) {
-		this.billingAddress = billingAddress;
+	public void setBankAddress(BankAddress bankAddress) {
+		this.bankAddress = bankAddress;
+	}
+
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	// Sets the non-id fields of the calling DirectDepositDetails to 
@@ -91,15 +114,21 @@ public class DirectDepositDetails {
 		this.routingNumber = other.routingNumber;
 		this.accountNumber = other.accountNumber;
 		this.bankName = other.bankName;
-		this.billingAddress = other.billingAddress;
+		this.bankAddress = other.bankAddress;
+		this.user = other.user;
 	}
 
-	public void buildFromForm(DirectDepositDetails_Form other, ShippingAddress billingAddress) {
+	public void buildFromForm(DirectDepositDetails_Form other) {
 		this.accountholderName = other.getAccountholderName();
 		this.routingNumber = other.getRoutingNumber();
 		this.accountNumber = other.getAccountNumber();
 		this.bankName = other.getBankName();
-		this.billingAddress = billingAddress;
+		this.bankAddress.setBankName(other.getBankName());
+		this.bankAddress.setStreetAddress(other.getStreetAddress());
+		this.bankAddress.setExtraLocationInfo(other.getExtraLocationInfo());
+		this.bankAddress.setPostalCode(other.getPostalCode());
+		this.bankAddress.setState(other.getState());
+		this.bankAddress.setCity(other.getCity());
 	}
 	
 }

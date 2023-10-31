@@ -47,6 +47,8 @@ import com.google.maps.model.AutocompletePrediction;
 import edu.sru.cpsc.webshopping.controller.billing.CardTypeController;
 import edu.sru.cpsc.webshopping.controller.billing.PaymentDetailsController;
 import edu.sru.cpsc.webshopping.controller.billing.StateDetailsController;
+import edu.sru.cpsc.webshopping.domain.billing.BankAddress;
+import edu.sru.cpsc.webshopping.domain.billing.BankAddress_Form;
 
 /**
 import edu.sru.cpsc.webshopping.controller.purchase.ApiException;
@@ -108,7 +110,7 @@ public class UserDetailsController {
 	private boolean loginErrorPD = false;
 	private boolean delSA = false;
 	private boolean delPD = false;
-	private long id2PD;
+	private long id2PD = -1;
 	private long updateIdPD = -1;
 	private long id2SA;
 	private long updateIdSA = -1;
@@ -186,8 +188,10 @@ public class UserDetailsController {
 		// Model for updating Direct Deposit Details
 		DirectDepositDetails_Form details = new DirectDepositDetails_Form();
 		ShippingAddress_Form billingAddress = new ShippingAddress_Form();
+		BankAddress_Form bankAddress = new BankAddress_Form();
 		model.addAttribute("directDepositDetails", details);
 		model.addAttribute("billingAdress", billingAddress);
+		model.addAttribute("bankAddress", bankAddress);
 		model.addAttribute("user", user);
 		if(user.getDefaultPaymentDetails() != null)
 			model.addAttribute("defaultPaymentDetails", payDetCont.getPaymentDetail(user.getDefaultPaymentDetails().getId(), null));
@@ -239,6 +243,11 @@ public class UserDetailsController {
 			model.addAttribute("savedDetails", null);
 		else
 			model.addAttribute("savedDetails", payDetCont.getPaymentDetailsByUser(user));
+		if(updateIdPD != -1){
+			PaymentDetails detailsToUpdate = payDetCont.getPaymentDetail(updateIdPD, null);
+			System.out.println("details to update: " + detailsToUpdate.getExpirationDate());
+			model.addAttribute("detailsToUpdate", detailsToUpdate);
+		}
 		model.addAttribute("savedShippingDetails", shippingController.getShippingDetailsByUser(user));
 		model.addAttribute("savedDirectDepositDetails", user.getDirectDepositDetails());
 		model.addAttribute("states", stateDetailsController.getAllStates());
@@ -353,6 +362,44 @@ public class UserDetailsController {
 		SA.add(shipping);
 		user.setShippingDetails(SA);
 		shippingController.addShippingAddress(shipping, user);
+		userService.updateUserProfile(user.getId(), user);
+		if(menu == SUB_MENU.PAYMENT_DETAILS)
+			return "redirect:/userDetails/paymentDetails";
+		else if(menu == SUB_MENU.DEPOSIT_DETAILS)
+				return "redirect:/userDetails/depositDetails";
+		else
+			return "redirect:/userDetails";
+	}
+
+	@PostMapping(value = "/addBankAddress", params="submit")
+	public String addBankAddress(@Validated @ModelAttribute("bankAddress") BankAddress_Form details, @ModelAttribute("selectedMenu") SUB_MENU menu, BindingResult result, @RequestParam("stateId") String stateId, Model model, Principal principal) {
+	
+		details.setState(stateDetailsController.getState(stateId));
+		User user = userService.getUserByUsername(principal.getName());
+
+		if (result.hasErrors()) {
+			// Add error messages
+			if(!result.hasErrors() && shippingAddressConstraintsFailed(details))
+				model.addAttribute("shippingError", "Address does not exist");
+			model.addAttribute("bankAddress", new BankAddress_Form());
+			model.addAttribute("user", user);
+			model.addAttribute("states", stateDetailsController.getAllStates());
+			for (FieldError error : result.getFieldErrors()) {
+				model.addAttribute(error.getField() + "Err", error.getDefaultMessage());
+			}
+			if(menu == SUB_MENU.PAYMENT_DETAILS)
+				return "redirect:/userDetails/paymentDetails";
+			else if(menu == SUB_MENU.DEPOSIT_DETAILS)
+				return "redirect:/userDetails/depositDetails";
+			else
+				return "redirect:/userDetails";
+		}
+
+		BankAddress bankAddress = new BankAddress();
+		bankAddress.setState(stateDetailsController.getState(stateId));
+		bankAddress.buildFromForm(details);
+
+		addressService.addBankAddress(bankAddress);
 		userService.updateUserProfile(user.getId(), user);
 		if(menu == SUB_MENU.PAYMENT_DETAILS)
 			return "redirect:/userDetails/paymentDetails";
@@ -482,7 +529,11 @@ public class UserDetailsController {
 		model.addAttribute("cardTypes", cardController.getAllCardTypes());
 		// Model for updating Direct Deposit Details
 		DirectDepositDetails_Form details = new DirectDepositDetails_Form();
+		BankAddress_Form bankAddress = new BankAddress_Form();
+		DirectDepositDetails savedDetails = user.getDirectDepositDetails();
+		model.addAttribute("savedDirectDepositDetails", savedDetails);
 		model.addAttribute("directDepositDetails", details);
+		model.addAttribute("bankAddress", bankAddress);
 		model.addAttribute("user", user);
 		model.addAttribute("savedShippingDetails", shippingController.getShippingDetailsByUser(user));
 		model.addAttribute("states", stateDetailsController.getAllStates());
@@ -586,6 +637,7 @@ public class UserDetailsController {
 			method = RequestMethod.POST, params="submit")
 	public String sendUpdateDD(
 			@Validated @ModelAttribute("directDepositDetails") DirectDepositDetails_Form details,
+			@RequestParam("stateId") String stateId,
 			BindingResult result, Model model, Principal principal) {
 		User user = userService.getUserByUsername(principal.getName());
 		selectedMenu = SUB_MENU.DEPOSIT_DETAILS;
@@ -594,13 +646,14 @@ public class UserDetailsController {
 			System.out.println("deposit error");
 			model.addAttribute("errMessage", "Your updated direct deposit details has errors.");
 			model.addAttribute("paymentDetails", new PaymentDetails_Form());
+			model.addAttribute("states", stateDetailsController.getAllStates());
 			loadUserData(model, user);
 			return "userDetails";
 		}
-		DirectDepositDetails deposit = new DirectDepositDetails();
-		ShippingAddress billingAddress = shippingController.getShippingAddressEntry(details.getBillingAddress());
+		details.setState(stateDetailsController.getState(stateId));
+		DirectDepositDetails deposit = new DirectDepositDetails(user);
 		model.addAttribute("states", stateDetailsController.getAllStates());
-		deposit.buildFromForm(details, billingAddress);
+		deposit.buildFromForm(details);
 		this.userController.updateDirectDepositDetails(deposit, principal);
 		return "redirect:/userDetails/initializePaymentDetails";
 	}
@@ -664,6 +717,8 @@ public class UserDetailsController {
 				model.addAttribute("savedDetails", null);
 			else
 				model.addAttribute("savedDetails", payDetCont.getPaymentDetailsByUser(user));
+			model.addAttribute("savedShippingDetails", shippingController.getShippingDetailsByUser(user));
+
 			model.addAttribute("addNew", addNewPD);
 			model.addAttribute("updateId", updateIdPD);
 			model.addAttribute("update", updatePD);
@@ -721,6 +776,7 @@ public class UserDetailsController {
 				model.addAttribute("savedDetails", null);
 			else
 				model.addAttribute("savedDetails", payDetCont.getPaymentDetailsByUser(user));
+			model.addAttribute("savedShippingDetails", shippingController.getShippingDetailsByUser(user));
 			model.addAttribute("addNew", addNewPD);
 			model.addAttribute("updateId", updateIdPD);
 			model.addAttribute("update", updatePD);
@@ -1191,6 +1247,10 @@ public class UserDetailsController {
 	public boolean shippingAddressConstraintsFailed(ShippingAddress_Form form) {
 		return !addressExists(form);
 	}
+
+	public boolean shippingAddressConstraintsFailed(BankAddress_Form form) {
+		return !addressExists(form);
+	}
 	
 	
 	/**
@@ -1232,6 +1292,10 @@ public class UserDetailsController {
 	public boolean addressExists(ShippingAddress_Form shipping) {
 	    return addressService.addressExists(shipping);
 	}
+
+	public boolean addressExists(BankAddress_Form shipping) {
+	    return addressService.addressExists(shipping);
+	}
 	
 	
 	/**
@@ -1269,7 +1333,7 @@ public class UserDetailsController {
 	}
 	
 	/**
-	 * Checks to see if the card's expiration date is more than 5 years in the future
+	 * Checks to see if the card's expiration date is more than 8 years in the future
 	 * @param details the PaymentDetails_Form to check
 	 * @return true if the card is not in the far future
 	 */
@@ -1277,7 +1341,7 @@ public class UserDetailsController {
 		int thisYear = LocalDate.now().getYear();
 		try {
 			int year = Integer.parseInt(details.getExpirationDate().substring(4, 8));
-			if((thisYear + 5) >= year)
+			if((thisYear + 8) >= year)
 				return false;
 			return true;
 		}

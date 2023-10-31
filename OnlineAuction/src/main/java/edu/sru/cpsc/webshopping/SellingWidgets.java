@@ -20,7 +20,7 @@ import edu.sru.cpsc.webshopping.util.PreLoad;
 public class SellingWidgets extends SpringBootServletInitializer implements CommandLineRunner {
 
     @Autowired
-	private final PreLoad preLoad;
+	private PreLoad preLoad;
 
 	@Autowired
     private Environment env;
@@ -28,10 +28,7 @@ public class SellingWidgets extends SpringBootServletInitializer implements Comm
     @Autowired
     private TaxExcelToDatabaseService taxExcelToDatabaseService;
 
-	@Autowired
-    public SellingWidgets(PreLoad preLoad, Environment env) {
-        this.preLoad = preLoad;
-        this.env = env;
+    public SellingWidgets() {
     }
 
     public static void main(String[] args) {

@@ -623,9 +623,8 @@ public class ConfirmPurchasePageController {
 	@PostMapping(value = "/addDirectDeposit")
 	public String addDirectDepositDetails(@Validated @ModelAttribute("directDepositDetails") DirectDepositDetails_Form details, BindingResult result, Model model, Principal principal) {
 		User user = userService.getUserByUsername(principal.getName());
-		DirectDepositDetails currDirectDetails = new DirectDepositDetails();
-		ShippingAddress billingAddress = shippingAddressController.getShippingAddressEntry(details.getBillingAddress());
-		currDirectDetails.buildFromForm(details, billingAddress);
+		DirectDepositDetails currDirectDetails = new DirectDepositDetails(user);
+		currDirectDetails.buildFromForm(details);
 		if (user == null) {
 			throw new IllegalStateException("Cannot purchase an item when not logged in.");
 		}

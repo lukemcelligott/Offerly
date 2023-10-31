@@ -225,39 +225,40 @@
 				<!-- Payment details submenu -->
 				<form method="post" action="#" th:if="${selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).PAYMENT_DETAILS}"
 					th:action="@{/submitPaymentDetailsAction}" th:object="${paymentDetails}">
-					<div class="card" th:if="${addNew == false and relogin == false}">
-						<!-- Default Card Details -->
-						<div th:if="${defaultPaymentDetails} != null" class="mb-3 mx-3 mt-4">
-							<h3><strong>Default Card:</strong></h3>
-							<div class="card my-3" style="max-width: 540px; border: 2px solid #6c9fec">
-								<div class="row g-0">
-									<div class="col-md-4">
-										<!-- Display Card Image -->
-										<img th:src="@{/images/cardTypes/{image}.png(image = ${defaultPaymentDetails.cardType.toLowerCase()})}" alt="Card Image" src="" style="width: 100%">
-									</div>
-									<div class="col-md-6">
-										<div class="card-body">
-											<h4 th:text="${defaultPaymentDetails.cardType}"></h4>
-											<!-- Card Details -->
-											<p class="card-text">**** **** **** <span th:text="${defaultPaymentDetails.last4Digits}"></span></p>
-											<a class="btn btn-sm btn-outline-secondary" th:href="@{/updatePaymentDetails/{id}(id = ${defaultPaymentDetails.id})}">
-												<i class="fa fa-gear"></i>
-											</a>
-											<a class="btn btn-sm btn-outline-danger" th:href="@{/deleteExistingPaymentDetails/{id}(id = ${defaultPaymentDetails.id})}">
-												<i class="fa fa-trash"></i>
-											</a>
+					<div class="card" th:if="${addNew == false and relogin == false and update == false}">
+						
+
+						<!-- Saved Payments -->
+						<div class="mb-3 mx-3 mt-3">
+							<h3><strong>Saved Payment Methods:</strong></h3>
+							<!-- Default Card Details -->
+							<div th:if="${defaultPaymentDetails} != null" class="mb-3 mx-3 mt-4">
+								<div class="card my-3" style="max-width: 540px; border: 2px solid #6c9fec">
+									<div class="row g-0">
+										<div class="col-md-4">
+											<!-- Display Card Image -->
+											<img th:src="@{/images/cardTypes/{image}.png(image = ${defaultPaymentDetails.cardType.toLowerCase()})}" alt="Card Image" src="" style="width: 100%">
+										</div>
+										<div class="col-md-6">
+											<div class="card-body">
+												<h4 th:text="${defaultPaymentDetails.cardType}"></h4>
+												<!-- Card Details -->
+												<p class="card-text">**** **** **** <span th:text="${defaultPaymentDetails.last4Digits}"></span></p>
+												<p style="color: #6c9fec;">[Default]</p>
+												<a class="btn btn-sm btn-outline-secondary" th:href="@{/updatePaymentDetails/{id}(id = ${defaultPaymentDetails.id})}">
+													<i class="fa fa-gear"></i>
+												</a>
+												<a class="btn btn-sm btn-outline-danger" th:href="@{/deleteExistingPaymentDetails/{id}(id = ${defaultPaymentDetails.id})}">
+													<i class="fa fa-trash"></i>
+												</a>
+											</div>
 										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-
-						<!-- Saved Payments -->
-						<div class="mb-3 mx-3">
-							<h3><strong>Saved Payment Methods:</strong></h3>
 							<div th:each="payment : ${savedDetails}">
 								<div th:if="${payment.id} != ${defaultPaymentDetails.id}">
-									<div class="card my-3" style="max-width: 540px;">
+									<div class="card my-3 mx-3" style="max-width: 540px;">
 										<div class="row g-0">
 											<div class="col-md-4">
 												<!-- Display Card Image -->
@@ -281,7 +282,7 @@
 									</div>
 								</div>
 							</div>
-							<h3 class="d-flex"><a class="btn btn-success" th:href="@{/addNewCard}">+</a></h3>
+							<h3 class="d-flex mx-3"><a class="btn btn-success" th:href="@{/addNewCard}">+</a></h3>
 						</div>
 						
 
@@ -289,7 +290,7 @@
 						<div class="mb-3 mx-3">
 							<h3><strong>Direct Deposit Details:</strong></h3>
 							<div th:if="${savedDirectDepositDetails} != null">
-								<div class="card my-3" style="max-width: 540px;">
+								<div class="card my-3 mx-3" style="max-width: 540px;">
 									<div class="row g-0">
 										<div class="col-md-4">
 											<!-- Display Bank Image -->
@@ -309,7 +310,7 @@
 									</div>
 								</div>
 							</div>
-							<h3 class="d-flex" th:if="${savedDirectDepositDetails} == null"><a class="btn btn-success" th:href="@{/userDetails/depositDetails}">+</a></h3>
+							<h3 class="d-flex mx-3" th:if="${savedDirectDepositDetails} == null"><a class="btn btn-success" th:href="@{/userDetails/depositDetails}">+</a></h3>
 						</div>
 						
 
@@ -327,9 +328,9 @@
 									<!-- Select Saved Shipping Address -->
 									<div class="input-group mb-3">
 										<label for="billingAddress" class="input-group-text">Billing Address:</label>
-										<select class="form-select" id="billingAddress" name="billingAddress">
+										<select class="form-select" id="billingAddress" name="billingAddress" >
 											<option value="">-- Saved Addresses: --</option>
-											<option th:each="address : ${savedShippingDetails}" th:value="${address.id}" th:text="${address.streetAddress + ', ' + address.city + ', ' + address.state.stateName + ' ' + address.postalCode}"></option>
+											<option th:each="address : ${savedShippingDetails}" th:value="${address.id}" th:text="${address.streetAddress + ', ' + address.city + ', ' + address.state.stateName + ' ' + address.postalCode}" th:selected="${detailsToUpdate != null and detailsToUpdate.billingAddress.id == address.id}"></option>
 										</select>
 										<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#billingAddressModal">Add a New Billing Address</button>
 									</div>
@@ -340,18 +341,19 @@
 											<option
 												th:each="cardType : ${cardTypes}"
 												th:value="${cardType.cardType}"
-												th:text="${cardType.cardType}">
+												th:text="${cardType.cardType}"
+												th:selected="${detailsToUpdate != null and detailsToUpdate.cardType == cardType.cardType}">
 											</option>
 										</select>
 										<!-- Cardholder Name -->
-										<input type="text" class="form-control" field="*{cardholderName}" name="cardholderName" placeholder="Cardholder Name"></input>
+										<input type="text" class="form-control" field="*{cardholderName}" name="cardholderName" placeholder="Cardholder Name" th:value="${detailsToUpdate != null ? detailsToUpdate.cardholderName : ''}"></input>
 									</div>
 									<div class="input-group mb-3">
 										<!-- Card Number -->
 										<input type="tel" class="form-control" field="*{cardNumber}" name="cardNumber" placeholder="Card Number" maxlength="16"></input>
 										<!-- Expiration Date -->
 										<input style="display:none" type="month" name="pleaseWork">
-										<input field="*{expirationDate}" name="expirationDate" class="form-control month-picker" placeholder="Exp. Date (MM / YY)" autocomplete="do-not-autofill"/>
+										<input field="*{expirationDate}" name="expirationDate" class="form-control month-picker" placeholder="Exp. Date (MM / YY)" autocomplete="do-not-autofill" th:value="${detailsToUpdate != null ? detailsToUpdate.expirationDate : ''}"/>
 											
 										<!--used for learning how to use jQuery to get month and year since input type="month" doesn't work on firefox https://stackoverflow.com/questions/2208480/jquery-ui-datepicker-to-show-month-year-only --> 
 										<script type="text/javascript"> 
@@ -360,7 +362,7 @@
 													changeMonth: true,
 													changeYear: true,
 													showButtonPanel: true,
-													dateFormat: 'MM yy',
+													dateFormat: 'mm/yy',
 													
 													onClose: function(dateText, inst) { 
 														var year = inst.selectedYear;
@@ -369,7 +371,7 @@
 														$(this).datepicker('setDate', new Date(year, month - 1, lastDay));
 													}
 												});
-											});                                                                         
+											});
 										</script>        
 										<p th:if="${cardError}" th:text="${cardError}"></p>
 									</div>
@@ -452,42 +454,63 @@
 				<form method="post" action="#" th:if="${selectedMenu == T(edu.sru.cpsc.webshopping.controller.SUB_MENU).DEPOSIT_DETAILS}" th:action="@{/submitDepositDetailsAction}" th:object="${directDepositDetails}">
 					<div class="row">
 						<div class="col-md-6 mb-3">
-							<label for="ddBillingAddress" class="input-group-text">Billing Address:</label>
-							<select class="form-select" id="ddBillingAddress" name="billingAddress">
-							<option value="">-- Saved Addresses: --</option>
-							<option th:each="address : ${savedShippingDetails}" th:value="${address.id}" th:text="${address.streetAddress + ', ' + address.city + ', ' + address.state.stateName + ' ' + address.postalCode}"></option>
-							</select>
+							<label for="bankName" class="form-label">Bank Name:</label>
+							<input class="form-control" name="bankName" type="text" field="*{bankName}" th:value="${savedDirectDepositDetails != null ? savedDirectDepositDetails.bankName : ''}">
+							<p th:if="${#fields.hasErrors('bankName')}" th:errors="*{bankName}"></p>
 						</div>
 						<div class="col-md-6 mb-3">
-							<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#billingAddressModal">Add a New Billing Address</button>
+							<label class="form-label" for="state">Bank State</label>
+							<select class="form-select" id="stateId" name="stateId">
+								<option th:each="state : ${states}" th:value="${state.stateName}" th:text="${state.stateName}" th:selected="${savedDirectDepositDetails != null and savedDirectDepositDetails.bankAddress.state.stateName == state.stateName}"></option>
+							</select>
+							<p th:if="${#fields.hasErrors('state')}" th:errors="*{state}"></p>
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-md-6 mb-3">
-							<!-- Account holder Name -->
-							<label class="form-label" for="accountholderName">Account holder Name</label>
-							<input class="form-control" type="text" th:field="*{accountholderName}">
-							<p th:if="${#fields.hasErrors('accountholderName')}" th:errors="*{accountholderName}"></p>
+							<label class="form-label" for="streetAddress">Bank Address</label>
+							<input class="form-control" name="streetAddress" type="text" field="*{streetAddress}" th:value="${savedDirectDepositDetails != null ? savedDirectDepositDetails.bankAddress.streetAddress : ''}">
+							<p th:if="${#fields.hasErrors('streetAddress')}" th:errors="*{streetAddress}"></p>
 						</div>
 						<div class="col-md-6 mb-3">
-							<!-- Routing Number -->
-							<label class="form-label" for="routingNumber">Routing Number</label>
-							<input class="form-control" type="number" th:field="*{routingNumber}">
-							<p th:if="${#fields.hasErrors('routingNumber')}" th:errors="*{routingNumber}"></p>
+							<label class="form-label" for="extraLocationInfo">Bank Address Line 2 (optional)</label>
+							<input class="form-control" name="extraLocationInfo" type="text" field="*{extraLocationInfo}" th:value="${savedDirectDepositDetails != null ? savedDirectDepositDetails.bankAddress.extraLocationInfo : ''}">
+							<p th:if="${#fields.hasErrors('extraLocationInfo')}" th:errors="*{extraLocationInfo}"></p>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6 mb-3">
+							<label class="form-label" for="postalCode">Bank Postal Code</label>
+							<input type="tel" field="*{postalCode}" name="postalCode" class="form-control" maxlength="5" th:value="${savedDirectDepositDetails != null ? savedDirectDepositDetails.bankAddress.postalCode : ''}"></input>
+							<p th:if="${#fields.hasErrors('postalCode')}" th:errors="*{postalCode}"></p>
+						</div>
+						<div class="col-md-6 mb-3">
+							<label class="form-label" for="city">Bank City</label>
+							<input class="form-control" name="city" type="text" field="*{city}" th:value="${savedDirectDepositDetails != null ? savedDirectDepositDetails.bankAddress.city : ''}">
+							<p th:if="${#fields.hasErrors('city')}" th:errors="*{city}"></p>
+						</div>
+					</div>
+					<hr>
+					<div class="row">
+						<div class="col-md-12 mb-3">
+							<!-- Account holder Name -->
+							<label class="form-label" for="accountholderName">Account holder Name</label>
+							<input class="form-control" name="accountholderName" type="text" field="*{accountholderName}" th:value="${savedDirectDepositDetails != null ? savedDirectDepositDetails.accountholderName : ''}">
+							<p th:if="${#fields.hasErrors('accountholderName')}" th:errors="*{accountholderName}"></p>
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-md-6 mb-3">
 							<!-- Account Number -->
 							<label class="form-label" for="accountNumber">Account Number</label>
-							<input class="form-control" type="number" th:field="*{accountNumber}">
+							<input class="form-control" name="accountNumber" type="number" field="*{accountNumber}">
 							<p th:if="${#fields.hasErrors('accountNumber')}" th:errors="*{accountNumber}"></p>
 						</div>
 						<div class="col-md-6 mb-3">
-							<!-- Bank Name -->
-							<label class="form-label" for="bankName">Bank Name</label>
-							<input class="form-control" type="text" th:field="*{bankName}">
-							<p th:if="${#fields.hasErrors('bankName')}" th:errors="*{bankName}"></p>
+							<!-- Routing Number -->
+							<label class="form-label" for="routingNumber">Routing Number</label>
+							<input class="form-control" name="routingNumber" type="number" field="*{routingNumber}" maxlength="9">
+							<p th:if="${#fields.hasErrors('routingNumber')}" th:errors="*{routingNumber}"></p>
 						</div>
 					</div>
 					<div class="d-flex justify-content-center mb-3">
