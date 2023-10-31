@@ -15,6 +15,7 @@ import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.user.Message;
 import edu.sru.cpsc.webshopping.domain.user.SellerRating;
 import edu.sru.cpsc.webshopping.domain.user.User;
+import edu.sru.cpsc.webshopping.service.CategoryService;
 import edu.sru.cpsc.webshopping.service.UserService;
 
 /**
@@ -28,6 +29,8 @@ public class ViewUserProfilePageController {
 
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private CategoryService categoryService;
 
 	// Page data
 	private User selectedUser;
@@ -69,6 +72,7 @@ public class ViewUserProfilePageController {
 	public String openUserProfile(@PathVariable("userId") long userId, Model model, Principal principal) {
 		User user = userService.getUserByUsername(principal.getName());
 		model.addAttribute("user", user);
+		
 		this.pageNumber = 1;
 		this.selectedUser = userService.getUserById(userId);
 		this.soldItems = listingController.getListingbyUser(selectedUser);
@@ -76,6 +80,7 @@ public class ViewUserProfilePageController {
 		this.rating = selectedUser.getSellerRating();
 		this.messagePaneOpen = false;
 		model.addAttribute("selectedUser", selectedUser);
+		
 		itemsEachPage = new Vector<Vector<MarketListing>>();
 		if (soldItems.length == 0) {
 			// If no sold items, add a blank page
@@ -89,8 +94,19 @@ public class ViewUserProfilePageController {
 					itemsEachPage.add(new Vector<MarketListing>());
 				itemsEachPage.lastElement().add(listing);
 				currItemOnPage = (currItemOnPage + 1) % NUM_LISTINGS_PER_PAGE;
+				
+				String category = categoryService.generateCategoryStack(listing.getWidgetSold().getCategory()).toString();
+			    category = category.replaceAll("\\[","");
+			    category = category.replaceAll("\\]","");
+			    model.addAttribute("widgetCategory", category);
+			    System.out.println("widget category test: " + category);
 			}
 		}
+		
+		if(this.rating == null) {
+			this.rating = new SellerRating();
+		}
+		
 		reloadPageModel(model,user);
 		model.addAttribute("user", user);
 		return "viewUserProfile";

@@ -322,7 +322,7 @@ public class MarketListingPageController {
             || user.getRole().equals("ROLE_ADMIN_SHADOW")
             || user.getRole().equals("ROLE_HELPDESK_ADMIN")
             || user.getRole().equals("ROLE_HELPDESK_REGULAR")) {
-    return "redirect:/searchWidgetButton";
+    	return "redirect:/searchWidgetButton";
 	}
 	// otherwise return user home
     return "redirect:/homePage";
