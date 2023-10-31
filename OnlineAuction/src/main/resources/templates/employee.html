@@ -92,7 +92,7 @@
 	                			<td> Click the buttons on the top navigation bar to get started</td>
 	              			</tr>
 	              			<tr>
-	                			<th> Clicking the <i>Pseudo Ebay</i> logo in the top-left will bring you back to this screen</th>
+	                			<th> Clicking the <i>Offerly</i> logo in the top-left will bring you back to this screen</th>
 	              			</tr>
 	              			<tr>
 	                			<td>Various employee roles share this workspace. Depending on your role you may not
@@ -144,7 +144,7 @@
 										<th scope="col"><h5>Reporter:</h5></th>
 										<th scope="col"><h5>Assigned To:</h5></th>
 										<th scope="col"><h5>User Level:</h5></th>
-										<th:block th:if="${user.role == 'ROLE_ADMIN'}">
+										<th:block th:if="${user.role == 'ROLE_CUSTOMERSERVICE'}">
 											<th scope="col"><h5>Update Assignee:</h5></th>
 										</th:block>
 										<th scope="col"><h5>State:</h5></th>
@@ -155,11 +155,11 @@
 	              					<th:block th:each="ticket: ${tickets}">
 		                				<tr>
 		                  					<td><a th:href="@{/searchTickets/{id}(id = ${ticket.id})}" th:text="${ticket.id}"></a></td>
-		                  					<td><a th:href="@{/searchUser/{id}(id = ${ticket.createdBy.id})}"th:text="${ticket.createdBy.username}"></a></td>
+		                  					<td><a th:text="${ticket.createdBy.username}"></a></td>
 		                  					<!-- Null Pointer Check - https://stackoverflow.com/questions/20636456/using-thymeleaf-when-the-value-is-null -->
 		                  					<td><p th:text="${ticket.assignedTo} ? ${ticket.assignedTo.username} : 'None'"></p></td>
 		                  					<td><p th:text="${ticket.assignedTo} ? ${ticket.assignedTo.role} : 'None'"></p></td>
-			                  				<th:block th:if="${user.role == 'ROLE_ADMIN'}">
+			                  				<th:block th:if="${user.role == 'ROLE_CUSTOMERSERVICE'}">
 			                    				<td>
 				                      				<th:block th:if="${!ticket.isResolved()}">
 				                       					 <form method="post" th:action="@{/assignTicket/{id}(id = ${ticket.id})}">

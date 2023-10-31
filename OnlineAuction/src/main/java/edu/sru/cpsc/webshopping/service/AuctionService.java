@@ -84,11 +84,9 @@ public class AuctionService {
         List<Bid> bids = bidRepository.findByAuctionOrderByIdDesc(auction);     
 
         if (bids.isEmpty()) {
-            System.out.println("No bids found for the auction with ID: " + auction.getId());
             return null;
         } else {
             Bid mostRecentBid = bids.get(0); // this is now the most recent bid based on ID
-            System.out.println("The highest bidder for the auction with ID " + auction.getId() + " is: " + mostRecentBid.getBidder().getUsername());
             return mostRecentBid;
         }
     }
