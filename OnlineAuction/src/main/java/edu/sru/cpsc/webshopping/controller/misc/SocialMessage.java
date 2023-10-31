@@ -117,12 +117,12 @@ public class SocialMessage {
 	}
 	
 	 public boolean isDelivered() {
-	        return isDelivered;
-	    }
+        return isDelivered;
+    }
 
-	    public void setDelivered(boolean isDelivered) {
-	        this.isDelivered = isDelivered;
-	    }
+    public void setDelivered(boolean isDelivered) {
+        this.isDelivered = isDelivered;
+    }
 
 	public boolean isRead() {
 		return isRead;

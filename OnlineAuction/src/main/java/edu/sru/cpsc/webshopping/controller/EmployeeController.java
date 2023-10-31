@@ -1569,7 +1569,12 @@ public class EmployeeController {
     model.addAttribute("searchedUser", getSearchedUser());
     model.addAttribute("sellers", getSearchedSeller());
     model.addAttribute("searchedWidgets", getSearchedWidget());
-    model.addAttribute("widgetCategory", categoryService.generateCategoryStack(getSearchedWidget().getCategory()).toString());
+    
+    String category = categoryService.generateCategoryStack(getSearchedWidget().getCategory()).toString();
+    category = category.replaceAll("\\[","");
+    category = category.replaceAll("\\]","");
+    model.addAttribute("widgetCategory", category);
+    
     model.addAttribute("searchedMarkets", getSearchedMarket());
     model.addAttribute("mailpage", getMailboxPage());
     model.addAttribute("myusers", getMyUserSearch());
