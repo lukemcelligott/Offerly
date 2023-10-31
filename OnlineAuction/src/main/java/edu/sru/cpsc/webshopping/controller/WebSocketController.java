@@ -40,7 +40,6 @@ public class WebSocketController {
         message.setSentTimestamp(LocalDateTime.now());
         
         messageService.saveMessage(message);
-        System.out.println("Duckies on lake");
         return toDTO(message);
     }
 

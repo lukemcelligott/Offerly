@@ -527,18 +527,14 @@ public class MarketListingDomainController {
          Map<String, Boolean> response = new HashMap<>();
          if (mostRecentBid != null && mostRecentBid.getBidder().getUsername().equals(principal.getName())) {
              response.put("isHighestBidder", true);
-             System.out.println("Lake");
          } else {
              response.put("isHighestBidder", false);
-             System.out.println("Dog");
          } 
-         System.out.println("Maple");
          return response;
      }
      
      @GetMapping("/showUniqueBidders/{id}")
      public ResponseEntity<List<String>> getUniqueBidders(@PathVariable Long id) {
-    	 System.out.println("Ocean Man");
          MarketListing marketListing = marketRepository.findById(id).orElse(null);
          if (marketListing == null) {
              return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
@@ -551,7 +547,6 @@ public class MarketListingDomainController {
      @GetMapping("/bidsForListing/{id}")
      public ResponseEntity<List<BidDTO>> getBidsForListing(@PathVariable Long id) {
          try {
-             System.out.println("Ocean Darcy");
              MarketListing marketListing = marketRepository.findById(id).orElse(null);
              if (marketListing == null) {
                  return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
@@ -562,7 +557,6 @@ public class MarketListingDomainController {
                                      .map(bid -> new BidDTO(bid.getBidder().getUsername(), bid.getBidAmount()))
                                      .collect(Collectors.toList());
              
-             System.out.println("Number of bids retrieved: " + bids.size());
              for (Bid bid : bids) {
                  System.out.println("Bidder: " + bid.getBidder().getUsername() + ", Amount: " + bid.getBidAmount());
              }

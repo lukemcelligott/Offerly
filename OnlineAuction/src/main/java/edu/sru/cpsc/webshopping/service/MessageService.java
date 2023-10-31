@@ -51,7 +51,6 @@ public class MessageService {
     }
     
     public SocialMessage saveMessage(SocialMessage message) {
-    	System.out.println("Marble Cake");
         return messageRepository.save(message);
     }
 

@@ -23,6 +23,8 @@
 						<a th:if="${user.role} == ROLE_USER" class="navbar-brand" th:href="@{/homePage}"><img src="/images/offerly-logo.png" alt="Home" style="width:64px; height:64px; border-radius: 1em;"></img></a>
 						<a th:if="${user.role} == ROLE_ADMIN" class="navbar-brand" th:href="@{/employee}"><img src="/images/offerly-logo.png" alt="Home" style="width:64px; height:64px; border-radius: 1em;"></img></a>
 						<a th:if="${user.role} == ROLE_CUSTOMERSERVICE" class="navbar-brand" th:href="@{/employee}"><img src="/images/offerly-logo.png" alt="Home" style="width:64px; height:64px; border-radius: 1em;"></img></a>
+						<a th:if="${user.role} == ROLE_TECHNICALSERVICE" class="navbar-brand" th:href="@{/employee}"><img src="/images/offerly-logo.png" alt="Home" style="width:64px; height:64px; border-radius: 1em;"></img></a>
+						<a th:if="${user.role} == ROLE_HELPDESK_ADMIN" class="navbar-brand" th:href="@{/employee}"><img src="/images/offerly-logo.png" alt="Home" style="width:64px; height:64px; border-radius: 1em;"></img></a>
 					</li>
 				</ul>
 				<!-- End Unbiased Left Justified Unordered List -->
@@ -156,32 +158,42 @@
 					<a th:unless="${page == 'begin'}" class="submit4" th:href="@{/employee}"><span>Employee Home</span></a>
 				</li>
 				<li class="nav-item">
-					<a th:if="${page == 'search'}" class="submit4 nav-link active" th:href="@{/searchButton}"><span>View Users</span></a>
-					<a th:unless="${page == 'search'}" class="submit4" th:href="@{/searchButton}"><span>View Users</span></a>
+					<a th:if="${page == 'ticket'}" class="submit4 nav-link active" th:href="@{/searchTickets}"><span>View User Tickets</span></a>
+					<a th:unless="${page == 'ticket'}" class="submit4" th:href="@{/searchTickets}"><span>View User Tickets</span></a>
+				</li>>
+			</ul>
+		</div>
+		<!-- Customer Service's Header -->
+		
+		<!-- Tech Service's Header -->
+		<div th:if="${user.role} == ROLE_TECHNICALSERVICE">
+			<ul class="nav nav-pills">
+				<li class="nav-item">
+					<a th:if="${page == 'begin'}" class="submit4 nav-link active" th:href="@{/employee}"><span>Employee Home</span></a>
+					<a th:unless="${page == 'begin'}" class="submit4" th:href="@{/employee}"><span>Employee Home</span></a>
 				</li>
 				<li class="nav-item">
 					<a th:if="${page == 'ticket'}" class="submit4 nav-link active" th:href="@{/searchTickets}"><span>View User Tickets</span></a>
 					<a th:unless="${page == 'ticket'}" class="submit4" th:href="@{/searchTickets}"><span>View User Tickets</span></a>
 				</li>
+			</ul>
+		</div>
+		<!-- Tech Service's Header -->
+		
+		<!-- Help Desk Admin's Header -->
+		<div th:if="${user.role} == ROLE_HELPDESK_ADMIN">
+			<ul class="nav nav-pills">
 				<li class="nav-item">
-					<a th:if="${page =='searchWidgetSellerMarketListing'}" class="submit4 nav-link active" th:href="@{/searchWidgetButton}"><span>View User Items</span></a>
-					<a th:unless="${page =='searchWidgetSellerMarketListing'}" class="submit4" th:href="@{/searchWidgetButton}"><span>View User Items</span></a>
+					<a th:if="${page == 'begin'}" class="submit4 nav-link active" th:href="@{/employee}"><span>Employee Home</span></a>
+					<a th:unless="${page == 'begin'}" class="submit4" th:href="@{/employee}"><span>Employee Home</span></a>
 				</li>
 				<li class="nav-item">
-					<a th:if="${page == 'widgetsInfo'}" class="submit4 nav-link active" th:href="@{/widgetsInfo}"><span>Items Details</span></a>
-					<a th:unless="${page == 'widgetsInfo'}" class="submit4" th:href="@{/widgetsInfo}"><span>Items Details</span></a>
-				</li>
-				<li class="nav-item">
-					<a th:if="${page == 'create'}" class="submit4 nav-link active" th:href="@{/createButton}"><span>Add Account</span></a>
-					<a th:unless="${page == 'create'}" class="submit4" th:href="@{/createButton}"><span>Add Account</span></a>
-				</li>
-				<li class="nav-item">
-					<a th:if="${page == 'messages'}" class="submit4 nav-link active" th:href="@{/messages}"><span>My Messages</span></a>
-					<a th:unless="${page == 'messages'}" class="submit4" th:href="@{/messages}"><span>My Messages</span></a>
+					<a th:if="${page == 'ticket'}" class="submit4 nav-link active" th:href="@{/searchTickets}"><span>View User Tickets</span></a>
+					<a th:unless="${page == 'ticket'}" class="submit4" th:href="@{/searchTickets}"><span>View User Tickets</span></a>
 				</li>
 			</ul>
 		</div>
-		<!-- Customer Service's Header -->
+		<!-- Help Desk Admin's Header -->
 		
 		<!-- Create header for other employee roles when needed -->
 		
@@ -234,6 +246,22 @@
 					</li>
 				</ul>
 				<!-- Customer Service Right Justified Unordered List -->
+				
+				<!-- Tech Service Right Justified Unordered List -->
+				<ul th:if="${user.role} == ROLE_TECHNICALSERVICE" class="navbar-nav ms-md-auto">
+					<li class="nav-item ms-md-auto">
+						<a class="nav-link text-white" style="font-family:'Poppins'; font-size: 1.5em" href="/do_the_logout"> Log Out </a>
+					</li>
+				</ul>
+				<!-- Tech Service Right Justified Unordered List -->
+				
+				<!-- Help Desk Admin Right Justified Unordered List -->
+				<ul th:if="${user.role} == ROLE_HELPDESK_ADMIN" class="navbar-nav ms-md-auto">
+					<li class="nav-item ms-md-auto">
+						<a class="nav-link text-white" style="font-family:'Poppins'; font-size: 1.5em" href="/do_the_logout"> Log Out </a>
+					</li>
+				</ul>
+				<!-- Help Desk Admin Right Justified Unordered List -->
 				
 				
 				<!-- Create header for other employee roles when needed -->
