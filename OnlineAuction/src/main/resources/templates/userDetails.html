@@ -244,6 +244,7 @@
 												<h4 th:text="${defaultPaymentDetails.cardType}"></h4>
 												<!-- Card Details -->
 												<p class="card-text">**** **** **** <span th:text="${defaultPaymentDetails.last4Digits}"></span></p>
+												<p class="card-text">Expires <span th:text="${defaultPaymentDetails.expirationDate}"></span></p>
 												<p style="color: #6c9fec;">[Default]</p>
 												<a class="btn btn-sm btn-outline-secondary" th:href="@{/updatePaymentDetails/{id}(id = ${defaultPaymentDetails.id})}">
 													<i class="fa fa-gear"></i>
@@ -269,6 +270,7 @@
 													<h4 th:text="${payment.cardType}"></h4>
 													<!-- Card Details -->
 													<p class="card-text">**** **** **** <span th:text="${payment.last4Digits}"></span></p>
+													<p class="card-text">Expires <span th:text="${payment.expirationDate}"></span></p>
 													<a class="btn btn-sm btn-outline-primary" th:href="@{/makeDefaultPaymentDetails/{id}(id = ${payment.id})}">Set as Default</a>
 													<a class="btn btn-sm btn-outline-secondary" th:href="@{/updatePaymentDetails/{id}(id = ${payment.id})}">
 														<i class="fa fa-gear"></i>
@@ -350,7 +352,7 @@
 									</div>
 									<div class="input-group mb-3">
 										<!-- Card Number -->
-										<input type="tel" class="form-control" field="*{cardNumber}" name="cardNumber" placeholder="Card Number" maxlength="16"></input>
+										<input type="tel" class="form-control" field="*{cardNumber}" name="cardNumber" placeholder="Card Number" maxlength="19" minlength="8"></input>
 										<!-- Expiration Date -->
 										<input style="display:none" type="month" name="pleaseWork">
 										<input field="*{expirationDate}" name="expirationDate" class="form-control month-picker" placeholder="Exp. Date (MM / YY)" autocomplete="do-not-autofill" th:value="${detailsToUpdate != null ? detailsToUpdate.expirationDate : ''}"/>
@@ -385,8 +387,10 @@
 								<div class="d-flex justify-content-center mb-3">
 									<!-- cancel -->
 									<a style="margin-right:50px;" class="btn btn-outline-danger ms-1" th:href="@{/userDetails/initializePaymentDetails}" >Cancel</a>
+									<!-- update -->
+									<button th:if="${update}" style="margin-left:50px;" class="btn btn-outline-success me-1" type="submit" name="update" id="mysignupbutton">Update</button>
 									<!-- add -->
-									<button style="margin-left:50px;" class="btn btn-outline-success me-1" type="submit" name="submit" id="mysignupbutton">Confirm</button>
+									<button th:unless="${update}" style="margin-left:50px;" class="btn btn-outline-success me-1" type="submit" name="submit" id="mysignupbutton">Confirm</button>
 								</div>
 							</div>
 						</form>

@@ -16,7 +16,7 @@ public class PaymentDetails_Form {
 	@NotEmpty(message = "Cardholder Name cannot be empty.")
 	private String cardholderName;
 	
-	@Size(min = 16, max = 16, message = "Card Number must be 16 characters.")
+	@Size(min = 8, max = 19, message = "Card Number must be 8-19 characters.")
 	private String cardNumber;
 	
 	@NotEmpty(message = "Expiration cannot be empty.")
