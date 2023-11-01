@@ -144,9 +144,8 @@ public class PaymentDetailsController {
 		details.setSecurityCode(passwordEncoder.encode(details.getSecurityCode()));
 		details.setBillingAddress(details.getBillingAddress());
 		// No assigned details - add to user
-		PaymentDetails curr = entityManager.find(PaymentDetails.class, currDetails.getId());
-		curr.transferFields(details);
-		paymentDetailsRepository.save(curr);
+		currDetails.transferFields(details);
+		paymentDetailsRepository.save(currDetails);
 	}
 	
 	public boolean matchExistingCard(String secCode, PaymentDetails details)

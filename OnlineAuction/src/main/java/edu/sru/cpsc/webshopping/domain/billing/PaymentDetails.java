@@ -135,8 +135,8 @@ public class PaymentDetails {
 		this.cardType = form.getCardType();
 		this.cardholderName = form.getCardholderName();
 		this.cardNumber = form.getCardNumber();
-		if(this.cardNumber.length() == 16)
-			this.last4Digits = form.getCardNumber().substring(12);
+		if(this.cardNumber.length() >= 8 && this.cardNumber.length() <= 19)
+			this.last4Digits = form.getCardNumber().substring(this.cardNumber.length() - 4);
 		this.expirationDate = form.getExpirationDate();
 		this.securityCode = form.getSecurityCode();
 		this.billingAddress = billingAddress;

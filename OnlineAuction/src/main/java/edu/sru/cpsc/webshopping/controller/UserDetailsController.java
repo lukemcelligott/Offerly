@@ -488,7 +488,7 @@ public class UserDetailsController {
 	public String updateCard(@PathVariable("id") long id, Model model)
 	{
 		updatePD = true;
-		reloginPD = true;
+		//reloginPD = true;
 		this.id2PD = id;
 		addNewPD = false;
 		updateIdPD = id;
@@ -751,6 +751,7 @@ public class UserDetailsController {
 	 * @param details the filled out PaymentDetails from the page's form
 	 * @return 	a redirection string pointing to the userDetails page
 	 */
+	@Transactional
 	@PostMapping(value = "/submitPaymentDetailsAction", params="update")
 	public String sendUpdatePD(@Validated @ModelAttribute("paymentDetails") PaymentDetails_Form details, BindingResult result, Model model, Principal principal) {
 		User user = userService.getUserByUsername(principal.getName());
@@ -1340,12 +1341,16 @@ public class UserDetailsController {
 	public boolean cardFarFuture(PaymentDetails_Form details) {
 		int thisYear = LocalDate.now().getYear();
 		try {
-			int year = Integer.parseInt(details.getExpirationDate().substring(4, 8));
-			if((thisYear + 8) >= year)
+			int year = Integer.parseInt(details.getExpirationDate().split("/")[1]);
+			System.out.println(year + " compared to " + (thisYear + 8));
+			if(year <= (thisYear + 8)) {
+				System.out.println("year is less than or equal to 8 years in the future");
 				return false;
+			}
 			return true;
 		}
 			catch (Exception e) {
+			System.out.println(e);
 			return true;
 		}
 				
