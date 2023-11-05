@@ -200,7 +200,7 @@
 							data-bs-toggle="modal" data-bs-target="#deleteTransactionModal">
 							Cancel Transaction
 						</a>
-						<button class="btn btn-outline-success" type="button" onclick="location.href='/homePage'" style="float:left; margin-left:16px;">Home</button>
+						<button class="btn btn-outline-success" type="button" th:onclick="'location.href=\'' + @{/homePage} + '\''" style="float:left; margin-left:16px;">Home</button>
 					</div>
 				</div>
 			</div>
@@ -211,6 +211,7 @@
 		/*<![CDATA[*/
 		var isLocalPickup = /*[[${trans.isLocalPickup}]]*/ false;
 		/*]]>*/
+		var contextPath = /*[[ @{'/'} ]]*/ '/';
 	</script>
 
 	<script>
@@ -218,7 +219,7 @@
 		async function fetchTrackingInfo() {
 			const transId = window.location.pathname.split('/').pop(); // Get the order ID from the URL 
 			try {
-				const response = await fetch(`/api/tracking/${transId}`);
+				const response = await fetch(contextPath + `/api/tracking/${transId}`);
 				if (!response.ok) {
 					throw new Error(`Network response was not ok ${response.statusText}`);
 				}

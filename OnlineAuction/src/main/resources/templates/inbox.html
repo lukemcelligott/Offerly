@@ -88,8 +88,8 @@
     
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     
-<script>
-		
+<script th:inline="javascript">
+	var contextPath = /*[[ @{'/'} ]]*/ '/';
     const userId = document.getElementById("currentUserId").value;
 	const username = document.getElementById("currentUsername").value;
 	
@@ -100,7 +100,7 @@
 	let currentFriendId = null;
 	
 	function connectWebSocket() {
-	    const socket = new SockJS('/websocket-endpoint');
+	    const socket = new SockJS(contextPath + 'websocket-endpoint');
 	
 	    socket.onerror = function(event) {
 	        console.error("WebSocket Error:", event);
@@ -117,7 +117,7 @@
 	
 	    stompClient = Stomp.over(socket);
 	    stompClient.connect({}, function() {
-	        stompClient.subscribe('/topic/messages', function(messageOutput) {
+	        stompClient.subscribe(contextPath + 'topic/messages', function(messageOutput) {
 				console.log("Received WebSocket Message:", messageOutput);
 	            const message = JSON.parse(messageOutput.body);
 	            appendMessageToChatBox(message);
@@ -133,7 +133,7 @@
 	        timestamp: new Date().toISOString()
 	    };
 	
-	    stompClient.send("/app/send/message", {}, JSON.stringify(messageToSend));
+	    stompClient.send(contextPath + "app/send/message", {}, JSON.stringify(messageToSend));
 	}
 	
 	function highlightSelectedFriend(element) {
@@ -238,7 +238,7 @@
 	    document.getElementById('sendMessageForm').style.display = 'block';
 	    
 	    // Fetch conversation history from the server
-	    fetch('/api/conversations/' + friendId)
+	    fetch(contextPath + 'api/conversations/' + friendId)
 	    .then(response => {
 	        if (!response.ok) {
 	            throw new Error(`HTTP error! Status: ${response.status}`);

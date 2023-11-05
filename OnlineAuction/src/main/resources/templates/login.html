@@ -14,7 +14,7 @@
     </head>
     <body>
  	<div class="card-header d-flex flex-column align-items-center justify-content-center" >
- 		<img src="/images/offerly.png" style="max-width: 40%">
+ 		<img th:src="@{/images/offerly.png}" style="max-width: 40%">
         <div th:if="${param.error}">
             Invalid Username or Password
         </div>

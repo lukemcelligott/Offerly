@@ -20,11 +20,11 @@
 				<!-- Unbiased Left Justified Unordered List -->
 				<ul class="navbar-nav">
 					<li class="nav-item">
-						<a th:if="${user.role} == ROLE_USER" class="navbar-brand" th:href="@{/homePage}"><img src="/images/offerly-logo.png" alt="Home" style="width:64px; height:64px; border-radius: 1em;"></img></a>
-						<a th:if="${user.role} == ROLE_ADMIN" class="navbar-brand" th:href="@{/employee}"><img src="/images/offerly-logo.png" alt="Home" style="width:64px; height:64px; border-radius: 1em;"></img></a>
-						<a th:if="${user.role} == ROLE_CUSTOMERSERVICE" class="navbar-brand" th:href="@{/employee}"><img src="/images/offerly-logo.png" alt="Home" style="width:64px; height:64px; border-radius: 1em;"></img></a>
-						<a th:if="${user.role} == ROLE_TECHNICALSERVICE" class="navbar-brand" th:href="@{/employee}"><img src="/images/offerly-logo.png" alt="Home" style="width:64px; height:64px; border-radius: 1em;"></img></a>
-						<a th:if="${user.role} == ROLE_HELPDESK_ADMIN" class="navbar-brand" th:href="@{/employee}"><img src="/images/offerly-logo.png" alt="Home" style="width:64px; height:64px; border-radius: 1em;"></img></a>
+						<a th:if="${user.role} == ROLE_USER" class="navbar-brand" th:href="@{/homePage}"><img th:src="@{/images/offerly-logo.png}" alt="Home" style="width:64px; height:64px; border-radius: 1em;"></img></a>
+						<a th:if="${user.role} == ROLE_ADMIN" class="navbar-brand" th:href="@{/employee}"><img th:src="@{/images/offerly-logo.png}" alt="Home" style="width:64px; height:64px; border-radius: 1em;"></img></a>
+						<a th:if="${user.role} == ROLE_CUSTOMERSERVICE" class="navbar-brand" th:href="@{/employee}"><img th:src="@{/images/offerly-logo.png}" alt="Home" style="width:64px; height:64px; border-radius: 1em;"></img></a>
+						<a th:if="${user.role} == ROLE_TECHNICALSERVICE" class="navbar-brand" th:href="@{/employee}"><img th:src="@{/images/offerly-logo.png}" alt="Home" style="width:64px; height:64px; border-radius: 1em;"></img></a>
+						<a th:if="${user.role} == ROLE_HELPDESK_ADMIN" class="navbar-brand" th:href="@{/employee}"><img th:src="@{/images/offerly-logo.png}" alt="Home" style="width:64px; height:64px; border-radius: 1em;"></img></a>
 					</li>
 				</ul>
 				<!-- End Unbiased Left Justified Unordered List -->
@@ -235,7 +235,7 @@
 								<li><a class="dropdown-item" th:href="@{/userDetails/initializePaymentDetails}"> Payment Info </a></li>
 								<li><a class="dropdown-item" th:href="@{/userDetails/initializeShippingDetails}"> Shipping Info </a></li>
 								<li><hr class="dropdown-divider"></hr></li>
-								<li><a class="dropdown-item" href="/do_the_logout"> Log Out </a></li>
+								<li><a class="dropdown-item" th:href="@{/do_the_logout}"> Log Out </a></li>
 							</ul>
 						</div>
 					</li>
@@ -245,7 +245,7 @@
 				<!-- Admin Right Justified Unordered List -->
 				<ul th:if="${user.role} == ROLE_ADMIN" class="navbar-nav ms-md-auto">
 					<li class="nav-item ms-md-auto">
-						<a class="nav-link text-white" style="font-family:'Poppins'; font-size: 1.5em" href="/do_the_logout"> Log Out </a>
+						<a class="nav-link text-white" style="font-family:'Poppins'; font-size: 1.5em" th:href="@{/do_the_logout}"> Log Out </a>
 					</li>
 				</ul>
 				<!-- End Admin Right Justified Unordered List -->
@@ -253,7 +253,7 @@
 				<!-- Customer Service Right Justified Unordered List -->
 				<ul th:if="${user.role} == ROLE_CUSTOMERSERVICE" class="navbar-nav ms-md-auto">
 					<li class="nav-item ms-md-auto">
-						<a class="nav-link text-white" style="font-family:'Poppins'; font-size: 1.5em" href="/do_the_logout"> Log Out </a>
+						<a class="nav-link text-white" style="font-family:'Poppins'; font-size: 1.5em" th:href="@{/do_the_logout}"> Log Out </a>
 					</li>
 				</ul>
 				<!-- Customer Service Right Justified Unordered List -->
@@ -261,7 +261,7 @@
 				<!-- Tech Service Right Justified Unordered List -->
 				<ul th:if="${user.role} == ROLE_TECHNICALSERVICE" class="navbar-nav ms-md-auto">
 					<li class="nav-item ms-md-auto">
-						<a class="nav-link text-white" style="font-family:'Poppins'; font-size: 1.5em" href="/do_the_logout"> Log Out </a>
+						<a class="nav-link text-white" style="font-family:'Poppins'; font-size: 1.5em" th:href="@{/do_the_logout}"> Log Out </a>
 					</li>
 				</ul>
 				<!-- Tech Service Right Justified Unordered List -->
@@ -269,7 +269,7 @@
 				<!-- Help Desk Admin Right Justified Unordered List -->
 				<ul th:if="${user.role} == ROLE_HELPDESK_ADMIN" class="navbar-nav ms-md-auto">
 					<li class="nav-item ms-md-auto">
-						<a class="nav-link text-white" style="font-family:'Poppins'; font-size: 1.5em" href="/do_the_logout"> Log Out </a>
+						<a class="nav-link text-white" style="font-family:'Poppins'; font-size: 1.5em" th:href="@{/do_the_logout}"> Log Out </a>
 					</li>
 				</ul>
 				<!-- Help Desk Admin Right Justified Unordered List -->

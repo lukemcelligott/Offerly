@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,6 +21,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -385,24 +389,17 @@ public class AddWidgetController
 		widgetImageController.addWidgetImage(tempImage);
 		listingImages.add(tempImage);
 		
-		try
-		{
-			String fileLocation = new File("src/main/resources/static/listingImages").getAbsolutePath() + "/" + tempImage.getImageName();
+		try {
 			String fileLocationTemp = new ClassPathResource("static/listingImages").getFile().getAbsolutePath() + "/" + tempImage.getImageName();
-
-			FileOutputStream output = new FileOutputStream(fileLocation);
-			output.write(file.getBytes());
-			output.close(); 
-
-			output = new FileOutputStream(fileLocationTemp);
-			output.write(file.getBytes());
-			output.close();
-		}
-		
-		catch (IOException e)
-		{
+			
+			try (FileOutputStream output = new FileOutputStream(fileLocationTemp)) {
+				output.write(file.getBytes());
+			}
+	
+			System.out.println("Upload successful, file saved at: " + fileLocationTemp);
+		} catch (IOException e) {
 			e.printStackTrace();
-			System.out.println("upload failed");
+			System.out.println("Upload failed");
 		}
 	}
 

@@ -23,18 +23,24 @@ public class CustomErrorController implements ErrorController {
 	
 	@RequestMapping("/error")
 	public String handleError(HttpServletRequest request, Model model) {
-		Object statusCode = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
-		NestedServletException exception = (NestedServletException)request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
-		if (exception == null) {
+		Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
+		Object errorException = request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
+
+		if (errorException instanceof NestedServletException) {
+			NestedServletException exception = (NestedServletException) errorException;
+			model.addAttribute("errorMessage", exception.getLocalizedMessage());
+			model.addAttribute("exceptionFound", true);
+		} else if (errorException instanceof Throwable) { // For any other Throwable that is not a NestedServletException
+			Throwable throwable = (Throwable) errorException;
+			model.addAttribute("errorMessage", throwable.getLocalizedMessage());
+			model.addAttribute("exceptionFound", true);
+		} else {
 			model.addAttribute("errorMessage", "No exception was thrown.");
-			model.addAttribute("statusCode", "N/A");
 			model.addAttribute("exceptionFound", false);
 		}
-		else {
-			model.addAttribute("errorMessage", exception.getLocalizedMessage());
-			model.addAttribute("statusCode", statusCode.toString());
-			model.addAttribute("exceptionFound", true);
-		}
+		
+		model.addAttribute("statusCode", status != null ? status.toString() : "N/A");
+
 		return "error";
 	}
 }
