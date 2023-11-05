@@ -304,7 +304,7 @@ public class MarketListingPageController {
   }
 
   /**
-   * Deletes a market listing
+   * Deletes a market listing for listing owners
    *
    * @return returns to the index
    */
@@ -313,6 +313,54 @@ public class MarketListingPageController {
     // go to marketListingController and delete the listing (it has the repository there)
     marketListingController.deleteMarketListing(id);
       // redirect - if the user is an admin send to their search page
+    User user = userService.getUserByUsername(principal.getName());
+    if (user.getRole().equals("ROLE_ADMIN")
+            || user.getRole().equals("ROLE_CUSTOMERSERVICE")
+            || user.getRole().equals("ROLE_TECHNICALSERVICE")
+            || user.getRole().equals("ROLE_SECURITY")
+            || user.getRole().equals("ROLE_SALES")
+            || user.getRole().equals("ROLE_ADMIN_SHADOW")
+            || user.getRole().equals("ROLE_HELPDESK_ADMIN")
+            || user.getRole().equals("ROLE_HELPDESK_REGULAR")) {
+    	return "redirect:/searchWidgetButton";
+	}
+	// otherwise return user home
+    return "redirect:/homePage";
+    // this code could potentially be improved to track where the user deleted it from and return
+    // to that page specifically. look into doing that after overall site is more functional?
+  }
+  
+  /**
+   * Deletes a market listing for admins
+   *
+   * @return returns to the index
+   */
+  @RequestMapping({"/viewMarketListing/deleteListingAdmin/{id}"})
+  public String deleteListingAdmin(@PathVariable long id, @RequestParam String reason, Model model, Principal principal) {
+    // set up email notification information
+    User sender = userService.getUserByUsername(principal.getName());
+    MarketListing listing = marketListingController.getMarketListing(id);
+    User recipient = listing.getSeller();
+    String content = 
+    		"\nHello " + recipient.getUsername() + ",\n" +
+    		"This message is informing you that your listing " + listing.getSeller() + " has been removed.\n" +
+    		"\nThe reason for removal is as follows:\n\n" + reason + 
+    		"\nSincerely,\nThe Offerly Team";
+	Message message = new Message();
+	message.setOwner(sender);
+	message.setSender(sender.getUsername());
+	message.setContent(content);
+	message.setSubject("Market Listing Removal");
+	message.setMsgDate();
+	message.setReceiverName(recipient.getDisplayName());
+	message.setReceiver(recipient);
+	// send message
+    emailController.messageEmail(recipient, sender, message);
+    
+    // go to marketListingController and delete the listing (it has the repository there)
+    marketListingController.deleteMarketListing(id);
+    
+    // redirect - if the user is an admin send to their search page
     User user = userService.getUserByUsername(principal.getName());
     if (user.getRole().equals("ROLE_ADMIN")
             || user.getRole().equals("ROLE_CUSTOMERSERVICE")
