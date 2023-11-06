@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import edu.sru.cpsc.webshopping.controller.misc.Friendship;
+import edu.sru.cpsc.webshopping.domain.misc.Friendship;
 import edu.sru.cpsc.webshopping.domain.user.User;
 
 public interface FriendshipRepository extends JpaRepository<Friendship, Long> {

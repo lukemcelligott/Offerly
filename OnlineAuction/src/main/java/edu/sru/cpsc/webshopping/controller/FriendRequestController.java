@@ -3,7 +3,7 @@ package edu.sru.cpsc.webshopping.controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import edu.sru.cpsc.webshopping.controller.misc.SocialFriendRequest;
+import edu.sru.cpsc.webshopping.domain.misc.SocialFriendRequest;
 import edu.sru.cpsc.webshopping.repository.misc.FriendSocialRequestRepository;
 
 @RestController
