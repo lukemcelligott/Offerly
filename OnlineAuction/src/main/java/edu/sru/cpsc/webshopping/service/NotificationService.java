@@ -2,6 +2,7 @@ package edu.sru.cpsc.webshopping.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import edu.sru.cpsc.webshopping.domain.misc.Notification;
 import edu.sru.cpsc.webshopping.repository.misc.NotificationRepository;
@@ -19,9 +20,13 @@ public class NotificationService {
         this.notificationRepository = notificationRepository;
     }
 
+    @Transactional
     public Notification createNotification(Long userId, String message) {
         Notification notification = new Notification(userId, message);
-        return notificationRepository.save(notification);
+        Notification savedNotification = notificationRepository.save(notification);
+        System.out.println("Creating notification for user ID: " + userId + " with message: " + message);
+        System.out.println("Notification saved with ID: " + savedNotification.getId());
+        return savedNotification;
     }
 
     public List<Notification> getUserNotifications(Long userId) {

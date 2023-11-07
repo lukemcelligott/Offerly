@@ -1507,7 +1507,11 @@
 							</div>
 						</div>
 					</form>
-
+					
+					<div th:each="notification : ${notifications}" class="alert alert-success" role="alert">
+					    <p th:text="${notification.message}"></p>
+					</div>	
+					
 					<!-- list of purchased items -->
 					<div class="card my-4 mx-4">
 						<div class="card-header">
@@ -1610,11 +1614,6 @@
 							</table>
 						</div>
 					</div>
-					
-					<div th:each="notification : ${notifications}" class="alert alert-success" role="alert">
-					    <p th:text="${notification.message}"></p>
-					</div>					
-					
 				</div>
 			</div>
 		</div>
