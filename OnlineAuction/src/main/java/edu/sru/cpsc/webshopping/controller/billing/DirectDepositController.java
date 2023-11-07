@@ -1,7 +1,7 @@
 package edu.sru.cpsc.webshopping.controller.billing;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 import org.springframework.web.bind.annotation.RestController;
 

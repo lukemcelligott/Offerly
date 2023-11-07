@@ -56,7 +56,7 @@
 <body>
 
 	<!-- HEADER BAR -->
-    <div th:insert="header :: header" th:unless="${user == null}"></div>
+    <div th:insert="~{header :: header}" th:unless="${user == null}"></div>
 
     <!-- Main Content Wrapper -->
     <div class="container mt-5">

@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.Map;
 import java.security.Principal;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -495,12 +495,12 @@ public class MarketListingDomainController {
 	    return ResponseEntity.ok(String.valueOf(uniqueBidderCount));
 	}
 	
-	 @GetMapping
-	    public String getAllAuctions(Model model) {
-	        List<Auction> auctions = auctionService.getAllAuctions();
-	        model.addAttribute("auctions", auctions);
-	        return "auctions";
-	    }
+	/* @GetMapping
+	public String getAllAuctions(Model model) {
+		List<Auction> auctions = auctionService.getAllAuctions();
+		model.addAttribute("auctions", auctions);
+		return "auctions";
+	} */
 	 
 	 @GetMapping("/totalBidsCount/{id}")
 	 public ResponseEntity<String> getTotalBidsCount(@PathVariable Long id) {

@@ -45,7 +45,7 @@
 	<body>
 			
 		<!-- HEADER BAR -->
-		<div th:insert="header :: header" th:unless="${user == null}"></div>
+		<div th:insert="~{header :: header}" th:unless="${user == null}"></div>
 		<!-- END HEADER BAR -->
 	
 		<nav class="navbar navbar-expand-sm" style="background-color: #222222;" th:if="${user == null}">

@@ -32,7 +32,7 @@
 <body>
 
     <!-- HEADER BAR -->
-	<div th:insert="header :: header" th:unless="${user == null}"></div>
+	<div th:insert="~{header :: header}" th:unless="${user == null}"></div>
 	
 	<div class="container mt-5" style="max-height: fit-content!important;">
 	    <div class="row">

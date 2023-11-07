@@ -2,8 +2,8 @@ package edu.sru.cpsc.webshopping.domain.billing;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;

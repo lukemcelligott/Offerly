@@ -2,17 +2,17 @@ package edu.sru.cpsc.webshopping.domain.widgets;
 
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
 import org.springframework.lang.NonNull;
 
@@ -42,10 +42,6 @@ public class Widget {
 	
 	@NonNull 
 	private String description;
-	
-	@ManyToMany(mappedBy = "wishlistedWidgets")
-	@CsvIgnore
-	private Set<User> wishlistingUsers;
 	
 	@ManyToOne
 	private Category category;

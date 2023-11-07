@@ -6,9 +6,9 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;

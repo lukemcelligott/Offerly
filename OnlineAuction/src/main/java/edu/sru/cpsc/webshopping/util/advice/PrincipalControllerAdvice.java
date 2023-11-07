@@ -3,7 +3,7 @@ package edu.sru.cpsc.webshopping.util.advice;
 import java.io.IOException;
 import java.security.Principal;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

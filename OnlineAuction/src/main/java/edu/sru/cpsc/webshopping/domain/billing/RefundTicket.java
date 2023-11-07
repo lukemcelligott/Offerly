@@ -1,6 +1,6 @@
 package edu.sru.cpsc.webshopping.domain.billing;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import edu.sru.cpsc.webshopping.domain.market.Transaction;

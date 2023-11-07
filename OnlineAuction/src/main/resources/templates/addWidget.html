@@ -44,7 +44,7 @@
 	<body>
 	
 		<!-- HEADER BAR -->
-		<div th:insert="header :: header" th:unless="${user == null}"></div>
+		<div th:insert="~{header :: header}" th:unless="${user == null}"></div>
 		<!-- END HEADER BAR -->
 
 		
