@@ -5,8 +5,8 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import edu.sru.cpsc.webshopping.controller.misc.FriendStatus;
-import edu.sru.cpsc.webshopping.controller.misc.SocialFriendRequest;
+import edu.sru.cpsc.webshopping.domain.misc.FriendStatus;
+import edu.sru.cpsc.webshopping.domain.misc.SocialFriendRequest;
 import edu.sru.cpsc.webshopping.domain.user.User;
 
 @Repository

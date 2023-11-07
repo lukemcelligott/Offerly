@@ -1,4 +1,4 @@
-package edu.sru.cpsc.webshopping.controller.misc;
+package edu.sru.cpsc.webshopping.domain.misc;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

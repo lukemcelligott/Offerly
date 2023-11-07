@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.opencsv.CSVWriter;
 import com.opencsv.bean.StatefulBeanToCsv;
@@ -920,7 +921,7 @@ public class EmployeeController {
 
   @PostMapping("/reply/{id}")
   public String getTicketsPage(
-      @PathVariable Long id, @ModelAttribute Message message, Model model, Principal principal) {
+      @PathVariable Long id, @ModelAttribute Message message, Model model, Principal principal, RedirectAttributes redirectAttributes) {
     User user = userService.getUserByUsername(principal.getName());
     model.addAttribute("user", user);
 
@@ -946,7 +947,7 @@ public class EmployeeController {
 
     model.addAttribute("user", user);
     model.addAttribute("page", getPage());
-
+    
     return "redirect:/searchTickets/" + id;
   }
 

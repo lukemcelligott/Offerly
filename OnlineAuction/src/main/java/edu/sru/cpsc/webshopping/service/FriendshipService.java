@@ -6,9 +6,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import edu.sru.cpsc.webshopping.controller.misc.FriendStatus;
-import edu.sru.cpsc.webshopping.controller.misc.Friendship;
-import edu.sru.cpsc.webshopping.controller.misc.SocialFriendRequest;
+import edu.sru.cpsc.webshopping.domain.misc.FriendStatus;
+import edu.sru.cpsc.webshopping.domain.misc.Friendship;
+import edu.sru.cpsc.webshopping.domain.misc.SocialFriendRequest;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.repository.misc.FriendSocialRequestRepository;
 import edu.sru.cpsc.webshopping.repository.misc.FriendshipRepository;
