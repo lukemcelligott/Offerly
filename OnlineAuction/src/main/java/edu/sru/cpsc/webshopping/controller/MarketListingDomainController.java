@@ -210,7 +210,7 @@ public class MarketListingDomainController {
 	 */
 	@Transactional
 	@PostMapping("/edit-market-listing")
-	public MarketListing editMarketListing(@Validated MarketListing updatedMarketListing) {
+	public MarketListing editMarketListing(@Validated MarketListing updatedMarketListing, User user) {
 		Optional<MarketListing> dbListingOpt = marketRepository.findById(updatedMarketListing.getId());
 		
 		if (!dbListingOpt.isPresent()) {
@@ -221,6 +221,15 @@ public class MarketListingDomainController {
 		dbListing.setPricePerItem(updatedMarketListing.getPricePerItem());
 		dbListing.setQtyAvailable(updatedMarketListing.getQtyAvailable());
 		dbListing.setDeleted(updatedMarketListing.isDeleted());
+		
+		Widget widget = dbListing.getWidgetSold();
+		
+		// log event
+	    StatsCategory cat = StatsCategory.WATCHLIST;
+	    Statistics stat = new Statistics(cat, 1);
+	    stat.setDescription(user.getUsername() + " edited " + widget.getName());
+	    statControl.addStatistics(stat);
+		
 		return marketRepository.save(dbListing);
 	}
 

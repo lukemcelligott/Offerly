@@ -55,7 +55,6 @@ import lombok.extern.slf4j.Slf4j;
  * with market listings
  */
 @Controller
-@Slf4j
 public class MarketListingPageController {
   MarketListingDomainController marketListingController;
   PurchaseShippingAddressPageController shippingPage;
@@ -74,6 +73,8 @@ public class MarketListingPageController {
   private Widget tempWidget;
   @PersistenceContext
   EntityManager entityManager;
+  @Autowired
+  StatisticsDomainController statControl;
 
   @Autowired
   private CategoryService categoryService;
@@ -303,8 +304,11 @@ public class MarketListingPageController {
    * @return returns to the index
    */
   @PostMapping({"/viewMarketListing/editListing"})
-  public String editListing(@Validated MarketListing marketListing, Model model) {
-    marketListingController.editMarketListing(marketListing);
+  public String editListing(@Validated MarketListing marketListing, Model model, Principal principal) {
+	User user = userService.getUserByUsername(principal.getName());
+	  
+    marketListingController.editMarketListing(marketListing, user);
+    
     return "redirect:/viewMarketListing/" + marketListing.getId();
   }
 
