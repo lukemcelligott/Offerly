@@ -240,7 +240,6 @@ UNLOCK TABLES;
 
 LOCK TABLES `social_friend_request` WRITE;
 /*!40000 ALTER TABLE `social_friend_request` DISABLE KEYS */;
-INSERT INTO `social_friend_request` VALUES (1,'PENDING',5597,5664);
 /*!40000 ALTER TABLE `social_friend_request` ENABLE KEYS */;
 UNLOCK TABLES;
 

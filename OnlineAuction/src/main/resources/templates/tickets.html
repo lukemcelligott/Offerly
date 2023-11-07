@@ -67,15 +67,15 @@
 				            			<!-- subject -->
 				            			<td class="text" th:text="${ticket.subject}"></td>
 				            			<!-- state -->
-				            			<td class="text" th:text="${ticket.state}"></td>
+				            			<td class="text" th:text="${ticket.state} ? ${ticket.state} : 'UNASSIGNED'" ></td>
 				            			<!-- created at -->
 				            			<td class="text" th:text="${ticket.createdAt}"></td>
 				            			<!-- assigned at -->
-				            			<td class="text" th:text="${ticket.assignedAt} ? ${ticket.assignedAt} : 'NULL'"></td>
+				            			<td class="text" th:text="${ticket.assignedAt} ? ${ticket.assignedAt} : 'UNASSIGNED'"></td>
 				            			<!-- updated at -->
 				            			<td class="text" th:text="${ticket.updatedAt}"></td>
 				            			<!-- resolved at -->
-				            			<td class="text" th:text="${ticket.resolvedAt} ? ${ticket.resolvedAt} : 'NULL'"></td>
+				            			<td class="text" th:text="${ticket.resolvedAt} ? ${ticket.resolvedAt} : 'UNRESOLVED'"></td>
 				            			<!-- actions -->
 				            			<td class="text">
 					              			<th:block th:if="${ticket.isResolved()}">
@@ -83,7 +83,7 @@
 					                  				<input type="submit" value="Reopen Ticket"/>
 					                			</form>
 					              			</th:block>
-					              			<th:block th:unless="${ticket.isResolved()}"><p>None</p></th:block>
+					              			<th:block th:unless="${ticket.isResolved()}"><p>IN PROGRESS</p></th:block>
 				            			</td>
 									</tr>
 								</tbody>
@@ -149,7 +149,7 @@
 		          			</tr>
 		          			<tr>
 		            			<td><p>Assigned At : </p></td>
-		            			<td><p th:text="${ticketdetail.assignedAt} ? ${ticketdetail.assignedAt} : 'NULL'"></p></td>
+		            			<td><p th:text="${ticketdetail.assignedAt} ? ${ticketdetail.assignedAt} : 'UNASSIGNED'"></p></td>
 		          			</tr>
 		          			<tr>
 		            			<td><p>Updated At : </p></td>
@@ -157,7 +157,7 @@
 		          			</tr>
 		          			<tr>
 		            			<td><p>Resolved At : </p></td>
-		            			<td><p th:text="${ticketdetail.resolvedAt} ? ${ticketdetail.resolvedAt} : 'NULL'"></p></td>
+		            			<td><p th:text="${ticketdetail.resolvedAt} ? ${ticketdetail.resolvedAt} : 'IN PROGRESS'"></p></td>
 		          			</tr>
 		          			<tr>
 		            			<td colspan="2">

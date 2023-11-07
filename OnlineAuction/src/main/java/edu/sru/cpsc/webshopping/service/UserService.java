@@ -81,13 +81,17 @@ public class UserService {
     }
     
     public List<User> searchUsers(String query, String filterType) {
-        List<User> allUsers = getAllUsers();  // You might need to implement this method
+        List<User> allUsers = getAllUsers();
         List<User> matchedUsers = new ArrayList<>();
 
         for (User user : allUsers) {
-            if (filterType.equals("name") && user.getUsername().contains(query)) {
+            if (!"ROLE_USER".equals(user.getRole())) {
+                continue; // Skip users who do not have ROLE_USER as their role
+            }
+
+            if ("name".equals(filterType) && user.getUsername().contains(query)) {
                 matchedUsers.add(user);
-            } else if (filterType.equals("email") && user.getEmail().contains(query)) {
+            } else if ("email".equals(filterType) && user.getEmail().contains(query)) {
                 matchedUsers.add(user);
             }
         }

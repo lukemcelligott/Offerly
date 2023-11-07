@@ -8,7 +8,8 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
-import edu.sru.cpsc.webshopping.controller.misc.SocialMessage;
+
+import edu.sru.cpsc.webshopping.domain.misc.SocialMessage;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.service.MessageService;
 import edu.sru.cpsc.webshopping.service.UserService;

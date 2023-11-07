@@ -23,10 +23,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import edu.sru.cpsc.webshopping.controller.misc.Friendship;
-import edu.sru.cpsc.webshopping.controller.misc.SocialFriendRequest;
-import edu.sru.cpsc.webshopping.controller.misc.SocialMessage;
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
+import edu.sru.cpsc.webshopping.domain.misc.Friendship;
+import edu.sru.cpsc.webshopping.domain.misc.SocialFriendRequest;
+import edu.sru.cpsc.webshopping.domain.misc.SocialMessage;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.repository.market.MarketListingRepository;
 import edu.sru.cpsc.webshopping.repository.misc.FriendSocialRequestRepository;
@@ -108,16 +108,18 @@ public class FriendsController {
             return "redirect:/Social";
         }
 
+        if (!"ROLE_USER".equals(friendToAdd.getRole())) {
+            redirectAttributes.addFlashAttribute("errorMessage", "User not found!");
+            return "redirect:/Social";
+        }
+
         if (friendshipService.sendFriendRequest(currentUser, friendToAdd)) {
             redirectAttributes.addFlashAttribute("requestSent", true);
         }
 
         return "redirect:/Social";
     }
-
-
-
-    
+ 
     @PostMapping("/remove")
     public String removeFriend(@RequestParam("friendId") Long friendId, Model model, Principal principal) {
         User currentUser = userService.getUserByUsername(principal.getName());
@@ -131,9 +133,7 @@ public class FriendsController {
         
         return "redirect:/Social";
     }
-
-    
-    
+   
     @GetMapping("inbox")
     public String displayInboxPage(Model model, Principal principal) {
     	User user = userService.getUserByUsername(principal.getName());
