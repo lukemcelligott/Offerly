@@ -15,7 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-
+ 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -29,6 +29,7 @@ public class Ticket {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
+  
 
   @ManyToOne private User createdBy;
   private String subject;
@@ -89,4 +90,5 @@ public class Ticket {
         + assignedTo
         + '}';
   }
+  
 }
