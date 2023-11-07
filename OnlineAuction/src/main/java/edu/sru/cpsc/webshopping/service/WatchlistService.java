@@ -6,11 +6,16 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
+import edu.sru.cpsc.webshopping.domain.user.Statistics;
 import edu.sru.cpsc.webshopping.domain.user.User;
+import edu.sru.cpsc.webshopping.domain.widgets.Widget;
+import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
+import edu.sru.cpsc.webshopping.controller.StatisticsDomainController;
 import edu.sru.cpsc.webshopping.controller.UserController;
 import edu.sru.cpsc.webshopping.service.UserService;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
@@ -22,6 +27,8 @@ public class WatchlistService {
 	UserRepository userRepository;
 	@PersistenceContext
 	private EntityManager entityManager;
+	@Autowired
+	StatisticsDomainController statControl;
 	
 	WatchlistService(UserService userService, UserRepository userRepository) {
 		this.userService = userService;
@@ -35,11 +42,18 @@ public class WatchlistService {
 	 */
 	public void watchlistAdd(@Validated MarketListing marketListing, User user) {
 		MarketListing addedWidget = entityManager.find(MarketListing.class, marketListing.getId());
+		Widget widget = addedWidget.getWidgetSold();
 		
 		// check if the widget is null
-		if (addedWidget == null) {
+		if (widget == null) {
 			throw new IllegalArgumentException("Widget pass to addToWishlist not found in database.");
 		}
+		
+		// log event
+	    StatsCategory cat = StatsCategory.WATCHLIST;
+	    Statistics stat = new Statistics(cat, 1);
+	    stat.setDescription(user.getUsername() + " added " + widget.getName() + " to their watchlist");
+	    statControl.addStatistics(stat);
 		
 		user.getWishlistedWidgets().add(addedWidget);
 		
@@ -52,11 +66,18 @@ public class WatchlistService {
 	 */
 	public void watchlistRemove(@Validated MarketListing marketListing, User user) {
 		MarketListing delWidget = entityManager.find(MarketListing.class, marketListing.getId());
+		Widget widget = delWidget.getWidgetSold();
 		
 		// check if the widget is null
-		if (delWidget == null) {
+		if (widget == null) {
 			throw new IllegalArgumentException("Widget pass to removeFromWishlist not found in database.");
 		}
+		
+		// log event
+	    StatsCategory cat = StatsCategory.WATCHLIST;
+	    Statistics stat = new Statistics(cat, 1);
+	    stat.setDescription(user.getUsername() + " removed " + widget.getName() + " from their watchlist");
+	    statControl.addStatistics(stat);
 		
 		user.getWishlistedWidgets().remove(delWidget);
 	}

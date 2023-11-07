@@ -24,10 +24,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
+import edu.sru.cpsc.webshopping.domain.user.Statistics;
 import edu.sru.cpsc.webshopping.domain.misc.Friendship;
 import edu.sru.cpsc.webshopping.domain.misc.SocialFriendRequest;
 import edu.sru.cpsc.webshopping.domain.misc.SocialMessage;
 import edu.sru.cpsc.webshopping.domain.user.User;
+import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
 import edu.sru.cpsc.webshopping.repository.market.MarketListingRepository;
 import edu.sru.cpsc.webshopping.repository.misc.FriendSocialRequestRepository;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
@@ -55,6 +57,9 @@ public class FriendsController {
     
     @Autowired
     private MarketListingRepository marketListingRepository;
+    
+    @Autowired
+    StatisticsDomainController statControl;
     
     private final ObjectMapper objectMapper = new ObjectMapper();
     
@@ -114,18 +119,31 @@ public class FriendsController {
         }
 
         if (friendshipService.sendFriendRequest(currentUser, friendToAdd)) {
+        	// log event
+		    StatsCategory cat = StatsCategory.FRIENDREQUESTSENT;
+		    Statistics stat = new Statistics(cat, 1);
+		    stat.setDescription(currentUser.getUsername() + " sent a friend request to " + friendToAdd.getUsername());
+		    statControl.addStatistics(stat);
+		    
             redirectAttributes.addFlashAttribute("requestSent", true);
         }
 
         return "redirect:/Social";
     }
- 
+  
     @PostMapping("/remove")
     public String removeFriend(@RequestParam("friendId") Long friendId, Model model, Principal principal) {
         User currentUser = userService.getUserByUsername(principal.getName());
         Friendship friendship = friendshipService.getFriendshipBetweenUsers(currentUser, friendId);
+        User friend = userService.getUserById(friendId);
         
         if(friendship != null) {
+        	// log event
+    	    StatsCategory cat = StatsCategory.REMOVEDFRIEND;
+    	    Statistics stat = new Statistics(cat, 1);
+    	    stat.setDescription(currentUser.getUsername() + " removed " + friend.getUsername() + " as a friend");
+    	    statControl.addStatistics(stat);
+        	
             friendshipService.removeFriendship(friendship);
         } else {
             model.addAttribute("errorMessage", "Friendship record not found!");
@@ -142,7 +160,6 @@ public class FriendsController {
        
 		List<User> friends = friendshipService.getAllFriendsForUser(user);
 		List<SocialMessage> messages = messageService.getAllMessagesForUser(user);
-
 
         model.addAttribute("friends", friends);
         model.addAttribute("messages", messages);
@@ -191,6 +208,12 @@ public class FriendsController {
             "messages", messagesList
         );
 
+        // log event
+	    StatsCategory cat = StatsCategory.SOCIAL;
+	    Statistics stat = new Statistics(cat, 1);
+	    stat.setDescription(currentUser.getUsername() + " opened their inbox with " + friend.getUsername());
+	    statControl.addStatistics(stat);
+        
         return ResponseEntity.ok(responseBody);
     }
     
@@ -208,6 +231,12 @@ public class FriendsController {
             friendshipService.addFriend(friendship);
 
             friendSocialRequestRepository.delete(request);
+            
+            // log event
+    	    StatsCategory cat = StatsCategory.FRIENDREQUESTACCEPTED;
+    	    Statistics stat = new Statistics(cat, 1);
+    	    stat.setDescription(receiver.getUsername() + " accepted a friend request from " + sender.getUsername());
+    	    statControl.addStatistics(stat);
         } else {
             System.err.println("Friend request with ID " + requestId + " not found.");
         }
@@ -221,7 +250,16 @@ public class FriendsController {
         SocialFriendRequest request = friendSocialRequestRepository.findById(requestId)
                 .orElse(null);
         if (request != null) {
+        	User sender = request.getSender();
+            User receiver = request.getReceiver();
+            
             friendshipService.declineRequest(request);
+            
+            // log event
+    	    StatsCategory cat = StatsCategory.FRIENDREQUESTDECLINED;
+    	    Statistics stat = new Statistics(cat, 1);
+    	    stat.setDescription(receiver.getUsername() + " declined a friend request from " + sender.getUsername());
+    	    statControl.addStatistics(stat);
         } else { 
             // Log an error message
             System.err.println("Friend request with ID " + requestId + " not found!!!");

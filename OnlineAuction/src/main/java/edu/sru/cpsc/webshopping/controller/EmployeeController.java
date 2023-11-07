@@ -429,6 +429,13 @@ public class EmployeeController {
     userController.addUser(useradd, result);
 
     setPage2("create");
+    
+    // log event
+    StatsCategory cat = StatsCategory.ACCOUNTCREATION;
+    Statistics stat = new Statistics(cat, 1);
+    stat.setDescription(user2.getUsername() + " created an account, " + useradd.getUsername() + ", with role: " + useradd.getRole());
+    statControl.addStatistics(stat);
+    
     model.addAttribute("user", user2);
     model.addAttribute("page2", getPage2());
     model.addAttribute("page", getPage());
@@ -701,6 +708,12 @@ public class EmployeeController {
         .iterator()
         .forEachRemaining(u -> getAllWidgets());
     allWatchlistItemsIterator.iterator().forEachRemaining(u -> getAllSellers());
+    
+    // log event
+    StatsCategory cat = StatsCategory.WATCHLIST;
+    Statistics stat = new Statistics(cat, 1);
+    stat.setDescription(user.getUsername() + " viewed their watchlist");
+    statControl.addStatistics(stat);
 
     model.addAttribute("users", getAllUsers());
     model.addAttribute("allWatchlistItems", user.getWishlistedWidgets());
@@ -1090,6 +1103,12 @@ public class EmployeeController {
       allUsersIterator.iterator().forEachRemaining(u -> getAllUsers().add(u));
       User useradd = new User();
       setSearchedUser(editUser);
+      
+      // log event
+      StatsCategory cat = StatsCategory.EDITEDUSER;
+      Statistics stat = new Statistics(cat, 1);
+      stat.setDescription(user.getUsername() + " edited user information for: " + editUser.getUsername());
+      statControl.addStatistics(stat);
             
       // model attributes
       model.addAttribute("users", getAllUsers());

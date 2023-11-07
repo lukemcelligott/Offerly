@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import edu.sru.cpsc.webshopping.domain.user.Message;
+import edu.sru.cpsc.webshopping.domain.user.Statistics;
 import edu.sru.cpsc.webshopping.domain.user.Ticket;
 import edu.sru.cpsc.webshopping.domain.user.User;
+import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
 import edu.sru.cpsc.webshopping.repository.ticket.TicketRepository;
 import edu.sru.cpsc.webshopping.service.UserService;
 import edu.sru.cpsc.webshopping.util.constants.TimeConstants;
@@ -33,6 +35,8 @@ public class TicketPageController {
 
   @Autowired
   private UserService userService;
+  @Autowired
+  private StatisticsDomainController statControl;
 
 
   @GetMapping("/tickets")
@@ -117,9 +121,16 @@ public class TicketPageController {
               message.setSender(user.getUsername());
               message.setMsgDate();
             });
+    
     ticketRepository.save(ticket);
 
     emailController.updateTicketStatus(user, ticket, "create");
+    
+    // log event
+    StatsCategory cat = StatsCategory.TICKETS;
+    Statistics stat = new Statistics(cat, 1);
+    stat.setDescription(user.getUsername() + " created ticket: " + ticket.getSubject() + " (ID: " + ticket.getId() + ")");
+    statControl.addStatistics(stat);
 
     setPage("tickets");
     return "redirect:/tickets";
