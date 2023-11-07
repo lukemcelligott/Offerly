@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import edu.sru.cpsc.webshopping.controller.EmailController;
 import edu.sru.cpsc.webshopping.controller.MarketListingDomainController;
+import edu.sru.cpsc.webshopping.controller.StatisticsDomainController;
 import edu.sru.cpsc.webshopping.controller.TransactionController;
 import edu.sru.cpsc.webshopping.controller.UserController;
 import edu.sru.cpsc.webshopping.controller.UserListDomainController;
@@ -35,8 +36,10 @@ import edu.sru.cpsc.webshopping.domain.market.Bid;
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.market.Transaction;
 import edu.sru.cpsc.webshopping.domain.user.Message;
+import edu.sru.cpsc.webshopping.domain.user.Statistics;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.user.UserList;
+import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 import edu.sru.cpsc.webshopping.domain.widgets.WidgetAttribute;
 import edu.sru.cpsc.webshopping.domain.widgets.WidgetImage;
@@ -78,6 +81,8 @@ public class MarketListingPageController {
   @Autowired
   private UserService userService;
   
+  @Autowired
+  private StatisticsDomainController statController;
   
   public MarketListingPageController(
       MarketListingDomainController marketListingController,
@@ -340,12 +345,13 @@ public class MarketListingPageController {
     // set up email notification information
     User sender = userService.getUserByUsername(principal.getName());
     MarketListing listing = marketListingController.getMarketListing(id);
+    Widget widget = listing.getWidgetSold();
     User recipient = listing.getSeller();
-    String content = 
-    		"\nHello " + recipient.getUsername() + ",\n" +
-    		"This message is informing you that your listing " + listing.getSeller() + " has been removed.\n" +
-    		"\nThe reason for removal is as follows:\n\n" + reason + 
-    		"\nSincerely,\nThe Offerly Team";
+    String content = // message format
+		    "\n" + "Hello " + recipient.getUsername() + ",\n\n" +
+		    "This message is informing you that your listing " + widget.getName() + " has been removed.\n\n" +
+		    "The reason for removal is as follows:\n" + reason + "\n\n" +
+		    "Sincerely,\nOfferly Team";
 	Message message = new Message();
 	message.setOwner(sender);
 	message.setSender(sender.getUsername());
@@ -356,6 +362,12 @@ public class MarketListingPageController {
 	message.setReceiver(recipient);
 	// send message
     emailController.messageEmail(recipient, sender, message);
+    
+    // log event
+    StatsCategory cat = StatsCategory.LISTINGDELETED;
+    Statistics stat = new Statistics(cat, 1);
+    stat.setDescription(sender.getUsername() + " deleted the listing with ID: " + listing.getId() + " for reason: " + reason);
+    statController.addStatistics(stat);
     
     // go to marketListingController and delete the listing (it has the repository there)
     marketListingController.deleteMarketListing(id);
@@ -374,10 +386,7 @@ public class MarketListingPageController {
 	}
 	// otherwise return user home
     return "redirect:/homePage";
-    // this code could potentially be improved to track where the user deleted it from and return
-    // to that page specifically. look into doing that after overall site is more functional?
   }
-  
 
   public String getPage() {
     return page;

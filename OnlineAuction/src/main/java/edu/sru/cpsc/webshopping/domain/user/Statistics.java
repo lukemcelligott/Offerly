@@ -35,7 +35,8 @@ public class Statistics {
 		USERLOGIN,
 		ACCOUNTDELETED,
 		MESSAGESENT,
-		WIDGETCREATED;
+		WIDGETCREATED,
+		LISTINGDELETED;
 		
 	}
 	public long getId() {
