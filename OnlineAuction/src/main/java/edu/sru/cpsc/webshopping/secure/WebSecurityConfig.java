@@ -16,6 +16,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
+import static org.springframework.security.web.util.matcher.AntPathRequestMatcher.antMatcher;
+
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig{
@@ -40,97 +42,99 @@ public class WebSecurityConfig{
 	}
 	
 	@Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception {
-		MvcRequestMatcher.Builder mvcMatcherBuilder = new MvcRequestMatcher.Builder(introspector).servletPath("/");
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, MvcRequestMatcher.Builder mvc) throws Exception {
 		http
 			.authorizeHttpRequests(authz -> authz
 				/* begin - users visiting these URLs do not need authenticated because of .permitAll() */
 				.requestMatchers(
-					mvcMatcherBuilder.pattern("/")
+					mvc.pattern("/")
 				).permitAll()
 				.requestMatchers(
-					mvcMatcherBuilder.pattern("/index")
+					mvc.pattern("/index")
 				).permitAll()
 				.requestMatchers(
-					mvcMatcherBuilder.pattern("/newUser")
+					mvc.pattern("/newUser")
 				).permitAll()
 				.requestMatchers(
-					mvcMatcherBuilder.pattern("/adduser")
+					mvc.pattern("/adduser")
 				).permitAll()
 				.requestMatchers(
-					mvcMatcherBuilder.pattern("/add-user-signup")
+					mvc.pattern("/add-user-signup")
 				).permitAll()
 				.requestMatchers(
-					mvcMatcherBuilder.pattern("/emailverification")
+					mvc.pattern("/emailverification")
 				).permitAll()
 				.requestMatchers(
-					mvcMatcherBuilder.pattern("/get-all-card-types")
+					mvc.pattern("/get-all-card-types")
 				).permitAll()
 				.requestMatchers(
-					mvcMatcherBuilder.pattern("/submitShippingAddressSignUp")
+					mvc.pattern("/submitShippingAddressSignUp")
 				).permitAll()
 				.requestMatchers(
-					mvcMatcherBuilder.pattern("/verify")
+					mvc.pattern("/verify")
 				).permitAll()
 				.requestMatchers(
-					mvcMatcherBuilder.pattern("/userSecrets")
+					mvc.pattern("/error")
 				).permitAll()
 				.requestMatchers(
-					mvcMatcherBuilder.pattern("/forgotUser/*")
+					mvc.pattern("/userSecrets")
 				).permitAll()
 				.requestMatchers(
-					mvcMatcherBuilder.pattern("/findUser")
+					mvc.pattern("/forgotUser/*")
 				).permitAll()
 				.requestMatchers(
-					mvcMatcherBuilder.pattern("/answerQuestion")
+					mvc.pattern("/findUser")
 				).permitAll()
 				.requestMatchers(
-					mvcMatcherBuilder.pattern("/newUserPayment")
+					mvc.pattern("/answerQuestion")
 				).permitAll()
 				.requestMatchers(
-					mvcMatcherBuilder.pattern("/submitPurchaseSignup")
+					mvc.pattern("/newUserPayment")
 				).permitAll()
 				.requestMatchers(
-					mvcMatcherBuilder.pattern("/resetPassword")
+					mvc.pattern("/submitPurchaseSignup")
 				).permitAll()
 				.requestMatchers(
-					mvcMatcherBuilder.pattern("/missionStatement")
+					mvc.pattern("/resetPassword")
 				).permitAll()
 				.requestMatchers(
-					mvcMatcherBuilder.pattern("/FAQ")
+					mvc.pattern("/missionStatement")
 				).permitAll()
 				.requestMatchers(
-					mvcMatcherBuilder.pattern("/application")
+					mvc.pattern("/FAQ")
 				).permitAll()
 				.requestMatchers(
-					mvcMatcherBuilder.pattern("/apply")
+					mvc.pattern("/application")
 				).permitAll()
 				.requestMatchers(
-					mvcMatcherBuilder.pattern("browseWidgets")
+					mvc.pattern("/apply")
 				).permitAll()
 				.requestMatchers(
-					mvcMatcherBuilder.pattern("/BrowseWidgetsButton")
+					mvc.pattern("browseWidgets")
 				).permitAll()
 				.requestMatchers(
-					mvcMatcherBuilder.pattern("/resources/**")
+					mvc.pattern("/BrowseWidgetsButton")
 				).permitAll()
 				.requestMatchers(
-					mvcMatcherBuilder.pattern("/static/**")
+					antMatcher("/resources/**")
 				).permitAll()
 				.requestMatchers(
-					mvcMatcherBuilder.pattern("/styles/**")
+					antMatcher("/static/**")
 				).permitAll()
 				.requestMatchers(
-					mvcMatcherBuilder.pattern("/js/**")
+					antMatcher("/styles/**")
 				).permitAll()
 				.requestMatchers(
-					mvcMatcherBuilder.pattern("/images/**")
+					antMatcher("/js/**")
 				).permitAll()
 				.requestMatchers(
-					mvcMatcherBuilder.pattern("/listingImages/**")
+					antMatcher("/images/**")
 				).permitAll()
 				.requestMatchers(
-					mvcMatcherBuilder.pattern("data:realCaptcha/**")
+					antMatcher("/listingImages/**")
+				).permitAll()
+				.requestMatchers(
+					antMatcher("data:realCaptcha/**")
 				).permitAll()
 
 /* 				.requestMatchers(
