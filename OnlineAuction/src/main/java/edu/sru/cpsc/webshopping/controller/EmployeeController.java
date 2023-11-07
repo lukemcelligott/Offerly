@@ -944,9 +944,14 @@ public class EmployeeController {
 
     model.addAttribute("user", user);
     model.addAttribute("page", getPage());  
-  
-    notificationService.createNotification(ticket.getUser().getId(), "Tech Support has replied to Ticket ID: " + ticket.getId());
-  
+    User ticketUser = ticket.getUser();
+    if (ticketUser != null) {
+        Long userId = ticketUser.getId();
+        notificationService.createNotification(userId, "Tech Support has replied to Ticket ID: " + ticket.getId());
+    } else {
+        System.out.println("No luck with notifications");  
+        }
+    
     return "redirect:/searchTickets/" + id;
   }
 

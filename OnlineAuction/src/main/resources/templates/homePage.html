@@ -1611,6 +1611,10 @@
 						</div>
 					</div>
 					
+					<div th:each="notification : ${notifications}" class="alert alert-success" role="alert">
+					    <p th:text="${notification.message}"></p>
+					</div>					
+					
 				</div>
 			</div>
 		</div>

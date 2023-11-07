@@ -31,7 +31,6 @@ public class Ticket {
   private Long id;
   
   @ManyToOne
-  @JoinColumn(name = "user_id")
   private User user;
 
   @ManyToOne private User createdBy;
