@@ -18,11 +18,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.market.Transaction;
+import edu.sru.cpsc.webshopping.domain.misc.Notification;
 import edu.sru.cpsc.webshopping.domain.user.Message;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.user.UserList;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
+import edu.sru.cpsc.webshopping.repository.misc.NotificationRepository;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
+import edu.sru.cpsc.webshopping.service.NotificationService;
 import edu.sru.cpsc.webshopping.service.UserService;
 
 /**
@@ -36,6 +39,12 @@ public class LandingPageController {
 
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+    private NotificationRepository notificationRepository;
+	
+	@Autowired
+    private NotificationService notificationService;
 
 	UserRepository userRepository;
 	WidgetController widgetController;
@@ -522,6 +531,7 @@ public class LandingPageController {
 	public String homePage(Model widgetModel, Model listingModel, String tempSearch, Principal principal) {
 		String username = principal.getName();
 		User user = userService.getUserByUsername(username);
+		Long userId = user.getId();
 		if (user.getRole().equals("ROLE_ADMIN")
 				|| user.getRole().equals("ROLE_TECHNICALSERVICE")
 				|| user.getRole().equals("ROLE_CUSTOMERSERVICE")
@@ -549,6 +559,10 @@ public class LandingPageController {
 		listingModel.addAttribute("headerUser", user);
 		listingModel.addAttribute("user", user);
 		widgetModel.addAttribute("headerUser", user);
+		
+	    List<Notification> notifications = notificationRepository.findByUserIdAndIsReadFalse(user.getId());
+	    widgetModel.addAttribute("notifications", notifications);
+	    notificationService.markAllNotificationsAsReadForUser(userId);
 
 		// TODO:
 		// - Loop through and add filter categories from category tree 

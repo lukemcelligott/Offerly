@@ -16,6 +16,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 
+
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -29,6 +30,7 @@ public class Ticket {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
+  
 
   @ManyToOne private User createdBy;
   private String subject;
@@ -89,4 +91,5 @@ public class Ticket {
         + assignedTo
         + '}';
   }
+  
 }
