@@ -36,6 +36,7 @@ import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
+import edu.sru.cpsc.webshopping.domain.misc.Notification;
 import edu.sru.cpsc.webshopping.domain.user.Applicant;
 import edu.sru.cpsc.webshopping.domain.user.Message;
 import edu.sru.cpsc.webshopping.domain.user.Statistics;
@@ -45,9 +46,11 @@ import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.widgets.Category;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 import edu.sru.cpsc.webshopping.repository.applicant.ApplicantRepository;
+import edu.sru.cpsc.webshopping.repository.misc.NotificationRepository;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
 import edu.sru.cpsc.webshopping.repository.widgets.WidgetRepository;
 import edu.sru.cpsc.webshopping.service.CategoryService;
+import edu.sru.cpsc.webshopping.service.NotificationService;
 import edu.sru.cpsc.webshopping.service.TicketService;
 import edu.sru.cpsc.webshopping.service.UserService;
 import edu.sru.cpsc.webshopping.util.constants.TimeConstants;
@@ -61,6 +64,13 @@ import lombok.RequiredArgsConstructor;
 public class EmployeeController {
   @Autowired
   UserService userService;
+  
+  @Autowired
+  private NotificationRepository notificationRepository;
+  
+  @Autowired
+  private NotificationService notificationService;
+  
   private final UserController userController;
   private final ApplicantDomainController appControl;
   private final MarketListingDomainController market;
@@ -926,15 +936,17 @@ public class EmployeeController {
     ticketService.save(ticket);
 
     emailController.updateTicketStatus(user, ticket, "reply");
-
+    	
     model.addAttribute("ticket", ticket);
     model.addAttribute("message", new Message());
 
     setPage("ticketdetail");
 
     model.addAttribute("user", user);
-    model.addAttribute("page", getPage());
-    
+    model.addAttribute("page", getPage());  
+  
+    notificationService.createNotification(ticket.getUser().getId(), "Tech Support has replied to Ticket ID: " + ticket.getId());
+  
     return "redirect:/searchTickets/" + id;
   }
 

@@ -29,6 +29,10 @@ public class Ticket {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
+  
+  @ManyToOne
+  @JoinColumn(name = "user_id")
+  private User user;
 
   @ManyToOne private User createdBy;
   private String subject;
@@ -89,4 +93,12 @@ public class Ticket {
         + assignedTo
         + '}';
   }
+  
+  public User getUser() {
+	    return user;
+	}
+  
+	public void setUser(User user) {
+	    this.user = user;
+	}
 }
