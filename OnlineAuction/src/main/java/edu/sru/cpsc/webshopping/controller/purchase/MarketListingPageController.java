@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import edu.sru.cpsc.webshopping.controller.EmailController;
 import edu.sru.cpsc.webshopping.controller.MarketListingDomainController;
+import edu.sru.cpsc.webshopping.controller.StatisticsDomainController;
 import edu.sru.cpsc.webshopping.controller.TransactionController;
 import edu.sru.cpsc.webshopping.controller.UserController;
 import edu.sru.cpsc.webshopping.controller.UserListDomainController;
@@ -35,8 +36,10 @@ import edu.sru.cpsc.webshopping.domain.market.Bid;
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.market.Transaction;
 import edu.sru.cpsc.webshopping.domain.user.Message;
+import edu.sru.cpsc.webshopping.domain.user.Statistics;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.user.UserList;
+import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 import edu.sru.cpsc.webshopping.domain.widgets.WidgetAttribute;
 import edu.sru.cpsc.webshopping.domain.widgets.WidgetImage;
@@ -52,7 +55,6 @@ import lombok.extern.slf4j.Slf4j;
  * with market listings
  */
 @Controller
-@Slf4j
 public class MarketListingPageController {
   MarketListingDomainController marketListingController;
   PurchaseShippingAddressPageController shippingPage;
@@ -71,6 +73,8 @@ public class MarketListingPageController {
   private Widget tempWidget;
   @PersistenceContext
   EntityManager entityManager;
+  @Autowired
+  StatisticsDomainController statControl;
 
   @Autowired
   private CategoryService categoryService;
@@ -78,6 +82,8 @@ public class MarketListingPageController {
   @Autowired
   private UserService userService;
   
+  @Autowired
+  private StatisticsDomainController statController;
   
   public MarketListingPageController(
       MarketListingDomainController marketListingController,
@@ -298,13 +304,16 @@ public class MarketListingPageController {
    * @return returns to the index
    */
   @PostMapping({"/viewMarketListing/editListing"})
-  public String editListing(@Validated MarketListing marketListing, Model model) {
-    marketListingController.editMarketListing(marketListing);
+  public String editListing(@Validated MarketListing marketListing, Model model, Principal principal) {
+	User user = userService.getUserByUsername(principal.getName());
+	  
+    marketListingController.editMarketListing(marketListing, user);
+    
     return "redirect:/viewMarketListing/" + marketListing.getId();
   }
 
   /**
-   * Deletes a market listing
+   * Deletes a market listing for listing owners
    *
    * @return returns to the index
    */
@@ -330,6 +339,58 @@ public class MarketListingPageController {
     // to that page specifically. look into doing that after overall site is more functional?
   }
   
+  /**
+   * Deletes a market listing for admins
+   *
+   * @return returns to the index
+   */
+  @RequestMapping({"/viewMarketListing/deleteListingAdmin/{id}"})
+  public String deleteListingAdmin(@PathVariable long id, @RequestParam String reason, Model model, Principal principal) {
+    // set up email notification information
+    User sender = userService.getUserByUsername(principal.getName());
+    MarketListing listing = marketListingController.getMarketListing(id);
+    Widget widget = listing.getWidgetSold();
+    User recipient = listing.getSeller();
+    String content = // message format
+		    "\n" + "Hello " + recipient.getUsername() + ",\n\n" +
+		    "This message is informing you that your listing " + widget.getName() + " has been removed.\n\n" +
+		    "The reason for removal is as follows:\n" + reason + "\n\n" +
+		    "Sincerely,\nOfferly Team";
+	Message message = new Message();
+	message.setOwner(sender);
+	message.setSender(sender.getUsername());
+	message.setContent(content);
+	message.setSubject("Market Listing Removal");
+	message.setMsgDate();
+	message.setReceiverName(recipient.getDisplayName());
+	message.setReceiver(recipient);
+	// send message
+    emailController.messageEmail(recipient, sender, message);
+    
+    // log event
+    StatsCategory cat = StatsCategory.LISTINGDELETED;
+    Statistics stat = new Statistics(cat, 1);
+    stat.setDescription(sender.getUsername() + " deleted the listing with ID: " + listing.getId() + " for reason: " + reason);
+    statController.addStatistics(stat);
+    
+    // go to marketListingController and delete the listing (it has the repository there)
+    marketListingController.deleteMarketListing(id);
+    
+    // redirect - if the user is an admin send to their search page
+    User user = userService.getUserByUsername(principal.getName());
+    if (user.getRole().equals("ROLE_ADMIN")
+            || user.getRole().equals("ROLE_CUSTOMERSERVICE")
+            || user.getRole().equals("ROLE_TECHNICALSERVICE")
+            || user.getRole().equals("ROLE_SECURITY")
+            || user.getRole().equals("ROLE_SALES")
+            || user.getRole().equals("ROLE_ADMIN_SHADOW")
+            || user.getRole().equals("ROLE_HELPDESK_ADMIN")
+            || user.getRole().equals("ROLE_HELPDESK_REGULAR")) {
+    	return "redirect:/searchWidgetButton";
+	}
+	// otherwise return user home
+    return "redirect:/homePage";
+  }
 
   public String getPage() {
     return page;

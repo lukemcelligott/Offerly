@@ -1,4 +1,4 @@
-package edu.sru.cpsc.webshopping.controller.misc;
+package edu.sru.cpsc.webshopping.domain.misc;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

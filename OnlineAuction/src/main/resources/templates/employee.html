@@ -21,10 +21,11 @@
 		
 		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
-	  	
+			  	
 	 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	  	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
 	  	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+	  	
 	  	<script th:inline="javascript"> 
 		    var real_data = /*[[${names}]]*/'noValue';
 		    var real_data2 = /*[[${widgetNames}]]*/'noValue';
@@ -165,9 +166,12 @@
 				                      				<th:block th:if="${!ticket.isResolved()}">
 				                       					 <form method="post" th:action="@{/assignTicket/{id}(id = ${ticket.id})}">
 				                          					<select class="form-select" th:name="username" style="max-width: 70%; display: inline;">
-				                            					<option th:each="assignuser : ${users}"
-				                                   				th:value="${assignuser.username}"
-				                                    			th:text="${assignuser.username != user.username} ? ${assignuser.role} + ' - ' + ${assignuser.username} : 'Assign To Me'"></option>
+				                            					<!--
+																	<option th:each="assignuser : ${users}"
+																	                                 th:value="${assignuser.username}"
+																	                                 th:text="${assignuser.username != user.username} ? ${assignuser.role} + ' - ' + ${assignuser.username} : 'Assign To Me'"></option>
+																-->
+															<option th:value="${user.username}" th:text="'Assign To Me'"></option>	
 				                          					</select>
 				                         			 		<input class="btn btn-outline-secondary" type="submit" value="Submit"/>
 				                        				</form>
@@ -192,59 +196,74 @@
 					</div>
 				</div>	
 	          </div>
-		
-			  <!-- ticket details page -->
-	          <div th:case="ticketdetail">
-	          	<div class ="card  my-4 mx-4">
-					<div class="card-header">
-						<h2>Ticket Details</h2>
-					</div>
-	              	<div class="card-body" style="padding-top: 24px;">
-	              		<div class="card" style="width: fit-content; height: fit-content; float:left">
-							<table class="table">
-								<thead>
-									<tr>
-										<th scope="col"><h5>Ticket ID</h5></th>
-										<th scope="col"><h5>Subject</h5></th>
-										<th scope="col"><h5>Reporter</h5></th>
-										<th scope="col"><h5>State</h5></th>
-										<th scope="col"><h5>Created At</h5></th>
-										<th scope="col"><h5>Assigned At</h5></th>
-										<th scope="col"><h5>Updated At</h5></th>
-										<th scope="col"><h5>Resolved At</h5></th>
-										<th scope="col"><h5>Message</h5></th>
+
+	          
+			<!-- ticket details page -->
+			<div th:case="ticketdetail">
+			    <div class="card my-4" style="margin: auto; max-width: 600px;"> <!-- Center the card on the page -->
+			        <div class="card-header text-center">
+			            <h2>Ticket Details</h2>
+			        </div>
+			        <div class="card-body">
+			            <div class="table-responsive">
+			                <table class="table">
+			                    <tbody>
+			                        <tr>
+			                            <th scope="row" style="border-right: 1px solid #dee2e6; width: 50%;">Ticket ID</th>
+			                            <td style="text-align: left;"><p th:text="${ticket.id}"></p></td>
+			                        </tr>
+			                        <tr>
+			                            <th scope="row" style="border-right: 1px solid #dee2e6; width: 50%;">Subject</th>
+			                            <td style="text-align: left;"><p th:text="${ticket.subject}"></p></td>
+			                        </tr>
+			                        <tr>
+			                            <th scope="row" style="border-right: 1px solid #dee2e6; width: 50%;">Reporter</th>
+			                            <td style="text-align: left;"><p th:text="${ticket.createdBy.username}"></p></td>
+			                        </tr>
+			                        <tr>
+			                            <th scope="row" style="border-right: 1px solid #dee2e6; width: 50%;">State</th>
+			                            <td style="text-align: left;"><p th:text="${ticket.state}"></p></td>
+			                        </tr>
+			                        <tr>
+			                            <th scope="row" style="border-right: 1px solid #dee2e6; width: 50%;">Created At</th>
+			                            <td style="text-align: left;"><p th:text="${ticket.createdAt}"></p></td>
+			                        </tr>
+			                        <tr>
+			                            <th scope="row" style="border-right: 1px solid #dee2e6; width: 50%;">Assigned At</th>
+			                            <td style="text-align: left;"><p th:text="${ticket.assignedAt} ? ${ticket.assignedAt} : 'UNASSIGNED'"></p></td>
+			                        </tr>
+			                        <tr>
+			                            <th scope="row" style="border-right: 1px solid #dee2e6; width: 50%;">Updated At</th>
+			                            <td style="text-align: left;"><p th:text="${ticket.updatedAt}"></p></td>
+			                        </tr>
+			                        <tr>
+			                            <th scope="row" style="border-right: 1px solid #dee2e6; width: 50%;">Resolved At</th>
+			                            <td style="text-align: left;"><p th:text="${ticket.resolvedAt} ? ${ticket.resolvedAt} : 'IN PROGRESS'"></p></td>
+			                        </tr>
+			                        <tr>
+									    <th style="border-right: 1px solid #dee2e6; width: 50%;">Messages</th>
+									    <td>
+									        <div style="white-space: pre-wrap; text-align: left;">
+									            <th:block th:each="message : ${ticket.messages}">
+									                <span th:text="${message.sender} + ' : ' + ${message.content} + ' (' + ${message.msgDate} + ')'"></span><br>
+									            </th:block>
+									        </div>
+									        <th:block th:if="${!ticket.isResolved() && ticket.assignedTo != null ? ticket.assignedTo.username == user.username : false}">
+									            <form method="post" th:action="@{/reply/{id}(id = ${ticket.id})}" th:object="${message}" style="display: flex; align-items: center; gap: 8px;">
+									                <label for="reply" style="margin-bottom: 0;">Reply:</label>
+									                <input type="text" id="reply" name="reply" style="flex-grow: 1;" placeholder="Reply to the ticket" th:field="*{content}"/>
+									                <input type="submit" class="btn btn-primary btn-sm" value="Submit"/>
+									            </form>
+									        </th:block>
+									    </td>
 									</tr>
-								</thead>
-								<tbody>
-									<tr>
-		                				<td><p th:text="${ticket.id}"></p></td>
-		                				<td><p th:text="${ticket.subject}"></p></td>
-		                				<td><p th:text="${ticket.createdBy.username}"></td>
-		                				<td><p th:text="${ticket.state}"></p></td>
-		                				<td><p th:text="${ticket.createdAt}"></p></td>
-						                <td><p th:text="${ticket.assignedAt} ? ${ticket.assignedAt} : 'NULL'"></p></td>
-						                <td><p th:text="${ticket.updatedAt}"></p></td>
-						                <td><p th:text="${ticket.resolvedAt} ? ${ticket.resolvedAt} : 'NULL'"></p></td>
-						                <td>
-						                  	<th:block th:each="message : ${ticket.messages}">
-						                    	<span style="white-space: pre-wrap" th:text="${message.sender} + ' : ' + ${message.content} + ' (' + ${message.msgDate} + ')'"></span>
-						                  	</th:block>
-						                  	<th:block th:if="${!ticket.isResolved() && ticket.assignedTo != null ? ticket.assignedTo.username == user.username : false}">
-						                    	<form method="post" th:action="@{/reply/{id}(id = ${ticket.id})}" th:object="${message}">
-							                      	<label for="reply">Reply : </label>
-							                      	<input type="text" id="reply" name="reply" width="300" placeholder="Reply to the ticket" th:field="*{content}"/>
-							                      	<input type="submit" class="btn btn-primary btn-sm" value="submit"/>
-						                    	</form>
-						                  	</th:block>
-						                </td>
-						             </tr>
-					              </tbody>
-							</table>
-						</div>
-					</div>
-			  	</div>
-	          </div>
-	
+			                    </tbody>
+			                </table>
+			            </div>
+			        </div>
+			    </div>
+			</div>
+			
 			  <!-- resolved tickets page -->
 	            <div th:case="resolvedTickets">
 	          		<table class="center">
@@ -1176,7 +1195,7 @@
 	          	  
 	          	  <!-- single market listing view -->
 		          <div th:case="searchMarketListing">
-		            <form th:action="@{/viewMarketListing/deleteListing/{listing-id}(listing-id=${searchedMarkets.id})}" method="post" action="#">
+		            <form th:action="@{/viewMarketListing/deleteListingAdmin/{listing-id}(listing-id=${searchedMarkets.id})}" method="post" action="#">
 		            	<div class ="card my-4 mx-4">
 		              		<div class="card-body" style="padding-top: 24px;">
 		              			<div class="card" style="height: fit-content;">
@@ -1225,9 +1244,35 @@
 											</a>
 										</div>
 		              					<!-- delete listing button -->
-		              					<div style="display: flex; justify-content: center; margin-bottom: 1%;">
-											  <input type="submit" class="btn btn-outline-danger" value="Delete Listing"/>
-										</div>  
+										<div style="display: flex; justify-content: center; margin-bottom: 1%;">
+										    <a class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteListingModal" value="Delete Listing">Delete Listing</a>
+										</div>
+										<!-- delete modal -->
+										<div class="modal fade" id="deleteListingModal" tabindex="-1" role="dialog" aria-labelledby="deleteListingModalLabel" aria-hidden="true">
+										    <div class="modal-dialog" role="document">
+										        <div class="modal-content">
+										            <div class="modal-header">
+										                <h5 class="modal-title" id="deleteListingModalLabel">Confirm Deletion</h5>
+										                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+										            </div>
+										            <div class="modal-body">
+										                <p>Are you sure you want to delete this listing?</p>
+										                <div class="form-group">
+										                    <label for="reason">Reason for Deletion:</label>
+										                    <!-- input field for reason -->
+										                    <input type="text" class="form-control" id="reason" name="reason" placeholder="Enter reason" required>
+										                </div>
+										            </div>
+										            <div class="modal-footer">
+														<!-- cancel button -->
+										                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+										                <!-- confirm delete button -->
+										                <input type="submit" class="btn btn-outline-danger" value="Delete Listing"/>
+										            </div>
+										        </div>
+										    </div>
+										</div>
+										
 									</div>
 	              				</div>
 	              			</div>

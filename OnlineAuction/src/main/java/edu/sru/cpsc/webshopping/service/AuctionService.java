@@ -8,11 +8,14 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import edu.sru.cpsc.webshopping.controller.StatisticsDomainController;
 import edu.sru.cpsc.webshopping.domain.market.Auction;
 import edu.sru.cpsc.webshopping.domain.market.AutoBid;
 import edu.sru.cpsc.webshopping.domain.market.Bid;
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
+import edu.sru.cpsc.webshopping.domain.user.Statistics;
 import edu.sru.cpsc.webshopping.domain.user.User;
+import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
 import edu.sru.cpsc.webshopping.repository.market.AuctionRepository;
 import edu.sru.cpsc.webshopping.repository.market.AutoBidRepository;
 import edu.sru.cpsc.webshopping.repository.market.BidRepository;
@@ -28,6 +31,9 @@ public class AuctionService {
     
     @Autowired
     private AutoBidRepository autoBidRepository;
+    
+    @Autowired
+    private StatisticsDomainController statControl;
 
     /**
      * Creates or updates an auction with the provided details.
@@ -41,6 +47,13 @@ public class AuctionService {
     
     public Bid bid(Auction auction, User user, BigDecimal bidAmount) {
         Bid bid = new Bid(auction, user, bidAmount);
+        
+        // log event
+	    StatsCategory cat = StatsCategory.AUCTION;
+	    Statistics stat = new Statistics(cat, 1);
+	    stat.setDescription(user.getUsername() + " bid $" + bidAmount.toString() + " on auction " + auction.getId());
+	    statControl.addStatistics(stat);
+        
     	return bidRepository.save(bid);
     }
     

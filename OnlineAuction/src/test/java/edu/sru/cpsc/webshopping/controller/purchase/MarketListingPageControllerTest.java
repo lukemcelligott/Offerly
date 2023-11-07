@@ -111,8 +111,9 @@ public class MarketListingPageControllerTest {
 	@Test
 	public void LoadPageListingDeleted() throws Exception {
 		try {
+			User user = new User();
 			newListing.setDeleted(true);
-			newListing = mlDomainController.editMarketListing(newListing);
+			newListing = mlDomainController.editMarketListing(newListing, user);
 			mvc.perform(MockMvcRequestBuilders.get("/viewMarketListing/" + newListing.getId()))
 				.andExpect(MockMvcResultMatchers.status().isOk());
 			throw new Exception("LoadPageListingDeleted test failed.");

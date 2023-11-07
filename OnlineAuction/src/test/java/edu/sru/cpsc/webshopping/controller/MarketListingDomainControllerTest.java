@@ -73,8 +73,9 @@ public class MarketListingDomainControllerTest {
 	@Test
 	public void PurchaseQuantityListingDeleted() {
 		try {
+			User user = new User();
 			newListing.setDeleted(true);
-			mlDomainController.editMarketListing(newListing);
+			mlDomainController.editMarketListing(newListing, user);
 			mlDomainController.marketListingPurchaseUpdate(newListing, 20);
 		}
 		catch (IllegalStateException e) {return;}

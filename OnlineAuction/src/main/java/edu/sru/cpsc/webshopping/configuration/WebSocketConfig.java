@@ -1,4 +1,4 @@
-package edu.sru.cpsc.webshopping.controller.misc;
+package edu.sru.cpsc.webshopping.configuration;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

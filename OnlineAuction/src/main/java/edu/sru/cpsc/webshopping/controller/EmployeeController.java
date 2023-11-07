@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.opencsv.CSVWriter;
 import com.opencsv.bean.StatefulBeanToCsv;
@@ -428,6 +429,13 @@ public class EmployeeController {
     userController.addUser(useradd, result);
 
     setPage2("create");
+    
+    // log event
+    StatsCategory cat = StatsCategory.ACCOUNTCREATION;
+    Statistics stat = new Statistics(cat, 1);
+    stat.setDescription(user2.getUsername() + " created an account, " + useradd.getUsername() + ", with role: " + useradd.getRole());
+    statControl.addStatistics(stat);
+    
     model.addAttribute("user", user2);
     model.addAttribute("page2", getPage2());
     model.addAttribute("page", getPage());
@@ -700,6 +708,12 @@ public class EmployeeController {
         .iterator()
         .forEachRemaining(u -> getAllWidgets());
     allWatchlistItemsIterator.iterator().forEachRemaining(u -> getAllSellers());
+    
+    // log event
+    StatsCategory cat = StatsCategory.WATCHLIST;
+    Statistics stat = new Statistics(cat, 1);
+    stat.setDescription(user.getUsername() + " viewed their watchlist");
+    statControl.addStatistics(stat);
 
     model.addAttribute("users", getAllUsers());
     model.addAttribute("allWatchlistItems", user.getWishlistedWidgets());
@@ -907,7 +921,7 @@ public class EmployeeController {
 
   @PostMapping("/reply/{id}")
   public String getTicketsPage(
-      @PathVariable Long id, @ModelAttribute Message message, Model model, Principal principal) {
+      @PathVariable Long id, @ModelAttribute Message message, Model model, Principal principal, RedirectAttributes redirectAttributes) {
     User user = userService.getUserByUsername(principal.getName());
     model.addAttribute("user", user);
 
@@ -933,7 +947,7 @@ public class EmployeeController {
 
     model.addAttribute("user", user);
     model.addAttribute("page", getPage());
-
+    
     return "redirect:/searchTickets/" + id;
   }
 
@@ -1089,6 +1103,12 @@ public class EmployeeController {
       allUsersIterator.iterator().forEachRemaining(u -> getAllUsers().add(u));
       User useradd = new User();
       setSearchedUser(editUser);
+      
+      // log event
+      StatsCategory cat = StatsCategory.EDITEDUSER;
+      Statistics stat = new Statistics(cat, 1);
+      stat.setDescription(user.getUsername() + " edited user information for: " + editUser.getUsername());
+      statControl.addStatistics(stat);
             
       // model attributes
       model.addAttribute("users", getAllUsers());

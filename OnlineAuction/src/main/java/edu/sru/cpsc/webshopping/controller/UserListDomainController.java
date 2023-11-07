@@ -1,5 +1,6 @@
 package edu.sru.cpsc.webshopping.controller;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,15 +8,17 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import edu.sru.cpsc.webshopping.domain.user.Statistics;
+import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.user.UserList;
 import edu.sru.cpsc.webshopping.repository.user.UserListRepository;
-
-
+import edu.sru.cpsc.webshopping.service.UserService;
 
 @RestController
 public class UserListDomainController {
@@ -23,6 +26,10 @@ public class UserListDomainController {
 	private UserListRepository userListRepository;
 	@PersistenceContext
 	private EntityManager entityManager;
+	@Autowired
+	UserService userService;
+	@Autowired
+	StatisticsDomainController statControl;
 	
 	UserListDomainController(UserListRepository userListRepository) {
 		
@@ -32,14 +39,13 @@ public class UserListDomainController {
 
 	@Transactional
 	@PostMapping("/add-user-friend") 
-	public void addFriend(@Validated UserList friendList, User friend) 
-	{
-		
+	public void addFriend(@Validated UserList friendList, User friend) {
 		User owner = entityManager.find(User.class, friendList.getOwner().getId());
 		
 		friendList.setOwner(owner);
 		friendList.setFriend(friend);
 		userListRepository.save(friendList);
+	    
 		return;
 	}
 	
@@ -74,17 +80,18 @@ public class UserListDomainController {
 	
 	@Transactional
 	@PostMapping("/remove-friend") 
-	public void removeFriend(User user,User friend) {
+	public void removeFriend(User user, User friend) {
 		UserList[] myUserList = userListRepository.findByOwner(user);
 		
 		System.out.println(friend.getUsername());
 		for(int i = 0 ; i < myUserList.length; i++) {
 			
 			if(myUserList[i].getFriend() != null) {
-			if(myUserList[i].getFriend().getUsername().equals(friend.getUsername())) {
-				System.out.println(myUserList[i].getFriend().getUsername());
-				userListRepository.delete(myUserList[i]);
-			}}
+				if(myUserList[i].getFriend().getUsername().equals(friend.getUsername())) {
+					System.out.println(myUserList[i].getFriend().getUsername());
+					userListRepository.delete(myUserList[i]);
+				}
+			}
 		}
 		
 	}
