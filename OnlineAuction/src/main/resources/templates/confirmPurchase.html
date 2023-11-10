@@ -284,14 +284,14 @@
 											<span th:text="${directDeposit.bankName}"></span>
 										</label>
 									</div>
-									<script type="text/javascript">
+									<script th:inline="javascript">
 										function updateSelectedPayment(paymentType, paymentId) {
 											document.getElementById("selectedPaymentType").value = paymentType;
 											document.getElementById("selectedPaymentId").value = paymentId;
 										}
 										window.onload = function() {
-											var defaultPaymentType = /*[[${selectedPayment.cardType}]]*/ 'defaultType';
-        									var defaultPaymentId = /*[[${selectedPayment.id}]]*/ 'defaultId';
+											var defaultPaymentType = /*[[${selectedPayment.cardType}]]*/ '';
+        									var defaultPaymentId = /*[[${selectedPayment.id}]]*/ '';
 											document.getElementById('selectedPaymentType').value = defaultPaymentType;
         									document.getElementById('selectedPaymentId').value = defaultPaymentId;
 										}
