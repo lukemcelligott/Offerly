@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 
@@ -44,7 +45,8 @@ public class PaymentDetails {
 	private String securityCode;
 
 	@NonNull
-	@OneToOne (cascade = CascadeType.ALL)
+    @ManyToOne
+    @JoinColumn(name = "billing_address_id")
 	private ShippingAddress billingAddress;
 	
 	@ManyToOne(cascade = CascadeType.MERGE)

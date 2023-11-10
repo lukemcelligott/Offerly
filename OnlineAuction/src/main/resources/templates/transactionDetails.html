@@ -211,7 +211,7 @@
 		/*<![CDATA[*/
 		var isLocalPickup = /*[[${trans.isLocalPickup}]]*/ false;
 		/*]]>*/
-		var contextPath = /*[[ @{'/'} ]]*/ '/';
+		var contextPath = /*[[ @{'/'} ]]*/ '';
 	</script>
 
 	<script>
@@ -219,7 +219,7 @@
 		async function fetchTrackingInfo() {
 			const transId = window.location.pathname.split('/').pop(); // Get the order ID from the URL 
 			try {
-				const response = await fetch(contextPath + `/api/tracking/${transId}`);
+				const response = await fetch(contextPath + `api/tracking/${transId}`);
 				if (!response.ok) {
 					throw new Error(`Network response was not ok ${response.statusText}`);
 				}

@@ -429,7 +429,7 @@
         
 		<script th:inline="javascript">
 
-			var contextPath = /*[[ @{'/'} ]]*/ '/';
+			var contextPath = /*[[ @{'/'} ]]*/ '';
 
             function confirmBid() {
               return confirm("Are you sure you want to place this bid?");
@@ -634,7 +634,7 @@
 		            let marketListingId = window.location.pathname.split("/").pop();// Get the market listing ID
 		
 		            // Fetch unique bidders from the server
-		            $.get(contextPath + `/showUniqueBidders/${marketListingId}`, function(data) {
+		            $.get(contextPath + `showUniqueBidders/${marketListingId}`, function(data) {
 		                // Assuming your endpoint returns a list of usernames
 		                $('#biddersList').empty(); // Clear existing list items
 		                data.forEach(bidder => {
@@ -673,7 +673,7 @@
 			document.getElementById('closeTotalBidsModalButton').addEventListener('click', closeBidsModal);
 			
 			function fetchBidsData(id) {
-			    return fetch(contextPath + `/bidsForListing/${id}`)
+			    return fetch(contextPath + `bidsForListing/${id}`)
 			        .then(response => {
 			            if (!response.ok) {
 			                throw new Error('Network response was not ok');

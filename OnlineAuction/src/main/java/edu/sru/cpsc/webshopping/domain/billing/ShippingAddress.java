@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 
@@ -38,7 +39,8 @@ public class ShippingAddress {
 	private String city;
 	
 	@NonNull
-	@OneToOne
+    @ManyToOne
+    @JoinColumn(name = "state_name")
 	private StateDetails state;
 	
 	@ManyToOne(cascade = CascadeType.MERGE)

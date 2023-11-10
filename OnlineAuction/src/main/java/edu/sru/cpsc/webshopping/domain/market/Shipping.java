@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 
 import org.springframework.lang.NonNull;
@@ -24,8 +26,9 @@ public class Shipping {
 	
 	private String trackingNumber;
   
-	@OneToOne
 	@NonNull
+    @ManyToOne
+    @JoinColumn(name = "shipping_address_id")
 	private ShippingAddress address;
 	
 	@OneToOne
