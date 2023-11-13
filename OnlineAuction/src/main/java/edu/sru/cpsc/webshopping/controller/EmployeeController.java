@@ -1005,7 +1005,8 @@ public class EmployeeController {
     if (user.getRole().equals("ROLE_ADMIN")
         || user.getRole().equals("ROLE_CUSTOMERSERVICE")
         || user.getRole().equals("ROLE_TECHNICALSERVICE")
-        || user.getRole().equals("ROLE_ADMIN_SHADOW")) {
+        || user.getRole().equals("ROLE_ADMIN_SHADOW")
+        || user.getRole().equals("ROLE_HELPDESK_ADMIN")) {
     } else {
       setPage("notAuthorized");
       setMasterPage("query");

@@ -171,7 +171,12 @@
 				<li class="nav-item">
 					<a th:if="${page == 'ticket'}" class="submit4 nav-link active" th:href="@{/searchTickets}"><span>View User Tickets</span></a>
 					<a th:unless="${page == 'ticket'}" class="submit4" th:href="@{/searchTickets}"><span>View User Tickets</span></a>
-				</li>>
+				</li>
+		        <li class="nav-item">
+		            <a th:href="@{/editUserButton/{id}(id=${user.id})}" class="submit4 nav-link" th:classappend="${page == 'changeInfo'} ? 'active' : ''">
+		                <span>Change Info</span>
+		            </a>
+		        </li>
 			</ul>
 		</div>
 		<!-- Customer Service's Header -->
@@ -202,6 +207,11 @@
 					<a th:if="${page == 'ticket'}" class="submit4 nav-link active" th:href="@{/searchTickets}"><span>View User Tickets</span></a>
 					<a th:unless="${page == 'ticket'}" class="submit4" th:href="@{/searchTickets}"><span>View User Tickets</span></a>
 				</li>
+				<li class="nav-item">
+		            <a th:href="@{/editUserButton/{id}(id=${user.id})}" class="submit4 nav-link" th:classappend="${page == 'changeInfo'} ? 'active' : ''">
+		                <span>Change Info</span>
+		            </a>
+		        </li>
 			</ul>
 		</div>
 		<!-- Help Desk Admin's Header -->
