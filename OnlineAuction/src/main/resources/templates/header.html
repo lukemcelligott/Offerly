@@ -162,24 +162,20 @@
 		<!-- End Admin's Header -->
 		
 		<!-- Customer Service's Header -->
-		<div th:if="${user.role} == ROLE_CUSTOMERSERVICE">
-			<ul class="nav nav-pills">
-				<li class="nav-item">
-					<a th:if="${page == 'begin'}" class="submit4 nav-link active" th:href="@{/employee}"><span>Employee Home</span></a>
-					<a th:unless="${page == 'begin'}" class="submit4" th:href="@{/employee}"><span>Employee Home</span></a>
-				</li>
-				<li class="nav-item">
-					<a th:if="${page == 'ticket'}" class="submit4 nav-link active" th:href="@{/searchTickets}"><span>View User Tickets</span></a>
-					<a th:unless="${page == 'ticket'}" class="submit4" th:href="@{/searchTickets}"><span>View User Tickets</span></a>
-				</li>
+		<div th:if="${user.role} == 'ROLE_CUSTOMERSERVICE'">
+		    <ul class="nav nav-pills">
 		        <li class="nav-item">
-		            <a th:href="@{/editUserButton/{id}(id=${user.id})}" class="submit4 nav-link" th:classappend="${page == 'changeInfo'} ? 'active' : ''">
-		                <span>Change Info</span>
-		            </a>
+		            <a th:href="@{/employee}" class="submit4 nav-link" th:classappend="${page == 'begin'} ? 'active' : ''"><span>Employee Home</span></a>
 		        </li>
-			</ul>
+		        <li class="nav-item">
+		            <a th:href="@{/searchTickets}" class="submit4 nav-link" th:classappend="${page == 'ticket'} ? 'active' : ''"><span>View User Tickets</span></a>
+		        </li>
+		        <li class="nav-item">
+		            <a th:href="@{/editUserButton/{id}(id=${user.id})}" class="submit4 nav-link" th:classappend="${page == 'changeInfo'} ? 'active' : ''"><span>Change Info</span></a>
+		        </li>
+		    </ul>
 		</div>
-		<!-- Customer Service's Header -->
+		<!-- End Customer Service's Header -->
 		
 		<!-- Tech Service's Header -->
 		<div th:if="${user.role} == ROLE_TECHNICALSERVICE">
@@ -192,6 +188,9 @@
 					<a th:if="${page == 'ticket'}" class="submit4 nav-link active" th:href="@{/searchTickets}"><span>View User Tickets</span></a>
 					<a th:unless="${page == 'ticket'}" class="submit4" th:href="@{/searchTickets}"><span>View User Tickets</span></a>
 				</li>
+				<li class="nav-item">
+		            <a th:href="@{/editUserButton/{id}(id=${user.id})}" class="submit4 nav-link" th:classappend="${page == 'changeInfo'} ? 'active' : ''"><span>Change Info</span></a>
+		        </li>
 			</ul>
 		</div>
 		<!-- Tech Service's Header -->
