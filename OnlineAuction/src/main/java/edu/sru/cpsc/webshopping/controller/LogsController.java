@@ -21,21 +21,24 @@ public class LogsController {
 	private UserService userService;
 	@Autowired private StatsRepository statsRepository;
 	
-	
+	// displays logs
 	@GetMapping({"/viewLogs"})
 	public String viewLogs (Model model, Principal principal) {
 		String username = principal.getName();
 		User user = userService.getUserByUsername(username);
 		
 		List<Statistics> statList = getLogs();
+		List<String> categoryList = getCategories();
 
 		model.addAttribute("user", user);
 		model.addAttribute("page", "logs");
 		model.addAttribute("statList", statList);
+		model.addAttribute("categoryList", categoryList);
 		
 		return "logs";
 	}
 	
+	// get the list of logs from the database
 	public List<Statistics> getLogs() {
 		Iterable<Statistics> statsIterable = statsRepository.findAll();
         List<Statistics> statsList = new ArrayList<>();
@@ -45,6 +48,17 @@ public class LogsController {
         }
 		
 		return statsList;
+	}
+	
+	// get the list of category names
+	public List<String> getCategories() {
+		List<String> categoryList = new ArrayList<>();
+		
+		for (Statistics.StatsCategory category : Statistics.StatsCategory.values()) {
+            categoryList.add(category.name());
+        }
+
+		return categoryList;
 	}
 
 }

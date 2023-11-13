@@ -15,6 +15,7 @@ public class Statistics {
 	}
 	
 	StatsCategory category;
+	
 	public Statistics(StatsCategory cat, float value) {
 		this.category = cat;
 		this.value = value;
@@ -47,6 +48,11 @@ public class Statistics {
 		TICKETS,
 		WATCHLIST;
 		
+		@Override
+	    public String toString() {
+	        return name();
+	    }
+		
 	}
 	public long getId() {
 		return id;
@@ -78,9 +84,9 @@ public class Statistics {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
-
-
+	
+	public StatsCategory getCategory() {
+		return category;
+	}
 
 }
-
