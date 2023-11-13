@@ -244,7 +244,7 @@
 									    <td>
 									        <div style="white-space: pre-wrap; text-align: left;">
 									            <th:block th:each="message : ${ticket.messages}">
-									                <span th:text="${message.sender} + ' : ' + ${message.content} + ' (' + ${message.msgDate} + ')'"></span><br>
+									                <span class="message-content" th:text="${message.sender} + ' : ' + ${message.content} + ' (' + ${message.msgDate} + ')'"></span><br>
 									            </th:block>
 									        </div>
 									        <th:block th:if="${!ticket.isResolved() && ticket.assignedTo != null ? ticket.assignedTo.username == user.username : false}">
@@ -260,6 +260,9 @@
 			                </table>
 			            </div>
 			        </div>
+			        <div class="card-footer text-center">
+    					<a href="/searchTickets" class="btn btn-primary">Back</a>
+					</div>
 			    </div>
 			</div>
 			

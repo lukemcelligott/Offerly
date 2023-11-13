@@ -72,6 +72,7 @@ public class FriendsController {
         List<User> friends = friendshipService.getAllFriendsForUser(user);
         List<SocialMessage> messages = messageService.getAllMessagesForUser(user);
         List<SocialFriendRequest> friendRequests = friendSocialRequestRepository.findAllByReceiver(user);
+        List<SocialFriendRequest> outgoingPendingRequests = friendshipService.getOutgoingPendingRequests(user);
         List<User> allUsers = userService.getAllUsers();
         
         model.addAttribute("allUsers", allUsers);
@@ -79,6 +80,7 @@ public class FriendsController {
         model.addAttribute("friends", friends);
         model.addAttribute("messages", messages);
         model.addAttribute("friendRequests", friendRequests);
+        model.addAttribute("outgoingPendingRequests", outgoingPendingRequests);
         
         return "social";
     }
@@ -283,5 +285,19 @@ public class FriendsController {
             throw new IllegalArgumentException("Invalid filter type");
         }
     } 
+    
+    @PostMapping("/cancelRequest")
+    public String cancelFriendRequest(@RequestParam("requestId") Long requestId, Principal principal, RedirectAttributes redirectAttributes) {
+        User currentUser = userService.getUserByUsername(principal.getName());
+        SocialFriendRequest request = friendSocialRequestRepository.findById(requestId).orElse(null);
+
+        if (request != null && request.getSender().getId() == currentUser.getId()) {
+            friendshipService.cancelFriendRequest(requestId);
+            redirectAttributes.addFlashAttribute("successMessage", "Friend request cancelled successfully.");
+        } else {
+            redirectAttributes.addFlashAttribute("errorMessage", "Unable to cancel friend request.");
+        }
+        return "redirect:/Social";
+    }
   
 }

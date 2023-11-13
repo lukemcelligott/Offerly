@@ -65,6 +65,9 @@
         <div th:if="${requestSent}" class="alert alert-success" role="alert">
             Friend request has been sent!
         </div>
+        
+        <!-- Cancel Pending Success Message -->
+		<div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
 
         <!-- Alert for error message -->
         <div th:if="${errorMessage}" class="alert alert-danger" role="alert" th:text="${errorMessage}"></div>
@@ -114,6 +117,31 @@
 			            </li>
 			        </ul>
 			    </div>
+			    <!-- Outgoing Pending Friend Requests Section -->
+				<div class="col-md-12">
+				    <div class="container p-4 bg-white rounded shadow mt-4">
+				        <h3>Pending Friend Requests</h3>
+				        <ul class="list-group">
+				            <li th:each="request : ${outgoingPendingRequests}" class="list-group-item">
+				                <div th:if="${request.status.name() == 'PENDING'}">
+				                    <!-- Receiver's Image -->
+				                    <div class="d-inline-block me-2">
+				                        <img th:if="${request.receiver.userImage != null}" th:src="@{/images/userImages/{icon}(icon=${request.receiver.userImage})}" class="img-fluid" style="max-height: 50px; max-width: 50px;"></img>
+				                        <img th:unless="${request.receiver.userImage != null}" th:src="@{/images/userImages/default_user_icon.png}" class="img-fluid" style="max-height: 50px; max-width: 50px;"></img>
+				                    </div>
+				                    <!-- Receiver's Username -->
+				                    <span th:text="${request.receiver.username}"></span>
+				                    <!-- Cancel Request Button -->
+				                    <form th:action="@{/cancelRequest}" method="post" class="float-end">
+				                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+				                        <input type="hidden" th:value="${request.id}" name="requestId" />
+				                        <button class="btn btn-sm btn-danger" type="submit"><i class="fas fa-times"></i> Cancel</button>
+				                    </form>
+				                </div>
+				            </li>
+				        </ul>
+				    </div>
+				</div>
 			</div>
 
             <!-- Right Container: Add Friend & Friend Requests Section -->
@@ -136,10 +164,16 @@
 					</form>
 
                     <!-- Friend Requests Section -->
-                    <h3>Friend Requests</h3>
-                    <ul class="list-group">
-                        <li class="list-group-item" th:each="request : ${friendRequests}">
-                            <span th:text="${request.sender.username}"></span>
+			        <h3>Friend Requests</h3>
+			        <ul class="list-group">
+			            <li class="list-group-item" th:each="request : ${friendRequests}">
+			                <!-- Sender's Image -->
+			                <div class="d-inline-block me-2">
+			                    <img th:if="${request.sender.userImage != null}" th:src="@{/images/userImages/{icon}(icon=${request.sender.userImage})}" class="img-fluid" style="max-height: 50px; max-width: 50px;"></img>
+			                    <img th:unless="${request.sender.userImage != null}" th:src="@{/images/userImages/default_user_icon.png}" class="img-fluid" style="max-height: 50px; max-width: 50px;"></img>
+			                </div>
+			                <!-- Sender's Username -->
+			                <span th:text="${request.sender.username}"></span>
 
                             <div class="float-end">
                                 <!-- Accept Button -->

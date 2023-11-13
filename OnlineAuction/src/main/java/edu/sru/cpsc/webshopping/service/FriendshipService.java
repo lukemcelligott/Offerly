@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import edu.sru.cpsc.webshopping.domain.misc.FriendStatus;
 import edu.sru.cpsc.webshopping.domain.misc.Friendship;
@@ -113,5 +114,13 @@ public class FriendshipService {
         request.setStatus(FriendStatus.DECLINED);
         friendSocialRequestRepository.delete(request);
     }
-
+    
+    public List<SocialFriendRequest> getOutgoingPendingRequests(User user) {
+        return friendSocialRequestRepository.findBySenderAndStatus(user, FriendStatus.PENDING);
+    }
+    
+    @Transactional
+    public void cancelFriendRequest(Long requestId) {
+        friendSocialRequestRepository.deleteById(requestId);
+    }
 }
