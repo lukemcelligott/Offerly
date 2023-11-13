@@ -160,24 +160,28 @@
 		                  					<!-- Null Pointer Check - https://stackoverflow.com/questions/20636456/using-thymeleaf-when-the-value-is-null -->
 		                  					<td><p th:text="${ticket.assignedTo} ? ${ticket.assignedTo.username} : 'None'"></p></td>
 		                  					<td><p th:text="${ticket.assignedTo} ? ${ticket.assignedTo.role} : 'None'"></p></td>
-			                  				<th:block th:if="${user.role == 'ROLE_CUSTOMERSERVICE'}">
-			                    				<td>
-				                      				<th:block th:if="${!ticket.isResolved()}">
-				                       					 <form method="post" th:action="@{/assignTicket/{id}(id = ${ticket.id})}">
-				                          					<select class="form-select" th:name="username" style="max-width: 70%; display: inline;">
-				                            					<!--
-																	<option th:each="assignuser : ${users}"
-																	                                 th:value="${assignuser.username}"
-																	                                 th:text="${assignuser.username != user.username} ? ${assignuser.role} + ' - ' + ${assignuser.username} : 'Assign To Me'"></option>
-																-->
-															<option th:value="${user.username}" th:text="'Assign To Me'"></option>	
-				                          					</select>
-				                         			 		<input class="btn btn-outline-secondary" type="submit" value="Submit"/>
-				                        				</form>
-				                      				</th:block>
-				                      				<th:block th:unless="${!ticket.isResolved()}"><p>None</p></th:block>
-			                    				</td>
-			                  				</th:block>
+			                  					<!-- Check if the ticket is not resolved -->
+												<th:block th:if="${!ticket.isResolved()}">
+												  <td>
+												    <form method="post" th:action="@{/assignTicket/{id}(id = ${ticket.id})}">
+												      <select class="form-select" th:name="username" style="max-width: 70%; display: inline;">
+												        <!-- Display this block if the user is ROLE_HELPDESK_ADMIN or ROLE_ADMIN -->
+												        <th:block th:if="${user.role == 'ROLE_HELPDESK_ADMIN' or user.role == 'ROLE_ADMIN'}">
+												          <option th:each="assignuser : ${users}"
+												                  th:value="${assignuser.username}"
+												                  th:text="${assignuser.username != user.username} ? ${assignuser.role} + ' - ' + ${assignuser.username} : 'Assign To Me'"></option>
+												        </th:block>
+												        <!-- Display this option for any other role that is not ROLE_HELPDESK_ADMIN or ROLE_ADMIN -->
+												        <th:block th:unless="${user.role == 'ROLE_HELPDESK_ADMIN' or user.role == 'ROLE_ADMIN'}">
+												          <option th:value="${user.username}" th:text="'Assign To Me'"></option>
+												        </th:block>
+												      </select>
+												      <input class="btn btn-outline-secondary" type="submit" value="Submit"/>
+												    </form>
+												  </td>
+												</th:block>
+												<!-- If the ticket is resolved, show 'None' -->
+												<th:block th:unless="${!ticket.isResolved()}"><td><p>None</p></td></th:block>
 			              					<td><p th:text="${ticket.state}"></p></td>
 			              					<td>
 				                    			<th:block th:if="${!ticket.isResolved() && ticket.assignedTo != null ? ticket.assignedTo.username == user.username : false}">
