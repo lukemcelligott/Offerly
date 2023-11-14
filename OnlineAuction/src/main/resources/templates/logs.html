@@ -111,6 +111,12 @@
         <!-- JS -->
         
         <script th:inline="javascript">
+			var currentFilter = {
+		        category: "filter by category",
+		        startDate: null,
+		        endDate: null
+		    };
+			
 			/* function for changing sort order of date and timestamp for logs */
 		    function sortTable(columnIndex) {
 		        var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
@@ -156,6 +162,44 @@
 		            }
 		        }
 		        updateSortingIndicator(columnIndex);
+		    }
+		    
+		    function filterTable() {
+		        var categoryFilter = document.getElementById("categoryFilter");
+		        var selectedCategory = categoryFilter.value.toLowerCase();
+		
+		        var startDatePicker = $('#startDatePicker').datepicker('getDate');
+		        var endDatePicker = $('#endDatePicker').datepicker('getDate');
+		
+		        if (endDatePicker) {
+		            endDatePicker.setDate(endDatePicker.getDate() + 1);
+		        }
+		
+		        currentFilter.category = selectedCategory;
+		        currentFilter.startDate = startDatePicker;
+		        currentFilter.endDate = endDatePicker;
+		
+		        var rows = document.querySelectorAll("#myTable tbody tr");
+			
+			    rows.forEach(function (row) {
+			        var categoryCell = row.querySelector("td:nth-child(3) p");
+			        var category = categoryCell.textContent.toLowerCase();
+			
+			        var dateCell = row.querySelector("td:nth-child(1) a");
+			        var logDate = new Date(dateCell.textContent);
+			
+			        if (
+			            (selectedCategory === "filter by category" || category === selectedCategory) &&
+			            (!startDatePicker || logDate >= startDatePicker) &&
+			            (!endDatePicker || logDate <= endDatePicker)
+			        ) {
+			            row.style.display = "";
+			        } else {
+			            row.style.display = "none";
+			        }
+			    });
+		        
+		        showPage(currentFilter.currentPage);
 		    }
 		    
 		    var sortingColumn = -1;
@@ -231,7 +275,7 @@
 			        autoclose: true,
 			    });
 			});
-	        
+			    	        
 		</script>
         
     </body>

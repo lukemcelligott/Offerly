@@ -264,7 +264,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `statistics` WRITE;
 /*!40000 ALTER TABLE `statistics` DISABLE KEYS */;
-INSERT INTO `statistics` VALUES (5596,2,'2023-10-05 18:55:10.109085','Account with username: userName was created',18,1),(5601,3,'2023-10-05 18:56:10.711130','userName logged in',18,1),(5634,2,'2023-10-05 19:10:55.671210','Account with username: sellerName was created',19,1),(5639,3,'2023-10-05 19:14:46.970991','sellerName logged in',19,1),(5663,2,'2023-10-05 19:21:40.738982','Account with username: sellerName1 was created',19,1),(5668,3,'2023-10-05 19:22:38.870089','sellerName1 logged in',19,1),(5687,3,'2023-10-05 19:28:03.218752','userName logged in',19,1);
+INSERT INTO `statistics` VALUES (5596,3,'2023-10-05 18:55:10.109085','Account with username: userName was created',18,1),(5601,6,'2023-10-05 18:56:10.711130','userName logged in',18,1),(5634,3,'2023-10-05 19:10:55.671210','Account with username: sellerName was created',19,1),(5639,6,'2023-10-05 19:14:46.970991','sellerName logged in',19,1),(5663,3,'2023-10-05 19:21:40.738982','Account with username: sellerName1 was created',19,1),(5668,6,'2023-10-05 19:22:38.870089','sellerName1 logged in',19,1),(5688,6,'2023-10-05 19:28:03.218752','userName logged in',19,1),(5687,16,'2023-10-06 19:28:03.218752','userName viewed their watchlist',19,1),(5689,16,'2023-10-06 19:32:03.218752','userName added 1999-2001 GMC Jimmy Chevy Blazer Heater A/C Climate Control Switch Rear Defrost to their watchlist',19,1);
 /*!40000 ALTER TABLE `statistics` ENABLE KEYS */;
 UNLOCK TABLES;
 
