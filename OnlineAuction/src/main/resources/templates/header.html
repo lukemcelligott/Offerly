@@ -157,6 +157,11 @@
 				        <span>Social</span>
 				    </a>
 				</li>
+				<!-- logs -->
+				<li class="nav-item">
+					<a th:if="${page == 'logs'}" class="submit4 nav-link active" th:href="@{/viewLogs}"><span>Logs</span></a>
+					<a th:unless="${page == 'logs'}" class="submit4" th:href="@{/viewLogs}"><span>Logs</span></a>
+				</li>
 			</ul>
 		</div>
 		<!-- End Admin's Header -->
