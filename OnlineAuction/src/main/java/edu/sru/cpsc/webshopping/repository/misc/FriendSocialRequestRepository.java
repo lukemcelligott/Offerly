@@ -14,4 +14,5 @@ public interface FriendSocialRequestRepository extends JpaRepository<SocialFrien
 	List<SocialFriendRequest> findByReceiverAndStatus(User receiver, FriendStatus status);
 	List<SocialFriendRequest> findAllByReceiver(User receiver);
 	List<SocialFriendRequest> findBySenderAndReceiverAndStatus(User sender, User receiver, FriendStatus status);
+	List<SocialFriendRequest> findBySenderAndStatus(User user, FriendStatus pending);
 }

@@ -1004,6 +1004,7 @@ public class EmployeeController {
     model.addAttribute("masterPage", getMasterPage());
     if (user.getRole().equals("ROLE_ADMIN")
         || user.getRole().equals("ROLE_CUSTOMERSERVICE")
+        || user.getRole().equals("ROLE_HELPDESK_ADMIN")
         || user.getRole().equals("ROLE_TECHNICALSERVICE")
         || user.getRole().equals("ROLE_ADMIN_SHADOW")) {
     } else {
@@ -1027,6 +1028,7 @@ public class EmployeeController {
     model.addAttribute("page", page);
     model.addAttribute("page2", page2);
     model.addAttribute("myusers", getMyUserSearch());
+    model.addAttribute("page", "changeInfo");
     return "employee";
   }
 
@@ -1048,6 +1050,7 @@ public class EmployeeController {
     if (user.getRole().equals("ROLE_ADMIN")
         || user.getRole().equals("ROLE_CUSTOMERSERVICE")
         || user.getRole().equals("ROLE_TECHNICALSERVICE")
+        || user.getRole().equals("ROLE_HELPDESK_ADMIN")
         || user.getRole().equals("ROLE_ADMIN_SHADOW")) {
     } else {
       setPage("notAuthorized");

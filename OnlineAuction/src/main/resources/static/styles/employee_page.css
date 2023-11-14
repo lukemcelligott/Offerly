@@ -425,3 +425,10 @@ table.addUserSuccess td{
 .buttonSearchUser:hover{
 	background-color: #D3D3D3;
 }
+
+.message-content {
+    margin-bottom: 0; /* Removes bottom margin */
+    padding-bottom: 0; /* Removes bottom padding */
+    line-height: 1.2; /* Adjust line height to make text lines closer together */
+    display: block; /* This will treat the span like a block element, which may help in certain layouts */
+}
