@@ -20,10 +20,14 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import edu.sru.cpsc.webshopping.controller.AddWidgetController;
+import edu.sru.cpsc.webshopping.controller.AddWidgetController.WidgetForm;
 import edu.sru.cpsc.webshopping.controller.MarketListingDomainController;
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.user.User;
@@ -77,25 +81,22 @@ public class ListItemTest {
         when(userService.getUserByUsername("testUser")).thenReturn(mockUser);
         String stateId = "1"; 
 
-        // Prepare your test data here...
-        MarketListing marketListing = new MarketListing(); // Populate with test data
+        MarketListing marketListing = new MarketListing(); 
 
         MockMultipartFile coverImage = new MockMultipartFile("listingCoverImage", "filename.txt", "text/plain", "some xml".getBytes());
         byte[] files = new byte[1];
 
-        // Act & Assert
-        mockMvc.perform(multipart("/addListing")
-            .file(coverImage)
-            .file("imageUpload", files)
+        mockMvc.perform(MockMvcRequestBuilders.multipart("/addListing")
+            .with(SecurityMockMvcRequestPostProcessors.user("user").roles("USER"))
+            .content(files)
             .param("stateId", stateId)
             .flashAttr("marketListing", marketListing)
-            .principal(mockPrincipal))
+            )
             .andExpect(status().is3xxRedirection())
             .andExpect(redirectedUrl("homePage"));
 
-        // Verify interactions with mocked services
+  
         verify(userService).getUserByUsername("testUser");
         verify(widgetService).addWidget(any(Widget.class));
-        // Add more verifications as needed
     }
 }
