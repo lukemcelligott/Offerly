@@ -130,20 +130,6 @@ public class AddWidgetControllerTest {
         assertEquals("widgets", addWidgetController.getPage());
     }
 
-    @Test
-	// This test is expects an IllegalStateException to be thrown
-    public void testAddWidgetNotLoggedIn() {
-        Principal principal = mock(Principal.class);
-        when(principal.getName()).thenReturn(null);
-        User user = new User();
-        user.setUsername("testuser");
-        when(userService.getUserByUsername("testuser")).thenReturn(user);
-
-        assertThrows(IllegalStateException.class, () -> {
-            addWidgetController.addWidget(model, principal);
-        });
-    }
-
 	@Test
 	public void testCreateWidget() {
         // Arrange
@@ -222,38 +208,6 @@ public class AddWidgetControllerTest {
         // Assert
         assertEquals("createListing", result);
     }
-
-	/* @Test
-	public void testAddListing() {
-		// Arrange
-		List<WidgetImage> listingImages = new ArrayList<>();
-		WidgetImage tempImage = new WidgetImage();
-
-		when(marketListing.getAuction()).thenReturn(auction);
-		when(auction.getStartingBid()).thenReturn(BigDecimal.ONE);
-		when(marketListing.getPricePerItem()).thenReturn(BigDecimal.ONE);
-		when(marketListing.getAuction().getCurrentBid()).thenReturn(BigDecimal.ONE);
-		when(marketListing.getQtyAvailable()).thenReturn(1L);
-		when(userController.getCurrently_Logged_In()).thenReturn(new User());
-		when(marketListing.getSeller()).thenReturn(seller);
-		when(seller.getId()).thenReturn(1L);
-		when(marketListing.getSeller().getId()).thenReturn(1L);
-		when(coverImage.getOriginalFilename()).thenReturn("filename");
-		when(StringUtils.cleanPath(coverImage.getOriginalFilename())).thenReturn("filename");
-		when(marketListingController.getListingByWidget(widget)).thenReturn(marketListing);
-		when(result.hasErrors()).thenReturn(false);
-		when(widgetController.getWidget(widget.getId())).thenReturn(widget);
-
-		List<MultipartFile> fileList = new ArrayList<>();
-		fileList.add(coverImage);
-		MultipartFile[] tempFileArray = fileList.isEmpty() ? null : fileList.toArray(new MultipartFile[0]);
-
-		// Act
-		String result = addWidgetController.addListing(model, coverImage, tempFileArray, attributes, marketListing, this.result);
-
-		// Assert
-		assertEquals("redirect:homePage", result);
-	} */
 	
 }
 

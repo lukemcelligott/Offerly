@@ -47,7 +47,7 @@ public class FriendRequest
 		requestSender=sender;
 	}
 	
-	public void setReciever(User reciever)
+	public void setReceiver(User reciever)
 	{
 		requestReceiver=reciever;
 	}
@@ -74,6 +74,14 @@ public class FriendRequest
 	public int getStatus()
 	{
 		return status;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public LocalDateTime getTimeSent() {
+		return timeSent;
 	}
 }
 	

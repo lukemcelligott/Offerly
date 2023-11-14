@@ -51,7 +51,6 @@ public class SellerRatingControllerTest {
     @Test
     public void rateUser() {
         sellerRatingController.rateUser(1L, 5);
-
         assertEquals(5, userService.getUserById(1L).getSellerRating().getRating());
     }
 }
