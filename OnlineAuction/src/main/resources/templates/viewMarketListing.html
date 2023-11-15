@@ -76,11 +76,15 @@
 							<div class="container-spacing">
 						    <!-- Auction Date Details -->
 						    <div class="d-flex justify-content-center details-container">
-						        <div class="auction-date-container d-flex justify-content-between align-items-center" style="width: 100%; max-width: 500px;">
-						            <div class="details-text" style="white-space: nowrap; margin-right: 15px;">
+						        <div class="auction-date-container d-flex justify-content-between align-items-center" style="max-width: 500px;">
+						            <div class="details-text" style="white-space: nowrap;">
 						                <span>Auction Start Date:</span>
 						                <strong><span th:text="${#temporals.format(currListing.auction.startAuctionDate, 'MM/dd/yyyy @ h:mma')}"></span></strong>
 						            </div>
+						        </div>
+						    </div>
+							<div class="d-flex justify-content-center details-container">
+						        <div class="auction-date-container d-flex justify-content-between align-items-center" style="max-width: 500px;">
 						            <div class="details-text" style="white-space: nowrap;">
 						                <span>Auction End Date:</span>
 						                <strong><span th:text="${#temporals.format(currListing.auction.endAuctionDate, 'MM/dd/yyyy @ h:mma')}"></span></strong>
