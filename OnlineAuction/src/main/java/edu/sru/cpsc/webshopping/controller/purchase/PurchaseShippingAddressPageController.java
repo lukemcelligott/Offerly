@@ -49,7 +49,6 @@ import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.repository.billing.ShippingAddressRepository;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
 import edu.sru.cpsc.webshopping.service.UserService;
-import edu.sru.cpsc.webshopping.service.shipping.ShippoTrackingService;
 
 /**
  * Manages the functionality of the confirmShipping page

@@ -2,13 +2,13 @@ package edu.sru.cpsc.webshopping.domain.user;
 
 import java.util.Set;
 
+import org.springframework.security.core.GrantedAuthority;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-
-import org.springframework.security.core.GrantedAuthority;
 
 // This Entity is for holding a representation of what website features a user has access to
 // This is used to distinguish from a regular user, from an administrator, where the latter should be able

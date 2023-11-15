@@ -3,11 +3,12 @@ package edu.sru.cpsc.webshopping.domain.user;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.validation.constraints.Size;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import javax.validation.constraints.Size;
 
 @Entity
 public class Applicant {

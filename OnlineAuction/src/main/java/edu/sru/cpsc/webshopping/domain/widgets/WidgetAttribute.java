@@ -1,12 +1,12 @@
 package edu.sru.cpsc.webshopping.domain.widgets;
 
+import org.springframework.lang.NonNull;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-
-import org.springframework.lang.NonNull;
 
 @Entity
 public class WidgetAttribute {

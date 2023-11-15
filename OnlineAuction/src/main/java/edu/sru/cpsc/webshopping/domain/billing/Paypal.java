@@ -1,11 +1,11 @@
 package edu.sru.cpsc.webshopping.domain.billing;
 
+import org.springframework.lang.NonNull;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
-import org.springframework.lang.NonNull;
 
 /**
  * Database entity for storing information on a Paypal login

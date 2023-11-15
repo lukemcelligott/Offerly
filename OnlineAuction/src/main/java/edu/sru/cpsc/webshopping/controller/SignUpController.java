@@ -3,9 +3,6 @@ package edu.sru.cpsc.webshopping.controller;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.security.Principal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -19,7 +16,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import jakarta.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.apache.commons.validator.routines.EmailValidator;
@@ -61,6 +57,7 @@ import edu.sru.cpsc.webshopping.repository.billing.PaymentDetailsRepository;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
 import edu.sru.cpsc.webshopping.service.UserService;
 import edu.sru.cpsc.webshopping.util.PreLoad;
+import jakarta.transaction.Transactional;
 
 @Controller
 // @RequestMapping(value = "/user")

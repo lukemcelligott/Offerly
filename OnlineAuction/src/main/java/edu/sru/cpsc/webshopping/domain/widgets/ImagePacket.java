@@ -3,6 +3,7 @@ package edu.sru.cpsc.webshopping.domain.widgets;
 import java.util.HashSet;
 import java.util.Set;
 
+import edu.sru.cpsc.webshopping.domain.misc.Image;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,8 +11,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-
-import edu.sru.cpsc.webshopping.domain.misc.Image;
 
 @Entity
 @Table(name = "image_packet")

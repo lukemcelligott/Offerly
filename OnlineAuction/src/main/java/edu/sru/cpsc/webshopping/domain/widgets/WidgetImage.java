@@ -1,5 +1,6 @@
 package edu.sru.cpsc.webshopping.domain.widgets;
 
+import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -7,8 +8,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-
-import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 
 
 @Entity

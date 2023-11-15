@@ -1,5 +1,6 @@
 package edu.sru.cpsc.webshopping.domain.misc;
 
+import edu.sru.cpsc.webshopping.domain.user.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -7,8 +8,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-
-import edu.sru.cpsc.webshopping.domain.user.User;
 
 @Entity
 public class SocialFriendRequest {

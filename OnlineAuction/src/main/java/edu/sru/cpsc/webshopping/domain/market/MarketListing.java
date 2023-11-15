@@ -3,6 +3,13 @@ package edu.sru.cpsc.webshopping.domain.market;
 import java.math.BigDecimal;
 import java.util.Set;
 
+import javax.validation.constraints.Min;
+
+import org.springframework.lang.NonNull;
+
+import edu.sru.cpsc.webshopping.domain.user.User;
+import edu.sru.cpsc.webshopping.domain.widgets.Widget;
+import edu.sru.cpsc.webshopping.domain.widgets.WidgetImage;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,13 +21,6 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
-import javax.validation.constraints.Min;
-
-import org.springframework.lang.NonNull;
-
-import edu.sru.cpsc.webshopping.domain.user.User;
-import edu.sru.cpsc.webshopping.domain.widgets.Widget;
-import edu.sru.cpsc.webshopping.domain.widgets.WidgetImage;
 
 /**
  * Holds information on a marketplace listing that has been posted by a seller,

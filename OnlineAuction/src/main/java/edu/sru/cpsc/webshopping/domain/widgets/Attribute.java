@@ -2,6 +2,9 @@ package edu.sru.cpsc.webshopping.domain.widgets;
 
 import java.util.List;
 
+import org.springframework.lang.NonNull;
+
+import edu.sru.cpsc.webshopping.util.enums.AttributeDataType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -10,10 +13,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-
-import org.springframework.lang.NonNull;
-
-import edu.sru.cpsc.webshopping.util.enums.AttributeDataType;
 
 @Entity
 public class Attribute {

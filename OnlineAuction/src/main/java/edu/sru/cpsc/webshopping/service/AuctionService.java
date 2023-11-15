@@ -2,8 +2,8 @@ package edu.sru.cpsc.webshopping.service;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,8 +14,8 @@ import edu.sru.cpsc.webshopping.domain.market.AutoBid;
 import edu.sru.cpsc.webshopping.domain.market.Bid;
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.user.Statistics;
-import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
+import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.repository.market.AuctionRepository;
 import edu.sru.cpsc.webshopping.repository.market.AutoBidRepository;
 import edu.sru.cpsc.webshopping.repository.market.BidRepository;

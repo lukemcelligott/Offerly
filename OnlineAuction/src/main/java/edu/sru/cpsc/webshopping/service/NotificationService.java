@@ -1,13 +1,13 @@
 package edu.sru.cpsc.webshopping.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import edu.sru.cpsc.webshopping.domain.misc.Notification;
 import edu.sru.cpsc.webshopping.repository.misc.NotificationRepository;
-
-import java.util.List;
 
 @Service
 public class NotificationService {

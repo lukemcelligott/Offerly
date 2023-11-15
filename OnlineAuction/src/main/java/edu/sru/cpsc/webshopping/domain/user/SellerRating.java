@@ -1,12 +1,12 @@
 package edu.sru.cpsc.webshopping.domain.user;
 
+import org.springframework.lang.NonNull;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
-
-import org.springframework.lang.NonNull;
 
 // This Entity is used to describe how good of a seller a particular user is
 // RatingName will be a one or two word description of the user's rating
