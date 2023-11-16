@@ -158,10 +158,10 @@ public class AddWidgetControllerTest {
 	// This test should create a widget
     public void testCreateWidgetListing() {
         // Arrange
-        WidgetForm widgetForm = addWidgetController.new WidgetForm();
+        AddWidgetController.WidgetForm widgetForm = addWidgetController.new WidgetForm();
         widgetForm.setName("Test Widget");
         widgetForm.setDescription("Test Description");
-        WidgetForm.AttributeFormEntry entry = new WidgetForm.AttributeFormEntry();
+        AddWidgetController.WidgetForm.AttributeFormEntry entry = widgetForm.new AttributeFormEntry();
         Attribute attribute = new Attribute();
         attribute.setAttributeKey("Test Attribute");
         attribute.setDataType(AttributeDataType.STRING);
@@ -169,7 +169,7 @@ public class AddWidgetControllerTest {
         WidgetAttribute widgetAttribute = new WidgetAttribute();
         widgetAttribute.setValue("Test Value");
         entry.setWidgetAttribute(widgetAttribute);
-        List<WidgetForm.AttributeFormEntry> entries = new ArrayList<>();
+        List<AddWidgetController.WidgetForm.AttributeFormEntry> entries = new ArrayList<>();
         entries.add(entry);
         widgetForm.setEntries(entries);
         when(category.getId()).thenReturn(1L);

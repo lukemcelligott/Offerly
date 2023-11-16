@@ -1,5 +1,7 @@
 package edu.sru.cpsc.webshopping.controller;
 
+import java.util.List;
+
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -76,7 +78,8 @@ public class ShippingAddressDomainController {
 		
 		@RequestMapping("/get-shipping-address-details-by-user") 
 		public ShippingAddress[] getShippingDetailsByUser(@PathVariable("user") User user) {
-			return shippingAddressRepository.findAllByUser(user).toArray(ShippingAddress[]::new);
+			List<ShippingAddress> shippingAddresses = shippingAddressRepository.findAllByUser(user);
+			return shippingAddresses.toArray(new ShippingAddress[shippingAddresses.size()]);
 		}
 		
 		/**

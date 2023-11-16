@@ -148,7 +148,7 @@ public class AddWidgetController
 		private String description;
 		private List<AttributeFormEntry> entries = new ArrayList<>();
 
-		public static class AttributeFormEntry {
+		public class AttributeFormEntry {
 			private Attribute attribute;
 			private WidgetAttribute widgetAttribute;
 			
@@ -205,13 +205,13 @@ public class AddWidgetController
 		Category category = categoryRepository.findById(categoryId)
 		        .orElseThrow(() -> new IllegalArgumentException("Invalid category ID"));
 		
-		this.category = category;
-		List<Attribute> attributes = categoryService.getTopRecommendedAttributes(category, 0);
 		WidgetForm widgetForm = new WidgetForm();
-		
+		List<Attribute> attributes = categoryService.getTopRecommendedAttributes(category, 0);
+
 		for (Attribute attribute : attributes) {
 			WidgetAttribute widgetAttribute = new WidgetAttribute(attribute);
-			widgetForm.getEntries().add(new WidgetForm.AttributeFormEntry(attribute, widgetAttribute));
+			WidgetForm.AttributeFormEntry entry = widgetForm.new AttributeFormEntry(attribute, widgetAttribute);
+			widgetForm.getEntries().add(entry);
 		}
 
 		String username = principal.getName();

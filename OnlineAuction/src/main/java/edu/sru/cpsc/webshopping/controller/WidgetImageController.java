@@ -12,6 +12,7 @@ import edu.sru.cpsc.webshopping.repository.widgets.WidgetImageRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import java.util.List;
 
 @RestController
 public class WidgetImageController {
@@ -37,7 +38,8 @@ public class WidgetImageController {
 	 */
 	@RequestMapping("/get-widget-image-by-listing")
 	public WidgetImage[] getwidgetImageByMarketListing(@PathVariable("marketListing") MarketListing listing) {
-		return widgetImageRepository.findByMarketListing(listing).toArray(WidgetImage[]::new);
+		List<WidgetImage> widgetImages = widgetImageRepository.findByMarketListing(listing);
+		return widgetImages.toArray(new WidgetImage[widgetImages.size()]);
 	}
 	
 	/**

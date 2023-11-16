@@ -1213,13 +1213,10 @@ public class EmployeeController {
         User user = userController.getUserByUsername(sellerNameData[i]);
         editMarkets[i].setSeller(user);
         editMarkets[i].setQtyAvailable(Long.parseLong(marketQtyData[i], 10));
-        // editMarkets[i].setPricePerItem(new BigDecimal(marketPriceData[i]));
-        if (!(marketPriceData[i].isBlank())) {
-          editMarkets[i].setPricePerItem(
-              NumberUtils.parseNumber(marketPriceData[i], BigDecimal.class));
+        if (!marketPriceData[i].isEmpty()) {
+          editMarkets[i].setPricePerItem(NumberUtils.parseNumber(marketPriceData[i], BigDecimal.class));
           System.out.println(NumberUtils.parseNumber(marketPriceData[i], BigDecimal.class));
         }
-
         market.addMarketListingSimple(editMarkets[i]);
         getSearchedUserSellers().add(user);
         getSearchedUserListings().add(editMarkets[i]);

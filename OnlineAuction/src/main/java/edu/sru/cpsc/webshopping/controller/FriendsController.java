@@ -36,6 +36,7 @@ import edu.sru.cpsc.webshopping.repository.user.UserRepository;
 import edu.sru.cpsc.webshopping.service.FriendshipService;
 import edu.sru.cpsc.webshopping.service.MessageService;
 import edu.sru.cpsc.webshopping.service.UserService;
+import java.util.Collections;
 
 
 @Controller
@@ -190,7 +191,7 @@ public class FriendsController {
         User friend = userRepository.findById(friendId).orElse(null);
 
         if (friend == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Friend not found"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error", "Friend not found"));
         }
 
         List<SocialMessage> messages = messageService.getAllMessagesForUser(currentUser, friend);
@@ -198,24 +199,28 @@ public class FriendsController {
         List<Map<String, Object>> messagesList = messages.stream().map(msg -> {
             Map<String, Object> map = new HashMap<>();
             map.put("content", msg.getContent());
-            //map.put("receiverId", msg.getReceiver().getId());
-            map.put("sender", Map.of("id", msg.getSender().getId(), "username", msg.getSender().getUsername())); // Adjust sender to have id and username
-            map.put("receiver",Map.of("id", msg.getReceiver().getId(), "username", msg.getReceiver().getUsername()));
+            map.put("sender", new HashMap<String, Object>() {{
+                put("id", msg.getSender().getId());
+                put("username", msg.getSender().getUsername());
+            }}); // Adjust sender to have id and username
+            map.put("receiver", new HashMap<String, Object>() {{
+                put("id", msg.getReceiver().getId());
+                put("username", msg.getReceiver().getUsername());
+            }});
             map.put("timestamp", msg.getSentTimestamp().toString()); // Convert LocalDateTime to string
             return map;
         }).collect(Collectors.toList());
 
-        Map<String, Object> responseBody = Map.of(
-            "friendName", friend.getUsername(),
-            "messages", messagesList
-        );
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("friendName", friend.getUsername());
+        responseBody.put("messages", messagesList);
 
         // log event
-	    StatsCategory cat = StatsCategory.SOCIAL;
-	    Statistics stat = new Statistics(cat, 1);
-	    stat.setDescription(currentUser.getUsername() + " opened their inbox with " + friend.getUsername());
-	    statControl.addStatistics(stat);
-        
+        StatsCategory cat = StatsCategory.SOCIAL;
+        Statistics stat = new Statistics(cat, 1);
+        stat.setDescription(currentUser.getUsername() + " viewed conversation with " + friend.getUsername());
+        statControl.addStatistics(stat);
+
         return ResponseEntity.ok(responseBody);
     }
     

@@ -15,6 +15,7 @@ import edu.sru.cpsc.webshopping.repository.billing.PaymentDetailsRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import java.util.List;
 
 /**
  * Controller for handling PaymentDetails in database
@@ -74,7 +75,8 @@ public class PaymentDetailsController {
 	public PaymentDetails[] getPaymentDetailsByUser(@PathVariable("user") User user) {
 		if(user.getPaymentDetails() == null || user.getPaymentDetails().isEmpty())
 			return null;
-		return paymentDetailsRepository.findAllByUser(user).toArray(PaymentDetails[]::new);
+		List<PaymentDetails> paymentDetailsList = paymentDetailsRepository.findAllByUser(user);
+		return paymentDetailsList.toArray(new PaymentDetails[paymentDetailsList.size()]);
 	}
 	
 	/**
