@@ -90,14 +90,11 @@ public class AddWidgetController
 	Set<WidgetImage> listingImages = new HashSet<>();
 	CategoryController categories;
 	AttributeController attributeController;
-	private Set<Attribute> attributes;
 	MarketListing marketListing;
 	private Widget widgetStorage;
 	private Category category;
-	private String subcategory;
 	private WidgetImage tempImage = new WidgetImage();
 	private String page;
-	private MarketListingRepository marketListingRepository;
 	
 	public String getPage()
 	{
