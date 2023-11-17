@@ -24,6 +24,9 @@ public class EmailController {
   @Value("${server.port}")
   private String port;
 
+  @Value("${app.base-url}")
+  private String baseUrl; 
+
   @Bean
   public JavaMailSender getJavaMailSender() {
     JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
@@ -49,11 +52,13 @@ public class EmailController {
     SimpleMailMessage message = new SimpleMailMessage();
     message.setTo(user.getEmail());
     message.setSubject("<no-reply> Welcome!");
+
+    String verificationLink = String.format("%s/emailverification", baseUrl);
     try {
       message.setText(
           String.format(
-              "Hello %s please use the following link http://%s:%s/emailverification to verify your account with code:\n%s",
-              user.getUsername(), InetAddress.getLocalHost().getHostAddress(), port, code));
+              "Hello %s please use the following link http://%s:%s%s to verify your account with code:\n%s",
+              user.getUsername(), InetAddress.getLocalHost().getHostAddress(), port, verificationLink, code));
     } catch (UnknownHostException e) {
       throw new RuntimeException(e);
     }

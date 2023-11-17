@@ -223,7 +223,9 @@
         </div>
     </div>
 
-	<script>
+	<script th:inline="javascript">
+		var contextPath = /*[[ @{'/'} ]]*/ '';
+
 		$(document).ready(function() {
 		    // Autocomplete logic
 		    $("#addValue").autocomplete({
@@ -232,7 +234,7 @@
 		            var filterType = $('#filterType').val();
 		
 		            $.ajax({
-		                url: "/searchUser",
+		                url: contextPath + "searchUser",
 		                dataType: "json",
 		                data: {
 		                    value: request.term,

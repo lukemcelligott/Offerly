@@ -40,9 +40,11 @@ import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.market.MarketListingCSVModel;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.widgets.Attribute;
+import edu.sru.cpsc.webshopping.domain.widgets.AttributeFormEntry;
 import edu.sru.cpsc.webshopping.domain.widgets.Category;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 import edu.sru.cpsc.webshopping.domain.widgets.WidgetAttribute;
+import edu.sru.cpsc.webshopping.domain.widgets.WidgetForm;
 import edu.sru.cpsc.webshopping.domain.widgets.WidgetImage;
 import edu.sru.cpsc.webshopping.repository.market.MarketListingRepository;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
@@ -139,62 +141,6 @@ public class AddWidgetController
 		model.addAttribute("page", "addWidget");
 		return "addWidget";
 	}
-
-	public class WidgetForm {
-		private String name;
-		private String description;
-		private List<AttributeFormEntry> entries = new ArrayList<>();
-
-		public class AttributeFormEntry {
-			private Attribute attribute;
-			private WidgetAttribute widgetAttribute;
-			
-			public AttributeFormEntry() {}
-
-			public AttributeFormEntry(Attribute attribute, WidgetAttribute widgetAttribute) {
-				this.attribute = attribute;
-				this.widgetAttribute = widgetAttribute;
-			}
-		
-			public WidgetAttribute getWidgetAttribute() {
-				return widgetAttribute;
-			}
-			public void setWidgetAttribute(WidgetAttribute widgetAttribute) {
-				this.widgetAttribute = widgetAttribute;
-			}
-			public Attribute getAttribute() {
-				return attribute;
-			}
-			public void setAttribute(Attribute attribute) {
-				this.attribute = attribute;
-			}
-
-			public String toString() {
-				return String.format("AttributeFormEntry(attribute=%s, widgetAttribute=%s)", attribute, widgetAttribute);
-			}
-		}
-
-		WidgetForm() {}
-	
-		public String getName() {
-			return name;
-		}
-		public void setName(String name) {
-			this.name = name;
-		}
-		public String getDescription() {
-			return description;
-		}
-		public void setDescription(String description) {
-			this.description = description;
-		}
-		public List<AttributeFormEntry> getEntries() {
-			return entries;
-		}
-		public void setEntries(List<AttributeFormEntry> entries) {
-			this.entries = entries;
-		}
-	}	
 	
 	@RequestMapping("/createWidget")
 	public String createWidget(@RequestParam("category") Long categoryId, Model model, Principal principal)
@@ -207,7 +153,7 @@ public class AddWidgetController
 
 		for (Attribute attribute : attributes) {
 			WidgetAttribute widgetAttribute = new WidgetAttribute(attribute);
-			WidgetForm.AttributeFormEntry entry = widgetForm.new AttributeFormEntry(attribute, widgetAttribute);
+			AttributeFormEntry entry = new AttributeFormEntry(attribute, widgetAttribute);
 			widgetForm.getEntries().add(entry);
 		}
 
@@ -246,7 +192,7 @@ public class AddWidgetController
 		Set<WidgetAttribute> widgetAttributes = new HashSet<>();
 		Set<Attribute> attributes = new HashSet<>();
 
-		for (WidgetForm.AttributeFormEntry entry : widgetForm.getEntries()) {
+		for (AttributeFormEntry entry : widgetForm.getEntries()) {
 			System.out.println(entry);
 			Attribute attribute = entry.getAttribute();
 			attributeService.associateAttributeWithCategory(attribute.getAttributeKey(), attribute.getDataType().toString(), category);

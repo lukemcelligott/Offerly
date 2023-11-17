@@ -68,7 +68,7 @@
 											<input type="hidden" th:value="${entry.attribute.id}" th:name="'entries[' + ${iterStat.index} + '].attribute.id'" />
 											<input type="hidden" th:value="${entry.attribute.attributeKey}" th:name="'entries[' + ${iterStat.index} + '].attribute.attributeKey'" />
 											<input type="hidden" th:value="${entry.widgetAttribute.attributeKey}" th:name="'entries[' + ${iterStat.index} + '].widgetAttribute.attributeKey'" />
-											
+																						
 											<!--From https://www.w3schools.com/html/html_form_input_types.asp-->
 											<input th:if="${entry.attribute.dataType.name() == 'STRING'}" maxlength="100"  type="text" class="form-control form-input" th:id="'entries[' + ${iterStat.index} + '].widgetAttribute.value'" th:name="'entries[' + ${iterStat.index} + '].widgetAttribute.value'" placeholder="-- Enter Value --" required>
 											<textarea th:if="${entry.attribute.dataType.name() == 'TEXTAREA'}" class="form-control form-input" th:id="'entries[' + ${iterStat.index} + '].widgetAttribute.value'" th:name="'entries[' + ${iterStat.index} + '].widgetAttribute.value'" placeholder="-- Enter information --" maxlength="500" onkeyup="countCharacters(this)" data-char-counter="charNumDesc"></textarea>

@@ -53,6 +53,7 @@ import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.market.Transaction;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
+import edu.sru.cpsc.webshopping.domain.widgets.WidgetImage;
 import edu.sru.cpsc.webshopping.repository.billing.PaymentDetailsRepository;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
 import edu.sru.cpsc.webshopping.service.UserService;
@@ -325,21 +326,18 @@ public class SignUpController {
     		System.out.println(file.getOriginalFilename());
     		System.out.println(tempImageName);
     		user.setUserImage(tempImageName);
-    		try {
-    			String fileLocation = new File("src/main/resources/static/images/userImages").getAbsolutePath() + "/" + tempImageName;
-    			String fileLocationTemp = new ClassPathResource("static/images/userImages").getFile().getAbsolutePath() + "/" + tempImageName;
-
-    			FileOutputStream output = new FileOutputStream(fileLocation);
-    			output.write(file.getBytes());
-    			output.close();
-
-    			output = new FileOutputStream(fileLocationTemp);
-    			output.write(file.getBytes());
-    			output.close();
-    		} catch (IOException e) {
-    			e.printStackTrace();
-    			System.out.println("upload failed");
-    		}
+        try {
+          String fileLocationTemp = new ClassPathResource("static/images/userImages").getFile().getAbsolutePath() + "/" + tempImageName;
+          
+          try (FileOutputStream output = new FileOutputStream(fileLocationTemp)) {
+            output.write(file.getBytes());
+          }
+      
+          System.out.println("Upload successful, file saved at: " + fileLocationTemp);
+        } catch (IOException e) {
+          e.printStackTrace();
+          System.out.println("Upload failed");
+        }
     		model.addAttribute("userImage", tempImageName);
     	}
     	
@@ -356,9 +354,6 @@ public class SignUpController {
     	
     	return "newUserShipping";
     } else {
-    	//userController.setCurrently_Logged_In(user);
-    	System.out.println("line 335 " + usertemp);
-    	//System.out.println(userController.getCurrently_Logged_In());
     	result.addError(new FieldError("captcha", "captcha", "Incorrect Captcha."));
     	userController.getCaptcha(user);
     	
@@ -372,7 +367,7 @@ public class SignUpController {
     	model.addAttribute("cardTypes", cardController.getAllCardTypes());
       model.addAttribute("states", stateDetailsController.getAllStates());
     	
-    	return "newUserShipping";
+    	return "newUser";
     }
   }
   

@@ -82,7 +82,7 @@
 							            <!-- Rating Value -->
 							            <span th:text="${friend.sellerRating.rating}"></span>
 							            <!-- Filled Stars -->
-							            <th:block th:each="star : ${#numbers.sequence(1, friend.sellerRating.rating)}">
+							            <th:block th:if="${sellerRating.rating > 0}" th:each="star : ${#numbers.sequence(1, friend.sellerRating.rating)}">
 							                <span class="text-warning">★</span>
 							            </th:block>
 							            <!-- Unfilled Stars -->

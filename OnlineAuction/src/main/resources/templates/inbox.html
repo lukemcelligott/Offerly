@@ -126,14 +126,20 @@
 	}
 	
 	function sendWebSocketMessage(content, receiver) {
-	    const messageToSend = {
-	        content: content,
-	        receiverId: receiver,
-	        sender: { id: userId, username: username }, // Use variables instead of strings
-	        timestamp: new Date().toISOString()
-	    };
-	
-	    stompClient.send(contextPath + "app/send/message", {}, JSON.stringify(messageToSend));
+		try {
+			const messageToSend = {
+				content: content,
+				receiverId: receiver,
+				sender: { id: userId, username: username },
+				timestamp: new Date().toISOString()
+			};
+
+			console.log("Sending WebSocket Message:", messageToSend);
+
+			stompClient.send(contextPath + "app/send/message", {}, JSON.stringify(messageToSend));
+		} catch (error) {
+			console.error("Error sending WebSocket message:", error);
+		}
 	}
 	
 	function highlightSelectedFriend(element) {
@@ -255,7 +261,6 @@
 	                timestamp: message.timestamp
 	            });
 	        });
-	        console.log("BIG YIPPER! loadConversation called for friendId:", friendId);
 	    })
 	    .catch(error => console.error('Error fetching conversation:', error));
 	    
@@ -278,6 +283,8 @@
 	
 	    const messageInput = document.getElementById('messageInput');
 	    const messageContent = messageInput.value;
+
+		console.log("Sending message to friendId:", currentFriendId);
 	
 	    if (currentFriendId) {
 	        sendWebSocketMessage(messageContent, currentFriendId);

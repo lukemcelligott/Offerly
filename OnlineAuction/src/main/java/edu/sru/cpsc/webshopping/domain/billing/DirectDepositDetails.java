@@ -35,7 +35,7 @@ public class DirectDepositDetails {
 	private String bankName;
 
 	@NonNull
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "bank_address_id")
 	private BankAddress bankAddress;
 

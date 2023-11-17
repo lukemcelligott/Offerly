@@ -106,7 +106,7 @@
 								<a th:href="@{/viewMarketListing/{id}(id = ${marketListing.id})}" style="text-decoration: none; color: inherit;">
 									<div class="card card-hover rounded-6" style="width: 50%; margin-bottom: 50px; margin-left: auto; margin-right: auto;">
 										<!-- image -->
-										<img class="card-img-top image" th:if="${marketListing.coverImage == null}" src="https://previews.123rf.com/images/kritchanut/kritchanut1406/kritchanut140600093/29213195-.jpg?fj=1" alt="Blank Listing Avatar">
+										<img class="card-img-top image" th:if="${marketListing.coverImage == null}" src="https://imgs.search.brave.com/weIRA1E1HQWddw-U4hAnbw3NZmPgjkqCMZLD3-zntdA/rs:fit:860:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzA1LzA3LzU4LzQx/LzM2MF9GXzUwNzU4/NDExMF9LTklmZTdk/M2hVQUVwcmFxMTBK/N01DUG10bnk4RUg3/QS5qcGc" alt="Blank Listing Image">
 										<img class="card-img-top image" th:unless="${marketListing.coverImage == null}" th:src="@{/listingImages/{image}(image = ${marketListing.coverImage})}" alt="Listing Avatar" src="">
 										
 										<div class="card-body">
@@ -177,7 +177,7 @@
 									<h3 style="color:red;">A Shipping Address Must Be Selected</h3>
 								</div>
 
-								<div class="mb-3">
+								<div class="mb-3" th:if="${selectedAddress != null}">
 									<label class="form-label"><strong>Select an addess:</strong></label>
 									<div th:each="shippingEntry : ${allAddresses}">
 										<div class="form-check">
@@ -247,7 +247,7 @@
 							data-parent="#paymentAccordion">
 							<div class="card-body">
 								<!-- Default Card Details -->
-								<div class="card mb-3" style="max-width: 540px;">
+								<div class="card mb-3" style="max-width: 540px;" th:if="${selectedPayment != null}">
 									<div class="row g-0">
 										<div class="col-md-4">
 											<!-- Display Card Image -->
@@ -290,8 +290,8 @@
 											document.getElementById("selectedPaymentId").value = paymentId;
 										}
 										window.onload = function() {
-											var defaultPaymentType = /*[[${selectedPayment.cardType}]]*/ '';
-        									var defaultPaymentId = /*[[${selectedPayment.id}]]*/ '';
+											var defaultPaymentType = /*[[${selectedPayment != null}]]*/ true ? /*[[${selectedPayment.cardType}]]*/ '' : '';
+        									var defaultPaymentId = /*[[${selectedPayment != null}]]*/ true ? /*[[${selectedPayment.id}]]*/ '' : '';
 											document.getElementById('selectedPaymentType').value = defaultPaymentType;
         									document.getElementById('selectedPaymentId').value = defaultPaymentId;
 										}

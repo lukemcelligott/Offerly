@@ -20,6 +20,7 @@ import edu.sru.cpsc.webshopping.controller.billing.DirectDepositController;
 import edu.sru.cpsc.webshopping.controller.billing.PaymentDetailsController;
 import edu.sru.cpsc.webshopping.controller.billing.PaypalController;
 import edu.sru.cpsc.webshopping.controller.billing.SellerRatingController;
+import edu.sru.cpsc.webshopping.domain.billing.BankAddress;
 import edu.sru.cpsc.webshopping.domain.billing.DirectDepositDetails;
 import edu.sru.cpsc.webshopping.domain.billing.PaymentDetails;
 import edu.sru.cpsc.webshopping.domain.billing.Paypal;
@@ -246,6 +247,10 @@ public class UserController {
 		details.setAccountNumber(passwordEncoder.encode(details.getAccountNumber()));
 		details.setRoutingNumber(passwordEncoder.encode(details.getRoutingNumber()));
 		//details.setBankName(passwordEncoder.encode(details.getBankName()));
+
+		//save bank address
+		//entityManager.persist(details.getBankAddress());
+
 		// No assigned details - add to user
 		if (user.getDirectDepositDetails() == null) {
 			entityManager.persist(details);

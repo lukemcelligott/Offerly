@@ -99,3 +99,24 @@ li.step.active .step-inner {
     background: #3498db;
     color: white;
 }
+
+.star-rating {
+    direction: rtl; /* For right-to-left filling of stars */
+    font-size: 30px; /* Adjust size of stars */
+    unicode-bidi: bidi-override;
+}
+
+.star-rating input[type="radio"] {
+    display: none; /* Hide the radio buttons */
+}
+
+.star-rating label {
+    color: #ddd; /* Default color of stars (unfilled) */
+    cursor: pointer;
+}
+
+.star-rating label:hover,
+.star-rating label:hover ~ label,
+.star-rating input[type="radio"]:checked ~ label {
+    color: gold; /* Color when hovered over or selected */
+}

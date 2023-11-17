@@ -19,11 +19,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import edu.sru.cpsc.webshopping.controller.AddWidgetController.WidgetForm;
 import edu.sru.cpsc.webshopping.domain.market.Auction;
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.widgets.Attribute;
+import edu.sru.cpsc.webshopping.domain.widgets.AttributeFormEntry;
+import edu.sru.cpsc.webshopping.domain.widgets.WidgetForm;
 import edu.sru.cpsc.webshopping.domain.widgets.Category;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 import edu.sru.cpsc.webshopping.domain.widgets.WidgetAttribute;
@@ -137,7 +138,7 @@ public class AddWidgetControllerTest {
         category.setId(categoryId);
         when(categoryRepository.findById(categoryId)).thenReturn(Optional.of(category));
         when(categoryService.getTopRecommendedAttributes(category, 0)).thenReturn(new ArrayList<Attribute>());
-        WidgetForm widgetForm = addWidgetController.new WidgetForm();
+        WidgetForm widgetForm = new WidgetForm();
         when(model.addAttribute("category", category)).thenReturn(model);
         when(model.addAttribute("entries", widgetForm.getEntries())).thenReturn(model);
         
@@ -158,10 +159,10 @@ public class AddWidgetControllerTest {
 	// This test should create a widget
     public void testCreateWidgetListing() {
         // Arrange
-        AddWidgetController.WidgetForm widgetForm = addWidgetController.new WidgetForm();
+        WidgetForm widgetForm = new WidgetForm();
         widgetForm.setName("Test Widget");
         widgetForm.setDescription("Test Description");
-        AddWidgetController.WidgetForm.AttributeFormEntry entry = widgetForm.new AttributeFormEntry();
+        AttributeFormEntry entry = new AttributeFormEntry();
         Attribute attribute = new Attribute();
         attribute.setAttributeKey("Test Attribute");
         attribute.setDataType(AttributeDataType.STRING);
@@ -169,7 +170,7 @@ public class AddWidgetControllerTest {
         WidgetAttribute widgetAttribute = new WidgetAttribute();
         widgetAttribute.setValue("Test Value");
         entry.setWidgetAttribute(widgetAttribute);
-        List<AddWidgetController.WidgetForm.AttributeFormEntry> entries = new ArrayList<>();
+        List<AttributeFormEntry> entries = new ArrayList<>();
         entries.add(entry);
         widgetForm.setEntries(entries);
         when(category.getId()).thenReturn(1L);

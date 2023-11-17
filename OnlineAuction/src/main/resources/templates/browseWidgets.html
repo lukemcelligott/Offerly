@@ -107,7 +107,7 @@
 		</div>
 		
 		<!-- display when there are no listings -->
-		<div th:if="${#lists.isEmpty(allMarketListings)}">
+		<div th:if="${allMarketListings == null or allMarketListings.size() == 0}">
 			<h2 style="text-align: center;">There are no listings currently on the market.</h2>
 		</div>
 	</body>

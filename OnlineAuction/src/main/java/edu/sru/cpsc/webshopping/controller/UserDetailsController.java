@@ -568,19 +568,16 @@ public class UserDetailsController {
 			System.out.println(file.getOriginalFilename());
 			System.out.println(tempImageName);
 			try {
-				String fileLocation = new File("src/main/resources/static/images/userImages").getAbsolutePath() + "/" + tempImageName;
 				String fileLocationTemp = new ClassPathResource("static/images/userImages").getFile().getAbsolutePath() + "/" + tempImageName;
-
-				FileOutputStream output = new FileOutputStream(fileLocation);
-				output.write(file.getBytes());
-				output.close();
-
-				output = new FileOutputStream(fileLocationTemp);
-				output.write(file.getBytes());
-				output.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-				System.out.println("upload failed");
+				
+				try (FileOutputStream output = new FileOutputStream(fileLocationTemp)) {
+					output.write(file.getBytes());
+				}
+			
+				System.out.println("Upload successful, file saved at: " + fileLocationTemp);
+				} catch (IOException e) {
+					e.printStackTrace();
+					System.out.println("Upload failed");
 			}
 			model.addAttribute("userImage", tempImageName);
 			user.setUserImage(tempImageName);
