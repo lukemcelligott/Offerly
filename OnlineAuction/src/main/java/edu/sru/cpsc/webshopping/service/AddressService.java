@@ -2,9 +2,6 @@ package edu.sru.cpsc.webshopping.service;
 
 import java.util.HashMap;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -12,14 +9,16 @@ import org.springframework.stereotype.Service;
 import com.shippo.Shippo;
 import com.shippo.exception.APIConnectionException;
 import com.shippo.exception.APIException;
-import com.shippo.model.Address;
 import com.shippo.exception.AuthenticationException;
 import com.shippo.exception.InvalidRequestException;
+import com.shippo.model.Address;
 
 import edu.sru.cpsc.webshopping.domain.billing.BankAddress;
 import edu.sru.cpsc.webshopping.domain.billing.BankAddress_Form;
 import edu.sru.cpsc.webshopping.domain.billing.ShippingAddress_Form;
 import edu.sru.cpsc.webshopping.repository.billing.BankAddressRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 @Service
 public class AddressService {

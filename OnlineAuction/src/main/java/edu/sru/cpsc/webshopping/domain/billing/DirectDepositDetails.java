@@ -1,16 +1,15 @@
 package edu.sru.cpsc.webshopping.domain.billing;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-
 import org.springframework.lang.NonNull;
 
 import edu.sru.cpsc.webshopping.domain.user.User;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 
 /**
@@ -36,7 +35,8 @@ public class DirectDepositDetails {
 	private String bankName;
 
 	@NonNull
-	@OneToOne (cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "bank_address_id")
 	private BankAddress bankAddress;
 
 	@NonNull

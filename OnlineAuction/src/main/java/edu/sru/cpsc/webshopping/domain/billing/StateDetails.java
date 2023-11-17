@@ -2,11 +2,11 @@ package edu.sru.cpsc.webshopping.domain.billing;
 
 import java.math.BigDecimal;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
 import org.springframework.lang.NonNull;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 
 /**

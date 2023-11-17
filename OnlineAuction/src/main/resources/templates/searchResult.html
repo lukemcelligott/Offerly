@@ -54,7 +54,7 @@
 	<body class="pageBody">
 	
 		<!-- HEADER BAR -->
-		<div th:insert="header :: header"></div>
+		<div th:insert="~{header :: header}"></div>
 		<!-- END HEADER BAR -->
 	
 	
@@ -115,7 +115,7 @@
 			<input class="btn btn-primary" type = "submit" value="Search" id="SearchButton">
 		</div>
 		<div class="col-2">
-			<a class="btn btn-danger" href="/homePage">Cancel Search</a>
+			<a class="btn btn-danger" th:href="@{/homePage}">Cancel Search</a>
 		</div>
 		<div class="col" style="justify-content:right; display:flex; margin-right: 25px">
 			<a class="btn btn-secondary" th:onclick="myFunction()"><span>Filter</span></a>

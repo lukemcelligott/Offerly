@@ -8,8 +8,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -48,6 +46,7 @@ import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.repository.billing.PaymentDetailsRepository;
 import edu.sru.cpsc.webshopping.service.PaymentService;
 import edu.sru.cpsc.webshopping.service.UserService;
+import jakarta.transaction.Transactional;
 
 /**
  * Manages functionality for the confirmPurchase page This page is used to

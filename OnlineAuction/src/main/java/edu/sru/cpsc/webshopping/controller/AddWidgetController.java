@@ -1,6 +1,5 @@
 package edu.sru.cpsc.webshopping.controller;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -36,15 +35,16 @@ import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 
 import edu.sru.cpsc.webshopping.controller.billing.StateDetailsController;
-import edu.sru.cpsc.webshopping.domain.billing.StateDetails;
 import edu.sru.cpsc.webshopping.domain.market.Auction;
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.market.MarketListingCSVModel;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.domain.widgets.Attribute;
+import edu.sru.cpsc.webshopping.domain.widgets.AttributeFormEntry;
 import edu.sru.cpsc.webshopping.domain.widgets.Category;
 import edu.sru.cpsc.webshopping.domain.widgets.Widget;
 import edu.sru.cpsc.webshopping.domain.widgets.WidgetAttribute;
+import edu.sru.cpsc.webshopping.domain.widgets.WidgetForm;
 import edu.sru.cpsc.webshopping.domain.widgets.WidgetImage;
 import edu.sru.cpsc.webshopping.repository.market.MarketListingRepository;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
@@ -92,14 +92,11 @@ public class AddWidgetController
 	Set<WidgetImage> listingImages = new HashSet<>();
 	CategoryController categories;
 	AttributeController attributeController;
-	private Set<Attribute> attributes;
 	MarketListing marketListing;
 	private Widget widgetStorage;
 	private Category category;
-	private String subcategory;
 	private WidgetImage tempImage = new WidgetImage();
 	private String page;
-	private MarketListingRepository marketListingRepository;
 	
 	public String getPage()
 	{
@@ -144,62 +141,6 @@ public class AddWidgetController
 		model.addAttribute("page", "addWidget");
 		return "addWidget";
 	}
-
-	public class WidgetForm {
-		private String name;
-		private String description;
-		private List<AttributeFormEntry> entries = new ArrayList<>();
-
-		public static class AttributeFormEntry {
-			private Attribute attribute;
-			private WidgetAttribute widgetAttribute;
-			
-			public AttributeFormEntry() {}
-
-			public AttributeFormEntry(Attribute attribute, WidgetAttribute widgetAttribute) {
-				this.attribute = attribute;
-				this.widgetAttribute = widgetAttribute;
-			}
-		
-			public WidgetAttribute getWidgetAttribute() {
-				return widgetAttribute;
-			}
-			public void setWidgetAttribute(WidgetAttribute widgetAttribute) {
-				this.widgetAttribute = widgetAttribute;
-			}
-			public Attribute getAttribute() {
-				return attribute;
-			}
-			public void setAttribute(Attribute attribute) {
-				this.attribute = attribute;
-			}
-
-			public String toString() {
-				return String.format("AttributeFormEntry(attribute=%s, widgetAttribute=%s)", attribute, widgetAttribute);
-			}
-		}
-
-		WidgetForm() {}
-	
-		public String getName() {
-			return name;
-		}
-		public void setName(String name) {
-			this.name = name;
-		}
-		public String getDescription() {
-			return description;
-		}
-		public void setDescription(String description) {
-			this.description = description;
-		}
-		public List<AttributeFormEntry> getEntries() {
-			return entries;
-		}
-		public void setEntries(List<AttributeFormEntry> entries) {
-			this.entries = entries;
-		}
-	}	
 	
 	@RequestMapping("/createWidget")
 	public String createWidget(@RequestParam("category") Long categoryId, Model model, Principal principal)
@@ -207,13 +148,13 @@ public class AddWidgetController
 		Category category = categoryRepository.findById(categoryId)
 		        .orElseThrow(() -> new IllegalArgumentException("Invalid category ID"));
 		
-		this.category = category;
-		List<Attribute> attributes = categoryService.getTopRecommendedAttributes(category, 0);
 		WidgetForm widgetForm = new WidgetForm();
-		
+		List<Attribute> attributes = categoryService.getTopRecommendedAttributes(category, 0);
+
 		for (Attribute attribute : attributes) {
 			WidgetAttribute widgetAttribute = new WidgetAttribute(attribute);
-			widgetForm.getEntries().add(new WidgetForm.AttributeFormEntry(attribute, widgetAttribute));
+			AttributeFormEntry entry = new AttributeFormEntry(attribute, widgetAttribute);
+			widgetForm.getEntries().add(entry);
 		}
 
 		String username = principal.getName();
@@ -251,7 +192,7 @@ public class AddWidgetController
 		Set<WidgetAttribute> widgetAttributes = new HashSet<>();
 		Set<Attribute> attributes = new HashSet<>();
 
-		for (WidgetForm.AttributeFormEntry entry : widgetForm.getEntries()) {
+		for (AttributeFormEntry entry : widgetForm.getEntries()) {
 			System.out.println(entry);
 			Attribute attribute = entry.getAttribute();
 			attributeService.associateAttributeWithCategory(attribute.getAttributeKey(), attribute.getDataType().toString(), category);
@@ -385,24 +326,17 @@ public class AddWidgetController
 		widgetImageController.addWidgetImage(tempImage);
 		listingImages.add(tempImage);
 		
-		try
-		{
-			String fileLocation = new File("src/main/resources/static/listingImages").getAbsolutePath() + "/" + tempImage.getImageName();
+		try {
 			String fileLocationTemp = new ClassPathResource("static/listingImages").getFile().getAbsolutePath() + "/" + tempImage.getImageName();
-
-			FileOutputStream output = new FileOutputStream(fileLocation);
-			output.write(file.getBytes());
-			output.close(); 
-
-			output = new FileOutputStream(fileLocationTemp);
-			output.write(file.getBytes());
-			output.close();
-		}
-		
-		catch (IOException e)
-		{
+			
+			try (FileOutputStream output = new FileOutputStream(fileLocationTemp)) {
+				output.write(file.getBytes());
+			}
+	
+			System.out.println("Upload successful, file saved at: " + fileLocationTemp);
+		} catch (IOException e) {
 			e.printStackTrace();
-			System.out.println("upload failed");
+			System.out.println("Upload failed");
 		}
 	}
 

@@ -1,8 +1,6 @@
 package edu.sru.cpsc.webshopping.controller;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
+import java.util.List;
 
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 import edu.sru.cpsc.webshopping.domain.billing.ShippingAddress;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.repository.billing.ShippingAddressRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 
 @RestController
 public class ShippingAddressDomainController {
@@ -77,7 +78,8 @@ public class ShippingAddressDomainController {
 		
 		@RequestMapping("/get-shipping-address-details-by-user") 
 		public ShippingAddress[] getShippingDetailsByUser(@PathVariable("user") User user) {
-			return shippingAddressRepository.findAllByUser(user).toArray(ShippingAddress[]::new);
+			List<ShippingAddress> shippingAddresses = shippingAddressRepository.findAllByUser(user);
+			return shippingAddresses.toArray(new ShippingAddress[shippingAddresses.size()]);
 		}
 		
 		/**

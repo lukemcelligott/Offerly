@@ -1,14 +1,14 @@
 package edu.sru.cpsc.webshopping.domain.market;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
-
 import org.springframework.lang.NonNull;
 
 import edu.sru.cpsc.webshopping.domain.billing.StateDetails;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 public class PickupAddress {
@@ -29,7 +29,8 @@ public class PickupAddress {
 	private String city;
 	
 	@NonNull
-	@OneToOne
+    @ManyToOne
+    @JoinColumn(name = "state_name")
 	private StateDetails state;
 
 	public long getId() {

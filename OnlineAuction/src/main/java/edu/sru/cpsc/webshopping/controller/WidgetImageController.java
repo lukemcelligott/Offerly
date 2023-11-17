@@ -1,9 +1,5 @@
 package edu.sru.cpsc.webshopping.controller;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
-
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.widgets.WidgetImage;
 import edu.sru.cpsc.webshopping.repository.widgets.WidgetImageRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
+import java.util.List;
 
 @RestController
 public class WidgetImageController {
@@ -38,7 +38,8 @@ public class WidgetImageController {
 	 */
 	@RequestMapping("/get-widget-image-by-listing")
 	public WidgetImage[] getwidgetImageByMarketListing(@PathVariable("marketListing") MarketListing listing) {
-		return widgetImageRepository.findByMarketListing(listing).toArray(WidgetImage[]::new);
+		List<WidgetImage> widgetImages = widgetImageRepository.findByMarketListing(listing);
+		return widgetImages.toArray(new WidgetImage[widgetImages.size()]);
 	}
 	
 	/**

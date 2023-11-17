@@ -1,7 +1,10 @@
 package edu.sru.cpsc.webshopping.controller.billing;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
+import java.security.Principal;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -43,6 +46,7 @@ public class SellerRatingControllerTest {
         User user = new User();
         user.setId(1L);
 		user.setSellerRating(new SellerRating(user));
+        user.setUsername("userTest");
 
         Mockito.when(userRepository.findById(1L)).thenReturn(Optional.of(user)); // Mock the behavior of the repository
 		Mockito.when(userService.getUserById(1L)).thenReturn(user); 
@@ -50,7 +54,10 @@ public class SellerRatingControllerTest {
 
     @Test
     public void rateUser() {
-        sellerRatingController.rateUser(1L, 5);
+
+        Principal principal = mock(Principal.class);
+
+        sellerRatingController.rateUser(1L, 5, principal);
         assertEquals(5, userService.getUserById(1L).getSellerRating().getRating());
     }
 }

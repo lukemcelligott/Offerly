@@ -49,7 +49,6 @@ import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.repository.billing.ShippingAddressRepository;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
 import edu.sru.cpsc.webshopping.service.UserService;
-import edu.sru.cpsc.webshopping.service.shipping.ShippoTrackingService;
 
 /**
  * Manages the functionality of the confirmShipping page
@@ -111,7 +110,7 @@ public class PurchaseShippingAddressPageController {
 		User user = userService.getUserByUsername(principal.getName());
 		if(relogin != null)
 			this.relogin = relogin;
-		if(details != null && details.getCardNumber() != null && !details.getCardNumber().isEmpty() && !details.getCardNumber().isBlank())
+		if(details != null && details.getCardNumber() != null && !details.getCardNumber().isEmpty() && !details.getCardNumber().isEmpty())
 			this.details = details;
 		else
 			this.details = null;
@@ -121,7 +120,7 @@ public class PurchaseShippingAddressPageController {
 			this.prevListing = prevListing;
 		model.addAttribute("shippingAddress", new ShippingAddress_Form());
 		model.addAttribute("user", user);
-		if(this.details != null && this.details.getCardNumber() != null && !this.details.getCardNumber().isEmpty() && !this.details.getCardNumber().isBlank())
+		if(this.details != null && this.details.getCardNumber() != null && !this.details.getCardNumber().isEmpty() && !this.details.getCardNumber().isEmpty())
 			model.addAttribute("selectedPayment", this.details);
 		else
 			model.addAttribute("selectedPayment", null);

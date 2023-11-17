@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +35,6 @@ import com.opencsv.exceptions.CsvDataTypeMismatchException;
 import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
-import edu.sru.cpsc.webshopping.domain.misc.Notification;
 import edu.sru.cpsc.webshopping.domain.user.Applicant;
 import edu.sru.cpsc.webshopping.domain.user.Message;
 import edu.sru.cpsc.webshopping.domain.user.Statistics;
@@ -57,6 +55,7 @@ import edu.sru.cpsc.webshopping.util.constants.TimeConstants;
 import edu.sru.cpsc.webshopping.util.enums.MessageType;
 import edu.sru.cpsc.webshopping.util.enums.Role;
 import edu.sru.cpsc.webshopping.util.enums.TicketState;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -1214,13 +1213,10 @@ public class EmployeeController {
         User user = userController.getUserByUsername(sellerNameData[i]);
         editMarkets[i].setSeller(user);
         editMarkets[i].setQtyAvailable(Long.parseLong(marketQtyData[i], 10));
-        // editMarkets[i].setPricePerItem(new BigDecimal(marketPriceData[i]));
-        if (!(marketPriceData[i].isBlank())) {
-          editMarkets[i].setPricePerItem(
-              NumberUtils.parseNumber(marketPriceData[i], BigDecimal.class));
+        if (!marketPriceData[i].isEmpty()) {
+          editMarkets[i].setPricePerItem(NumberUtils.parseNumber(marketPriceData[i], BigDecimal.class));
           System.out.println(NumberUtils.parseNumber(marketPriceData[i], BigDecimal.class));
         }
-
         market.addMarketListingSimple(editMarkets[i]);
         getSearchedUserSellers().add(user);
         getSearchedUserListings().add(editMarkets[i]);

@@ -1,7 +1,7 @@
 package edu.sru.cpsc.webshopping.domain.billing;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 /**
  * Holds the name of a credit card network

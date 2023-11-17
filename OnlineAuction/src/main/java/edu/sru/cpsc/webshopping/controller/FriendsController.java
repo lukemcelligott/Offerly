@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.validation.Valid;
 
@@ -18,24 +17,26 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
-import edu.sru.cpsc.webshopping.domain.user.Statistics;
 import edu.sru.cpsc.webshopping.domain.misc.Friendship;
 import edu.sru.cpsc.webshopping.domain.misc.SocialFriendRequest;
 import edu.sru.cpsc.webshopping.domain.misc.SocialMessage;
-import edu.sru.cpsc.webshopping.domain.user.User;
+import edu.sru.cpsc.webshopping.domain.user.Statistics;
 import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
+import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.repository.market.MarketListingRepository;
 import edu.sru.cpsc.webshopping.repository.misc.FriendSocialRequestRepository;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
 import edu.sru.cpsc.webshopping.service.FriendshipService;
 import edu.sru.cpsc.webshopping.service.MessageService;
 import edu.sru.cpsc.webshopping.service.UserService;
+import java.util.Collections;
 
 
 @Controller
@@ -190,7 +191,7 @@ public class FriendsController {
         User friend = userRepository.findById(friendId).orElse(null);
 
         if (friend == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", "Friend not found"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("error", "Friend not found"));
         }
 
         List<SocialMessage> messages = messageService.getAllMessagesForUser(currentUser, friend);
@@ -198,24 +199,28 @@ public class FriendsController {
         List<Map<String, Object>> messagesList = messages.stream().map(msg -> {
             Map<String, Object> map = new HashMap<>();
             map.put("content", msg.getContent());
-            //map.put("receiverId", msg.getReceiver().getId());
-            map.put("sender", Map.of("id", msg.getSender().getId(), "username", msg.getSender().getUsername())); // Adjust sender to have id and username
-            map.put("receiver",Map.of("id", msg.getReceiver().getId(), "username", msg.getReceiver().getUsername()));
+            map.put("sender", new HashMap<String, Object>() {{
+                put("id", msg.getSender().getId());
+                put("username", msg.getSender().getUsername());
+            }}); // Adjust sender to have id and username
+            map.put("receiver", new HashMap<String, Object>() {{
+                put("id", msg.getReceiver().getId());
+                put("username", msg.getReceiver().getUsername());
+            }});
             map.put("timestamp", msg.getSentTimestamp().toString()); // Convert LocalDateTime to string
             return map;
         }).collect(Collectors.toList());
 
-        Map<String, Object> responseBody = Map.of(
-            "friendName", friend.getUsername(),
-            "messages", messagesList
-        );
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("friendName", friend.getUsername());
+        responseBody.put("messages", messagesList);
 
         // log event
-	    StatsCategory cat = StatsCategory.SOCIAL;
-	    Statistics stat = new Statistics(cat, 1);
-	    stat.setDescription(currentUser.getUsername() + " opened their inbox with " + friend.getUsername());
-	    statControl.addStatistics(stat);
-        
+        StatsCategory cat = StatsCategory.SOCIAL;
+        Statistics stat = new Statistics(cat, 1);
+        stat.setDescription(currentUser.getUsername() + " viewed conversation with " + friend.getUsername());
+        statControl.addStatistics(stat);
+
         return ResponseEntity.ok(responseBody);
     }
     

@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.sru.cpsc.webshopping.domain.market.MarketListing;
 import edu.sru.cpsc.webshopping.domain.market.Transaction;
@@ -649,7 +646,7 @@ public class LandingPageController {
 		}
 
 		if (category.contentEquals("all")) {
-			if (searchString.isBlank() && price.isBlank()) {
+			if (searchString.isEmpty() && price.isEmpty()) {
 
 				widgets =
 						this.onlyCategory(tempWidget, tempListing, category, widgets, allWidgets, allListings);
@@ -660,7 +657,7 @@ public class LandingPageController {
 					System.out.println("No widgets");
 				}
 			}
-			if (!searchString.isBlank() && price.isBlank()) {
+			if (!searchString.isEmpty() && price.isEmpty()) {
 
 				widgets =
 						this.stringOnly(
@@ -672,7 +669,7 @@ public class LandingPageController {
 					System.out.println("No widgets");
 				}
 
-			} else if (searchString.isBlank() && !price.isBlank()) {
+			} else if (searchString.isEmpty() && !price.isEmpty()) {
 				System.out.println("only price");
 				model.addAttribute("operator", operator);
 				model.addAttribute("price", price);
@@ -691,7 +688,7 @@ public class LandingPageController {
 								allWidgets,
 								allListings);
 				searchModel.addAttribute("searchWidgets", widgets);
-			} else if (!searchString.isBlank() && !price.isBlank()) {
+			} else if (!searchString.isEmpty() && !price.isEmpty()) {
 				System.out.println("both");
 				model.addAttribute("searchString", searchString);
 				model.addAttribute("operator", operator);
@@ -1101,21 +1098,21 @@ public class LandingPageController {
 		 * = 0; i < fridges.size(); i++) { long tempLong = fridges.get(i).getId();
 		 * allWidgets.add(widgetController.getWidget(tempLong)); allListings.add(
 		 * marketController.getListingByWidget(widgetController.getWidget(tempLong))); }
-		 * } } if (searchString.isBlank() && price.isBlank()) {
+		 * } } if (searchString.isEmpty() && price.isEmpty()) {
 		 * System.out.println("only category"); model.addAttribute("widgets",
 		 * widgetController.getAllWidgets()); listingModel.addAttribute("listings",
 		 * marketController.getAllListings()); widgets = this.onlyCategory(tempWidget,
 		 * tempListing, category, subCategory, widgets, allWidgets, allListings); try {
 		 * searchModel.addAttribute("searchWidgets", widgets); } catch (Exception e) {
-		 * System.out.println("No widgets"); } } if (!searchString.isBlank() &&
-		 * price.isBlank()) { System.out.println("only search string");
+		 * System.out.println("No widgets"); } } if (!searchString.isEmpty() &&
+		 * price.isEmpty()) { System.out.println("only search string");
 		 * model.addAttribute("searchString", searchString);
 		 * model.addAttribute("widgets", widgetController.getAllWidgets());
 		 * listingModel.addAttribute("listings", marketController.getAllListings());
 		 * widgets = this.stringOnly( tempWidget, widgets, tempListing, searchString,
 		 * category, subCategory, allWidgets, allListings);
 		 * searchModel.addAttribute("searchWidgets", widgets); } else if
-		 * (searchString.isBlank() && !price.isBlank()) {
+		 * (searchString.isEmpty() && !price.isEmpty()) {
 		 * System.out.println("only price"); model.addAttribute("operator", operator);
 		 * model.addAttribute("price", price); model.addAttribute("widgets",
 		 * widgetController.getAllWidgets()); listingModel.addAttribute("listings",
@@ -1123,7 +1120,7 @@ public class LandingPageController {
 		 * widgets, tempListing, searchString, operator, bigPrice, category,
 		 * subCategory, allWidgets, allListings);
 		 * searchModel.addAttribute("searchWidgets", widgets); } else if
-		 * (!searchString.isBlank() && !price.isBlank()) { System.out.println("both");
+		 * (!searchString.isEmpty() && !price.isEmpty()) { System.out.println("both");
 		 * model.addAttribute("searchString", searchString);
 		 * model.addAttribute("operator", operator); model.addAttribute("price", price);
 		 * model.addAttribute("widgets", widgetController.getAllWidgets());
@@ -1405,7 +1402,7 @@ public class LandingPageController {
 		 * marketController.getListingByWidget(widgetController.getWidget(tempLong))); }
 		 * } }
 		 * 
-		 * if (searchString.isBlank() && price.isBlank()) {
+		 * if (searchString.isEmpty() && price.isEmpty()) {
 		 * System.out.println("only category"); model.addAttribute("widgets",
 		 * widgetController.getAllWidgets()); listingModel.addAttribute("listings",
 		 * marketController.getAllListings()); widgets = this.onlyCategory(tempWidget,
@@ -1413,7 +1410,7 @@ public class LandingPageController {
 		 * searchModel.addAttribute("searchWidgets", widgets);
 		 * System.out.println("tried to find widget"); } catch (Exception e) {
 		 * System.out.println("No widgets"); } System.out.println("neither"); } if
-		 * (!searchString.isBlank() && price.isBlank()) {
+		 * (!searchString.isEmpty() && price.isEmpty()) {
 		 * System.out.println("only search string"); model.addAttribute("searchString",
 		 * searchString); model.addAttribute("widgets",
 		 * widgetController.getAllWidgets()); listingModel.addAttribute("listings",
@@ -1422,7 +1419,7 @@ public class LandingPageController {
 		 * allListings);
 		 * 
 		 * searchModel.addAttribute("searchWidgets", widgets); } else if
-		 * (searchString.isBlank() && !price.isBlank()) {
+		 * (searchString.isEmpty() && !price.isEmpty()) {
 		 * System.out.println("only price"); model.addAttribute("operator", operator);
 		 * model.addAttribute("price", price); model.addAttribute("widgets",
 		 * widgetController.getAllWidgets()); listingModel.addAttribute("listings",
@@ -1430,7 +1427,7 @@ public class LandingPageController {
 		 * widgets, tempListing, searchString, operator, bigPrice, category,
 		 * subCategory, allWidgets, allListings);
 		 * searchModel.addAttribute("searchWidgets", widgets); } else if
-		 * (!searchString.isBlank() && !price.isBlank()) { System.out.println("both");
+		 * (!searchString.isEmpty() && !price.isEmpty()) { System.out.println("both");
 		 * model.addAttribute("searchString", searchString);
 		 * model.addAttribute("operator", operator); model.addAttribute("price", price);
 		 * model.addAttribute("widgets", widgetController.getAllWidgets());
@@ -1534,14 +1531,14 @@ public class LandingPageController {
 		 * i = 0; i < computers.size(); i++) { long tempLong = computers.get(i).getId();
 		 * allWidgets.add(widgetController.getWidget(tempLong)); allListings.add(
 		 * marketController.getListingByWidget(widgetController.getWidget(tempLong))); }
-		 * } } if (searchString.isBlank() && price.isBlank()) {
+		 * } } if (searchString.isEmpty() && price.isEmpty()) {
 		 * System.out.println("only category"); model.addAttribute("widgets",
 		 * widgetController.getAllWidgets()); listingModel.addAttribute("listings",
 		 * marketController.getAllListings()); widgets = this.onlyCategory(tempWidget,
 		 * tempListing, category, subCategory, widgets, allWidgets, allListings); try {
 		 * searchModel.addAttribute("searchWidgets", widgets); } catch (Exception e) {
-		 * System.out.println("No widgets"); } } if (!searchString.isBlank() &&
-		 * price.isBlank()) { System.out.println("only search string");
+		 * System.out.println("No widgets"); } } if (!searchString.isEmpty() &&
+		 * price.isEmpty()) { System.out.println("only search string");
 		 * model.addAttribute("searchString", searchString);
 		 * model.addAttribute("widgets", widgetController.getAllWidgets());
 		 * listingModel.addAttribute("listings", marketController.getAllListings());
@@ -1549,7 +1546,7 @@ public class LandingPageController {
 		 * category, subCategory, allWidgets, allListings);
 		 * 
 		 * searchModel.addAttribute("searchWidgets", widgets); } else if
-		 * (searchString.isBlank() && !price.isBlank()) {
+		 * (searchString.isEmpty() && !price.isEmpty()) {
 		 * System.out.println("only price"); model.addAttribute("operator", operator);
 		 * model.addAttribute("price", price); model.addAttribute("widgets",
 		 * widgetController.getAllWidgets()); listingModel.addAttribute("listings",
@@ -1557,7 +1554,7 @@ public class LandingPageController {
 		 * widgets, tempListing, searchString, operator, bigPrice, category,
 		 * subCategory, allWidgets, allListings);
 		 * searchModel.addAttribute("searchWidgets", widgets); } else if
-		 * (!searchString.isBlank() && !price.isBlank()) { System.out.println("both");
+		 * (!searchString.isEmpty() && !price.isEmpty()) { System.out.println("both");
 		 * model.addAttribute("searchString", searchString);
 		 * model.addAttribute("operator", operator); model.addAttribute("price", price);
 		 * model.addAttribute("widgets", widgetController.getAllWidgets());
@@ -1681,7 +1678,7 @@ public class LandingPageController {
 		 * marketController.getListingByWidget(widgetController.getWidget(tempLong))); }
 		 * } System.out.println("end of car parts"); }
 		 * 
-		 * if (searchString.isBlank() && price.isBlank()) {
+		 * if (searchString.isEmpty() && price.isEmpty()) {
 		 * System.out.println("only category"); model.addAttribute("widgets",
 		 * widgetController.getAllWidgets()); listingModel.addAttribute("listings",
 		 * marketController.getAllListings()); widgets = this.onlyCategory(tempWidget,
@@ -1689,14 +1686,14 @@ public class LandingPageController {
 		 * searchModel.addAttribute("searchWidgets", widgets);
 		 * System.out.println("tried to find widget"); } catch (Exception e) {
 		 * System.out.println("No widgets"); } System.out.println("neither"); } if
-		 * (!searchString.isBlank() && price.isBlank()) {
+		 * (!searchString.isEmpty() && price.isEmpty()) {
 		 * System.out.println("only search string"); model.addAttribute("searchString",
 		 * searchString); model.addAttribute("widgets",
 		 * widgetController.getAllWidgets()); listingModel.addAttribute("listings",
 		 * marketController.getAllListings()); widgets = this.stringOnly( tempWidget,
 		 * widgets, tempListing, searchString, category, subCategory, allWidgets,
 		 * allListings); searchModel.addAttribute("searchWidgets", widgets); } else if
-		 * (searchString.isBlank() && !price.isBlank()) {
+		 * (searchString.isEmpty() && !price.isEmpty()) {
 		 * System.out.println("only price"); model.addAttribute("operator", operator);
 		 * model.addAttribute("price", price); model.addAttribute("widgets",
 		 * widgetController.getAllWidgets()); listingModel.addAttribute("listings",
@@ -1704,7 +1701,7 @@ public class LandingPageController {
 		 * widgets, tempListing, searchString, operator, bigPrice, category,
 		 * subCategory, allWidgets, allListings);
 		 * searchModel.addAttribute("searchWidgets", widgets); } else if
-		 * (!searchString.isBlank() && !price.isBlank()) { System.out.println("both");
+		 * (!searchString.isEmpty() && !price.isEmpty()) { System.out.println("both");
 		 * model.addAttribute("searchString", searchString);
 		 * model.addAttribute("operator", operator); model.addAttribute("price", price);
 		 * model.addAttribute("widgets", widgetController.getAllWidgets());
@@ -1745,7 +1742,7 @@ public class LandingPageController {
 		 * = 0; i < mowers.size(); i++) { long tempLong = mowers.get(i).getId();
 		 * allWidgets.add(widgetController.getWidget(tempLong)); allListings.add(
 		 * marketController.getListingByWidget(widgetController.getWidget(tempLong))); }
-		 * } } if (searchString.isBlank() && price.isBlank()) {
+		 * } } if (searchString.isEmpty() && price.isEmpty()) {
 		 * System.out.println("only category"); model.addAttribute("widgets",
 		 * widgetController.getAllWidgets()); listingModel.addAttribute("listings",
 		 * marketController.getAllListings()); int id = 0; tempListing =
@@ -1753,7 +1750,7 @@ public class LandingPageController {
 		 * this.onlyCategory(tempWidget, tempListing, category, subCategory, widgets,
 		 * allWidgets, allListings); try { searchModel.addAttribute("searchWidgets",
 		 * widgets); } catch (Exception e) { System.out.println("No widgets"); } } if
-		 * (!searchString.isBlank() && price.isBlank()) {
+		 * (!searchString.isEmpty() && price.isEmpty()) {
 		 * System.out.println("only search string"); model.addAttribute("searchString",
 		 * searchString); model.addAttribute("widgets",
 		 * widgetController.getAllWidgets()); listingModel.addAttribute("listings",
@@ -1762,7 +1759,7 @@ public class LandingPageController {
 		 * allListings);
 		 * 
 		 * searchModel.addAttribute("searchWidgets", widgets); } else if
-		 * (searchString.isBlank() && !price.isBlank()) {
+		 * (searchString.isEmpty() && !price.isEmpty()) {
 		 * System.out.println("only price"); model.addAttribute("operator", operator);
 		 * model.addAttribute("price", price); model.addAttribute("widgets",
 		 * widgetController.getAllWidgets()); listingModel.addAttribute("listings",
@@ -1770,7 +1767,7 @@ public class LandingPageController {
 		 * widgets, tempListing, searchString, operator, bigPrice, category,
 		 * subCategory, allWidgets, allListings);
 		 * searchModel.addAttribute("searchWidgets", widgets); } else if
-		 * (!searchString.isBlank() && !price.isBlank()) { System.out.println("both");
+		 * (!searchString.isEmpty() && !price.isEmpty()) { System.out.println("both");
 		 * model.addAttribute("searchString", searchString);
 		 * model.addAttribute("operator", operator); model.addAttribute("price", price);
 		 * model.addAttribute("widgets", widgetController.getAllWidgets());
@@ -1843,7 +1840,7 @@ public class LandingPageController {
 		 * marketController.getListingByWidget(widgetController.getWidget(tempLong))); }
 		 * } System.out.println("end of mower parts"); }
 		 * 
-		 * if (searchString.isBlank() && price.isBlank()) {
+		 * if (searchString.isEmpty() && price.isEmpty()) {
 		 * System.out.println("only category"); model.addAttribute("widgets",
 		 * widgetController.getAllWidgets()); listingModel.addAttribute("listings",
 		 * marketController.getAllListings()); widgets = this.onlyCategory(tempWidget,
@@ -1851,7 +1848,7 @@ public class LandingPageController {
 		 * searchModel.addAttribute("searchWidgets", widgets);
 		 * System.out.println("tried to find widget"); } catch (Exception e) {
 		 * System.out.println("No widgets"); } System.out.println("neither"); } if
-		 * (!searchString.isBlank() && price.isBlank()) {
+		 * (!searchString.isEmpty() && price.isEmpty()) {
 		 * System.out.println("only search string"); model.addAttribute("searchString",
 		 * searchString); model.addAttribute("widgets",
 		 * widgetController.getAllWidgets()); listingModel.addAttribute("listings",
@@ -1860,7 +1857,7 @@ public class LandingPageController {
 		 * allListings);
 		 * 
 		 * searchModel.addAttribute("searchWidgets", widgets); } else if
-		 * (searchString.isBlank() && !price.isBlank()) {
+		 * (searchString.isEmpty() && !price.isEmpty()) {
 		 * System.out.println("only price"); model.addAttribute("operator", operator);
 		 * model.addAttribute("price", price); model.addAttribute("widgets",
 		 * widgetController.getAllWidgets()); listingModel.addAttribute("listings",
@@ -1868,7 +1865,7 @@ public class LandingPageController {
 		 * widgets, tempListing, searchString, operator, bigPrice, category,
 		 * subCategory, allWidgets, allListings);
 		 * searchModel.addAttribute("searchWidgets", widgets); } else if
-		 * (!searchString.isBlank() && !price.isBlank()) { System.out.println("both");
+		 * (!searchString.isEmpty() && !price.isEmpty()) { System.out.println("both");
 		 * model.addAttribute("searchString", searchString);
 		 * model.addAttribute("operator", operator); model.addAttribute("price", price);
 		 * model.addAttribute("widgets", widgetController.getAllWidgets());
@@ -1906,14 +1903,14 @@ public class LandingPageController {
 		 * 0; i < cars.size(); i++) { long tempLong = cars.get(i).getId();
 		 * allWidgets.add(widgetController.getWidget(tempLong)); allListings.add(
 		 * marketController.getListingByWidget(widgetController.getWidget(tempLong))); }
-		 * } } if (searchString.isBlank() && price.isBlank()) {
+		 * } } if (searchString.isEmpty() && price.isEmpty()) {
 		 * System.out.println("only category"); model.addAttribute("widgets",
 		 * widgetController.getAllWidgets()); listingModel.addAttribute("listings",
 		 * marketController.getAllListings()); widgets = this.onlyCategory(tempWidget,
 		 * tempListing, category, subCategory, widgets, allWidgets, allListings); try {
 		 * searchModel.addAttribute("searchWidgets", widgets); } catch (Exception e) {
-		 * System.out.println("No widgets"); } } if (!searchString.isBlank() &&
-		 * price.isBlank()) { System.out.println("only search string");
+		 * System.out.println("No widgets"); } } if (!searchString.isEmpty() &&
+		 * price.isEmpty()) { System.out.println("only search string");
 		 * model.addAttribute("searchString", searchString);
 		 * model.addAttribute("widgets", widgetController.getAllWidgets());
 		 * listingModel.addAttribute("listings", marketController.getAllListings());
@@ -1921,7 +1918,7 @@ public class LandingPageController {
 		 * category, subCategory, allWidgets, allListings);
 		 * 
 		 * searchModel.addAttribute("searchWidgets", widgets); } else if
-		 * (searchString.isBlank() && !price.isBlank()) {
+		 * (searchString.isEmpty() && !price.isEmpty()) {
 		 * System.out.println("only price"); model.addAttribute("operator", operator);
 		 * model.addAttribute("price", price); model.addAttribute("widgets",
 		 * widgetController.getAllWidgets()); listingModel.addAttribute("listings",
@@ -1929,7 +1926,7 @@ public class LandingPageController {
 		 * widgets, tempListing, searchString, operator, bigPrice, category,
 		 * subCategory, allWidgets, allListings);
 		 * searchModel.addAttribute("searchWidgets", widgets); } else if
-		 * (!searchString.isBlank() && !price.isBlank()) { System.out.println("both");
+		 * (!searchString.isEmpty() && !price.isEmpty()) { System.out.println("both");
 		 * model.addAttribute("searchString", searchString);
 		 * model.addAttribute("operator", operator); model.addAttribute("price", price);
 		 * model.addAttribute("widgets", widgetController.getAllWidgets());
@@ -1994,7 +1991,7 @@ public class LandingPageController {
 		 * marketController.getListingByWidget(widgetController.getWidget(tempLong))); }
 		 * } System.out.println("end of car parts"); }
 		 */
-		if (searchString.isBlank() && price.isBlank()) {
+		if (searchString.isEmpty() && price.isEmpty()) {
 			System.out.println("only category");
 			model.addAttribute("widgets", widgetController.getAllWidgets());
 			listingModel.addAttribute("listings", marketController.getAllListings());
@@ -2006,7 +2003,7 @@ public class LandingPageController {
 				System.out.println("No widgets");
 			}
 		}
-		if (!searchString.isBlank() && price.isBlank()) {
+		if (!searchString.isEmpty() && price.isEmpty()) {
 			System.out.println("only search string");
 			model.addAttribute("searchString", searchString);
 			model.addAttribute("widgets", widgetController.getAllWidgets());
@@ -2015,7 +2012,7 @@ public class LandingPageController {
 					this.stringOnly(
 							tempWidget, widgets, tempListing, searchString, category, allWidgets, allListings);
 			searchModel.addAttribute("searchWidgets", widgets);
-		} else if (searchString.isBlank() && !price.isBlank()) {
+		} else if (searchString.isEmpty() && !price.isEmpty()) {
 			System.out.println("only price");
 			model.addAttribute("operator", operator);
 			model.addAttribute("price", price);
@@ -2033,7 +2030,7 @@ public class LandingPageController {
 							allWidgets,
 							allListings);
 			searchModel.addAttribute("searchWidgets", widgets);
-		} else if (!searchString.isBlank() && !price.isBlank()) {
+		} else if (!searchString.isEmpty() && !price.isEmpty()) {
 			System.out.println("both");
 			model.addAttribute("searchString", searchString);
 			model.addAttribute("operator", operator);

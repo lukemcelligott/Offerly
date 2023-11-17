@@ -2,23 +2,19 @@ package edu.sru.cpsc.webshopping.domain.widgets;
 
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-
 import org.springframework.lang.NonNull;
 
-import com.opencsv.bean.CsvIgnore;
-
-import edu.sru.cpsc.webshopping.domain.user.User;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 /**
  * Widget class stores basic information such as name, description, and the category of the widget. Other widget classes inherit these from it.
  * @author NICK
@@ -40,12 +36,9 @@ public class Widget {
 	@NonNull
 	private String name;
 	
-	@NonNull 
+	@NonNull
+	@Column(length = 1000)
 	private String description;
-	
-	@ManyToMany(mappedBy = "wishlistedWidgets")
-	@CsvIgnore
-	private Set<User> wishlistingUsers;
 	
 	@ManyToOne
 	private Category category;

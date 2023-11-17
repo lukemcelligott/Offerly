@@ -22,7 +22,7 @@
 	<body>
 	
 		<!-- NAV BAR -->
-		<div th:insert="header :: header"></div>
+		<div th:insert="~{header :: header}"></div>
 		<!-- END NAV BAR -->
 	
 		<div class="card w-50" style="margin-left: auto; margin-right: auto;">
@@ -68,7 +68,7 @@
 											<input type="hidden" th:value="${entry.attribute.id}" th:name="'entries[' + ${iterStat.index} + '].attribute.id'" />
 											<input type="hidden" th:value="${entry.attribute.attributeKey}" th:name="'entries[' + ${iterStat.index} + '].attribute.attributeKey'" />
 											<input type="hidden" th:value="${entry.widgetAttribute.attributeKey}" th:name="'entries[' + ${iterStat.index} + '].widgetAttribute.attributeKey'" />
-											
+																						
 											<!--From https://www.w3schools.com/html/html_form_input_types.asp-->
 											<input th:if="${entry.attribute.dataType.name() == 'STRING'}" maxlength="100"  type="text" class="form-control form-input" th:id="'entries[' + ${iterStat.index} + '].widgetAttribute.value'" th:name="'entries[' + ${iterStat.index} + '].widgetAttribute.value'" placeholder="-- Enter Value --" required>
 											<textarea th:if="${entry.attribute.dataType.name() == 'TEXTAREA'}" class="form-control form-input" th:id="'entries[' + ${iterStat.index} + '].widgetAttribute.value'" th:name="'entries[' + ${iterStat.index} + '].widgetAttribute.value'" placeholder="-- Enter information --" maxlength="500" onkeyup="countCharacters(this)" data-char-counter="charNumDesc"></textarea>
@@ -105,8 +105,8 @@
 
 						<div class="card-footer" style="display: flex; justify-content: center; align-items: center; padding-top: 25px;">
 							<input id="nextButton" class="btn btn-success v-25 mx-4" type="submit" value="Next" disabled>
-							<a class="btn btn-danger v-25 mx-4" href="/addWidget">Back</a>
-							<a class="btn btn-danger v-25 mx-4" href="/homePage">Cancel</a>
+							<a class="btn btn-danger v-25 mx-4" th:href="@{/addWidget}">Back</a>
+							<a class="btn btn-danger v-25 mx-4" th:href="@{/homePage}">Cancel</a>
 						</div>
 					</div>
 				</div>

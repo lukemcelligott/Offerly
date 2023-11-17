@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import edu.sru.cpsc.webshopping.domain.user.Message;
 import edu.sru.cpsc.webshopping.domain.user.Statistics;
+import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
 import edu.sru.cpsc.webshopping.domain.user.Ticket;
 import edu.sru.cpsc.webshopping.domain.user.User;
-import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
 import edu.sru.cpsc.webshopping.repository.ticket.TicketRepository;
 import edu.sru.cpsc.webshopping.service.UserService;
 import edu.sru.cpsc.webshopping.util.constants.TimeConstants;

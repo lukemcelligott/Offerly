@@ -1,19 +1,18 @@
 package edu.sru.cpsc.webshopping.service;
 
+import java.io.InputStream;
+import java.math.BigDecimal;
+
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import edu.sru.cpsc.webshopping.domain.billing.StateDetails;
 import edu.sru.cpsc.webshopping.repository.billing.StateDetailsRepository;
-
-import org.springframework.core.io.Resource;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
-
-import java.io.InputStream;
-import java.math.BigDecimal;
 
 @Service
 public class TaxExcelToDatabaseService {

@@ -60,7 +60,7 @@
 	<body class="pageBody">
 	
 		<!-- HEADER BAR -->
-		<div th:insert="header :: header"></div>
+		<div th:insert="~{header :: header}"></div>
 		<!-- END HEADER BAR -->
 	
 	
@@ -166,7 +166,7 @@
 												<!-- Rating Value -->
 												<span th:text="${sellerRating.rating}"></span>
 												<!-- Filled Stars -->
-		                                        <th:block th:each="star : ${#numbers.sequence(1, sellerRating.rating)}">
+		                                        <th:block th:if="${sellerRating.rating > 0}" th:each="star : ${#numbers.sequence(1, sellerRating.rating)}">
 		                                            <span class="text-warning">★</span>
 		                                        </th:block>
 		                                        <!-- Unfilled Stars -->
@@ -218,7 +218,7 @@
 						</div>
 						<div class="d-flex justify-content-evenly mb-3">
 							<button type="submit" name="submit" class="btn btn-lg btn-success" value="Update Information">Update</button>
-							<a class="btn btn-lg btn-danger" href="/homePage">Return Home</a>
+							<a class="btn btn-lg btn-danger" th:href="@{/homePage}">Return Home</a>
 						</div>
 					</form>
 					

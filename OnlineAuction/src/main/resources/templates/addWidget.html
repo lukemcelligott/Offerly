@@ -44,7 +44,7 @@
 	<body>
 	
 		<!-- HEADER BAR -->
-		<div th:insert="header :: header" th:unless="${user == null}"></div>
+		<div th:insert="~{header :: header}" th:unless="${user == null}"></div>
 		<!-- END HEADER BAR -->
 
 		
@@ -63,7 +63,7 @@
 						
 						<div class="card-footer" style="display: flex; justify-content: center; align-items: center;">
 							<input id="nextButton" class="btn btn-success v-25 mx-4" type="submit" th:href="@{/createWidget}" value="Next" disabled>
-							<a class="btn btn-danger v-25 mx-4" href="/homePage"> Cancel </a>
+							<a class="btn btn-danger v-25 mx-4" th:href="@{/homePage}"> Cancel </a>
 						</div>
 					</div>
 				</form>

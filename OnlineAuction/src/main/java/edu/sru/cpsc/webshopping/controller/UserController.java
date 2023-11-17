@@ -2,10 +2,6 @@ package edu.sru.cpsc.webshopping.controller;
 
 import java.security.Principal;
 
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +20,7 @@ import edu.sru.cpsc.webshopping.controller.billing.DirectDepositController;
 import edu.sru.cpsc.webshopping.controller.billing.PaymentDetailsController;
 import edu.sru.cpsc.webshopping.controller.billing.PaypalController;
 import edu.sru.cpsc.webshopping.controller.billing.SellerRatingController;
+import edu.sru.cpsc.webshopping.domain.billing.BankAddress;
 import edu.sru.cpsc.webshopping.domain.billing.DirectDepositDetails;
 import edu.sru.cpsc.webshopping.domain.billing.PaymentDetails;
 import edu.sru.cpsc.webshopping.domain.billing.Paypal;
@@ -34,9 +31,11 @@ import edu.sru.cpsc.webshopping.domain.user.Statistics.StatsCategory;
 import edu.sru.cpsc.webshopping.domain.user.User;
 import edu.sru.cpsc.webshopping.repository.user.UserRepository;
 import edu.sru.cpsc.webshopping.secure.CaptchaUtil;
-import edu.sru.cpsc.webshopping.service.WatchlistService;
-
 import edu.sru.cpsc.webshopping.service.UserService;
+import edu.sru.cpsc.webshopping.service.WatchlistService;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 
 
 @RestController
@@ -248,6 +247,10 @@ public class UserController {
 		details.setAccountNumber(passwordEncoder.encode(details.getAccountNumber()));
 		details.setRoutingNumber(passwordEncoder.encode(details.getRoutingNumber()));
 		//details.setBankName(passwordEncoder.encode(details.getBankName()));
+
+		//save bank address
+		//entityManager.persist(details.getBankAddress());
+
 		// No assigned details - add to user
 		if (user.getDirectDepositDetails() == null) {
 			entityManager.persist(details);

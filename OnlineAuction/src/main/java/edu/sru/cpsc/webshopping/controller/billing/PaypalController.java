@@ -1,12 +1,11 @@
 package edu.sru.cpsc.webshopping.controller.billing;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.sru.cpsc.webshopping.domain.billing.Paypal;
 import edu.sru.cpsc.webshopping.repository.billing.PaypalRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 
 /**
  * Controller for handling Paypal in database

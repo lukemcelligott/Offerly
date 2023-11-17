@@ -3,12 +3,11 @@ package edu.sru.cpsc.webshopping.util.advice;
 import java.io.IOException;
 import java.security.Principal;
 
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import edu.sru.cpsc.webshopping.secure.UnauthenticatedUserException;
+import jakarta.servlet.http.HttpServletResponse;
 
 @ControllerAdvice
 public class PrincipalControllerAdvice {

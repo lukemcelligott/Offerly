@@ -4,9 +4,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.Optional;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import edu.sru.cpsc.webshopping.domain.billing.PaymentDetails;
 import edu.sru.cpsc.webshopping.repository.billing.PaymentDetailsRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 
 @SpringBootTest(classes = {PaymentDetailsController.class})
 public class PaymentDetailsControllerTest {

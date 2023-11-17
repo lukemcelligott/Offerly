@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shippo.model.Track;
-
 import edu.sru.cpsc.webshopping.controller.TransactionController;
 import edu.sru.cpsc.webshopping.domain.market.Shipping;
 import edu.sru.cpsc.webshopping.service.shipping.ShippoTrackingService;

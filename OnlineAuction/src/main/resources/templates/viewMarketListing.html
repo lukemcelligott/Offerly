@@ -25,7 +25,7 @@
 	    <link th:href="@{/styles/viewMarketListing.css}" rel="stylesheet"/>		
     </head>
     <body>
-        <div th:insert="header :: header"></div>
+        <div th:insert="~{header :: header}"></div>
         
         <div id="page">
             <div class="card mx-auto h-70 w-100" style="height: fit-content;">
@@ -154,7 +154,7 @@
 											<!-- Rating Value -->
 	                                        <span th:text="${sellerRating.rating}" class="me-2"></span>	                                        
 	                                        <!-- Filled Stars -->
-	                                        <th:block th:each="star : ${#numbers.sequence(1, sellerRating.rating)}">
+	                                        <th:block th:if="${sellerRating.rating > 0}" th:each="star : ${#numbers.sequence(1, sellerRating.rating)}">
 	                                            <span class="text-warning">★</span>
 	                                        </th:block>	                                        
 	                                        <!-- Unfilled Stars -->
@@ -359,7 +359,7 @@
 	                    		<input type="hidden" name="listingId" th:value="${currListing.id}"/>
 	                    		<!-- place bid button -->
 	                    		<div class="text-center">
-									<input class="btn btn-outline-success" id="bidButton" name="placeBid" type="submit" value="Place Bid" onclick="return confirmBid();"/>
+									<input class="btn btn-outline-success" id="bidButton" name="placeBid" type="submit" value="Place Bid"/>
 								</div>
 	                  		</form>
 						</div>
@@ -380,7 +380,7 @@
 	                    		<input type="hidden" name="listingId" th:value="${currListing.id}"/>
 	                    		<!-- place bid button -->
 	                    		<div class="text-center">
-									<input class="btn btn-outline-success" id="bidButton" name="placeBid" type="submit" value="Place Bid" onclick="return confirmBid();"/>
+									<input class="btn btn-outline-success" id="bidButton" name="placeBid" type="submit" value="Place Bid"/>
 								</div>
 	                  		</form>
 						</div>
@@ -432,9 +432,8 @@
         
         
 		<script th:inline="javascript">
-            function confirmBid() {
-              return confirm("Are you sure you want to place this bid?");
-            }
+
+			var contextPath = /*[[ @{'/'} ]]*/ '';
 	        
             // Image change logic
             const image = document.querySelector('#showWidget');
@@ -443,8 +442,8 @@
             
             // update which image is being displayed
             function updateDisplayImg() {
-				image.src = '/listingImages/' + images[x];
-			     const thumbnailImages = document.querySelectorAll('.thumbnail');
+				image.src = contextPath + 'listingImages/' + images[x];
+			    const thumbnailImages = document.querySelectorAll('.thumbnail');
 			    thumbnailImages.forEach(function (thumbnail, index) {
 			        if (index === x) {
 			            // Add a class to the displayed thumbnail to adjust its opacity
@@ -488,7 +487,7 @@
 				let cell = document.createElement('td');
 				let imageThumbnail = document.createElement('img');
 				
-				imageThumbnail.src = '/listingImages/' + imageUrl;
+				imageThumbnail.src = contextPath + 'listingImages/' + imageUrl;
 				imageThumbnail.classList.add('thumbnail');
 				
 				// styling
@@ -548,7 +547,7 @@
 		    var pathParts = window.location.pathname.split('/');
 		    var listingId = pathParts[pathParts.length - 1];
 		
-		    fetch("/uniqueBiddersCount/" + listingId)
+		    fetch( contextPath + "uniqueBiddersCount/" + listingId)
 		    .then(response => response.text())
 		    .then(data => {
 		        document.getElementById("uniqueBidderCountSpan").textContent = data;
@@ -556,7 +555,7 @@
 		    .catch(error => console.error('Error fetching unique bidders:', error));            
 			
 			// Fetch total bids count
-			fetch("/totalBidsCount/" + listingId)
+			fetch(contextPath + "totalBidsCount/" + listingId)
 			    .then(response => response.text())
 			    .then(data => {
 			        document.getElementById("totalBidsCountSpan").textContent = data;
@@ -568,7 +567,7 @@
 			    let marketListingId = window.location.pathname.split("/").pop();
 				var purchaseAuctionDiv = document.getElementById('purchaseAuctionButton');
 			    
-			    $.get("/isHighestBidder/" + marketListingId, function(response) {
+			    $.get(contextPath + "isHighestBidder/" + marketListingId, function(response) {
 			        if (response.isHighestBidder && new Date().getTime() > new Date(/*[[${currListing.auction.endAuctionDate}]]*/ 'START Date')) {								
 						purchaseAuctionDiv.style.display = 'block';
 					} else {
@@ -635,7 +634,7 @@
 		            let marketListingId = window.location.pathname.split("/").pop();// Get the market listing ID
 		
 		            // Fetch unique bidders from the server
-		            $.get(`/showUniqueBidders/${marketListingId}`, function(data) {
+		            $.get(contextPath + `showUniqueBidders/${marketListingId}`, function(data) {
 		                // Assuming your endpoint returns a list of usernames
 		                $('#biddersList').empty(); // Clear existing list items
 		                data.forEach(bidder => {
@@ -674,7 +673,7 @@
 			document.getElementById('closeTotalBidsModalButton').addEventListener('click', closeBidsModal);
 			
 			function fetchBidsData(id) {
-			    return fetch(`/bidsForListing/${id}`)
+			    return fetch(contextPath + `bidsForListing/${id}`)
 			        .then(response => {
 			            if (!response.ok) {
 			                throw new Error('Network response was not ok');
